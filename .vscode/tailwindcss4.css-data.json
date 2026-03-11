@@ -1,0 +1,45 @@
+{
+  "version": 1.1,
+  "atDirectives": [
+    {
+      "name": "@plugin",
+      "description": "Tailwind CSS 4 — registers a PostCSS plugin as a Tailwind plugin.",
+      "references": [
+        {
+          "name": "Tailwind CSS Docs",
+          "url": "https://tailwindcss.com/docs/plugins"
+        }
+      ]
+    },
+    {
+      "name": "@theme",
+      "description": "Tailwind CSS 4 — defines static design tokens (colors, spacing, typography, etc.) that generate utility classes.",
+      "references": [
+        {
+          "name": "Tailwind CSS Docs",
+          "url": "https://tailwindcss.com/docs/theme"
+        }
+      ]
+    },
+    {
+      "name": "@custom-variant",
+      "description": "Tailwind CSS 4 — defines a custom variant selector for use in utility classes.",
+      "references": [
+        {
+          "name": "Tailwind CSS Docs",
+          "url": "https://tailwindcss.com/docs/adding-custom-styles#adding-custom-variants"
+        }
+      ]
+    },
+    {
+      "name": "@utility",
+      "description": "Tailwind CSS 4 — defines a custom utility class that participates in Tailwind's variant system.",
+      "references": [
+        {
+          "name": "Tailwind CSS Docs",
+          "url": "https://tailwindcss.com/docs/adding-custom-styles#adding-custom-utilities"
+        }
+      ]
+    }
+  ]
+}

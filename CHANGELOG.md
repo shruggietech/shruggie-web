@@ -20,5 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `lib/theme.ts`: `getThemeScript()` IIFE for FOUC-free dark/light mode initialization from cookie state
 - `public/site.webmanifest`: web app manifest with icon sizes 192x192 and 512x512
 - Placeholder favicon assets at all required sizes (16x16, 32x32, 180x180, 192x192, 512x512, .ico) using brand green (#2BCC73) fill
+- VS Code CSS custom data for Tailwind CSS 4 at-rules (`@plugin`, `@theme`, `@custom-variant`, `@utility`)
 - Prettier configuration with Tailwind CSS plugin
 - `.handoff/` directory structure for sprint coordination
