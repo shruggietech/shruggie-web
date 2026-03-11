@@ -1,10 +1,11 @@
 /**
- * HeroSection — Full-width dark hero with animated gradient mesh.
+ * HeroSection — Full-width dark hero with animated dot-grid canvas.
  *
  * Headline "Your vision deserves better than a template." in display-xl
  * Space Grotesk Bold. Dual CTAs: primary via ShruggieCTA, secondary via Button.
- * Background: CSS animated gradient mesh using brand green at 5-8% opacity
- * with a 30s animation cycle, disabled for prefers-reduced-motion.
+ * Background: interactive canvas dot grid using brand green (#2BCC73),
+ * dots brighten and connect near cursor. Falls back to static grid
+ * for prefers-reduced-motion.
  *
  * Spec reference: §6.1 (Homepage — Section 1: Hero)
  */
@@ -12,17 +13,15 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
+import HeroBackground from "@/components/home/HeroBackground";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 
 export default function HeroSection() {
   return (
     <section className="relative min-h-[85vh] overflow-hidden bg-brand-black">
-      {/* Animated gradient mesh background */}
-      <div
-        className="hero-gradient-mesh pointer-events-none absolute inset-0"
-        aria-hidden="true"
-      />
+      {/* Interactive dot-grid canvas background */}
+      <HeroBackground />
 
       <div className="container-content relative z-10 flex min-h-[85vh] flex-col items-start justify-center py-32 md:py-40">
         <ScrollReveal>
@@ -50,7 +49,7 @@ export default function HeroSection() {
         </ScrollReveal>
       </div>
 
-      {/* Gradient mesh animation styles in styles/globals.css — respects prefers-reduced-motion */}
+      {/* Canvas animation respects prefers-reduced-motion — see HeroBackground.tsx */}
     </section>
   );
 }

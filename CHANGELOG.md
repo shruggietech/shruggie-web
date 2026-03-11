@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Replace static CSS gradient mesh hero background with interactive canvas-based dot grid (`HeroBackground` component); brand-green dots brighten and form connecting mesh lines near cursor, ambient drift animation on mobile/touch, static grid fallback for `prefers-reduced-motion`, zero new dependencies
+- Mouse tracking for hero dot grid uses `window`-level events so interaction continues seamlessly over hero text and CTA buttons
+
 ### Fixed
 
 - Fix React hydration mismatch in `HeroSection` caused by `<style jsx>` generating different class name hashes on server vs client; moved gradient mesh CSS to `styles/globals.css` and converted `HeroSection` to a server component
