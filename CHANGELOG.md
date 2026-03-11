@@ -79,3 +79,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `app/blog/[slug]/page.tsx` — individual blog post page with `generateStaticParams` for SSG, `generateMetadata` for dynamic SEO, MDXRemote rendering with Shiki `github-dark` syntax highlighting, and BlogPosting JSON-LD schema
   - `content/blog/example-post.mdx` — sample blog post exercising h2, h3, code block, Callout (info + warning), and blockquote
   - `@shikijs/rehype` — installed as production dependency for Shiki rehype integration
+- Case studies — Work section (§6.3): content pipeline, index page, and individual case study pages
+  - `lib/work.ts` — content loading library with `getAllCaseStudiesMeta()` and `getCaseStudyBySlug()` functions; reads `.mdx` from `content/work/`, parses frontmatter with gray-matter, filters drafts in production, sorts by date descending
+  - `app/work/page.tsx` — work index page with hero section, responsive 2-column (desktop) / 1-column (mobile) case study card grid, industry badges, "Coming Soon" badge overlay for cards without hero images, and page-level metadata
+  - `app/work/[slug]/page.tsx` — individual case study page with `generateStaticParams` for SSG, `generateMetadata` for dynamic SEO, MDXRemote rendering with Shiki syntax highlighting (reuses blog MDXComponents), services used badges section, hero image support with existence check
+  - `content/work/united-way.mdx` — United Way of Anderson County case study (Nonprofit, web development, accessibility compliance)
+  - `content/work/scruggs-tire.mdx` — Scruggs Tire & Alignment case study (Automotive Services, vendor displacement, replatforming)
+  - `content/work/i-heart-pr-tours.mdx` — I Heart PR Tours case study (Tourism & Hospitality, OTA optimization, revenue share model)
