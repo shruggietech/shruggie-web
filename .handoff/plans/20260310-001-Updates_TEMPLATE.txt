@@ -10,7 +10,7 @@ PROJECT CONTEXT
 
 REQUIRED READING
 ================
-1. Review the full sprint plan at `.archive/20260310-001-Updates.md` to understand
+1. Review the full sprint plan at `.handoff/plans/20260310-001-Updates.md` to understand
    the overall project structure, dependency graph, and implementation ordering.
 
 2. The authoritative specification for ALL implementation decisions is:
