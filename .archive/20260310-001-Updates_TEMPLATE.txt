@@ -10,7 +10,7 @@ PROJECT CONTEXT
 
 REQUIRED READING
 ================
-1. Review the full sprint plan at `.handoff/plans/20260310-001-Updates.md` to understand
+1. Review the full sprint plan at `.archive/20260310-001-Updates.md` to understand
    the overall project structure, dependency graph, and implementation ordering.
 
 2. The authoritative specification for ALL implementation decisions is:
@@ -56,11 +56,12 @@ After implementing the work item:
 3. Run `npx tsc --noEmit` and confirm zero type errors.
 4. If this is the final work item in a parallel batch, verify the development server
    starts cleanly with `npm run dev`.
-5. Write a professional commit message in the format:
+5. Update the CHANGELOG.md
+6. Write a professional commit message in the format:
      web: <imperative description>
    Example: web: implement design system foundation with color tokens, typography, and fonts
    Include `Sprint: 20260310-001, Item N` in the commit message body.
-6. Commit your changes.
-7. If any deviations from the sprint plan were made, document them clearly.
-8. If any specification ambiguities were discovered, annotate the code with
+7. Commit your changes.
+8. If any deviations from the sprint plan were made, document them clearly.
+9. If any specification ambiguities were discovered, annotate the code with
    `// TODO: Spec ambiguity — [description]` and note the issue for the session report.
