@@ -23,3 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - VS Code CSS custom data for Tailwind CSS 4 at-rules (`@plugin`, `@theme`, `@custom-variant`, `@utility`)
 - Prettier configuration with Tailwind CSS plugin
 - `.handoff/` directory structure for sprint coordination
+- Component library (§2.4, §3.2, §8.2): 10 reusable UI primitives and shared components
+  - `Button` — two variants (primary/secondary), two sizes (default/sm), forwardRef, focus rings
+  - `Card` — surface container with border, shadow, optional hover treatment, forwardRef
+  - `SectionHeading` — label/title/description with left or center alignment
+  - `Badge` — inline tag label with translucent green background
+  - `Divider` — horizontal rule with design system border color
+  - `SkipLink` — accessible "Skip to main content" link (§3.2)
+  - `ShruggieCTA` — CTA button with shruggie tagline flourish, aria-hidden, reduced-motion support
+  - `ScrollReveal` — Framer Motion whileInView fade-up wrapper, reduced-motion fallback
+  - `JsonLd` — JSON-LD structured data injection via script tag (§8.2)
+  - `SEOHead` — convenience wrapper for page-level Open Graph and meta tags (§8.1)
