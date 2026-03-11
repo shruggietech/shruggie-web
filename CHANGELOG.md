@@ -91,3 +91,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `app/products/page.tsx` — Products page with four product cards (shruggie-indexer, metadexer, shruggie-feedtools, rustif), status badges, SoftwareSourceCode JSON-LD for each product, "How We Build Software" engineering philosophy section, page-level metadata
   - `app/not-found.tsx` — Custom 404 page with display-xl "404" headline in accent color, navigation links (Homepage, Services, Contact), decorative shruggie emoticon (aria-hidden), uses global layout
   - `app/error.tsx` — Global error boundary client component with "Try Again" (reset) and "Go Home" actions, console.error diagnostics
+- Audience landing pages, privacy policy, and cookie consent (§6.9, §6.11):
+  - `components/shared/LandingPageTemplate.tsx` — shared template for audience-specific landing pages with hero, pain point cards (3-card responsive grid), relevant services (badge list), social proof section (case study/research/product cards), and ShruggieCTA, reused by all four `/for/` pages
+  - `app/for/small-business/page.tsx` — Small Business Owners landing page (Segment A) referencing Scruggs Tire case study
+  - `app/for/nonprofits/page.tsx` — Nonprofits & Mission-Driven Organizations landing page (Segment B) referencing United Way case study
+  - `app/for/technical-teams/page.tsx` — Technical Founders & Product Teams landing page (Segment C) referencing ADF and Multi-Agent guide research
+  - `app/for/developers/page.tsx` — Developers & Open Source Community landing page (Segment D) referencing products (shruggie-indexer, metadexer, rustif) and research publications
+  - `app/privacy/page.tsx` — Privacy Policy page with hardcoded policy text (not MDX), narrow container with prose styling, sections: Information We Collect, How We Use Your Information, Third-Party Services, Cookies, Data Retention, Your Rights, Changes to This Policy, Contact
+  - `components/shared/CookieConsent.tsx` — cookie consent banner client component, fixed bottom bar with translucent background/backdrop-blur, Accept/Decline buttons setting 1-year `consent` cookie, "Learn more" link to `/privacy`, `role="dialog"` and `aria-label="Cookie consent"`, auto-hides if consent cookie already exists
+  - `app/layout.tsx` — modified to include CookieConsent component after Footer

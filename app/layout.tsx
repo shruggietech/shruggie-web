@@ -19,6 +19,7 @@ import LenisProvider from "@/components/layout/LenisProvider";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SkipLink from "@/components/ui/SkipLink";
+import CookieConsent from "@/components/shared/CookieConsent";
 
 import "./globals.css";
 
@@ -129,6 +130,7 @@ export default function RootLayout({
           <Header />
           <main id="main-content">{children}</main>
           <Footer />
+          <CookieConsent />
         </LenisProvider>
       </body>
     </html>
