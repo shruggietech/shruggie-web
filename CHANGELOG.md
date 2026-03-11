@@ -55,3 +55,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Ownership thesis section ("You Own Everything We Build")
   - Bottom CTA using ShruggieCTA linking to `/contact`
   - Service JSON-LD schemas for all four pillars via `generateServiceSchema`
+- About page (§6.6): four-section page at `/about` with page-level metadata
+  - Hero with headline and subheadline from spec
+  - Origin story ("Where We Come From") with full body text
+  - Team section: three cards (William Thompson, Natalie Thompson, Josiah Thompson) with placeholder avatar silhouettes (initials in gray circles), name, title, and description matching spec exactly
+  - Values section: three value blocks ("Ownership, not rentership.", "Specification-driven.", "Ship and iterate.") in responsive horizontal/stacked grid
+  - All sections wrapped in ScrollReveal with staggered delays for team and values cards
+- Contact page (§6.8): conversion page at `/contact` with page-level metadata
+  - Hero with headline "Get in Touch" and subheadline from spec
+  - `ContactForm` client component integrating @formspree/react `useForm` hook with React Hook Form + Zod validation
+  - Five form fields: Name (min 2, required), Email (valid email, required), Company (optional), Message textarea (min 10, required), "How did you hear about us?" select (enum: Search engine, Referral, Social media, Other; optional)
+  - Full form accessibility: visible `<label>` elements with `htmlFor`, `aria-invalid` on invalid fields, `aria-describedby` linking error messages, `aria-live="polite"` error summary, submit button disabled during submission
+  - Success state: confirmation message "Thanks for reaching out. We will get back to you within one business day."
+  - Direct contact section with address (116 Agnes Rd, Ste 200, Knoxville, TN 37919) and email placeholder per §1.4 item 7
