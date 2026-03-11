@@ -1,0 +1,66 @@
+You are implementing work for the ShruggieTech website build project (shruggie-web).
+
+PROJECT CONTEXT
+===============
+- Project: shruggie-web (ShruggieTech public website)
+- Framework: Next.js 15 (App Router), TypeScript, Tailwind CSS 4.x
+- Repository: github.com/shruggietech/shruggie-web
+- Organization: ShruggieTech LLC (https://shruggie.tech)
+- Sprint: 20260310-001 (greenfield build)
+
+REQUIRED READING
+================
+1. Review the full sprint plan at `.handoff/plans/20260310-001-Updates.md` to understand
+   the overall project structure, dependency graph, and implementation ordering.
+
+2. The authoritative specification for ALL implementation decisions is:
+     ShruggieTech_Website_Specification.md (v1.2.0, located at the repository root)
+
+   When the sprint plan and the specification disagree, the specification governs.
+   When the specification and your own judgment disagree, follow the specification
+   and document your concern in the session report.
+
+3. Read the specific work item section below before writing any code.
+
+CODING CONVENTIONS
+==================
+- All files: UTF-8 encoding without BOM. LF line endings.
+- TypeScript: Strict mode. No `any` types. Use `satisfies` for type narrowing where appropriate.
+- Imports: React/Next.js first, then third-party libraries, then local imports (`@/`).
+- Components: Functional components with named exports (default export for page components).
+  Use `forwardRef` for components that wrap native HTML elements (Button, Card).
+- Tailwind: Use design system tokens from `tailwind.config.ts` (e.g., `text-text-primary`,
+  `bg-bg-elevated`, `text-accent`). Do not use raw hex values in className strings.
+- Accessibility: Every interactive element must be keyboard-focusable. Every image must have
+  alt text (or `alt=""` with `aria-hidden="true"` for decorative images). Every form field
+  must have an associated `<label>`. Focus indicators use brand green (#2BCC73).
+- Animations: All animations must respect `prefers-reduced-motion`. Use Framer Motion's
+  `useReducedMotion` hook or CSS `@media (prefers-reduced-motion: reduce)`.
+
+EXECUTION INSTRUCTIONS
+======================
+Execute the following work item(s) from the sprint plan:
+
+--- PASTE WORK ITEM SECTION(S) HERE ---
+
+
+
+--- END OF WORK ITEM ---
+
+COMPLETION WORKFLOW
+===================
+After implementing the work item:
+
+1. Verify all acceptance criteria listed in the work item are satisfied.
+2. Run `npm run build` and confirm it completes without errors.
+3. Run `npx tsc --noEmit` and confirm zero type errors.
+4. If this is the final work item in a parallel batch, verify the development server
+   starts cleanly with `npm run dev`.
+5. Write a professional commit message in the format:
+     web: <imperative description>
+   Example: web: implement design system foundation with color tokens, typography, and fonts
+   Include `Sprint: 20260310-001, Item N` in the commit message body.
+6. Commit your changes.
+7. If any deviations from the sprint plan were made, document them clearly.
+8. If any specification ambiguities were discovered, annotate the code with
+   `// TODO: Spec ambiguity — [description]` and note the issue for the session report.
