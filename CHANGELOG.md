@@ -100,3 +100,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `app/privacy/page.tsx` — Privacy Policy page with hardcoded policy text (not MDX), narrow container with prose styling, sections: Information We Collect, How We Use Your Information, Third-Party Services, Cookies, Data Retention, Your Rights, Changes to This Policy, Contact
   - `components/shared/CookieConsent.tsx` — cookie consent banner client component, fixed bottom bar with translucent background/backdrop-blur, Accept/Decline buttons setting 1-year `consent` cookie, "Learn more" link to `/privacy`, `role="dialog"` and `aria-label="Cookie consent"`, auto-hides if consent cookie already exists
   - `app/layout.tsx` — modified to include CookieConsent component after Footer
+- SEO infrastructure, analytics, and deployment configuration (§8.1–§8.4, §9, §10, §6.11):
+  - `lib/schema.ts` — six JSON-LD generator functions (Organization, WebSite, BlogPosting, Service, TechArticle, SoftwareSourceCode) per §8.2, all returning valid `@context: https://schema.org` objects
+  - Organization JSON-LD injected into root layout (`app/layout.tsx`) via `JsonLd` component, rendering on every page
+  - Verified page-level JSON-LD injections: Homepage (WebSite), Services (Service ×4), Blog posts (BlogPosting), Research (TechArticle ×3), Products (SoftwareSourceCode ×4)
+  - `app/sitemap.ts` — dynamic sitemap generation via Next.js `MetadataRoute.Sitemap` including all static pages, `/privacy`, all four `/for/` landing pages, all blog post slugs, and all case study slugs with priority tiers (1.0/0.8/0.6) per §8.3
+  - `app/robots.ts` — robots.txt generation via Next.js `MetadataRoute.Robots` allowing all user agents, referencing sitemap URL per §8.3
+  - `app/api/og/route.tsx` — dynamic OG image generation (1200×630) using `next/og` `ImageResponse` on edge runtime with branded dark card, green "SHRUGGIETECH" label, title and author params per §8.4
+  - Consent-gated GA4/GTM analytics loading in root layout via inline IIFE script that reads `consent` cookie before first paint; scripts only injected when `consent=granted` and env vars are configured per §6.11
+  - `next.config.ts` — production configuration with `images.formats` (AVIF/WebP), `experimental.optimizeCss`, and font cache-control headers (`max-age=31536000, immutable`) per §10.1
+  - `.env.example` — documentation of all four required environment variables (`NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_FORMSPREE_ID`) per §10.2

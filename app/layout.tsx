@@ -15,13 +15,37 @@ import localFont from "next/font/local";
 
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
 import { getThemeScript } from "@/lib/theme";
+import { generateOrganizationSchema } from "@/lib/schema";
 import LenisProvider from "@/components/layout/LenisProvider";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SkipLink from "@/components/ui/SkipLink";
 import CookieConsent from "@/components/shared/CookieConsent";
+import JsonLd from "@/components/shared/JsonLd";
 
 import "./globals.css";
+
+// ── Consent-gated analytics script (spec §6.11, §10.2) ────────────────────
+
+/**
+ * Returns an inline IIFE that reads the `consent` cookie before first paint.
+ * If consent is "granted" AND the GA/GTM env vars are set, injects the
+ * GA4 and GTM scripts. Otherwise, no tracking scripts are loaded.
+ */
+function getConsentGatedAnalyticsScript(): string {
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "";
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID ?? "";
+
+  return `(function(){try{var c=document.cookie.split(";").find(function(s){return s.trim().startsWith("consent=")});if(!c)return;var v=c.split("=")[1];if(v!=="granted")return;${
+    gaId
+      ? `var gs=document.createElement("script");gs.async=true;gs.src="https://www.googletagmanager.com/gtag/js?id=${gaId}";document.head.appendChild(gs);window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","${gaId}");`
+      : "/* GA_MEASUREMENT_ID not configured */"
+  }${
+    gtmId
+      ? `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","${gtmId}");`
+      : "/* GTM_ID not configured */"
+  }}catch(e){}})();`;
+}
 
 // ── Font Loading (spec §2.2) ───────────────────────────────────────────────
 
@@ -112,6 +136,12 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{ __html: getThemeScript() }}
         />
+        {/* Consent-gated GA4/GTM loading (spec §6.11, §10.2) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: getConsentGatedAnalyticsScript(),
+          }}
+        />
         {/* Theme color meta tags (spec §1.5) */}
         <meta
           name="theme-color"
@@ -125,6 +155,8 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-bg-primary font-body text-text-primary antialiased">
+        {/* Organization JSON-LD on every page (spec §8.2) */}
+        <JsonLd data={generateOrganizationSchema()} />
         <LenisProvider>
           <SkipLink />
           <Header />
