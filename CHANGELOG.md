@@ -86,3 +86,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `content/work/united-way.mdx` — United Way of Anderson County case study (Nonprofit, web development, accessibility compliance)
   - `content/work/scruggs-tire.mdx` — Scruggs Tire & Alignment case study (Automotive Services, vendor displacement, replatforming)
   - `content/work/i-heart-pr-tours.mdx` — I Heart PR Tours case study (Tourism & Hospitality, OTA optimization, revenue share model)
+- Research, Products, and Error pages (§6.4, §6.5, §6.10, §8.2):
+  - `app/research/page.tsx` — Research page with three publication cards (ADF, Multi-Agent Guide, rustif Declaration), TechArticle JSON-LD for each publication, page-level metadata, ScrollReveal animations
+  - `app/products/page.tsx` — Products page with four product cards (shruggie-indexer, metadexer, shruggie-feedtools, rustif), status badges, SoftwareSourceCode JSON-LD for each product, "How We Build Software" engineering philosophy section, page-level metadata
+  - `app/not-found.tsx` — Custom 404 page with display-xl "404" headline in accent color, navigation links (Homepage, Services, Contact), decorative shruggie emoticon (aria-hidden), uses global layout
+  - `app/error.tsx` — Global error boundary client component with "Try Again" (reset) and "Go Home" actions, console.error diagnostics
