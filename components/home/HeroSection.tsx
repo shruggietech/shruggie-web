@@ -9,8 +9,6 @@
  * Spec reference: §6.1 (Homepage — Section 1: Hero)
  */
 
-"use client";
-
 import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
@@ -52,50 +50,7 @@ export default function HeroSection() {
         </ScrollReveal>
       </div>
 
-      {/* Gradient mesh animation — CSS only, respects prefers-reduced-motion */}
-      <style jsx>{`
-        .hero-gradient-mesh {
-          background:
-            radial-gradient(
-              ellipse 80% 60% at 20% 40%,
-              rgba(43, 204, 115, 0.08) 0%,
-              transparent 70%
-            ),
-            radial-gradient(
-              ellipse 60% 80% at 80% 60%,
-              rgba(43, 204, 115, 0.05) 0%,
-              transparent 70%
-            ),
-            radial-gradient(
-              ellipse 70% 50% at 50% 20%,
-              rgba(43, 204, 115, 0.06) 0%,
-              transparent 60%
-            );
-          background-size: 200% 200%;
-          animation: hero-mesh-drift 30s ease-in-out infinite;
-        }
-
-        @keyframes hero-mesh-drift {
-          0% {
-            background-position: 0% 0%, 100% 100%, 50% 50%;
-          }
-          33% {
-            background-position: 100% 50%, 0% 50%, 80% 20%;
-          }
-          66% {
-            background-position: 50% 100%, 50% 0%, 20% 80%;
-          }
-          100% {
-            background-position: 0% 0%, 100% 100%, 50% 50%;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .hero-gradient-mesh {
-            animation: none;
-          }
-        }
-      `}</style>
+      {/* Gradient mesh animation styles in styles/globals.css — respects prefers-reduced-motion */}
     </section>
   );
 }

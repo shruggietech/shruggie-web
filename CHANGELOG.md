@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix React hydration mismatch in `HeroSection` caused by `<style jsx>` generating different class name hashes on server vs client; moved gradient mesh CSS to `styles/globals.css` and converted `HeroSection` to a server component
+
 ### Added
 
 - Project initialization with Next.js 15 (App Router), TypeScript, and Tailwind CSS 4.x
