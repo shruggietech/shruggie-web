@@ -68,3 +68,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Full form accessibility: visible `<label>` elements with `htmlFor`, `aria-invalid` on invalid fields, `aria-describedby` linking error messages, `aria-live="polite"` error summary, submit button disabled during submission
   - Success state: confirmation message "Thanks for reaching out. We will get back to you within one business day."
   - Direct contact section with address (116 Agnes Rd, Ste 200, Knoxville, TN 37919) and email placeholder per §1.4 item 7
+- Blog architecture (§7.1–§7.4, §6.7, §8.2): complete MDX-based blog content pipeline
+  - `lib/blog.ts` — content loading library with `getAllPostsMeta()`, `getPostBySlug()`, and `getPaginatedPosts()` functions; reads `.mdx` from `content/blog/`, parses frontmatter with gray-matter, computes reading time, filters drafts in production, sorts by date descending
+  - `components/blog/MDXComponents.tsx` — custom MDX renderers for h2, h3, p, a, code (inline vs block detection for Shiki compatibility), blockquote, pre, and custom `Callout` component (info/warning variants with colored borders)
+  - `components/blog/PostCard.tsx` — blog index card with title, date, reading time, author, category badge, and 2-line excerpt; full card is a clickable link
+  - `components/blog/PostHeader.tsx` — individual post header with category badge, display-md title, author, date, and reading time in centered layout
+  - `components/blog/TableOfContents.tsx` — sidebar navigation extracting h2/h3 headings from raw MDX with sticky positioning and anchor links
+  - `components/blog/Pagination.tsx` — previous/next navigation with page numbers, disabled states, and aria-current/aria-label attributes
+  - `app/blog/page.tsx` — blog index page with hero section, paginated post cards in single-column 720px layout, and page-level metadata
+  - `app/blog/[slug]/page.tsx` — individual blog post page with `generateStaticParams` for SSG, `generateMetadata` for dynamic SEO, MDXRemote rendering with Shiki `github-dark` syntax highlighting, and BlogPosting JSON-LD schema
+  - `content/blog/example-post.mdx` — sample blog post exercising h2, h3, code block, Callout (info + warning), and blockquote
+  - `@shikijs/rehype` — installed as production dependency for Shiki rehype integration

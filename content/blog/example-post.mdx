@@ -1,0 +1,73 @@
+---
+title: "Building a Specification-Driven Website with Next.js 15"
+date: "2026-03-10"
+author: "William Thompson"
+category: "Engineering"
+excerpt: "How ShruggieTech used a comprehensive specification document to build its public website from scratch — covering architecture decisions, design system implementation, and lessons learned."
+published: true
+---
+
+## Why Specification-Driven Development?
+
+At ShruggieTech, we believe that the best software starts with a clear specification. Before writing a single line of code, we invested significant time documenting every architectural decision, design token, component behavior, and content structure in a living specification document.
+
+This approach eliminates the "build it and see" anti-pattern that plagues so many web projects. When every stakeholder — human or AI — can reference a single source of truth, the result is a cohesive product that ships faster and with fewer regressions.
+
+> "A specification is not bureaucracy. It is a shared language between everyone who touches the codebase."
+
+### The Role of the Spec in Our Stack
+
+Our specification covers everything from color palettes and typography scales to JSON-LD schema templates and accessibility compliance patterns. It serves as the contract between design intent and engineering output.
+
+<Callout type="info">
+Every component in the ShruggieTech design system maps directly to a section in the specification. If it is not in the spec, it does not ship.
+</Callout>
+
+## Technical Highlights
+
+### Next.js 15 App Router
+
+We chose Next.js 15 with the App Router for its first-class support for React Server Components, streaming, and static generation. The blog you are reading right now is rendered at build time from MDX files — no database, no CMS, no API calls.
+
+```typescript
+// Example: loading blog posts from the filesystem
+export function getAllPostsMeta(): PostMeta[] {
+  const files = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".mdx"));
+
+  return files.map((filename) => {
+    const slug = filename.replace(/\.mdx$/, "");
+    const content = fs.readFileSync(path.join(POSTS_DIR, filename), "utf-8");
+    const { data } = matter(content);
+
+    return {
+      slug,
+      title: data.title,
+      date: data.date,
+      // ...remaining fields
+    };
+  });
+}
+```
+
+### Design System Tokens
+
+Rather than scattering hex values across the codebase, we define all colors as CSS custom properties and map them through Tailwind. This makes dark/light mode switching trivial and keeps the visual language consistent across every component.
+
+<Callout type="warning">
+Avoid using raw hex values in Tailwind class names. Always reference design tokens like `text-accent` or `bg-bg-elevated` to ensure theme consistency.
+</Callout>
+
+### Accessibility First
+
+Every interactive component meets WCAG 2.2 AA requirements:
+
+- Keyboard navigation with visible focus indicators
+- Semantic HTML landmarks and ARIA attributes
+- Respect for `prefers-reduced-motion`
+- Sufficient color contrast ratios in both themes
+
+## What We Learned
+
+Building specification-first is not without friction. The upfront investment in documentation pays dividends during implementation, but it requires discipline to keep the spec updated as requirements evolve.
+
+The key insight: **treat your specification as code.** Version it, review it, and never let it drift from the implementation.
