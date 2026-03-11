@@ -1,0 +1,188 @@
+/*
+ * ShruggieTech Design System — styles/globals.css
+ *
+ * CSS custom properties for the color palette (dark and light modes),
+ * Tailwind CSS 4 theme configuration, type scale, layout constants,
+ * and container utility classes.
+ *
+ * Spec references: §2.1 (Color Palette), §2.2 (Typography), §2.3 (Spacing/Grid), §2.6 (Dark/Light Mode)
+ *
+ * NOTE: The specification defines a tailwind.config.ts for Tailwind 3.x.
+ * This project uses Tailwind CSS 4.x with CSS-first configuration.
+ * All theme tokens are defined here using @theme / @theme inline blocks
+ * instead of a separate tailwind.config.ts file.
+ */
+
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+/* Enable class-based dark mode (spec §2.6: darkMode: "class") */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Base Layer: CSS Custom Properties ──────────────────────────────────── */
+
+@layer base {
+  :root {
+    /* Brand immutables (spec §2.1) */
+    --brand-black: #000000;
+    --brand-white: #FFFFFF;
+    --brand-green-bright: #2BCC73;
+    --brand-green-deep: #00AB21;
+    --brand-orange: #FF5300;
+    --brand-gray-light: #D1D3D4;
+
+    /* Semantic tokens — light mode (spec §2.1) */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F5F5F5;
+    --bg-elevated: #FFFFFF;
+    --text-primary: #0A0A0A;
+    --text-secondary: #6B6B6B;
+    --text-muted: #9A9A9A;
+    --border-color: #E5E5E5;
+    --accent-color: #2BCC73;
+    --accent-hover-color: #00AB21;
+    --cta-color: #FF5300;
+
+    /* Layout constants (spec §2.3) — mobile defaults */
+    --max-width-content: 1200px;
+    --max-width-narrow: 720px;
+    --padding-x: 24px;
+    --section-gap: 120px;
+    --component-gap: 48px;
+  }
+
+  /* Dark mode semantic overrides (spec §2.1) */
+  .dark {
+    --bg-primary: #000000;
+    --bg-secondary: #111111;
+    --bg-elevated: #0A0A0A;
+    --text-primary: #FFFFFF;
+    --text-secondary: #D1D3D4;
+    --text-muted: #6B6B6B;
+    --border-color: #262626;
+    --accent-color: #2BCC73;
+    --accent-hover-color: #00AB21;
+    --cta-color: #FF5300;
+  }
+
+  /* Responsive layout constants (spec §2.3) */
+  @media (min-width: 768px) {
+    :root {
+      --padding-x: 48px;
+      --section-gap: 160px;
+      --component-gap: 64px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --padding-x: 80px;
+      --section-gap: 200px;
+    }
+  }
+
+  /* Base element styles */
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body, system-ui, sans-serif);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ── Theme Tokens: Dynamic Colors ───────────────────────────────────────── */
+/* These reference CSS custom properties and switch with dark/light mode.   */
+/* @theme inline ensures values are not generated as separate CSS vars.     */
+
+@theme inline {
+  /* Semantic colors (spec §2.1 — Tailwind config mapping) */
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border-color);
+  --color-accent: var(--accent-color);
+  --color-accent-hover: var(--accent-hover-color);
+  --color-cta: var(--cta-color);
+
+  /* Font families (spec §2.2)
+   * CSS variables --font-display-var, --font-body-var, --font-mono-var
+   * are set by Next.js localFont in app/layout.tsx (Item 4). */
+  --font-display: var(--font-display-var, system-ui), system-ui, sans-serif;
+  --font-body: var(--font-body-var, system-ui), system-ui, sans-serif;
+  --font-mono: var(--font-mono-var, ui-monospace), ui-monospace, monospace;
+}
+
+/* ── Theme Tokens: Static Values ────────────────────────────────────────── */
+
+@theme {
+  /* Static brand colors (spec §2.1 — brand + extended palette) */
+  --color-brand-green-bright: #2BCC73;
+  --color-brand-green-deep: #00AB21;
+  --color-brand-orange: #FF5300;
+  --color-brand-gray: #D1D3D4;
+
+  /* Extended gray palette (spec §2.1) */
+  --color-gray-950: #0A0A0A;
+  --color-gray-900: #111111;
+  --color-gray-800: #1A1A1A;
+  --color-gray-600: #6B6B6B;
+  --color-gray-400: #9A9A9A;
+  --color-gray-200: #E5E5E5;
+  --color-gray-100: #F5F5F5;
+
+  /* Transparent accent variants (spec §2.1 — extended palette) */
+  --color-green-bright-10: rgba(43, 204, 115, 0.10);
+  --color-green-bright-20: rgba(43, 204, 115, 0.20);
+  --color-orange-10: rgba(255, 83, 0, 0.10);
+
+  /* ── Type Scale (spec §2.2) ─────────────────────────────────────────── */
+
+  /* Display scale — Space Grotesk */
+  --text-display-xl: 4.5rem;
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.03em;
+
+  --text-display-lg: 3.5rem;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.025em;
+
+  --text-display-md: 2.5rem;
+  --text-display-md--line-height: 1.15;
+  --text-display-md--letter-spacing: -0.02em;
+
+  --text-display-sm: 1.75rem;
+  --text-display-sm--line-height: 1.2;
+  --text-display-sm--letter-spacing: -0.015em;
+
+  /* Body scale — Geist */
+  --text-body-lg: 1.25rem;
+  --text-body-lg--line-height: 1.6;
+
+  --text-body-md: 1rem;
+  --text-body-md--line-height: 1.7;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.6;
+
+  --text-body-xs: 0.75rem;
+  --text-body-xs--line-height: 1.5;
+}
+
+/* ── Container Utilities (spec §2.3) ────────────────────────────────────── */
+
+@utility container-content {
+  max-width: var(--max-width-content);
+  margin-inline: auto;
+  padding-inline: var(--padding-x);
+}
+
+@utility container-narrow {
+  max-width: var(--max-width-narrow);
+  margin-inline: auto;
+  padding-inline: var(--padding-x);
+}
