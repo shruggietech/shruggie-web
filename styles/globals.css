@@ -90,6 +90,18 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Pointer cursor for interactive elements */
+  a,
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="button"],
+  select,
+  summary {
+    cursor: pointer;
+  }
 }
 
 /* ── Theme Tokens: Dynamic Colors ───────────────────────────────────────── */
