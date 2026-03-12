@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Replace static CSS gradient mesh hero background with interactive canvas-based dot grid (`HeroBackground` component); brand-green dots brighten and form connecting mesh lines near cursor, ambient drift animation on mobile/touch, static grid fallback for `prefers-reduced-motion`, zero new dependencies
+- Replace placeholder shruggie emoticon logos in `Header` and `Footer` with actual ShruggieTech logo images (`logo-darkbg.png` / `logo-lightbg.png`); Header switches source via `isDark` state, Footer uses CSS `dark:` class toggling; logos sized with auto width to preserve aspect ratio (`h-12` in both Header and Footer)
 - Mouse tracking for hero dot grid uses `window`-level events so interaction continues seamlessly over hero text and CTA buttons
 
 ### Fixed

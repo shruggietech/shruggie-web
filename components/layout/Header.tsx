@@ -11,6 +11,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Menu, Moon, Sun } from "lucide-react";
 
@@ -103,16 +104,14 @@ export default function Header() {
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
             )}
           >
-            {/* Placeholder logo — kawaii shruggie PNG (§1.4 item 1) */}
-            <span
-              className="flex h-8 w-8 items-center justify-center rounded-md bg-accent text-lg"
-              aria-hidden="true"
-            >
-              ¯\_(ツ)_/¯
-            </span>
-            <span className="font-display text-[18px] font-medium text-text-primary">
-              ShruggieTech
-            </span>
+            <Image
+              src={isDark ? "/images/logo-darkbg.png" : "/images/logo-lightbg.png"}
+              alt="ShruggieTech logo"
+              width={140}
+              height={30}
+              priority
+              className="h-12 w-auto"
+            />
           </Link>
 
           {/* Desktop navigation */}

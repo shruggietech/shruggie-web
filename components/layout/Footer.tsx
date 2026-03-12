@@ -8,6 +8,7 @@
  * Spec reference: §5.2 (Footer)
  */
 
+import Image from "next/image";
 import Link from "next/link";
 import { Github } from "lucide-react";
 
@@ -38,16 +39,20 @@ export default function Footer() {
               href="/"
               className="inline-flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
             >
-              {/* Placeholder logo — kawaii shruggie PNG (§1.4 item 1) */}
-              <span
-                className="flex h-8 w-8 items-center justify-center rounded-md bg-accent text-lg"
-                aria-hidden="true"
-              >
-                ¯\_(ツ)_/¯
-              </span>
-              <span className="font-display text-[18px] font-medium text-text-primary">
-                ShruggieTech
-              </span>
+              <Image
+                src="/images/logo-darkbg.png"
+                alt="ShruggieTech logo"
+                width={140}
+                height={30}
+                className="h-12 w-auto hidden dark:block"
+              />
+              <Image
+                src="/images/logo-lightbg.png"
+                alt="ShruggieTech logo"
+                width={140}
+                height={30}
+                className="h-12 w-auto block dark:hidden"
+              />
             </Link>
             <p className="mt-4 max-w-[240px] text-body-sm text-text-secondary">
               Modern digital systems, software, and AI-driven experiences.
