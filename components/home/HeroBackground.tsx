@@ -55,11 +55,20 @@ const SHRUGGIE_REVEAL_RADIUS = 180;
 /** Percentage of shruggie dots that must be illuminated to trigger "found" */
 const SHRUGGIE_REVEAL_THRESHOLD = 0.35;
 
+/** Seconds after reveal before shruggie starts wiggling (scared) */
+const SHRUGGIE_WIGGLE_START = 1.5;
+
 /** Seconds after reveal before shruggie hides and repositions */
-const SHRUGGIE_HIDE_DELAY = 3.0;
+const SHRUGGIE_HIDE_DELAY = 2.5;
 
 /** Duration of the flee animation in seconds */
 const SHRUGGIE_FLEE_DURATION = 0.6;
+
+/** Max wiggle displacement in pixels */
+const SHRUGGIE_WIGGLE_AMPLITUDE = 3.0;
+
+/** Wiggle frequency — oscillations per second */
+const SHRUGGIE_WIGGLE_FREQ = 18;
 
 /** Path to the shruggie icon image */
 const SHRUGGIE_IMAGE_SRC = "/images/logo-icon-only-green.png";
@@ -213,6 +222,10 @@ interface ShruggieState {
   fleeToY: number;
   /** Global reveal amount 0-1 for smooth fade-in */
   revealAmount: number;
+  /** Current wiggle offset X */
+  wiggleX: number;
+  /** Current wiggle offset Y */
+  wiggleY: number;
   /** Has been initialized */
   initialized: boolean;
 }
@@ -240,6 +253,8 @@ export default function HeroBackground() {
     fleeToX: 0,
     fleeToY: 0,
     revealAmount: 0,
+    wiggleX: 0,
+    wiggleY: 0,
     initialized: false,
   });
 
@@ -342,8 +357,22 @@ export default function HeroBackground() {
         shrug.revealAmount = Math.max(0, shrug.revealAmount - 0.02);
       }
 
+      // Wiggle when scared (between WIGGLE_START and HIDE_DELAY)
+      const timeSinceReveal = now - shrug.revealedAt;
+      if (shrug.revealed && timeSinceReveal > SHRUGGIE_WIGGLE_START && timeSinceReveal <= SHRUGGIE_HIDE_DELAY) {
+        // Intensity ramps up from 0 to 1 as we approach flee time
+        const wiggleProgress = (timeSinceReveal - SHRUGGIE_WIGGLE_START) / (SHRUGGIE_HIDE_DELAY - SHRUGGIE_WIGGLE_START);
+        const intensity = wiggleProgress * wiggleProgress; // ease-in quadratic
+        const amp = SHRUGGIE_WIGGLE_AMPLITUDE * intensity;
+        shrug.wiggleX = Math.sin(now * SHRUGGIE_WIGGLE_FREQ * Math.PI * 2) * amp;
+        shrug.wiggleY = Math.cos(now * SHRUGGIE_WIGGLE_FREQ * Math.PI * 2 * 0.7) * amp * 0.5;
+      } else {
+        shrug.wiggleX = 0;
+        shrug.wiggleY = 0;
+      }
+
       // After delay, trigger flee
-      if (shrug.revealed && now - shrug.revealedAt > SHRUGGIE_HIDE_DELAY) {
+      if (shrug.revealed && timeSinceReveal > SHRUGGIE_HIDE_DELAY) {
         const newPos = randomShruggiePosition(
           w,
           h,
@@ -459,8 +488,8 @@ export default function HeroBackground() {
     // ── Draw shruggie dots ──────────────────────────────────────────
     if (shrug.initialized && shrug.revealAmount > 0) {
       for (const p of shrug.points) {
-        const px = shrug.x + p.x;
-        const py = shrug.y + p.y;
+        const px = shrug.x + p.x + shrug.wiggleX;
+        const py = shrug.y + p.y + shrug.wiggleY;
 
         // Per-dot proximity-based reveal
         let dotReveal = shrug.revealAmount;
