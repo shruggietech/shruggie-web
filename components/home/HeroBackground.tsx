@@ -151,7 +151,7 @@ function sampleShruggieFromImage(img: HTMLImageElement): Point[] {
   return points;
 }
 
-/** Pick a random position that keeps the shruggie fully in-bounds */
+/** Pick a random position that keeps the shruggie fully in-bounds and away from hero content */
 function randomShruggiePosition(
   w: number,
   h: number,
@@ -175,9 +175,26 @@ function randomShruggiePosition(
   const halfW = (maxX - minX) / 2 + pad;
   const halfH = (maxY - minY) / 2 + pad;
 
-  for (let attempts = 0; attempts < 50; attempts++) {
+  // Exclusion zone: hero content area (text + buttons) sits roughly
+  // in the left-center of the canvas — avoid spawning there
+  const exclusionLeft = w * 0.02;
+  const exclusionRight = w * 0.65;
+  const exclusionTop = h * 0.2;
+  const exclusionBottom = h * 0.85;
+
+  for (let attempts = 0; attempts < 100; attempts++) {
     const x = halfW + Math.random() * (w - 2 * halfW);
     const y = halfH + Math.random() * (h - 2 * halfH);
+
+    // Avoid the hero content exclusion zone
+    if (
+      x > exclusionLeft &&
+      x < exclusionRight &&
+      y > exclusionTop &&
+      y < exclusionBottom
+    ) {
+      continue;
+    }
 
     // Try to avoid placing near the current avoid position
     if (avoidX !== undefined && avoidY !== undefined) {
