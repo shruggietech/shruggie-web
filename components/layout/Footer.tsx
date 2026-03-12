@@ -118,9 +118,29 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-border">
         <div className="container-content flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
-          <p className="text-body-xs text-text-muted">
+          <p className="text-body-xs text-text-muted inline-flex items-center gap-1">
             &copy; Copyright Shruggie, LLC {new Date().getFullYear()} Made in
-            the USA 🇺🇸
+            the USA{" "}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 60 30"
+              width="20"
+              height="10"
+              aria-label="US flag"
+              role="img"
+              className="inline-block align-middle"
+            >
+              {/* Stripes */}
+              <rect width="60" height="30" fill="#B22234" />
+              <rect y="2.31" width="60" height="2.31" fill="#fff" />
+              <rect y="6.92" width="60" height="2.31" fill="#fff" />
+              <rect y="11.54" width="60" height="2.31" fill="#fff" />
+              <rect y="16.15" width="60" height="2.31" fill="#fff" />
+              <rect y="20.77" width="60" height="2.31" fill="#fff" />
+              <rect y="25.38" width="60" height="2.31" fill="#fff" />
+              {/* Canton */}
+              <rect width="24" height="16.15" fill="#3C3B6E" />
+            </svg>
           </p>
           <Link
             href="/privacy"

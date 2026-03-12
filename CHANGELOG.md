@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix US flag not rendering in Footer on Windows; replace `🇺🇸` emoji (displays as "US" letter indicators on Windows) with an inline SVG flag for consistent cross-platform rendering
 - Fix missing pointer cursor on buttons, links, and other interactive elements; Tailwind CSS 4 removed the automatic `cursor: pointer` default, so a global base-layer rule now restores it for `a`, `button`, `[role="button"]`, submit/reset/button inputs, `select`, and `summary`
 - Fix React hydration mismatch in `HeroSection` caused by `<style jsx>` generating different class name hashes on server vs client; moved gradient mesh CSS to `styles/globals.css` and converted `HeroSection` to a server component
 
