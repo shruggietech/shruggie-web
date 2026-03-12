@@ -21,25 +21,25 @@ import { useCallback, useEffect, useRef } from "react";
 const DOT_SPACING = 38;
 
 /** Base dot radius */
-const DOT_RADIUS = 1.2;
+const DOT_RADIUS = 1.6;
 
 /** Brand green in RGB */
 const DOT_COLOR = { r: 43, g: 204, b: 115 };
 
 /** Resting opacity for dots */
-const DOT_BASE_ALPHA = 0.07;
+const DOT_BASE_ALPHA = 0.18;
 
 /** Max opacity when cursor is closest */
-const DOT_HOVER_ALPHA = 0.45;
+const DOT_HOVER_ALPHA = 0.7;
 
 /** Radius (px) around cursor where dots react */
-const INTERACTION_RADIUS = 180;
+const INTERACTION_RADIUS = 240;
 
 /** Max distance for drawing connecting lines between activated dots */
-const LINE_MAX_DISTANCE = 100;
+const LINE_MAX_DISTANCE = 90;
 
 /** Line opacity at closest range */
-const LINE_ALPHA = 0.15;
+const LINE_ALPHA = 0.18;
 
 /** Ambient drift speed (px/frame at 60fps) — used on mobile / reduced motion fallback */
 const DRIFT_SPEED = 0.4;
@@ -125,9 +125,21 @@ export default function HeroBackground() {
             // Ease-out cubic
             const ease = 1 - (1 - t) * (1 - t) * (1 - t);
             alpha = DOT_BASE_ALPHA + (DOT_HOVER_ALPHA - DOT_BASE_ALPHA) * ease;
-            radius = DOT_RADIUS + 0.6 * ease;
+            radius = DOT_RADIUS + 1.0 * ease;
             activeDots.push({ x, y, alpha });
           }
+        }
+
+        // Draw glow for active dots
+        if (alpha > DOT_BASE_ALPHA + 0.05) {
+          const glowRadius = radius * 4;
+          const gradient = ctx.createRadialGradient(x, y, radius, x, y, glowRadius);
+          gradient.addColorStop(0, `rgba(${DOT_COLOR.r}, ${DOT_COLOR.g}, ${DOT_COLOR.b}, ${alpha * 0.25})`);
+          gradient.addColorStop(1, `rgba(${DOT_COLOR.r}, ${DOT_COLOR.g}, ${DOT_COLOR.b}, 0)`);
+          ctx.beginPath();
+          ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
+          ctx.fillStyle = gradient;
+          ctx.fill();
         }
 
         ctx.beginPath();
@@ -157,7 +169,7 @@ export default function HeroBackground() {
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
           ctx.strokeStyle = `rgba(${DOT_COLOR.r}, ${DOT_COLOR.g}, ${DOT_COLOR.b}, ${lineAlpha})`;
-          ctx.lineWidth = 0.5;
+          ctx.lineWidth = 0.6;
           ctx.stroke();
         }
       }
