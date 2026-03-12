@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Hidden shruggie easter egg in hero dot grid: `¯\_(ツ)_/¯` rendered as dot-sampled point cloud lurks invisibly on the canvas; spotlight proximity reveals it with per-dot fade-in and glow; after 3 seconds the shruggie flees to a new random position with an ease-in-out cubic animation, then hides again waiting to be rediscovered; repositions on window resize; respects prefers-reduced-motion
+
 ### Changed
 
 - Enhance hero dot grid visibility: increase base dot opacity (0.07→0.18), hover opacity (0.45→0.7), dot radius (1.2→1.6), interaction radius (180→240px), hover growth (+0.6→+1.0), and add radial-gradient glow/bloom on active dots; soften connecting lines (distance 100→90, opacity 0.15→0.18, width 0.5→0.6) to reduce the visible X pattern
