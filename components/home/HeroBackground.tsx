@@ -50,10 +50,10 @@ const DRIFT_SPEED = 0.4;
 /* ── Shruggie Configuration ─────────────────────────────────────────────── */
 
 /** How close the focal point must be to a shruggie dot to count as "revealed" */
-const SHRUGGIE_REVEAL_RADIUS = 160;
+const SHRUGGIE_REVEAL_RADIUS = 180;
 
 /** Percentage of shruggie dots that must be illuminated to trigger "found" */
-const SHRUGGIE_REVEAL_THRESHOLD = 0.4;
+const SHRUGGIE_REVEAL_THRESHOLD = 0.35;
 
 /** Seconds after reveal before shruggie hides and repositions */
 const SHRUGGIE_HIDE_DELAY = 3.0;
@@ -61,17 +61,20 @@ const SHRUGGIE_HIDE_DELAY = 3.0;
 /** Duration of the flee animation in seconds */
 const SHRUGGIE_FLEE_DURATION = 0.6;
 
-/** Shruggie text rendered to determine dot positions */
-const SHRUGGIE_TEXT = "¯\\_(ツ)_/¯";
+/** Path to the shruggie icon image */
+const SHRUGGIE_IMAGE_SRC = "/images/logo-icon-only-green.png";
 
-/** Font size for measuring shruggie glyph positions */
-const SHRUGGIE_FONT_SIZE = 22;
+/** Rendered size of the shruggie icon in CSS pixels */
+const SHRUGGIE_RENDER_SIZE = 110;
 
-/** Shruggie dot color — same brand green */
-const SHRUGGIE_COLOR = { r: 43, g: 204, b: 115 };
+/** Dot sampling step — smaller = more dots = sharper image */
+const SHRUGGIE_SAMPLE_STEP = 2;
+
+/** Shruggie dot color — white to contrast against the green grid */
+const SHRUGGIE_COLOR = { r: 255, g: 255, b: 255 };
 
 /** Max opacity of shruggie dots when fully revealed */
-const SHRUGGIE_MAX_ALPHA = 0.85;
+const SHRUGGIE_MAX_ALPHA = 0.95;
 
 /* ── Shruggie Dot Sampling ──────────────────────────────────────────────── */
 
@@ -81,40 +84,53 @@ interface Point {
 }
 
 /**
- * Renders the shruggie text to an offscreen canvas and samples
- * the filled pixels to produce a set of dot positions.
+ * Loads an image and returns a promise that resolves with the HTMLImageElement.
  */
-function sampleShruggiePoints(scale: number = 1): Point[] {
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+/**
+ * Draws the shruggie icon image to an offscreen canvas at the target
+ * render size and samples filled pixels to produce dot positions.
+ */
+function sampleShruggieFromImage(img: HTMLImageElement): Point[] {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   if (!ctx) return [];
 
-  const fontSize = Math.round(SHRUGGIE_FONT_SIZE * scale);
-  ctx.font = `bold ${fontSize}px "Segoe UI", "Noto Sans", Arial, sans-serif`;
+  // Scale image to target render size, preserving aspect ratio
+  const aspect = img.width / img.height;
+  let drawW: number;
+  let drawH: number;
+  if (aspect >= 1) {
+    drawW = SHRUGGIE_RENDER_SIZE;
+    drawH = SHRUGGIE_RENDER_SIZE / aspect;
+  } else {
+    drawH = SHRUGGIE_RENDER_SIZE;
+    drawW = SHRUGGIE_RENDER_SIZE * aspect;
+  }
 
-  const metrics = ctx.measureText(SHRUGGIE_TEXT);
-  const textWidth = Math.ceil(metrics.width);
-  const textHeight = fontSize * 1.4;
+  canvas.width = Math.ceil(drawW);
+  canvas.height = Math.ceil(drawH);
 
-  canvas.width = textWidth + 10;
-  canvas.height = Math.ceil(textHeight) + 10;
-
-  ctx.font = `bold ${fontSize}px "Segoe UI", "Noto Sans", Arial, sans-serif`;
-  ctx.fillStyle = "#fff";
-  ctx.textBaseline = "top";
-  ctx.fillText(SHRUGGIE_TEXT, 5, 5);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const data = imageData.data;
 
-  const step = Math.max(3, Math.round(3 * scale));
   const points: Point[] = [];
 
-  for (let y = 0; y < canvas.height; y += step) {
-    for (let x = 0; x < canvas.width; x += step) {
+  for (let y = 0; y < canvas.height; y += SHRUGGIE_SAMPLE_STEP) {
+    for (let x = 0; x < canvas.width; x += SHRUGGIE_SAMPLE_STEP) {
       const idx = (y * canvas.width + x) * 4;
-      if (data[idx + 3] > 128) {
-        // Store relative to center of the text
+      // Check alpha channel — any non-transparent pixel counts
+      if (data[idx + 3] > 80) {
         points.push({
           x: x - canvas.width / 2,
           y: y - canvas.height / 2,
@@ -240,15 +256,8 @@ export default function HeroBackground() {
 
     const now = performance.now() / 1000;
 
-    // Initialize shruggie on first draw
+    // Shruggie is initialized asynchronously via image load (see useEffect)
     const shrug = shruggieRef.current;
-    if (!shrug.initialized && w > 0 && h > 0) {
-      shrug.points = sampleShruggiePoints(1);
-      const pos = randomShruggiePosition(w, h, shrug.points);
-      shrug.x = pos.x;
-      shrug.y = pos.y;
-      shrug.initialized = true;
-    }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
@@ -471,33 +480,9 @@ export default function HeroBackground() {
         if (dotReveal <= 0) continue;
 
         const alpha = SHRUGGIE_MAX_ALPHA * dotReveal;
-        const radius = DOT_RADIUS + 0.8 * dotReveal;
+        const radius = 0.8 + 0.4 * dotReveal;
 
-        // Glow effect on shruggie dots
-        if (dotReveal > 0.3) {
-          const glowRadius = radius * 5;
-          const gradient = ctx.createRadialGradient(
-            px,
-            py,
-            radius,
-            px,
-            py,
-            glowRadius
-          );
-          gradient.addColorStop(
-            0,
-            `rgba(${SHRUGGIE_COLOR.r}, ${SHRUGGIE_COLOR.g}, ${SHRUGGIE_COLOR.b}, ${alpha * 0.3})`
-          );
-          gradient.addColorStop(
-            1,
-            `rgba(${SHRUGGIE_COLOR.r}, ${SHRUGGIE_COLOR.g}, ${SHRUGGIE_COLOR.b}, 0)`
-          );
-          ctx.beginPath();
-          ctx.arc(px, py, glowRadius, 0, Math.PI * 2);
-          ctx.fillStyle = gradient;
-          ctx.fill();
-        }
-
+        // Crisp dot — no glow, just a clean circle
         ctx.beginPath();
         ctx.arc(px, py, radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${SHRUGGIE_COLOR.r}, ${SHRUGGIE_COLOR.g}, ${SHRUGGIE_COLOR.b}, ${alpha})`;
@@ -565,6 +550,25 @@ export default function HeroBackground() {
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(canvas);
     resize();
+
+    // Load shruggie icon image and initialize point cloud
+    loadImage(SHRUGGIE_IMAGE_SRC)
+      .then((img) => {
+        const shrug = shruggieRef.current;
+        shrug.points = sampleShruggieFromImage(img);
+        const rect = canvas.getBoundingClientRect();
+        const pos = randomShruggiePosition(
+          rect.width,
+          rect.height,
+          shrug.points
+        );
+        shrug.x = pos.x;
+        shrug.y = pos.y;
+        shrug.initialized = true;
+      })
+      .catch(() => {
+        // Silently ignore — easter egg just won't appear
+      });
 
     // Mouse tracking on window — works even when cursor is over hero text
     const handleMouseMove = (e: MouseEvent) => {

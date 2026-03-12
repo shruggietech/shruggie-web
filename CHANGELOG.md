@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Hidden shruggie easter egg in hero dot grid: `¯\_(ツ)_/¯` rendered as dot-sampled point cloud lurks invisibly on the canvas; spotlight proximity reveals it with per-dot fade-in and glow; after 3 seconds the shruggie flees to a new random position with an ease-in-out cubic animation, then hides again waiting to be rediscovered; repositions on window resize; respects prefers-reduced-motion
+- Hidden shruggie easter egg in hero dot grid: logo icon (`logo-icon-only-green.png`) sampled into a dense white dot-cloud (110px, 2px step) that lurks invisibly on the canvas; spotlight proximity reveals it with per-dot fade-in; after 3 seconds the shruggie flees to a new random position with an ease-in-out cubic animation, then hides again waiting to be rediscovered; repositions on window resize; respects prefers-reduced-motion
 
 ### Changed
 
