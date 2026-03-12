@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `logo-icon-only-green.png` brand icon to `public/images/` for use in hero easter egg and other brand contexts
 - Hidden shruggie easter egg in hero dot grid: logo icon (`logo-icon-only-green.png`) sampled into a dense white dot-cloud (110px, 2px step) that lurks invisibly on the canvas; spotlight proximity reveals it with per-dot fade-in; after 1.5s the shruggie starts a scared wiggle (ramping amplitude, 18Hz) before fleeing at 2.5s to a new random position with an ease-in-out cubic animation; exclusion zone prevents spawning over hero text and CTA buttons; repositions on window resize; respects prefers-reduced-motion
 
 ### Changed
