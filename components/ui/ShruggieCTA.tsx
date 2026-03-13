@@ -4,17 +4,14 @@
  * Wraps a primary Button inside an anchor tag. Below the button, renders
  * the shruggie tagline "¯\_(ツ)_/¯ We'll figure it out."
  *
- * Desktop: tagline hidden by default, revealed via group-hover.
- * Mobile: revealed via Framer Motion whileInView (fires once).
+ * Tagline hidden by default, fades down into view on hover via CSS
+ * group-hover. Absolutely positioned so it never affects layout or
+ * alignment of sibling elements (e.g. adjacent buttons).
  * Tagline uses aria-hidden="true" for clean screen reader output.
- * Respects prefers-reduced-motion via useReducedMotion.
+ * Respects prefers-reduced-motion via motion-reduce utilities.
  *
  * Spec reference: §2.4 (Component Primitives)
  */
-
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
 
 import Button from "./Button";
 
@@ -29,27 +26,18 @@ export default function ShruggieCTA({
   children,
   variant = "primary",
 }: ShruggieCTAProps) {
-  const shouldReduceMotion = useReducedMotion();
-
   return (
-    <div className="group inline-flex flex-col items-center gap-2">
+    <div className="group relative inline-flex flex-col items-center">
       <a href={href}>
         <Button variant={variant}>{children}</Button>
       </a>
-      <motion.span
+      <span
         aria-hidden="true"
-        className="text-body-xs text-text-muted"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{
-          duration: shouldReduceMotion ? 0 : 0.4,
-          delay: 0.2,
-        }}
+        className="pointer-events-none absolute left-1/2 top-full -translate-x-1/2 whitespace-nowrap text-body-xs text-[#595959] dark:text-white opacity-0 -translate-y-1 transition-all duration-300 ease-out group-hover:translate-y-1 group-hover:opacity-100 motion-reduce:transition-none"
       >
         <span className="text-accent">¯\_(ツ)_/¯</span>{" "}
         We&apos;ll figure it out.
-      </motion.span>
+      </span>
     </div>
   );
 }

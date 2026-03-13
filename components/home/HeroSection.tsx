@@ -31,7 +31,7 @@ export default function HeroSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
-          <p className="mt-6 max-w-2xl text-body-lg text-gray-400">
+          <p className="mt-6 max-w-2xl text-body-lg text-[#595959] dark:text-white">
             You have a business to run. We handle the technology that makes it
             grow. Modern websites, marketing engines, AI integrations, and custom
             software, built for you without the enterprise price tag or the
