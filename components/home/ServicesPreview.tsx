@@ -64,7 +64,7 @@ export default function ServicesPreview() {
           />
         </ScrollReveal>
 
-        <div className="mt-[var(--component-gap)] grid grid-cols-1 gap-6 sm:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
+        <div className="mt-[var(--component-gap)] grid grid-cols-1 gap-6 md:grid-cols-2">
           {services.map((service, index) => (
             <ScrollReveal key={service.title} delay={index * 0.08}>
               <Link href={service.href} className="block h-full">

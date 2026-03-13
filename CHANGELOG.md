@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change "What We Do" services preview grid from `auto-fit` 3+1 layout to a fixed `md:grid-cols-2` (2×2) grid for balanced card distribution
 - Fix `ShruggieCTA` tagline ("¯\_(ツ)\_/¯ We'll figure it out.") starting in visible/hover state; tagline now hidden by default and fades down below the button on hover via CSS `group-hover`; absolutely positioned so it does not affect sibling button alignment in the hero section; replaced Framer Motion `whileInView` with pure CSS transitions; respects `prefers-reduced-motion` via `motion-reduce:transition-none`
 - Update tagline and hero paragraph text colors: `#595959` in light mode, `#ffffff` in dark mode
 - Shruggie easter egg dot color now adapts to current theme: dark ShruggieTech green (`rgb(22, 130, 68)`) in light mode, white in dark mode; uses `MutationObserver` on `<html>` class for real-time theme switching
