@@ -79,8 +79,11 @@ const SHRUGGIE_RENDER_SIZE = 110;
 /** Dot sampling step — smaller = more dots = sharper image */
 const SHRUGGIE_SAMPLE_STEP = 2;
 
-/** Shruggie dot color — white to contrast against the green grid */
-const SHRUGGIE_COLOR = { r: 255, g: 255, b: 255 };
+/** Shruggie dot color — white to contrast against the green grid (dark mode) */
+const SHRUGGIE_COLOR_DARK = { r: 255, g: 255, b: 255 };
+
+/** Shruggie dot color — dark ShruggieTech green for light backgrounds */
+const SHRUGGIE_COLOR_LIGHT = { r: 22, g: 130, b: 68 };
 
 /** Max opacity of shruggie dots when fully revealed */
 const SHRUGGIE_MAX_ALPHA = 0.95;
@@ -256,6 +259,7 @@ export default function HeroBackground() {
   const driftRef = useRef({ x: 0, y: 0, angle: 0 });
   const reducedMotionRef = useRef(false);
   const isTouchRef = useRef(false);
+  const isDarkRef = useRef(true);
 
   const shruggieRef = useRef<ShruggieState>({
     points: [],
@@ -528,10 +532,13 @@ export default function HeroBackground() {
         const alpha = SHRUGGIE_MAX_ALPHA * dotReveal;
         const radius = 0.8 + 0.4 * dotReveal;
 
+        // Pick color based on current theme
+        const sc = isDarkRef.current ? SHRUGGIE_COLOR_DARK : SHRUGGIE_COLOR_LIGHT;
+
         // Crisp dot — no glow, just a clean circle
         ctx.beginPath();
         ctx.arc(px, py, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${SHRUGGIE_COLOR.r}, ${SHRUGGIE_COLOR.g}, ${SHRUGGIE_COLOR.b}, ${alpha})`;
+        ctx.fillStyle = `rgba(${sc.r}, ${sc.g}, ${sc.b}, ${alpha})`;
         ctx.fill();
       }
     }
@@ -546,6 +553,16 @@ export default function HeroBackground() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    // Detect dark/light mode from <html> class
+    isDarkRef.current = document.documentElement.classList.contains("dark");
+    const themeObserver = new MutationObserver(() => {
+      isDarkRef.current = document.documentElement.classList.contains("dark");
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
     // Detect reduced motion preference
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -647,6 +664,7 @@ export default function HeroBackground() {
     return () => {
       cancelAnimationFrame(animationRef.current);
       resizeObserver.disconnect();
+      themeObserver.disconnect();
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseleave", handleMouseLeave);
       motionQuery.removeEventListener("change", handleMotionChange);

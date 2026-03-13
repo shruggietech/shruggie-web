@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Shruggie easter egg dot color now adapts to current theme: dark ShruggieTech green (`rgb(22, 130, 68)`) in light mode, white in dark mode; uses `MutationObserver` on `<html>` class for real-time theme switching
 - Enhance hero dot grid visibility: increase base dot opacity (0.07→0.18), hover opacity (0.45→0.7), dot radius (1.2→1.6), interaction radius (180→240px), hover growth (+0.6→+1.0), and add radial-gradient glow/bloom on active dots; soften connecting lines (distance 100→90, opacity 0.15→0.18, width 0.5→0.6) to reduce the visible X pattern
 - Replace static CSS gradient mesh hero background with interactive canvas-based dot grid (`HeroBackground` component); brand-green dots brighten and form connecting mesh lines near cursor, ambient drift animation on mobile/touch, static grid fallback for `prefers-reduced-motion`, zero new dependencies
 - Replace placeholder shruggie emoticon logos in `Header` and `Footer` with actual ShruggieTech logo images (`logo-darkbg.png` / `logo-lightbg.png`); Header switches source via `isDark` state, Footer uses CSS `dark:` class toggling; logos sized with auto width to preserve aspect ratio (`h-12` in both Header and Footer)
