@@ -43,7 +43,12 @@ export default function HeroSection() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
             <Link href="/work">
-              <Button variant="secondary">See Our Work</Button>
+              <Button
+                variant="secondary"
+                className="bg-white dark:bg-black"
+              >
+                See Our Work
+              </Button>
             </Link>
           </div>
         </ScrollReveal>
