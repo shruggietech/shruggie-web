@@ -16,12 +16,15 @@ import { type ReactNode } from "react";
 interface ScrollRevealProps {
   children: ReactNode;
   delay?: number;
+  /** Initial translateY in pixels — controls how far the element floats up (default 24) */
+  initialY?: number;
   className?: string;
 }
 
 export default function ScrollReveal({
   children,
   delay = 0,
+  initialY = 24,
   className,
 }: ScrollRevealProps) {
   const shouldReduceMotion = useReducedMotion();
@@ -32,7 +35,7 @@ export default function ScrollReveal({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: initialY }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{

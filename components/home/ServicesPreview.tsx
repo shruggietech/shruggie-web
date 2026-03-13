@@ -1,28 +1,43 @@
 /**
- * ServicesPreview — 2x2 card grid showcasing four service pillars.
+ * ServicesPreview — 2×2 card grid showcasing four service pillars.
  *
- * Each card has a Lucide icon, title, and description, and links to
- * the corresponding anchor on /services. Uses Card component with
- * ScrollReveal staggered delays.
+ * Each card has an animated Lucide icon, title, and description, and
+ * links to the corresponding anchor on /services.
+ *
+ * Enhancements over the baseline spec:
+ *  1. **Trailing dot grid** — ServicesBackground renders a fading
+ *     continuation of the hero's dot grid canvas, creating a smooth
+ *     visual bridge between sections.
+ *  2. **Per-card scroll-driven reveal** — Each ServiceCard tracks its
+ *     own scroll position with staggered offsets so same-row cards
+ *     appear individually rather than simultaneously.
+ *  3. **AnimatedIcon** — Icons stroke-draw once the card is
+ *     sufficiently visible.
  *
  * Spec reference: §6.1 (Homepage — Section 2: Services Preview)
  */
 
-import Link from "next/link";
-import { Palette, Code2, TrendingUp, Brain, type LucideIcon } from "lucide-react";
+import {
+  Palette,
+  Code2,
+  TrendingUp,
+  Brain,
+  type LucideIcon,
+} from "lucide-react";
 
-import { Card } from "@/components/ui/Card";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/shared/ScrollReveal";
+import ServicesBackground from "@/components/home/ServicesBackground";
+import ServiceCard from "@/components/home/ServiceCard";
 
-interface ServiceCard {
+interface ServiceDef {
   title: string;
   description: string;
   icon: LucideIcon;
   href: string;
 }
 
-const services: ServiceCard[] = [
+const services: ServiceDef[] = [
   {
     title: "Digital Strategy & Brand",
     description:
@@ -55,8 +70,11 @@ const services: ServiceCard[] = [
 
 export default function ServicesPreview() {
   return (
-    <section className="py-[var(--section-gap)]">
-      <div className="container-content">
+    <section className="relative py-[var(--section-gap)]">
+      {/* Fading dot grid — visual bridge from hero canvas */}
+      <ServicesBackground />
+
+      <div className="container-content relative z-10">
         <ScrollReveal>
           <SectionHeading
             label="WHAT WE DO"
@@ -66,23 +84,20 @@ export default function ServicesPreview() {
 
         <div className="mt-[var(--component-gap)] grid grid-cols-1 gap-6 md:grid-cols-2">
           {services.map((service, index) => (
-            <ScrollReveal key={service.title} delay={index * 0.08}>
-              <Link href={service.href} className="block h-full">
-                <Card className="flex h-full flex-col">
-                  <service.icon
-                    className="mb-4 h-8 w-8 text-accent"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                  <h3 className="font-display text-display-sm font-bold text-text-primary">
-                    {service.title}
-                  </h3>
-                  <p className="mt-2 text-body-md text-text-secondary">
-                    {service.description}
-                  </p>
-                </Card>
-              </Link>
-            </ScrollReveal>
+            <ServiceCard
+              key={service.title}
+              title={service.title}
+              description={service.description}
+              href={service.href}
+              index={index}
+              icon={
+                <service.icon
+                  className="h-8 w-8 text-accent"
+                  strokeWidth={1.5}
+                  aria-hidden="true"
+                />
+              }
+            />
           ))}
         </div>
       </div>

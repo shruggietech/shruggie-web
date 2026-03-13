@@ -9,11 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `ServicesBackground` component: fading dot grid canvas that extends below the hero section, bridging the two sections with a smooth visual taper (same spacing, colour, and radius as `HeroBackground`, quadratic vertical fade across 85% of section height)
+- `AnimatedIcon` component: SVG stroke-draw animation wrapper that uses `strokeDasharray`/`strokeDashoffset` to progressively "draw" Lucide icons with staggered per-path delays and an expanding brand-green glow ring; controlled via a `draw` prop; respects `prefers-reduced-motion`
+- `ServiceCard` component: self-contained scroll-driven service card that individually tracks its own scroll position via Framer Motion `useScroll`/`useTransform`; 80px float-up with subtle 0.97→1 scale; right-column cards stagger 15% later than left-column to prevent same-row cards from appearing simultaneously; triggers icon stroke-draw at ~60% reveal progress; fully reversible on scroll direction change; works with Lenis smooth scrolling
+- `ScrollDrivenReveal` shared component: reusable scroll-position-driven fade-up wrapper using Framer Motion `useScroll` + `useTransform` for continuous, reversible opacity and translateY tied to scroll progress
+- `ScrollReveal` now accepts an optional `initialY` prop to control float-up distance (defaults to 24px, preserving existing behavior)
 - Add `logo-icon-only-green.png` brand icon to `public/images/` for use in hero easter egg and other brand contexts
 - Hidden shruggie easter egg in hero dot grid: logo icon (`logo-icon-only-green.png`) sampled into a dense white dot-cloud (110px, 2px step) that lurks invisibly on the canvas; spotlight proximity reveals it with per-dot fade-in; after 1.5s the shruggie starts a scared wiggle (ramping amplitude, 18Hz) before fleeing at 2.5s to a new random position with an ease-in-out cubic animation; exclusion zone prevents spawning over hero text and CTA buttons; repositions on window resize; respects prefers-reduced-motion
 
 ### Changed
 
+- Refactor `ServicesPreview` to use per-card scroll-driven reveals (`ServiceCard`) with trailing dot grid background (`ServicesBackground`) and stroke-draw icon animations (`AnimatedIcon`), replacing the previous fire-once `ScrollReveal` stagger approach
 - Change "What We Do" services preview grid from `auto-fit` 3+1 layout to a fixed `md:grid-cols-2` (2×2) grid for balanced card distribution
 - Fix `ShruggieCTA` tagline ("¯\_(ツ)\_/¯ We'll figure it out.") starting in visible/hover state; tagline now hidden by default and fades down below the button on hover via CSS `group-hover`; absolutely positioned so it does not affect sibling button alignment in the hero section; replaced Framer Motion `whileInView` with pure CSS transitions; respects `prefers-reduced-motion` via `motion-reduce:transition-none`
 - Update tagline and hero paragraph text colors: `#595959` in light mode, `#ffffff` in dark mode
