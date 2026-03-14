@@ -268,6 +268,19 @@
   }
 }
 
+/* ── CTA Bloom Pulse (redesign §5.5) ────────────────────────────────────── */
+
+@keyframes cta-bloom-pulse {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1.5;
+  }
+}
+
 /* ── Container Utilities (spec §2.3) ────────────────────────────────────── */
 
 @utility container-content {
@@ -300,34 +313,4 @@
   background-color: var(--surface-dark-deep);
 }
 
-/* ── ServicesScroll: animated ↔ static layout toggle ────────────────────── */
 
-/* Default: show animated layout, hide static */
-.services-scroll-static {
-  display: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .services-scroll-animated {
-    display: none;
-  }
-  .services-scroll-static {
-    display: block;
-  }
-}
-
-/* ── WorkScroll: animated ↔ static layout toggle ───────────────────────── */
-
-/* Default: show animated layout, hide static */
-.work-scroll-static {
-  display: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .work-scroll-animated {
-    display: none;
-  }
-  .work-scroll-static {
-    display: block;
-  }
-}
