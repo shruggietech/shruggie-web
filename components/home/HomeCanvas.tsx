@@ -443,7 +443,7 @@ export default function HomeCanvas() {
     <canvas
       ref={canvasRef}
       className="pointer-events-none fixed inset-0 z-[1]"
-      style={{ width: "100vw", height: "100vh" }}
+      style={{ width: "100%", height: "100%" }}
       aria-hidden="true"
     />
   );
