@@ -35,6 +35,12 @@ import {
   MarketingIllustration,
   AIDataIllustration,
 } from "@/components/home/ServiceIllustrations";
+import {
+  StrategyBrandIllustrationLarge,
+  DevelopmentIllustrationLarge,
+  MarketingIllustrationLarge,
+  AIDataIllustrationLarge,
+} from "@/components/home/ServiceIllustrationsLarge";
 
 interface ServiceItem {
   title: string;
@@ -42,6 +48,7 @@ interface ServiceItem {
   icon: LucideIcon;
   href: string;
   Illustration: ComponentType<{ className?: string }>;
+  IllustrationLarge: ComponentType<{ className?: string }>;
 }
 
 const services: ServiceItem[] = [
@@ -52,6 +59,7 @@ const services: ServiceItem[] = [
     icon: Palette,
     href: "/services#strategy-brand",
     Illustration: StrategyBrandIllustration,
+    IllustrationLarge: StrategyBrandIllustrationLarge,
   },
   {
     title: "Development & Integration",
@@ -60,6 +68,7 @@ const services: ServiceItem[] = [
     icon: Code2,
     href: "/services#development",
     Illustration: DevelopmentIllustration,
+    IllustrationLarge: DevelopmentIllustrationLarge,
   },
   {
     title: "Revenue Flows & Marketing Ops",
@@ -68,6 +77,7 @@ const services: ServiceItem[] = [
     icon: TrendingUp,
     href: "/services#marketing",
     Illustration: MarketingIllustration,
+    IllustrationLarge: MarketingIllustrationLarge,
   },
   {
     title: "AI & Data Analysis",
@@ -76,6 +86,7 @@ const services: ServiceItem[] = [
     icon: Brain,
     href: "/services#ai-data",
     Illustration: AIDataIllustration,
+    IllustrationLarge: AIDataIllustrationLarge,
   },
 ];
 
@@ -169,6 +180,14 @@ export default function ServicesScroll() {
               const progress = self.progress;
               const frame = Math.round(progress * (totalFrames - 1));
               setCurrentFrame(frame);
+
+              // Toggle .is-active class on the current frame's illustration wrapper
+              frames.forEach((f, idx) => {
+                const illWrapper = f.querySelector<HTMLElement>("[data-illustration]");
+                if (illWrapper) {
+                  illWrapper.classList.toggle("is-active", idx === frame);
+                }
+              });
             },
           },
         });
@@ -285,12 +304,13 @@ export default function ServicesScroll() {
                   </Link>
                 </div>
 
-                {/* Right column — illustration */}
+                {/* Right column — large animated illustration */}
                 <div
-                  className="flex h-[60vh] items-center justify-center"
+                  data-illustration
+                  className={`flex h-[60vh] items-center justify-center${index === 0 ? " is-active" : ""}`}
                   aria-hidden="true"
                 >
-                  <service.Illustration className="h-full max-h-[400px] w-full max-w-[450px] opacity-80" />
+                  <service.IllustrationLarge className="h-full w-full opacity-90" />
                 </div>
               </div>
             </div>
