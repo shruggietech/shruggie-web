@@ -21,16 +21,16 @@ import { getShape, NODE_COUNT, type ShapeDefinition } from "./shapes";
 const NODE_RADIUS = 3;
 
 /** Base alpha for nodes */
-const NODE_BASE_ALPHA = 0.4;
+const NODE_BASE_ALPHA = 0.55;
 
 /** Max alpha when cursor is near */
-const NODE_HOVER_ALPHA = 0.85;
+const NODE_HOVER_ALPHA = 0.9;
 
 /** Edge line width in px */
-const EDGE_LINE_WIDTH = 0.6;
+const EDGE_LINE_WIDTH = 1;
 
 /** Base alpha for edges */
-const EDGE_BASE_ALPHA = 0.12;
+const EDGE_BASE_ALPHA = 0.3;
 
 /** Max distance (px) for proximity-based edge fallback */
 const PROXIMITY_EDGE_DISTANCE = 90;

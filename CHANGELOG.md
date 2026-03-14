@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `ServiceIllustrations` component: purpose-built geometric SVG illustrations for each service pillar (Strategy & Brand, Development, Marketing, AI & Data) using brand green line art in a minimal Stripe/Linear-inspired style
+- SVG illustrations integrated into `ServicesScroll` animated layout (cycling in sync with cards) and static reduced-motion fallback (side-by-side card layout on md+)
+
+### Changed
+
+- `ServicesScroll`: replace empty canvas-rendered dot graphics in the right half with meaningful SVG service illustrations that crossfade in lockstep with card transitions
+- `ServicesScroll`: wrap GSAP ScrollTrigger in `gsap.context()` with `useLayoutEffect` to prevent `removeChild` errors during React strict mode remount cycles
+- `ServicesPreview` static fallback: add side-by-side card layout with SVG illustrations visible on md+ breakpoints
+- `WorkScroll`: refactor card transition logic to use centered crossfade midpoints with `TRANSITION_HALF_WIDTH` for smoother snap-to-card transitions
+- `network-graph.ts`: increase node and edge visibility (higher base alpha, hover alpha, and edge line width) for better contrast
+- `HomeCanvas`: fix services shape morphing to use 3 transitions across 4 shapes instead of incorrectly mapping to 4 segments
+
+### Added
+
 - Scroll-driven homepage journey: unified full-page canvas with GSAP ScrollTrigger pinned sections that transform each homepage section into a continuous, scroll-locked visual experience
 - `ScrollOrchestrator` component: top-level wrapper that registers GSAP ScrollTrigger, integrates with Lenis smooth scrolling, renders the page-wide `HomeCanvas`, and manages scroll trigger placeholders for pinned sections
 - `HomeCanvas` component: single fixed canvas spanning the full viewport behind all sections; renders the dot grid, shruggie easter egg, network graph, work graph, skyline, and planet layers in one animation loop with DPR scaling and mouse tracking

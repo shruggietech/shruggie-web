@@ -1,22 +1,16 @@
 /**
- * ServicesPreview — 2×2 card grid showcasing four service pillars.
+ * ServicesPreview — 2x2 card grid showcasing four service pillars.
  *
- * Each card has an animated Lucide icon, title, and description, and
- * links to the corresponding anchor on /services.
- *
- * Enhancements over the baseline spec:
- *  1. **Dot grid → lava blobs** — ServicesBackground continues the
- *     hero's dot grid at the top then cross-fades into slowly morphing
- *     gradient orbs, creating an organic, premium visual evolution.
- *  2. **Per-card scroll-driven reveal** — Each ServiceCard tracks its
- *     own scroll position with staggered offsets so same-row cards
- *     appear individually rather than simultaneously.
- *  3. **AnimatedIcon** — Icons stroke-draw once the card is
- *     sufficiently visible.
+ * Each card has a side-by-side layout: text content (icon, title,
+ * description) on the left, a purpose-built SVG illustration on the
+ * right. Illustrations are hidden on narrow viewports where the
+ * side-by-side layout would be cramped. Uses Card component with
+ * ScrollReveal staggered delays.
  *
  * Spec reference: §6.1 (Homepage — Section 2: Services Preview)
  */
 
+import Link from "next/link";
 import {
   Palette,
   Code2,
@@ -24,26 +18,34 @@ import {
   Brain,
   type LucideIcon,
 } from "lucide-react";
+import { type ComponentType } from "react";
 
+import { Card } from "@/components/ui/Card";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/shared/ScrollReveal";
-import ServicesBackground from "@/components/home/ServicesBackground";
-import ServiceCard from "@/components/home/ServiceCard";
+import {
+  StrategyBrandIllustration,
+  DevelopmentIllustration,
+  MarketingIllustration,
+  AIDataIllustration,
+} from "@/components/home/ServiceIllustrations";
 
-interface ServiceDef {
+interface ServiceCard {
   title: string;
   description: string;
   icon: LucideIcon;
   href: string;
+  Illustration: ComponentType<{ className?: string }>;
 }
 
-const services: ServiceDef[] = [
+const services: ServiceCard[] = [
   {
     title: "Digital Strategy & Brand",
     description:
       "From brand identity to content architecture, we build the visual and strategic foundation your business stands on.",
     icon: Palette,
     href: "/services#strategy-brand",
+    Illustration: StrategyBrandIllustration,
   },
   {
     title: "Development & Integration",
@@ -51,6 +53,7 @@ const services: ServiceDef[] = [
       "Custom websites, modern web applications, booking systems, payment integrations, and platform migrations. Built to last, built to perform.",
     icon: Code2,
     href: "/services#development",
+    Illustration: DevelopmentIllustration,
   },
   {
     title: "Revenue Flows & Marketing Ops",
@@ -58,6 +61,7 @@ const services: ServiceDef[] = [
       "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Everything that turns visibility into revenue.",
     icon: TrendingUp,
     href: "/services#marketing",
+    Illustration: MarketingIllustration,
   },
   {
     title: "AI & Data Analysis",
@@ -65,16 +69,14 @@ const services: ServiceDef[] = [
       "Chatbots, RAG systems, workflow automation, and AI consulting. We help you adopt AI that actually works for your business.",
     icon: Brain,
     href: "/services#ai-data",
+    Illustration: AIDataIllustration,
   },
 ];
 
 export default function ServicesPreview() {
   return (
-    <section id="services-section" className="relative py-[var(--section-gap)]">
-      {/* Fading dot grid — visual bridge from hero canvas */}
-      <ServicesBackground />
-
-      <div className="container-content relative z-10">
+    <section className="py-[var(--section-gap)]">
+      <div className="container-content">
         <ScrollReveal>
           <SectionHeading
             label="WHAT WE DO"
@@ -82,22 +84,36 @@ export default function ServicesPreview() {
           />
         </ScrollReveal>
 
-        <div className="mt-[var(--component-gap)] grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="mt-[var(--component-gap)] grid grid-cols-1 gap-6 sm:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
           {services.map((service, index) => (
-            <ServiceCard
-              key={service.title}
-              title={service.title}
-              description={service.description}
-              href={service.href}
-              index={index}
-              icon={
-                <service.icon
-                  className="h-8 w-8 text-accent"
-                  strokeWidth={1.5}
-                  aria-hidden="true"
-                />
-              }
-            />
+            <ScrollReveal key={service.title} delay={index * 0.08}>
+              <Link href={service.href} className="block h-full">
+                <Card className="flex h-full flex-col md:flex-row md:items-center md:gap-6">
+                  {/* Text content */}
+                  <div className="flex flex-1 flex-col">
+                    <service.icon
+                      className="mb-4 h-8 w-8 text-accent"
+                      strokeWidth={1.5}
+                      aria-hidden="true"
+                    />
+                    <h3 className="font-display text-display-sm font-bold text-text-primary">
+                      {service.title}
+                    </h3>
+                    <p className="mt-2 text-body-md text-text-secondary">
+                      {service.description}
+                    </p>
+                  </div>
+
+                  {/* SVG illustration — visible on md+ */}
+                  <div
+                    className="hidden flex-shrink-0 md:block"
+                    aria-hidden="true"
+                  >
+                    <service.Illustration className="h-[140px] w-[160px] opacity-80" />
+                  </div>
+                </Card>
+              </Link>
+            </ScrollReveal>
           ))}
         </div>
       </div>

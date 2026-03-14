@@ -16,7 +16,8 @@
 
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import { type ComponentType } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -30,6 +31,12 @@ import {
 import SectionHeading from "@/components/ui/SectionHeading";
 import { Card } from "@/components/ui/Card";
 import { scrollState } from "@/lib/canvas/scroll-state";
+import {
+  StrategyBrandIllustration,
+  DevelopmentIllustration,
+  MarketingIllustration,
+  AIDataIllustration,
+} from "@/components/home/ServiceIllustrations";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,6 +47,7 @@ interface ServiceDef {
   description: string;
   icon: LucideIcon;
   href: string;
+  Illustration: ComponentType<{ className?: string }>;
 }
 
 const services: ServiceDef[] = [
@@ -49,6 +57,7 @@ const services: ServiceDef[] = [
       "From brand identity to content architecture, we build the visual and strategic foundation your business stands on.",
     icon: Palette,
     href: "/services#strategy-brand",
+    Illustration: StrategyBrandIllustration,
   },
   {
     title: "Development & Integration",
@@ -56,6 +65,7 @@ const services: ServiceDef[] = [
       "Custom websites, modern web applications, booking systems, payment integrations, and platform migrations. Built to last, built to perform.",
     icon: Code2,
     href: "/services#development",
+    Illustration: DevelopmentIllustration,
   },
   {
     title: "Revenue Flows & Marketing Ops",
@@ -63,6 +73,7 @@ const services: ServiceDef[] = [
       "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Everything that turns visibility into revenue.",
     icon: TrendingUp,
     href: "/services#marketing",
+    Illustration: MarketingIllustration,
   },
   {
     title: "AI & Data Analysis",
@@ -70,83 +81,61 @@ const services: ServiceDef[] = [
       "Chatbots, RAG systems, workflow automation, and AI consulting. We help you adopt AI that actually works for your business.",
     icon: Brain,
     href: "/services#ai-data",
+    Illustration: AIDataIllustration,
   },
 ];
 
 /* ── Card transition helpers ────────────────────────────────────────────── */
 
-/** Fraction of a card segment's scroll used for transitions. */
-const TRANSITION_FRACTION = 0.2;
+/**
+ * Transition midpoints — centered between adjacent snap points.
+ * With snap at 0, 1/3, 2/3, 1, the crossfade midpoints are at
+ * 1/6, 3/6, 5/6, so each snap position sits in the CENTER of a
+ * card's fully-visible zone rather than at the boundary.
+ */
+const TRANSITION_MIDPOINTS = [1 / 6, 3 / 6, 5 / 6];
+
+/** Half-width of each crossfade zone. */
+const TRANSITION_HALF_WIDTH = 0.06;
 
 /**
  * Compute opacity and translateY for a card based on servicesProgress.
- * Each card owns 1/3 of the 0–1 range (3 transitions for 4 cards).
- *   card 0: visible from 0 → 1/3 (exits at 1/3)
- *   card 1: enters at 1/3, visible until 2/3 (exits at 2/3)
- *   card 2: enters at 2/3, visible until 1 (exits at 1)
- *   card 3: enters at 1, visible through section unpin
+ * Card i enters at transition (i-1) and exits at transition i.
+ * Card 0 has no enter transition (starts visible).
+ * Card 3 has no exit transition (stays visible through unpin).
  */
 function getCardStyle(cardIndex: number, progress: number) {
-  const SEGMENT = 1 / 3;
-  const enterStart = cardIndex * SEGMENT;
-  const exitEnd = (cardIndex + 1) * SEGMENT;
+  const enterMid = cardIndex > 0 ? TRANSITION_MIDPOINTS[cardIndex - 1] : null;
+  const exitMid = cardIndex < 3 ? TRANSITION_MIDPOINTS[cardIndex] : null;
 
-  // Transition zones
-  const enterZone = SEGMENT * TRANSITION_FRACTION;
-  const exitZone = SEGMENT * TRANSITION_FRACTION;
-
-  let opacity = 0;
-  let translateY = 30; // px
-
-  if (cardIndex === 0) {
-    // First card: starts visible, exits at SEGMENT
-    if (progress < exitEnd - exitZone) {
-      opacity = 1;
-      translateY = 0;
-    } else if (progress < exitEnd) {
-      // Fading out
-      const t = (progress - (exitEnd - exitZone)) / exitZone;
-      opacity = 1 - t;
-      translateY = -30 * t;
-    }
-  } else if (cardIndex === 3) {
-    // Last card: enters at 3*SEGMENT (=1.0), stays visible past unpin
-    const enterEnd = enterStart + enterZone;
-    if (progress < enterStart) {
-      opacity = 0;
-      translateY = 30;
-    } else if (progress < enterEnd) {
-      const t = (progress - enterStart) / enterZone;
-      opacity = t;
-      translateY = 30 * (1 - t);
-    } else {
-      opacity = 1;
-      translateY = 0;
-    }
-  } else {
-    // Middle cards (1, 2): enter and exit
-    const enterEnd = enterStart + enterZone;
-    if (progress < enterStart) {
-      opacity = 0;
-      translateY = 30;
-    } else if (progress < enterEnd) {
-      // Fading in
-      const t = (progress - enterStart) / enterZone;
-      opacity = t;
-      translateY = 30 * (1 - t);
-    } else if (progress < exitEnd - exitZone) {
-      // Fully visible
-      opacity = 1;
-      translateY = 0;
-    } else if (progress < exitEnd) {
-      // Fading out
-      const t = (progress - (exitEnd - exitZone)) / exitZone;
-      opacity = 1 - t;
-      translateY = -30 * t;
-    }
+  // Before enter zone — hidden
+  if (enterMid !== null && progress < enterMid - TRANSITION_HALF_WIDTH) {
+    return { opacity: 0, translateY: 30 };
   }
 
-  return { opacity, translateY };
+  // In enter crossfade
+  if (enterMid !== null && progress < enterMid + TRANSITION_HALF_WIDTH) {
+    const t =
+      (progress - (enterMid - TRANSITION_HALF_WIDTH)) /
+      (2 * TRANSITION_HALF_WIDTH);
+    return { opacity: t, translateY: 30 * (1 - t) };
+  }
+
+  // Fully visible zone
+  const exitStart =
+    exitMid !== null ? exitMid - TRANSITION_HALF_WIDTH : Infinity;
+  if (progress <= exitStart) {
+    return { opacity: 1, translateY: 0 };
+  }
+
+  // In exit crossfade
+  if (exitMid !== null && progress < exitMid + TRANSITION_HALF_WIDTH) {
+    const t = (progress - exitStart) / (2 * TRANSITION_HALF_WIDTH);
+    return { opacity: 1 - t, translateY: -30 * t };
+  }
+
+  // Past exit zone — hidden
+  return { opacity: 0, translateY: -30 };
 }
 
 /* ── Component ──────────────────────────────────────────────────────────── */
@@ -155,9 +144,10 @@ export default function ServicesScroll() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const illustrationRefs = useRef<(HTMLDivElement | null)[]>([]);
   const rafRef = useRef<number>(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -170,25 +160,33 @@ export default function ServicesScroll() {
     const sectionEl = sectionRef.current;
     if (!sectionEl) return;
 
-    // ── ScrollTrigger: pin + snap ──────────────────────────────────────
-    const trigger = ScrollTrigger.create({
-      trigger: sectionEl,
-      pin: true,
-      scrub: 1,
-      snap: 1 / 3,
-      end: "+=300%",
-      onUpdate: (self) => {
-        scrollState.servicesProgress = self.progress;
-        scrollState.servicesActive = self.isActive;
-      },
-      onLeave: () => {
-        scrollState.servicesActive = false;
-      },
-      onLeaveBack: () => {
-        scrollState.servicesActive = false;
-        scrollState.servicesProgress = 0;
-      },
-    });
+    const ctx = gsap.context(() => {
+      // ── ScrollTrigger: pin + snap ──────────────────────────────────────
+      ScrollTrigger.create({
+        trigger: sectionEl,
+        pin: true,
+        scrub: 0.6,
+        snap: {
+          snapTo: 1 / 3,
+          duration: { min: 0.3, max: 0.8 },
+          delay: 0.1,
+          ease: "power1.inOut",
+          inertia: false,
+        },
+        end: "+=400%",
+        onUpdate: (self) => {
+          scrollState.servicesProgress = self.progress;
+          scrollState.servicesActive = self.isActive;
+        },
+        onLeave: () => {
+          scrollState.servicesActive = false;
+        },
+        onLeaveBack: () => {
+          scrollState.servicesActive = false;
+          scrollState.servicesProgress = 0;
+        },
+      });
+    }, sectionRef);
 
     // ── rAF loop for card position updates ─────────────────────────────
     let running = true;
@@ -208,6 +206,12 @@ export default function ServicesScroll() {
         // Hide from screen readers + interaction when invisible
         el.style.pointerEvents = opacity > 0.01 ? "auto" : "none";
         el.ariaHidden = opacity > 0.01 ? "false" : "true";
+
+        // Sync illustration visibility
+        const illEl = illustrationRefs.current[i];
+        if (!illEl) continue;
+        illEl.style.opacity = String(opacity);
+        illEl.style.transform = `translateY(${translateY}px)`;
       }
 
       rafRef.current = requestAnimationFrame(updateCards);
@@ -218,7 +222,7 @@ export default function ServicesScroll() {
     return () => {
       running = false;
       cancelAnimationFrame(rafRef.current);
-      trigger.kill();
+      ctx.revert();
     };
   }, []);
 
@@ -275,8 +279,25 @@ export default function ServicesScroll() {
           </div>
         </div>
 
-        {/* Right half (desktop) / top portion (mobile) — canvas renders here */}
-        <div className="order-1 flex-[0_0_40%] md:order-2 md:flex-[0_0_50%]" />
+        {/* Right half (desktop) / top portion (mobile) — SVG illustrations */}
+        <div className="order-1 flex-[0_0_40%] md:order-2 md:flex-[0_0_50%] flex items-center justify-center">
+          <div className="relative h-[200px] w-[240px] md:h-[280px] md:w-[320px]">
+            {services.map((service, index) => (
+              <div
+                key={`ill-${service.title}`}
+                ref={(el) => { illustrationRefs.current[index] = el; }}
+                className={`${index === 0 ? "relative" : "absolute inset-0"} flex items-center justify-center`}
+                style={{
+                  opacity: index === 0 ? 1 : 0,
+                  transform: index === 0 ? "translateY(0px)" : "translateY(30px)",
+                }}
+                aria-hidden="true"
+              >
+                <service.Illustration className="h-full w-full opacity-80" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* ── Static layout (reduced motion): 2×2 grid ──────────────────── */}
@@ -295,18 +316,23 @@ export default function ServicesScroll() {
                   href={service.href}
                   className="block h-full"
                 >
-                  <Card className="flex h-full flex-col">
-                    <Icon
-                      className="mb-4 h-8 w-8 text-accent"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                    <h3 className="font-display text-display-sm font-bold text-text-primary">
-                      {service.title}
-                    </h3>
-                    <p className="mt-2 text-body-md text-text-secondary">
-                      {service.description}
-                    </p>
+                  <Card className="flex h-full flex-col md:flex-row md:items-center md:gap-6">
+                    <div className="flex flex-1 flex-col">
+                      <Icon
+                        className="mb-4 h-8 w-8 text-accent"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
+                      <h3 className="font-display text-display-sm font-bold text-text-primary">
+                        {service.title}
+                      </h3>
+                      <p className="mt-2 text-body-md text-text-secondary">
+                        {service.description}
+                      </p>
+                    </div>
+                    <div className="hidden flex-shrink-0 md:block" aria-hidden="true">
+                      <service.Illustration className="h-[140px] w-[160px] opacity-80" />
+                    </div>
                   </Card>
                 </a>
               );

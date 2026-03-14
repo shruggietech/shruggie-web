@@ -173,15 +173,11 @@ export default function HomeCanvas() {
       centerY = h * 0.47;
       spread = w * 0.18;
 
-      // Map servicesProgress 0–1 to shapes 1–4
-      const segment = Math.min(Math.floor(sProgress * 4), 3);
-      const segmentProgress = (sProgress * 4) - segment;
+      // Map servicesProgress 0–1 to shapes 1–4 (3 transitions)
+      const segment = Math.min(Math.floor(sProgress * 3), 2);
+      const segmentProgress = (sProgress * 3) - segment;
       const morphProgress = Math.min(segmentProgress / 0.4, 1);
-      if (segment < 3) {
-        shapeIndex = 1 + segment + morphProgress;
-      } else {
-        shapeIndex = 4;
-      }
+      shapeIndex = 1 + segment + morphProgress;
       graphAlpha = 1;
     } else if (heroP < 1) {
       // Hero visible or transitioning out

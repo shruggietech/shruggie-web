@@ -80,11 +80,14 @@ const WORK_SPREAD_FRAC = 0.35;
 
 /* ── Card transition helpers ────────────────────────────────────────────── */
 
-const TRANSITION_FRACTION = 0.2;
+/** Half-width of each crossfade zone. */
+const TRANSITION_HALF_WIDTH = 0.06;
 
 /**
  * Compute opacity and translateY for a card based on workProgress.
- * N case studies → N-1 transitions. Each card owns 1/(N-1) of 0–1.
+ * Transition midpoints sit halfway between consecutive snap positions
+ * (e.g. for 3 cards snapping at 0, 0.5, 1 → midpoints at 0.25, 0.75),
+ * so each snap position is centered in the card's fully-visible zone.
  */
 function getCardStyle(
   cardIndex: number,
@@ -94,61 +97,41 @@ function getCardStyle(
   const transitions = totalCards - 1;
   if (transitions <= 0) return { opacity: 1, translateY: 0 };
 
-  const SEGMENT = 1 / transitions;
-  const enterStart = cardIndex * SEGMENT;
-  const exitEnd = (cardIndex + 1) * SEGMENT;
+  const enterMid = cardIndex > 0
+    ? (2 * cardIndex - 1) / (2 * transitions)
+    : null;
+  const exitMid = cardIndex < totalCards - 1
+    ? (2 * cardIndex + 1) / (2 * transitions)
+    : null;
 
-  const enterZone = SEGMENT * TRANSITION_FRACTION;
-  const exitZone = SEGMENT * TRANSITION_FRACTION;
-
-  let opacity = 0;
-  let translateY = 30;
-
-  if (cardIndex === 0) {
-    // First card: starts visible, fades out at SEGMENT
-    if (progress < exitEnd - exitZone) {
-      opacity = 1;
-      translateY = 0;
-    } else if (progress < exitEnd) {
-      const t = (progress - (exitEnd - exitZone)) / exitZone;
-      opacity = 1 - t;
-      translateY = -30 * t;
-    }
-  } else if (cardIndex === totalCards - 1) {
-    // Last card: fades in at enterStart, stays visible
-    const enterEnd = enterStart + enterZone;
-    if (progress < enterStart) {
-      opacity = 0;
-      translateY = 30;
-    } else if (progress < enterEnd) {
-      const t = (progress - enterStart) / enterZone;
-      opacity = t;
-      translateY = 30 * (1 - t);
-    } else {
-      opacity = 1;
-      translateY = 0;
-    }
-  } else {
-    // Middle cards: fade in and out
-    const enterEnd = enterStart + enterZone;
-    if (progress < enterStart) {
-      opacity = 0;
-      translateY = 30;
-    } else if (progress < enterEnd) {
-      const t = (progress - enterStart) / enterZone;
-      opacity = t;
-      translateY = 30 * (1 - t);
-    } else if (progress < exitEnd - exitZone) {
-      opacity = 1;
-      translateY = 0;
-    } else if (progress < exitEnd) {
-      const t = (progress - (exitEnd - exitZone)) / exitZone;
-      opacity = 1 - t;
-      translateY = -30 * t;
-    }
+  // Before enter zone — hidden
+  if (enterMid !== null && progress < enterMid - TRANSITION_HALF_WIDTH) {
+    return { opacity: 0, translateY: 30 };
   }
 
-  return { opacity, translateY };
+  // In enter crossfade
+  if (enterMid !== null && progress < enterMid + TRANSITION_HALF_WIDTH) {
+    const t =
+      (progress - (enterMid - TRANSITION_HALF_WIDTH)) /
+      (2 * TRANSITION_HALF_WIDTH);
+    return { opacity: t, translateY: 30 * (1 - t) };
+  }
+
+  // Fully visible zone
+  const exitStart =
+    exitMid !== null ? exitMid - TRANSITION_HALF_WIDTH : Infinity;
+  if (progress <= exitStart) {
+    return { opacity: 1, translateY: 0 };
+  }
+
+  // In exit crossfade
+  if (exitMid !== null && progress < exitMid + TRANSITION_HALF_WIDTH) {
+    const t = (progress - exitStart) / (2 * TRANSITION_HALF_WIDTH);
+    return { opacity: 1 - t, translateY: -30 * t };
+  }
+
+  // Past exit zone — hidden
+  return { opacity: 0, translateY: -30 };
 }
 
 /* ── Hub position calculation ───────────────────────────────────────────── */
