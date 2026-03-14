@@ -5,9 +5,9 @@
  * links to the corresponding anchor on /services.
  *
  * Enhancements over the baseline spec:
- *  1. **Trailing dot grid** — ServicesBackground renders a fading
- *     continuation of the hero's dot grid canvas, creating a smooth
- *     visual bridge between sections.
+ *  1. **Dot grid → lava blobs** — ServicesBackground continues the
+ *     hero's dot grid at the top then cross-fades into slowly morphing
+ *     gradient orbs, creating an organic, premium visual evolution.
  *  2. **Per-card scroll-driven reveal** — Each ServiceCard tracks its
  *     own scroll position with staggered offsets so same-row cards
  *     appear individually rather than simultaneously.
@@ -70,7 +70,7 @@ const services: ServiceDef[] = [
 
 export default function ServicesPreview() {
   return (
-    <section className="relative py-[var(--section-gap)]">
+    <section id="services-section" className="relative py-[var(--section-gap)]">
       {/* Fading dot grid — visual bridge from hero canvas */}
       <ServicesBackground />
 

@@ -13,15 +13,16 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
-import HeroBackground from "@/components/home/HeroBackground";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-[85vh] overflow-hidden bg-brand-black">
-      {/* Interactive dot-grid canvas background */}
-      <HeroBackground />
+    <section
+      id="hero-section"
+      className="relative min-h-[85vh] overflow-hidden bg-brand-black"
+    >
+      {/* Dot-grid canvas is now page-level via HomeCanvas — see ScrollOrchestrator */}
 
       <div className="container-content relative z-10 flex min-h-[85vh] flex-col items-start justify-center py-32 md:py-40">
         <ScrollReveal>
@@ -53,8 +54,6 @@ export default function HeroSection() {
           </div>
         </ScrollReveal>
       </div>
-
-      {/* Canvas animation respects prefers-reduced-motion — see HeroBackground.tsx */}
     </section>
   );
 }

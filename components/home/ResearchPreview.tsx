@@ -43,8 +43,8 @@ const publications: Publication[] = [
 
 export default function ResearchPreview() {
   return (
-    <section className="py-[var(--section-gap)]">
-      <div className="container-content">
+    <section id="research-section" className="relative py-[var(--section-gap)]">
+      <div className="container-content relative z-[2]">
         <ScrollReveal>
           <SectionHeading
             label="RESEARCH"

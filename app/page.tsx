@@ -12,10 +12,11 @@ import type { Metadata } from "next";
 import { SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
 import { generateWebSiteSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
+import ScrollOrchestrator from "@/components/home/ScrollOrchestrator";
 import HeroSection from "@/components/home/HeroSection";
-import ServicesPreview from "@/components/home/ServicesPreview";
-import WorkPreview from "@/components/home/WorkPreview";
-import ResearchPreview from "@/components/home/ResearchPreview";
+import ServicesScroll from "@/components/home/ServicesScroll";
+import WorkScroll from "@/components/home/WorkScroll";
+import ResearchSection from "@/components/home/ResearchSection";
 import CTASection from "@/components/home/CTASection";
 
 export const metadata: Metadata = {
@@ -36,11 +37,13 @@ export default function Home() {
   return (
     <>
       <JsonLd data={generateWebSiteSchema()} />
-      <HeroSection />
-      <ServicesPreview />
-      <WorkPreview />
-      <ResearchPreview />
-      <CTASection />
+      <ScrollOrchestrator>
+        <HeroSection />
+        <ServicesScroll />
+        <WorkScroll />
+        <ResearchSection />
+        <CTASection />
+      </ScrollOrchestrator>
     </>
   );
 }

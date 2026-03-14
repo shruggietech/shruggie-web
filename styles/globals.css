@@ -242,3 +242,35 @@
   margin-inline: auto;
   padding-inline: var(--padding-x);
 }
+
+/* ── ServicesScroll: animated ↔ static layout toggle ────────────────────── */
+
+/* Default: show animated layout, hide static */
+.services-scroll-static {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .services-scroll-animated {
+    display: none;
+  }
+  .services-scroll-static {
+    display: block;
+  }
+}
+
+/* ── WorkScroll: animated ↔ static layout toggle ───────────────────────── */
+
+/* Default: show animated layout, hide static */
+.work-scroll-static {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-scroll-animated {
+    display: none;
+  }
+  .work-scroll-static {
+    display: block;
+  }
+}

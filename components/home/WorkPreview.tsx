@@ -48,8 +48,8 @@ const caseStudies: CaseStudy[] = [
 
 export default function WorkPreview() {
   return (
-    <section className="py-[var(--section-gap)]">
-      <div className="container-content">
+    <section id="work-section" className="relative py-[var(--section-gap)]" data-case-study-count={caseStudies.length}>
+      <div className="container-content relative z-[2]">
         <ScrollReveal>
           <SectionHeading
             label="OUR WORK"
