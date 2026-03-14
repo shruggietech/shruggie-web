@@ -21,6 +21,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SkipLink from "@/components/ui/SkipLink";
 import CookieConsent from "@/components/shared/CookieConsent";
+import ThemeEnforcer from "@/components/shared/ThemeEnforcer";
 import JsonLd from "@/components/shared/JsonLd";
 
 import "./globals.css";
@@ -157,6 +158,7 @@ export default function RootLayout({
       <body className="bg-bg-primary font-body text-text-primary antialiased">
         {/* Organization JSON-LD on every page (spec §8.2) */}
         <JsonLd data={generateOrganizationSchema()} />
+        <ThemeEnforcer />
         <LenisProvider>
           <SkipLink />
           <Header />

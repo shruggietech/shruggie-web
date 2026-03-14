@@ -13,9 +13,11 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, Moon, Sun } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { isDarkModeForced } from "@/lib/route-theme";
 import { Button } from "@/components/ui/Button";
 import MobileNav from "@/components/layout/MobileNav";
 
@@ -29,6 +31,8 @@ const NAV_LINKS = [
 ] as const;
 
 export default function Header() {
+  const pathname = usePathname();
+  const forceDark = isDarkModeForced(pathname);
   const [scrollY, setScrollY] = useState(0);
   const [isDark, setIsDark] = useState(true);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -145,22 +149,24 @@ export default function Header() {
 
           {/* Right-side controls */}
           <div className="flex items-center gap-2">
-            {/* Theme toggle (§2.6) */}
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle color theme"
-              className={cn(
-                "rounded-lg p-2 text-text-secondary transition-colors",
-                "hover:text-text-primary",
-                "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
-              )}
-            >
-              {isDark ? (
-                <Sun size={20} aria-hidden="true" />
-              ) : (
-                <Moon size={20} aria-hidden="true" />
-              )}
-            </button>
+            {/* Theme toggle — only on reading pages (§2.6, Redesign Plan §2) */}
+            {!forceDark && (
+              <button
+                onClick={toggleTheme}
+                aria-label="Toggle color theme"
+                className={cn(
+                  "rounded-lg p-2 text-text-secondary transition-colors",
+                  "hover:text-text-primary",
+                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
+                )}
+              >
+                {isDark ? (
+                  <Sun size={20} aria-hidden="true" />
+                ) : (
+                  <Moon size={20} aria-hidden="true" />
+                )}
+              </button>
+            )}
 
             {/* CTA button — desktop only */}
             <Link href="/contact" className="hidden md:block">
