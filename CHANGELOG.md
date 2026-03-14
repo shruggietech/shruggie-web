@@ -9,6 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Scroll-driven homepage journey: unified full-page canvas with GSAP ScrollTrigger pinned sections that transform each homepage section into a continuous, scroll-locked visual experience
+- `ScrollOrchestrator` component: top-level wrapper that registers GSAP ScrollTrigger, integrates with Lenis smooth scrolling, renders the page-wide `HomeCanvas`, and manages scroll trigger placeholders for pinned sections
+- `HomeCanvas` component: single fixed canvas spanning the full viewport behind all sections; renders the dot grid, shruggie easter egg, network graph, work graph, skyline, and planet layers in one animation loop with DPR scaling and mouse tracking
+- `ServicesScroll` component: scroll-pinned services section that cycles through 4 service cards in sequence while the canvas network graph morphs between shape definitions (constellation, circuit board, funnel, neural network)
+- `WorkScroll` component: scroll-pinned work section that reveals case study cards with clickable hub nodes on the canvas linking to full case studies
+- `ResearchSection` component: publication cards with dedicated scroll space for the canvas skyline construction animation
+- `lib/canvas/` module library: 8 pure-canvas rendering utilities extracted for the scroll journey
+  - `dot-grid.ts` — full-page animated dot grid with focal-point glow and low resting opacity
+  - `network-graph.ts` — 20-node morphable network graph with shape interpolation and drift
+  - `planet.ts` — wireframe planet with concentric node rings and lateral rotation simulation
+  - `scroll-state.ts` — shared mutable scroll state avoiding React re-renders
+  - `shapes.ts` — 5 morphable shape definitions (halo, constellation, circuit, funnel, neural net)
+  - `shruggie-easter-egg.ts` — relocated easter egg state machine (image-sampled dot cloud, wiggle, flee)
+  - `skyline.ts` — progressive wireframe city skyline synced to research section scroll
+  - `work-graph.ts` — arc-layout hub-and-spoke graph for work section case studies
+- `docs/homepage-scroll-journey-spec.md`: full reference specification for the scroll-driven homepage architecture and phased implementation strategy
+- Production dependency: `gsap` ^3.14.2 (GSAP ScrollTrigger for scroll-locked pinned sections)
+- CSS `prefers-reduced-motion` toggle classes for `ServicesScroll` and `WorkScroll` animated/static layout switching
+
+### Changed
+
+- Refactor homepage (`app/page.tsx`) to wrap all sections in `ScrollOrchestrator` and replace standalone section components with scroll-driven equivalents (`ServicesScroll`, `WorkScroll`, `ResearchSection`)
+- `HeroSection`: remove embedded `HeroBackground` canvas (now rendered by page-level `HomeCanvas`); add section `id` for scroll targeting
+- `ServicesBackground`: rewrite from fading dot grid to dot grid → morphing lava blob cross-fade with animated radial-gradient orbs for a premium organic feel
+- `ServicesPreview`, `WorkPreview`, `ResearchPreview`: add section `id` attributes and `relative z-[2]` stacking for proper layering over the full-page canvas
+- `CTASection`: add section `id`, increased bottom padding (`pb-[40vh]`), and `relative z-[2]` stacking context
 - `ServicesBackground` component: fading dot grid canvas that extends below the hero section, bridging the two sections with a smooth visual taper (same spacing, colour, and radius as `HeroBackground`, quadratic vertical fade across 85% of section height)
 - `AnimatedIcon` component: SVG stroke-draw animation wrapper that uses `strokeDasharray`/`strokeDashoffset` to progressively "draw" Lucide icons with staggered per-path delays and an expanding brand-green glow ring; controlled via a `draw` prop; respects `prefers-reduced-motion`
 - `ServiceCard` component: self-contained scroll-driven service card that individually tracks its own scroll position via Framer Motion `useScroll`/`useTransform`; 80px float-up with subtle 0.97→1 scale; right-column cards stagger 15% later than left-column to prevent same-row cards from appearing simultaneously; triggers icon stroke-draw at ~60% reveal progress; fully reversible on scroll direction change; works with Lenis smooth scrolling
