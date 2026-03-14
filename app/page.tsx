@@ -15,7 +15,7 @@ import JsonLd from "@/components/shared/JsonLd";
 import HeroSection from "@/components/home/HeroSection";
 import ServicesSection from "@/components/home/ServicesSection";
 import WorkSection from "@/components/home/WorkSection";
-import ResearchPreview from "@/components/home/ResearchPreview";
+import ResearchSection from "@/components/home/ResearchSection";
 import CTASection from "@/components/home/CTASection";
 
 export const metadata: Metadata = {
@@ -39,7 +39,7 @@ export default function Home() {
       <HeroSection />
       <ServicesSection />
       <WorkSection />
-      <ResearchPreview />
+      <ResearchSection />
       <CTASection />
     </>
   );
