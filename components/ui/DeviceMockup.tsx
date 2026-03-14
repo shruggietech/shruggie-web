@@ -5,10 +5,12 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface DeviceMockupProps {
-  src: string;
+  src?: string;
   alt: string;
   variant?: "browser" | "laptop" | "phone";
   className?: string;
+  /** Placeholder text shown when src is not provided */
+  placeholderLabel?: string;
 }
 
 function BrowserChrome() {
@@ -29,18 +31,29 @@ function BrowserChrome() {
   );
 }
 
-function BrowserVariant({ src, alt, className }: Omit<DeviceMockupProps, "variant">) {
+function BrowserVariant({ src, alt, className, placeholderLabel }: Omit<DeviceMockupProps, "variant">) {
   return (
     <div className={cn("overflow-hidden rounded-xl border border-white/[0.06]", className)}>
       <BrowserChrome />
       <div className="relative aspect-video bg-gray-900">
-        <Image src={src} alt={alt} fill className="object-cover" />
+        {src ? (
+          <Image src={src} alt={alt} fill className="object-cover" />
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
+            {placeholderLabel && (
+              <span className="font-display text-body-md font-semibold text-white/40">
+                {placeholderLabel}
+              </span>
+            )}
+            <span className="text-body-sm text-white/20">Screenshot coming soon</span>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function LaptopVariant({ src, alt, className }: Omit<DeviceMockupProps, "variant">) {
+function LaptopVariant({ src, alt, className, placeholderLabel }: Omit<DeviceMockupProps, "variant">) {
   return (
     <div className={cn("flex flex-col items-center", className)}>
       {/* Screen */}
@@ -48,7 +61,18 @@ function LaptopVariant({ src, alt, className }: Omit<DeviceMockupProps, "variant
         <div className="overflow-hidden rounded-lg">
           <BrowserChrome />
           <div className="relative aspect-video bg-gray-900">
-            <Image src={src} alt={alt} fill className="object-cover" />
+            {src ? (
+              <Image src={src} alt={alt} fill className="object-cover" />
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
+                {placeholderLabel && (
+                  <span className="font-display text-body-md font-semibold text-white/40">
+                    {placeholderLabel}
+                  </span>
+                )}
+                <span className="text-body-sm text-white/20">Screenshot coming soon</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -61,7 +85,7 @@ function LaptopVariant({ src, alt, className }: Omit<DeviceMockupProps, "variant
   );
 }
 
-function PhoneVariant({ src, alt, className }: Omit<DeviceMockupProps, "variant">) {
+function PhoneVariant({ src, alt, className, placeholderLabel }: Omit<DeviceMockupProps, "variant">) {
   return (
     <div
       className={cn(
@@ -73,7 +97,18 @@ function PhoneVariant({ src, alt, className }: Omit<DeviceMockupProps, "variant"
       <div className="mx-auto mb-2 h-5 w-24 rounded-b-xl bg-gray-900" aria-hidden="true" />
       {/* Screen */}
       <div className="relative aspect-[9/19.5] w-56 overflow-hidden rounded-xl bg-gray-900">
-        <Image src={src} alt={alt} fill className="object-cover" />
+        {src ? (
+          <Image src={src} alt={alt} fill className="object-cover" />
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
+            {placeholderLabel && (
+              <span className="font-display text-body-sm font-semibold text-white/40">
+                {placeholderLabel}
+              </span>
+            )}
+            <span className="text-body-xs text-white/20">Screenshot coming soon</span>
+          </div>
+        )}
       </div>
       {/* Home indicator */}
       <div className="mx-auto mt-2 h-1 w-16 rounded-full bg-gray-700" aria-hidden="true" />

@@ -14,7 +14,7 @@ import { generateWebSiteSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
 import HeroSection from "@/components/home/HeroSection";
 import ServicesSection from "@/components/home/ServicesSection";
-import WorkPreview from "@/components/home/WorkPreview";
+import WorkSection from "@/components/home/WorkSection";
 import ResearchPreview from "@/components/home/ResearchPreview";
 import CTASection from "@/components/home/CTASection";
 
@@ -38,7 +38,7 @@ export default function Home() {
       <JsonLd data={generateWebSiteSchema()} />
       <HeroSection />
       <ServicesSection />
-      <WorkPreview />
+      <WorkSection />
       <ResearchPreview />
       <CTASection />
     </>
