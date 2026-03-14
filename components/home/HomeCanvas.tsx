@@ -136,7 +136,10 @@ export default function HomeCanvas() {
     }
 
     // ── Render dot grid (full page) ───────────────────────────────────
-    const focal: FocalPoint = { x: focalX, y: focalY, active: hasFocus };
+    // Confine the spotlight to the hero section only
+    const heroBottom = heroH - scrollY; // hero bottom edge in viewport coords
+    const dotFocusActive = hasFocus && focalY < heroBottom;
+    const focal: FocalPoint = { x: focalX, y: focalY, active: dotFocusActive };
     renderDotGrid(ctx, w, h, scrollY, pageH, focal);
 
     // ── Network graph (rendered between dot grid and shruggie) ────────

@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Confine dot grid spotlight effect to the hero section only; the focal point is deactivated when the cursor is below the hero boundary, so dots in subsequent sections render at resting opacity without the distracting cursor-follow glow
 - Refactor homepage (`app/page.tsx`) to wrap all sections in `ScrollOrchestrator` and replace standalone section components with scroll-driven equivalents (`ServicesScroll`, `WorkScroll`, `ResearchSection`)
 - `HeroSection`: remove embedded `HeroBackground` canvas (now rendered by page-level `HomeCanvas`); add section `id` for scroll targeting
 - `ServicesBackground`: rewrite from fading dot grid to dot grid → morphing lava blob cross-fade with animated radial-gradient orbs for a premium organic feel
@@ -42,9 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ScrollReveal` now accepts an optional `initialY` prop to control float-up distance (defaults to 24px, preserving existing behavior)
 - Add `logo-icon-only-green.png` brand icon to `public/images/` for use in hero easter egg and other brand contexts
 - Hidden shruggie easter egg in hero dot grid: logo icon (`logo-icon-only-green.png`) sampled into a dense white dot-cloud (110px, 2px step) that lurks invisibly on the canvas; spotlight proximity reveals it with per-dot fade-in; after 1.5s the shruggie starts a scared wiggle (ramping amplitude, 18Hz) before fleeing at 2.5s to a new random position with an ease-in-out cubic animation; exclusion zone prevents spawning over hero text and CTA buttons; repositions on window resize; respects prefers-reduced-motion
-
-### Changed
-
 - Refactor `ServicesPreview` to use per-card scroll-driven reveals (`ServiceCard`) with trailing dot grid background (`ServicesBackground`) and stroke-draw icon animations (`AnimatedIcon`), replacing the previous fire-once `ScrollReveal` stagger approach
 - Change "What We Do" services preview grid from `auto-fit` 3+1 layout to a fixed `md:grid-cols-2` (2×2) grid for balanced card distribution
 - Fix `ShruggieCTA` tagline ("¯\_(ツ)\_/¯ We'll figure it out.") starting in visible/hover state; tagline now hidden by default and fades down below the button on hover via CSS `group-hover`; absolutely positioned so it does not affect sibling button alignment in the hero section; replaced Framer Motion `whileInView` with pure CSS transitions; respects `prefers-reduced-motion` via `motion-reduce:transition-none`
@@ -62,8 +60,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix US flag not rendering in Footer on Windows; replace `🇺🇸` emoji (displays as "US" letter indicators on Windows) with an inline SVG flag for consistent cross-platform rendering
 - Fix missing pointer cursor on buttons, links, and other interactive elements; Tailwind CSS 4 removed the automatic `cursor: pointer` default, so a global base-layer rule now restores it for `a`, `button`, `[role="button"]`, submit/reset/button inputs, `select`, and `summary`
 - Fix React hydration mismatch in `HeroSection` caused by `<style jsx>` generating different class name hashes on server vs client; moved gradient mesh CSS to `styles/globals.css` and converted `HeroSection` to a server component
-
-### Added
 
 - Project initialization with Next.js 15 (App Router), TypeScript, and Tailwind CSS 4.x
 - Production dependencies: lenis, framer-motion, next-mdx-remote, shiki, gray-matter, lucide-react, react-hook-form, @hookform/resolvers, @formspree/react, zod, clsx, tailwind-merge, reading-time, critters
