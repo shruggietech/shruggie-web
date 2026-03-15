@@ -2,12 +2,12 @@
  * About Page — /about
  *
  * Four sections: Hero, Origin Story, Team, Values.
- * Team cards render placeholder silhouettes until real photos are provided.
  *
  * Spec reference: §6.6 (About), §1.4 item 5 (team photos)
  */
 
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import { SITE_URL } from "@/lib/constants";
 import ScrollReveal from "@/components/shared/ScrollReveal";
@@ -35,32 +35,32 @@ export const metadata: Metadata = {
 
 interface TeamMember {
   name: string;
-  initials: string;
   title: string;
   description: string;
+  image: string;
 }
 
 const TEAM_MEMBERS: TeamMember[] = [
   {
     name: "William Thompson",
-    initials: "WT",
     title: "Co-Founder & Chief Architect",
     description:
       "Software architect, systems designer, and the author of ShruggieTech's internal products and published research. Background in cryptography, electronic warfare, and high-performance computing. Writes specifications that AI agents can execute without asking questions.",
+    image: "/images/team/william.png",
   },
   {
     name: "Natalie Thompson",
-    initials: "NT",
     title: "Co-Founder & COO",
     description:
       "Self-taught full-stack developer, client relationship lead, and the person who makes everything actually happen. Pairs deep technical ability with the soft skills that keep complex projects moving forward. From branding to business development, she runs point on it all.",
+    image: "/images/team/natalie.png",
   },
   {
     name: "Josiah Thompson",
-    initials: "JT",
     title: "Founders Assistant",
     description:
       "Josiah contributes to ShruggieTech's production work, assisting with social media content creation, blog article drafting, and website maintenance. His role is designed to build real professional skills early, equipping him with the technical fluency and operational discipline for a career in technology.",
+    image: "/images/team/josiah.png",
   },
 ];
 
@@ -88,21 +88,6 @@ const VALUES: Value[] = [
       "We do not hide behind process. We deliver working systems, measure their performance, and improve them continuously.",
   },
 ];
-
-/* ── Placeholder Avatar Component ───────────────────────────────────────── */
-
-function PlaceholderAvatar({ initials }: { initials: string }) {
-  return (
-    <div
-      className="flex h-48 w-48 items-center justify-center rounded-full bg-bg-secondary"
-      aria-hidden="true"
-    >
-      <span className="select-none font-display text-display-lg font-bold text-text-muted">
-        {initials}
-      </span>
-    </div>
-  );
-}
 
 /* ── Page Component ─────────────────────────────────────────────────────── */
 
@@ -163,8 +148,15 @@ export default function AboutPage() {
             {TEAM_MEMBERS.map((member, index) => (
               <ScrollReveal key={member.name} delay={index * 0.08}>
                 <div className="flex flex-col items-center text-center">
-                  {/* Placeholder image — §1.4 item 5: real photos pending */}
-                  <PlaceholderAvatar initials={member.initials} />
+                  <div className="aspect-square h-40 w-40 md:h-48 md:w-48 overflow-hidden">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      width={192}
+                      height={192}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
 
                   <h3 className="mt-6 font-display text-display-sm font-bold text-text-primary">
                     {member.name}
