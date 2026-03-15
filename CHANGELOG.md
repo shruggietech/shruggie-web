@@ -9,8 +9,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `ServiceIllustrations` component: purpose-built geometric SVG illustrations for each service pillar (Strategy & Brand, Development, Marketing, AI & Data) using brand green line art in a minimal Stripe/Linear-inspired style
-- SVG illustrations integrated into `ServicesScroll` animated layout (cycling in sync with cards) and static reduced-motion fallback (side-by-side card layout on md+)
+- Design system: section-level surface color tokens (`--color-section-*`) and glassmorphism card treatment (`card-glass` variant) for layered section backgrounds
+- `ThemeEnforcer` component: route-aware dark mode enforcement that forces dark theme on specific routes (homepage, services) and conditionally hides the theme toggle in the Header
+- `lib/route-theme.ts`: route-to-theme mapping configuration for per-page theme enforcement
+- `useIsMobile` hook: responsive breakpoint detection hook using `matchMedia` for mobile/desktop layout switching
+- `DeviceMockup` component: browser-chrome and mobile-frame device mockup wrappers for presenting case study screenshots in realistic device frames
+- `SectionProgress` component: scroll-progress indicator showing current section position within pinned scroll sequences
+- `ServicesSection` wrapper component: responsive switcher that renders `ServicesScroll` (pinned desktop layout) or `ServicesCarousel` (swipeable mobile carousel) based on viewport
+- `ServicesCarousel` component: mobile-optimized horizontal carousel for service cards with snap scrolling and progress indicators
+- `ServiceIllustrationsLarge` component: full-viewport animated SVG illustrations for each service pillar with CSS keyframe entrance animations (draw-on, fade-in, pulse effects) triggered on active card transitions
+- `ServiceIllustrationsLarge.module.css`: 490+ lines of CSS animations for service illustration entrance sequences
+- `WorkSection` wrapper component: responsive switcher rendering `WorkScroll` (pinned desktop) or `WorkCarousel` (swipeable mobile) based on viewport
+- `WorkCarousel` component: mobile-optimized horizontal carousel for case study cards with device mockups and snap scrolling
+- Team photos: real headshot images for William, Natalie, and Josiah Thompson replacing placeholder avatar silhouettes on the About page
+- `docs/ShruggieTech-Website-Redesign-Plan.md`: comprehensive redesign specification documenting the phased homepage rebuild strategy
+- `docs/archive/`: archived original homepage scroll journey spec (superseded by redesign plan)
+
+### Changed
+
+- **Homepage redesign**: complete visual overhaul of all homepage sections below the hero, replacing GSAP ScrollTrigger-pinned canvas animations with a cleaner, more performant CSS/Framer Motion approach
+- `ServicesScroll`: rebuilt as a pinned desktop layout with scroll-driven card cycling, large-format animated SVG illustrations crossfading in sync with active card, and glassmorphism card styling
+- `WorkScroll`: rebuilt with pinned desktop layout, device mockup frames (browser chrome) for case study screenshots, scroll-driven card transitions, and "View Case Study" CTAs
+- `ResearchSection`: redesigned with full-width publication cards, decorative code/syntax background pattern, and improved layout hierarchy
+- `CTASection`: redesigned with orange gradient bloom background effect, large shruggie watermark, and updated visual treatment replacing the previous gray-900→black gradient
+- `Card` component: added `glass` variant prop for glassmorphism surface treatment
+- `Header`: theme toggle visibility now controlled by route-aware theme enforcement (hidden on dark-enforced routes)
+- `lib/theme.ts`: expanded to support route-aware theme initialization alongside cookie-based persistence
+- `app/page.tsx`: refactored to use `ServicesSection` and `WorkSection` wrapper components for responsive layout switching
+- `HeroSection`: restored embedded `HeroBackground` canvas (reverted from page-level `HomeCanvas` approach back to self-contained hero background)
+- About page: replaced placeholder avatar silhouettes (initials in gray circles) with real team member headshot photos using `next/image` optimization
+- `styles/globals.css`: consolidated section surface color variables, removed unused CTA gradient classes, added glassmorphism utilities
+
+### Removed
+
+- `HomeCanvas` component and `ScrollOrchestrator`: removed page-level canvas rendering in favor of section-contained approaches
+- `lib/canvas/` module library: removed all 8 canvas rendering utilities (`dot-grid.ts`, `network-graph.ts`, `planet.ts`, `scroll-state.ts`, `shapes.ts`, `shruggie-easter-egg.ts`, `skyline.ts`, `work-graph.ts`) — superseded by CSS/SVG-based section designs
+- `ServiceIllustrations` component: replaced by `ServiceIllustrationsLarge` with full-viewport animated SVG illustrations and CSS entrance animations
+- `ServicesPreview` static fallback and `WorkPreview` GSAP-based scroll layouts (superseded by responsive Section wrapper components)
+- Production dependency: `gsap` (GSAP ScrollTrigger no longer used for homepage sections)
+
+## [Previous — SVG Illustrations & Canvas Refinements]
 
 ### Changed
 
@@ -21,17 +59,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `network-graph.ts`: increase node and edge visibility (higher base alpha, hover alpha, and edge line width) for better contrast
 - `HomeCanvas`: fix services shape morphing to use 3 transitions across 4 shapes instead of incorrectly mapping to 4 segments
 
-### Added
+## [Previous — Scroll-Driven Homepage Journey]
 
-- Scroll-driven homepage journey: unified full-page canvas with GSAP ScrollTrigger pinned sections that transform each homepage section into a continuous, scroll-locked visual experience
-- `ScrollOrchestrator` component: top-level wrapper that registers GSAP ScrollTrigger, integrates with Lenis smooth scrolling, renders the page-wide `HomeCanvas`, and manages scroll trigger placeholders for pinned sections
-- `HomeCanvas` component: single fixed canvas spanning the full viewport behind all sections; renders the dot grid, shruggie easter egg, network graph, work graph, skyline, and planet layers in one animation loop with DPR scaling and mouse tracking
-- `ServicesScroll` component: scroll-pinned services section that cycles through 4 service cards in sequence while the canvas network graph morphs between shape definitions (constellation, circuit board, funnel, neural network)
-- `WorkScroll` component: scroll-pinned work section that reveals case study cards with clickable hub nodes on the canvas linking to full case studies
-- `ResearchSection` component: publication cards with dedicated scroll space for the canvas skyline construction animation
-- `lib/canvas/` module library: 8 pure-canvas rendering utilities extracted for the scroll journey
-  - `dot-grid.ts` — full-page animated dot grid with focal-point glow and low resting opacity
-  - `network-graph.ts` — 20-node morphable network graph with shape interpolation and drift
+### Added
   - `planet.ts` — wireframe planet with concentric node rings and lateral rotation simulation
   - `scroll-state.ts` — shared mutable scroll state avoiding React re-renders
   - `shapes.ts` — 5 morphable shape definitions (halo, constellation, circuit, funnel, neural net)
