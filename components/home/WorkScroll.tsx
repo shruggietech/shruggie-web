@@ -16,6 +16,7 @@
 
 import { useRef, useLayoutEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useReducedMotion } from "framer-motion";
 
 import { Card } from "@/components/ui/Card";
@@ -26,21 +27,26 @@ import ScrollReveal from "@/components/shared/ScrollReveal";
 import { SectionProgress } from "@/components/ui/SectionProgress";
 import { caseStudies } from "@/lib/case-studies";
 
-/* ── Client Logo Placeholders ─────────────────────────────────────────── */
+/* ── Client Logo Row ───────────────────────────────────────────────── */
 
 function ClientLogos() {
   return (
-    <div className="mt-8 flex flex-wrap items-center gap-4">
-      {caseStudies.map((study) => (
-        <div
-          key={study.slug}
-          className="flex h-10 items-center rounded-lg bg-white/[0.04] px-4 transition-all duration-300 grayscale hover:grayscale-0 hover:bg-white/[0.06]"
-        >
-          <span className="text-body-xs font-medium text-white/50 transition-colors duration-300">
-            {study.client}
-          </span>
-        </div>
-      ))}
+    <div className="mt-8 flex flex-col items-center">
+      <p className="mb-4 text-body-xs uppercase tracking-widest text-text-muted">
+        Trusted by
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12">
+        {caseStudies.map((study) => (
+          <Image
+            key={study.slug}
+            src={study.logo}
+            alt={`${study.client} logo`}
+            width={160}
+            height={40}
+            className="h-6 w-auto opacity-50 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 md:h-8 lg:h-10"
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -56,6 +62,9 @@ function WorkGrid() {
             label="OUR WORK"
             title="Real results for real businesses."
           />
+        </ScrollReveal>
+        <ScrollReveal delay={0.1}>
+          <ClientLogos />
         </ScrollReveal>
 
         <div className="mt-[var(--component-gap)] flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4">

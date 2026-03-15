@@ -13,6 +13,7 @@ export interface CaseStudy {
   summary: string;
   image: string;
   metric: string;
+  logo: string;
 }
 
 export const caseStudies: CaseStudy[] = [
@@ -24,6 +25,7 @@ export const caseStudies: CaseStudy[] = [
       "Accessibility-compliant website redesign aligned with global United Way brand guidelines, built on infrastructure the client owns.",
     image: "/images/work/united-way.png",
     metric: "100% client-owned infrastructure",
+    logo: "/images/logos/united-way.svg",
   },
   {
     slug: "scruggs-tire",
@@ -33,6 +35,7 @@ export const caseStudies: CaseStudy[] = [
       "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a Knoxville auto shop.",
     image: "/images/work/scruggs-tire.png",
     metric: "Launched in 6 weeks",
+    logo: "/images/logos/scruggs-tire.svg",
   },
   {
     slug: "i-heart-pr-tours",
@@ -42,5 +45,6 @@ export const caseStudies: CaseStudy[] = [
       "Multi-platform booking integration, OTA optimization, and brand identity for a Puerto Rico tour operator.",
     image: "/images/work/i-heart-pr-tours.png",
     metric: "5 booking platforms unified",
+    logo: "/images/logos/i-heart-pr-tours.svg",
   },
 ];

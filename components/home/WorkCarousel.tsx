@@ -12,6 +12,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { Card } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
@@ -68,6 +69,25 @@ export default function WorkCarousel() {
             label="OUR WORK"
             title="Real results for real businesses."
           />
+        </ScrollReveal>
+        <ScrollReveal delay={0.1}>
+          <div className="mt-8 flex flex-col items-center">
+            <p className="mb-4 text-body-xs uppercase tracking-widest text-text-muted">
+              Trusted by
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              {caseStudies.map((study) => (
+                <Image
+                  key={study.slug}
+                  src={study.logo}
+                  alt={`${study.client} logo`}
+                  width={120}
+                  height={32}
+                  className="h-6 w-auto opacity-50 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 md:h-8"
+                />
+              ))}
+            </div>
+          </div>
         </ScrollReveal>
       </div>
 
