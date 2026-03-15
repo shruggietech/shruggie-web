@@ -78,7 +78,9 @@ export default function ServicesCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const illRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const illContainerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [sectionVisible, setSectionVisible] = useState(false);
 
   const setCardRef = useCallback(
     (index: number) => (el: HTMLDivElement | null) => {
@@ -119,8 +121,30 @@ export default function ServicesCarousel() {
     return () => observer.disconnect();
   }, []);
 
-  // Retrigger SVG draw-on animations when the active card changes.
+  // Track when the illustration area enters the viewport.
   useEffect(() => {
+    const el = illContainerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSectionVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Retrigger SVG draw-on animations when the active card changes,
+  // but only after the section has scrolled into view.
+  useEffect(() => {
+    if (!sectionVisible) return;
+
     illRefs.current.forEach((el) => el?.classList.remove("is-animating"));
 
     const raf = requestAnimationFrame(() => {
@@ -128,7 +152,7 @@ export default function ServicesCarousel() {
     });
 
     return () => cancelAnimationFrame(raf);
-  }, [activeIndex]);
+  }, [activeIndex, sectionVisible]);
 
   return (
     <section className="section-bg-services py-[var(--section-gap)]">
@@ -142,7 +166,7 @@ export default function ServicesCarousel() {
       </div>
 
       {/* Large illustration display area */}
-      <div className="relative mx-auto mt-[var(--component-gap)] h-[220px] max-w-[300px]" aria-hidden="true">
+      <div ref={illContainerRef} className="relative mx-auto mt-[var(--component-gap)] h-[280px] max-w-[360px]" aria-hidden="true">
         {services.map((service, index) => (
           <div
             key={service.title}

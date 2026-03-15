@@ -25,7 +25,8 @@ interface Particle {
   twinkleOffset: number;
 }
 
-const PARTICLE_COUNT = 80;
+const PARTICLE_COUNT_DESKTOP = 80;
+const PARTICLE_COUNT_MOBILE = 30;
 const CONNECT_DISTANCE = 120;
 const MOUSE_RADIUS = 150;
 const LINE_OPACITY = 0.15;
@@ -42,9 +43,9 @@ export default function ParticleSky({ className }: ParticleSkyProps) {
   });
   const reducedMotionRef = useRef(false);
 
-  const initParticles = useCallback((width: number, height: number) => {
+  const initParticles = useCallback((width: number, height: number, count: number) => {
     const particles: Particle[] = [];
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
+    for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -85,8 +86,9 @@ export default function ParticleSky({ className }: ParticleSkyProps) {
       canvas.style.height = `${rect.height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Reinitialize particles on resize
-      particlesRef.current = initParticles(rect.width, rect.height);
+      // Reinitialize particles on resize — fewer on mobile
+      const count = rect.width < 768 ? PARTICLE_COUNT_MOBILE : PARTICLE_COUNT_DESKTOP;
+      particlesRef.current = initParticles(rect.width, rect.height, count);
     };
 
     resize();

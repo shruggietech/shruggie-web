@@ -154,6 +154,9 @@
 /* ── Theme Tokens: Static Values ────────────────────────────────────────── */
 
 @theme {
+  /* Custom breakpoint: mobile nav for screens ≤ 1080px */
+  --breakpoint-nav: 1081px;
+
   /* Static brand colors (spec §2.1 — brand + extended palette) */
   --color-brand-green-bright: #2BCC73;
   --color-brand-green-deep: #00AB21;

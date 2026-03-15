@@ -145,6 +145,7 @@ export default function ServicesScroll() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const pinnedRef = useRef<HTMLDivElement>(null);
   const [currentFrame, setCurrentFrame] = useState(0);
+  const [sectionVisible, setSectionVisible] = useState(false);
   const scrollTriggerRef = useRef<{ start: number; end: number } | null>(null);
 
   useLayoutEffect(() => {
@@ -224,10 +225,32 @@ export default function ServicesScroll() {
     };
   }, [shouldReduce]);
 
-  // Retrigger SVG draw-on animations when the active frame changes.
+  // Track when the pinned illustration area enters the viewport.
+  useEffect(() => {
+    const el = pinnedRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSectionVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Retrigger SVG draw-on animations when the active frame changes,
+  // but only after the section has scrolled into view.
   // Removing then re-adding .is-animating forces the browser to restart
   // CSS animations from scratch.
   useEffect(() => {
+    if (!sectionVisible) return;
+
     const container = pinnedRef.current;
     if (!container) return;
 
@@ -239,7 +262,7 @@ export default function ServicesScroll() {
     });
 
     return () => cancelAnimationFrame(raf);
-  }, [currentFrame]);
+  }, [currentFrame, sectionVisible]);
 
   if (shouldReduce) {
     return <ServicesGrid />;

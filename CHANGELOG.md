@@ -11,9 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `ParticleSky` component: canvas-based interactive particle field (particles.js style) with drifting nodes, proximity-based connecting lines, and mouse/touch cursor interaction for the CTA section background
 - `KnoxvilleSkyline` component: detailed two-layer SVG silhouette of the Knoxville, TN skyline with window grids, Sunsphere, Henley Street Bridge arches, and church steeples — anchored to the bottom of the CTA section
+- Custom `nav` breakpoint (1081px) in `globals.css` for navigation responsive switching
 
 ### Changed
 
+- `Header`: navigation breakpoint changed from `md` (768px) to custom `nav` (1081px) so the mobile hamburger menu is used on tablets and narrower desktops where nav links were overflowing
+- `HeroBackground`: mobile ambient drift repositioned to top-right area with horizontal-only movement; mobile interaction radius reduced to 55% of desktop size for tighter dot-highlight focus
+- `HeroSection`: increased mobile top padding (`pt-44`) to push hero content below the header and avoid overlap
+- `KnoxvilleSkyline`: converted to client component with `useIsMobile`; mobile viewBox crops to the right half of the skyline (showing Sunsphere) at a larger scale
+- `ParticleSky`: reduced particle count on mobile from 80 to 30 for better performance on lower-powered devices
+- `ServicesCarousel`: SVG draw-on animations now deferred via `IntersectionObserver` until the illustration area scrolls into view, preventing animations from firing off-screen; increased illustration container size (220→280px height, 300→360px max-width)
+- `ServicesScroll`: SVG draw-on animations deferred via `IntersectionObserver` until the pinned area enters the viewport, matching `ServicesCarousel` behavior
 - `CTASection`: replaced orange gradient bloom and shruggie watermark background with interactive `ParticleSky` canvas and `KnoxvilleSkyline` SVG silhouette anchored at bottom
 - `HeroBackground`: refactored shruggie easter egg to use deterministic corner positions (cycling through 4 corners) instead of random placement with exclusion zones; added mobile-specific adjustments (reduced spotlight radius, disabled shruggie interactions below 768px); unified shruggie dot color to brand green regardless of theme; extracted ambient drift radius into configurable constants
 - `HeroSection`: responsive hero heading text — `text-display-md` on mobile scaling up to `text-display-xl` on desktop

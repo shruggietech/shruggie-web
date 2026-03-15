@@ -300,6 +300,7 @@ export default function HeroBackground() {
     const driftRadiusMult = isMobile ? 0.6 : 1;
     const hoverAlphaMult = isMobile ? 0.7 : 1;
     const effectiveHoverAlpha = DOT_HOVER_ALPHA * hoverAlphaMult;
+    const effectiveInteractionRadius = isMobile ? INTERACTION_RADIUS * 0.55 : INTERACTION_RADIUS;
 
     // Determine focal point: mouse position or ambient drift
     let focalX: number;
@@ -314,8 +315,14 @@ export default function HeroBackground() {
       // Ambient drift for touch / no-mouse
       const drift = driftRef.current;
       drift.angle += DRIFT_SPEED * 0.005;
-      drift.x = w * 0.5 + Math.cos(drift.angle) * w * AMBIENT_DRIFT_RADIUS.x * driftRadiusMult;
-      drift.y = h * 0.5 + Math.sin(drift.angle * 0.7) * h * AMBIENT_DRIFT_RADIUS.y * driftRadiusMult;
+      if (isMobile) {
+        // Mobile: top-right area, horizontal drift only
+        drift.x = w * 0.7 + Math.cos(drift.angle) * w * 0.2;
+        drift.y = h * 0.12;
+      } else {
+        drift.x = w * 0.5 + Math.cos(drift.angle) * w * AMBIENT_DRIFT_RADIUS.x * driftRadiusMult;
+        drift.y = h * 0.5 + Math.sin(drift.angle * 0.7) * h * AMBIENT_DRIFT_RADIUS.y * driftRadiusMult;
+      }
       focalX = drift.x;
       focalY = drift.y;
       hasFocus = true;
@@ -435,8 +442,8 @@ export default function HeroBackground() {
           const dy = y - focalY;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < INTERACTION_RADIUS) {
-            const t = 1 - dist / INTERACTION_RADIUS;
+          if (dist < effectiveInteractionRadius) {
+            const t = 1 - dist / effectiveInteractionRadius;
             // Ease-out cubic
             const ease = 1 - (1 - t) * (1 - t) * (1 - t);
             alpha =

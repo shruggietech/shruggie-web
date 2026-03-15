@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * KnoxvilleSkyline — Detailed SVG silhouette of the Knoxville, TN skyline.
  *
@@ -8,7 +10,10 @@
  * downtown buildings with window patterns.
  *
  * Anchored to the bottom of its container via preserveAspectRatio="xMidYMax slice".
+ * On mobile, shows the right half of the skyline (including Sunsphere) at a larger scale.
  */
+
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface KnoxvilleSkylineProps {
   className?: string;
@@ -53,11 +58,13 @@ function WindowGrid({
 }
 
 export default function KnoxvilleSkyline({ className }: KnoxvilleSkylineProps) {
+  const isMobile = useIsMobile();
+
   return (
     <svg
       aria-hidden="true"
       className={className}
-      viewBox="0 0 1440 200"
+      viewBox={isMobile ? "700 0 740 200" : "0 0 1440 200"}
       preserveAspectRatio="xMidYMax slice"
       xmlns="http://www.w3.org/2000/svg"
     >

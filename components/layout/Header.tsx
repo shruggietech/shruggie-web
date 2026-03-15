@@ -121,7 +121,7 @@ export default function Header() {
           {/* Desktop navigation */}
           <nav
             aria-label="Primary navigation"
-            className="hidden items-center gap-1 md:flex"
+            className="hidden items-center gap-1 nav:flex"
           >
             {NAV_LINKS.map((link) => (
               <Link
@@ -169,7 +169,7 @@ export default function Header() {
             )}
 
             {/* CTA button — desktop only */}
-            <Link href="/contact" className="hidden md:block">
+            <Link href="/contact" className="hidden nav:block">
               <Button variant="primary" size="sm">
                 Get in Touch
               </Button>
@@ -182,7 +182,7 @@ export default function Header() {
               aria-expanded={mobileNavOpen}
               aria-controls="mobile-nav-panel"
               className={cn(
-                "rounded-lg p-2 text-text-secondary transition-colors md:hidden",
+                "rounded-lg p-2 text-text-secondary transition-colors nav:hidden",
                 "hover:text-text-primary",
                 "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
               )}
