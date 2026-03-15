@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `KnoxvilleSkyline`: brightened SVG fill colors for better visibility against dark backgrounds, especially on mobile — background layer `#0a0a10` → `#18182a`, foreground layer `#0d0d14` → `#1e1e34`, window/detail accents `#111118` → `#2a2a40`
 - `Header`: navigation breakpoint changed from `md` (768px) to custom `nav` (1081px) so the mobile hamburger menu is used on tablets and narrower desktops where nav links were overflowing
 - `HeroBackground`: mobile ambient drift repositioned to top-right area with horizontal-only movement; mobile interaction radius reduced to 55% of desktop size for tighter dot-highlight focus
 - `HeroSection`: increased mobile top padding (`pt-44`) to push hero content below the header and avoid overlap

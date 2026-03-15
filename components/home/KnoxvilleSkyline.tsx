@@ -3,9 +3,9 @@
 /**
  * KnoxvilleSkyline — Detailed SVG silhouette of the Knoxville, TN skyline.
  *
- * Two tonal layers create depth: background buildings (#0a0a10) sit behind
- * foreground buildings (#0d0d14). Window grids use a slightly lighter tone
- * (#111118) for subtle detail. Key landmarks: Sunsphere with lattice tower,
+ * Two tonal layers create depth: background buildings (#18182a) sit behind
+ * foreground buildings (#1e1e34). Window grids use a slightly lighter tone
+ * (#2a2a40) for subtle detail. Key landmarks: Sunsphere with lattice tower,
  * Henley Street Bridge arches, church steeples, Art Deco tower, varied
  * downtown buildings with window patterns.
  *
@@ -71,7 +71,7 @@ export default function KnoxvilleSkyline({ className }: KnoxvilleSkylineProps) {
       {/* ================================================================ */}
       {/* BACKGROUND LAYER — farther buildings (#0a0a10)                   */}
       {/* ================================================================ */}
-      <g fill="#0a0a10">
+      <g fill="#18182a">
         {/* Far-left low institutional / church */}
         <rect x="30" y="148" width="44" height="52" />
         <rect x="45" y="138" width="14" height="10" />
@@ -115,7 +115,7 @@ export default function KnoxvilleSkyline({ className }: KnoxvilleSkylineProps) {
       {/* ================================================================ */}
       {/* FOREGROUND LAYER — closer buildings (#0d0d14)                    */}
       {/* ================================================================ */}
-      <g fill="#0d0d14">
+      <g fill="#1e1e34">
         {/* ── 1. Far left: Church / institutional with steeple ────────── */}
         <rect x="55" y="135" width="50" height="65" />
         <rect x="62" y="128" width="36" height="7" />
@@ -156,9 +156,9 @@ export default function KnoxvilleSkyline({ className }: KnoxvilleSkylineProps) {
         {/* Arched top */}
         <path d="M290,118 Q314,102 338,118 Z" />
         {/* Decorative arched windows row */}
-        <path d="M296,128 Q300,123 304,128" fill="#111118" />
-        <path d="M310,128 Q314,123 318,128" fill="#111118" />
-        <path d="M324,128 Q328,123 332,128" fill="#111118" />
+        <path d="M296,128 Q300,123 304,128" fill="#2a2a40" />
+        <path d="M310,128 Q314,123 318,128" fill="#2a2a40" />
+        <path d="M324,128 Q328,123 332,128" fill="#2a2a40" />
         <WindowGrid x={296} y={136} cols={5} rows={8} w={3} h={3} gapX={8} gapY={7} />
 
         {/* ── 5. Art Deco tower with setbacks & antenna ───────────────── */}
@@ -264,30 +264,30 @@ export default function KnoxvilleSkyline({ className }: KnoxvilleSkylineProps) {
         <rect x="1116" y="75" width="3" height="125" />
         <rect x="1125" y="75" width="3" height="125" />
         {/* Cross-bracing (X pattern) */}
-        <line x1="1116" y1="80" x2="1128" y2="95" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1128" y1="80" x2="1116" y2="95" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1116" y1="95" x2="1128" y2="110" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1128" y1="95" x2="1116" y2="110" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1116" y1="110" x2="1128" y2="125" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1128" y1="110" x2="1116" y2="125" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1116" y1="125" x2="1128" y2="140" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1128" y1="125" x2="1116" y2="140" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1116" y1="140" x2="1128" y2="155" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1128" y1="140" x2="1116" y2="155" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1116" y1="155" x2="1128" y2="170" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1128" y1="155" x2="1116" y2="170" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1116" y1="170" x2="1128" y2="185" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1128" y1="170" x2="1116" y2="185" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1116" y1="185" x2="1128" y2="200" stroke="#0d0d14" strokeWidth="1.5" />
-        <line x1="1128" y1="185" x2="1116" y2="200" stroke="#0d0d14" strokeWidth="1.5" />
+        <line x1="1116" y1="80" x2="1128" y2="95" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1128" y1="80" x2="1116" y2="95" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1116" y1="95" x2="1128" y2="110" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1128" y1="95" x2="1116" y2="110" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1116" y1="110" x2="1128" y2="125" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1128" y1="110" x2="1116" y2="125" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1116" y1="125" x2="1128" y2="140" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1128" y1="125" x2="1116" y2="140" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1116" y1="140" x2="1128" y2="155" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1128" y1="140" x2="1116" y2="155" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1116" y1="155" x2="1128" y2="170" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1128" y1="155" x2="1116" y2="170" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1116" y1="170" x2="1128" y2="185" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1128" y1="170" x2="1116" y2="185" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1116" y1="185" x2="1128" y2="200" stroke="#1e1e34" strokeWidth="1.5" />
+        <line x1="1128" y1="185" x2="1116" y2="200" stroke="#1e1e34" strokeWidth="1.5" />
         {/* Horizontal ties */}
-        <line x1="1116" y1="95" x2="1128" y2="95" stroke="#0d0d14" strokeWidth="1" />
-        <line x1="1116" y1="110" x2="1128" y2="110" stroke="#0d0d14" strokeWidth="1" />
-        <line x1="1116" y1="125" x2="1128" y2="125" stroke="#0d0d14" strokeWidth="1" />
-        <line x1="1116" y1="140" x2="1128" y2="140" stroke="#0d0d14" strokeWidth="1" />
-        <line x1="1116" y1="155" x2="1128" y2="155" stroke="#0d0d14" strokeWidth="1" />
-        <line x1="1116" y1="170" x2="1128" y2="170" stroke="#0d0d14" strokeWidth="1" />
-        <line x1="1116" y1="185" x2="1128" y2="185" stroke="#0d0d14" strokeWidth="1" />
+        <line x1="1116" y1="95" x2="1128" y2="95" stroke="#1e1e34" strokeWidth="1" />
+        <line x1="1116" y1="110" x2="1128" y2="110" stroke="#1e1e34" strokeWidth="1" />
+        <line x1="1116" y1="125" x2="1128" y2="125" stroke="#1e1e34" strokeWidth="1" />
+        <line x1="1116" y1="140" x2="1128" y2="140" stroke="#1e1e34" strokeWidth="1" />
+        <line x1="1116" y1="155" x2="1128" y2="155" stroke="#1e1e34" strokeWidth="1" />
+        <line x1="1116" y1="170" x2="1128" y2="170" stroke="#1e1e34" strokeWidth="1" />
+        <line x1="1116" y1="185" x2="1128" y2="185" stroke="#1e1e34" strokeWidth="1" />
 
         {/* Wider base */}
         <polygon points="1110,200 1112,175 1132,175 1134,200" />
@@ -295,10 +295,10 @@ export default function KnoxvilleSkyline({ className }: KnoxvilleSkylineProps) {
         {/* Sphere */}
         <circle cx="1122" cy="56" r="18" />
         {/* Sphere highlight ring (subtle inner detail) */}
-        <circle cx="1122" cy="56" r="14" fill="none" stroke="#111118" strokeWidth="0.8" />
-        <circle cx="1122" cy="56" r="9" fill="none" stroke="#111118" strokeWidth="0.5" />
+        <circle cx="1122" cy="56" r="14" fill="none" stroke="#2a2a40" strokeWidth="0.8" />
+        <circle cx="1122" cy="56" r="9" fill="none" stroke="#2a2a40" strokeWidth="0.5" />
         {/* Equatorial band */}
-        <line x1="1104" y1="56" x2="1140" y2="56" stroke="#111118" strokeWidth="0.6" />
+        <line x1="1104" y1="56" x2="1140" y2="56" stroke="#2a2a40" strokeWidth="0.6" />
 
         {/* ── 10. Right-side buildings & far-right church steeple ─────── */}
         <rect x="1150" y="120" width="28" height="80" />
@@ -332,7 +332,7 @@ export default function KnoxvilleSkyline({ className }: KnoxvilleSkylineProps) {
       {/* ================================================================ */}
       {/* WINDOW GRID OVERLAY — lighter tone for depth (#111118)           */}
       {/* ================================================================ */}
-      <g fill="#111118">
+      <g fill="#2a2a40">
         {/* Background layer windows are rendered inline above.             */}
         {/* Foreground layer windows are rendered inline above.             */}
         {/* This group left intentionally for any shared decorative lines. */}
