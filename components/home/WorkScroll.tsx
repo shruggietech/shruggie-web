@@ -24,45 +24,7 @@ import { DeviceMockup } from "@/components/ui/DeviceMockup";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import { SectionProgress } from "@/components/ui/SectionProgress";
-
-interface CaseStudy {
-  slug: string;
-  client: string;
-  industry: string;
-  summary: string;
-  heroImage?: string;
-  metric: string;
-}
-
-const caseStudies: CaseStudy[] = [
-  {
-    slug: "united-way",
-    client: "United Way of Anderson County",
-    industry: "Nonprofit",
-    summary:
-      "Accessibility-compliant website redesign aligned with global United Way brand guidelines, built on infrastructure the client owns.",
-    heroImage: undefined,
-    metric: "100% client-owned infrastructure",
-  },
-  {
-    slug: "scruggs-tire",
-    client: "Scruggs Tire & Alignment",
-    industry: "Automotive Services",
-    summary:
-      "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a Knoxville auto shop.",
-    heroImage: undefined,
-    metric: "Launched in 6 weeks",
-  },
-  {
-    slug: "i-heart-pr-tours",
-    client: "I Heart PR Tours",
-    industry: "Tourism & Hospitality",
-    summary:
-      "Multi-platform booking integration, OTA optimization, and brand identity for a Puerto Rico tour operator.",
-    heroImage: undefined,
-    metric: "5 booking platforms unified",
-  },
-];
+import { caseStudies } from "@/lib/case-studies";
 
 /* ── Client Logo Placeholders ─────────────────────────────────────────── */
 
@@ -103,10 +65,9 @@ function WorkGrid() {
                 <Card className="flex h-full flex-col">
                   <div className="mb-4">
                     <DeviceMockup
-                      src={study.heroImage}
-                      alt={`${study.client} website`}
+                      src={study.image}
+                      alt={`${study.client} website screenshot`}
                       variant="browser"
-                      placeholderLabel={study.client}
                     />
                   </div>
                   <Badge className="mb-3 self-start">{study.industry}</Badge>
@@ -282,10 +243,9 @@ export default function WorkScroll() {
                 {/* Right column — device mockup */}
                 <div className="flex items-center justify-center">
                   <DeviceMockup
-                    src={study.heroImage}
-                    alt={`${study.client} website`}
+                    src={study.image}
+                    alt={`${study.client} website screenshot`}
                     variant="browser"
-                    placeholderLabel={study.client}
                     className="w-full shadow-2xl shadow-black/40 transition-shadow duration-300 hover:shadow-[0_25px_60px_-12px_rgba(59,130,246,0.15)]"
                   />
                 </div>

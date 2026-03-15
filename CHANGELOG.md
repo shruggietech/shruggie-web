@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `lib/case-studies.ts`: shared case study data module — single source of truth for slug, client name, industry, summary, image path, and metric, imported by `WorkScroll`, `WorkCarousel`, and `WorkPreview`
+- Case study screenshots: real website screenshots for all three case studies (`public/images/work/united-way.png`, `scruggs-tire.png`, `i-heart-pr-tours.png`) replacing placeholder "Screenshot coming soon" labels
+
+### Changed
+
+- `WorkScroll`, `WorkCarousel`, `WorkPreview`: replaced inline case study data arrays with shared import from `lib/case-studies.ts`, eliminating triplicated data definitions
+- `WorkPreview`: replaced placeholder gray rectangles with `DeviceMockup` browser frames rendering actual case study screenshots
+- `DeviceMockup`: changed image fit from `object-cover` to `object-contain object-top` for better full-page screenshot rendering, darkened viewport background from `gray-900` to `gray-950`, added responsive `sizes` attribute for image optimization
+- `docs/ShruggieTech-Website-Redesign-Plan.md`: updated to reflect that case study screenshots are now provided and integrated (no longer a pending Phase 3 item)
+
+## [Previous — Homepage Redesign]
+
+### Added
+
 - Design system: section-level surface color tokens (`--color-section-*`) and glassmorphism card treatment (`card-glass` variant) for layered section backgrounds
 - `ThemeEnforcer` component: route-aware dark mode enforcement that forces dark theme on specific routes (homepage, services) and conditionally hides the theme toggle in the Header
 - `lib/route-theme.ts`: route-to-theme mapping configuration for per-page theme enforcement

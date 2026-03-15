@@ -12,39 +12,10 @@ import Link from "next/link";
 
 import { Card } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import { DeviceMockup } from "@/components/ui/DeviceMockup";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/shared/ScrollReveal";
-
-interface CaseStudy {
-  slug: string;
-  client: string;
-  industry: string;
-  summary: string;
-}
-
-const caseStudies: CaseStudy[] = [
-  {
-    slug: "united-way-anderson-county",
-    client: "United Way of Anderson County",
-    industry: "Nonprofit",
-    summary:
-      "Accessibility-compliant website redesign aligned with global United Way brand guidelines, built on infrastructure the client owns.",
-  },
-  {
-    slug: "scruggs-tire",
-    client: "Scruggs Tire & Alignment",
-    industry: "Automotive Services",
-    summary:
-      "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a Knoxville auto shop.",
-  },
-  {
-    slug: "i-heart-pr-tours",
-    client: "I Heart PR Tours",
-    industry: "Tourism",
-    summary:
-      "Multi-platform booking integration, OTA optimization, and brand identity for a Puerto Rico tour operator.",
-  },
-];
+import { caseStudies } from "@/lib/case-studies";
 
 export default function WorkPreview() {
   return (
@@ -66,14 +37,13 @@ export default function WorkPreview() {
                 className="w-[85vw] flex-shrink-0 snap-start sm:w-[400px]"
               >
                 <Card className="flex h-full flex-col">
-                  {/* Placeholder hero image area */}
-                  <div
-                    className="mb-4 flex h-48 items-center justify-center rounded-lg bg-bg-secondary"
-                    aria-hidden="true"
-                  >
-                    <span className="font-display text-body-sm text-text-muted">
-                      Screenshot coming soon
-                    </span>
+                  {/* Case study screenshot */}
+                  <div className="mb-4">
+                    <DeviceMockup
+                      src={study.image}
+                      alt={`${study.client} website screenshot`}
+                      variant="browser"
+                    />
                   </div>
 
                   <Badge className="mb-3 self-start">{study.industry}</Badge>

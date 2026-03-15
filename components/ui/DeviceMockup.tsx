@@ -35,9 +35,9 @@ function BrowserVariant({ src, alt, className, placeholderLabel }: Omit<DeviceMo
   return (
     <div className={cn("overflow-hidden rounded-xl border border-white/[0.06]", className)}>
       <BrowserChrome />
-      <div className="relative aspect-video bg-gray-900">
+      <div className="relative aspect-video bg-gray-950">
         {src ? (
-          <Image src={src} alt={alt} fill className="object-cover" />
+          <Image src={src} alt={alt} fill className="object-contain object-top" sizes="(min-width: 768px) 50vw, 90vw" />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
             {placeholderLabel && (
@@ -60,9 +60,9 @@ function LaptopVariant({ src, alt, className, placeholderLabel }: Omit<DeviceMoc
       <div className="w-full overflow-hidden rounded-t-xl border border-b-0 border-white/[0.06] bg-gray-800 p-2">
         <div className="overflow-hidden rounded-lg">
           <BrowserChrome />
-          <div className="relative aspect-video bg-gray-900">
+          <div className="relative aspect-video bg-gray-950">
             {src ? (
-              <Image src={src} alt={alt} fill className="object-cover" />
+              <Image src={src} alt={alt} fill className="object-contain object-top" sizes="(min-width: 768px) 50vw, 90vw" />
             ) : (
               <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
                 {placeholderLabel && (
@@ -96,9 +96,9 @@ function PhoneVariant({ src, alt, className, placeholderLabel }: Omit<DeviceMock
       {/* Notch */}
       <div className="mx-auto mb-2 h-5 w-24 rounded-b-xl bg-gray-900" aria-hidden="true" />
       {/* Screen */}
-      <div className="relative aspect-[9/19.5] w-56 overflow-hidden rounded-xl bg-gray-900">
+      <div className="relative aspect-[9/19.5] w-56 overflow-hidden rounded-xl bg-gray-950">
         {src ? (
-          <Image src={src} alt={alt} fill className="object-cover" />
+          <Image src={src} alt={alt} fill className="object-contain object-top" sizes="50vw" />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
             {placeholderLabel && (

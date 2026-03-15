@@ -405,13 +405,15 @@ Zero complaints from the founder. Leave it alone. The only minor addition: ensur
 | Natalie Thompson | About page team card, potentially homepage or services | `public/images/team/natalie.png` | Professional, confident. Could be client-facing context (meeting, whiteboard, laptop). Square format (1:1). |
 | Josiah Thompson | About page team card | `public/images/team/josiah.png` | Professional, appropriate framing per the existing description guidelines. Square format (1:1). |
 
-**Priority 2 — Case study hero images (3 images, one per existing client):**
+**Priority 2 — Case study hero images (3 screenshots, PROVIDED):**
 
-| Client | Image Needed | Notes |
-|--------|-------------|-------|
-| United Way of Anderson County | Screenshot of the redesigned website on a laptop mockup, or a photo from the engagement | If a screenshot is available, it can be placed into a device mockup template programmatically. |
-| Scruggs Tire & Alignment | Screenshot of the replatformed site, or a photo of the business | A photo of the actual business adds authenticity. |
-| I Heart PR Tours | Screenshot of the booking-integrated site, or a photo of a tour in action | Tourism imagery is inherently visual and compelling. |
+| Client | File Path | Notes |
+|--------|-----------|-------|
+| United Way of Anderson County | `public/images/work/united-way.png` | Full-page screenshot. Rendered inside `DeviceMockup` (browser variant). |
+| Scruggs Tire & Alignment | `public/images/work/scruggs-tire.png` | Full-page screenshot. Rendered inside `DeviceMockup` (browser variant). |
+| I Heart PR Tours | `public/images/work/i-heart-pr-tours.png` | Full-page screenshot. Rendered inside `DeviceMockup` (browser variant). |
+
+Image paths are derived from the case study slug: `/images/work/${slug}.png`. The `caseStudies` data array in the Work section components already uses these slugs.
 
 **Priority 3 — Office/workspace imagery (2-3 photos):**
 
@@ -508,7 +510,7 @@ Zero complaints from the founder. Leave it alone. The only minor addition: ensur
 
 7. **Rebuild `ServicesScroll` (desktop) and `ServicesCarousel` (mobile).** Desktop: GSAP-pinned 4-frame presentation with animated illustrations (full right-column size) and progress indicator. Mobile: horizontal snap-scroll strip with static illustration thumbnails and indicator dots. Both share the same data array and card content.
 8. **Create large-format service illustrations.** Scale up the existing `ServiceIllustrations` SVGs to full-column-height compositions. Add CSS keyframe or Framer Motion entrance animations (draw-on for line art, fade-in-up for elements). These replace the canvas-rendered network graph shapes.
-9. **Rebuild `WorkScroll` (desktop) and `WorkCarousel` (mobile).** Desktop: GSAP-pinned 3-frame presentation with case study images in device mockups. Mobile: horizontal snap-scroll strip. Both share the same case study data. Until real screenshots are provided, render placeholder device mockups with the company name and a "Screenshot coming soon" label.
+9. **Rebuild `WorkScroll` (desktop) and `WorkCarousel` (mobile).** Desktop: GSAP-pinned 3-frame presentation with case study images in device mockups. Mobile: horizontal snap-scroll strip. Both share the same case study data. Screenshots are available at `public/images/work/{slug}.png` (united-way.png, scruggs-tire.png, i-heart-pr-tours.png). Render via `next/image` inside `DeviceMockup` (browser variant).
 10. **Rebuild `ResearchSection`.** Standard scroll layout (no pinning). Full-width publication cards with two-column internal layout (metadata left, visual right). Add decorative code-block background on desktop, hidden on mobile.
 11. **Rebuild `CTASection`.** Centered layout with orange gradient bloom. Add low-opacity shruggie watermark. Pulse animation on the bloom (desktop only, respects reduced motion).
 12. **Rebuild `app/page.tsx` homepage assembly.** Remove `ScrollOrchestrator` wrapper. Compose sections directly. Services and Work sections handle their own GSAP initialization internally (no shared orchestrator state). Each section is self-contained.
@@ -521,7 +523,7 @@ Zero complaints from the founder. Leave it alone. The only minor addition: ensur
 **Work items:**
 
 13. **Integrate team headshots.** Replace `PlaceholderAvatar` in `app/about/page.tsx` with real `next/image` components. Ensure consistent crop and treatment.
-14. **Integrate case study images.** Replace placeholder rectangles in Work section with real screenshots in `DeviceMockup` frames.
+14. **Integrate case study images.** No longer a separate step. Screenshots are available at `public/images/work/{slug}.png` and are integrated directly during the Work section rebuild (Phase 2, item 9).
 15. **Integrate client logos.** Add grayscale logo row to the Work section intro on the homepage.
 16. **Integration testing and performance audit.** Lighthouse audit targeting 90+ on all four metrics. Test on real mobile devices (iOS Safari, Android Chrome). Verify all scroll behaviors, animation frame rates, and reduced-motion fallbacks.
 

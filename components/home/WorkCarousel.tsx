@@ -18,41 +18,7 @@ import Badge from "@/components/ui/Badge";
 import { DeviceMockup } from "@/components/ui/DeviceMockup";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/shared/ScrollReveal";
-
-interface CaseStudy {
-  slug: string;
-  client: string;
-  industry: string;
-  summary: string;
-  heroImage?: string;
-}
-
-const caseStudies: CaseStudy[] = [
-  {
-    slug: "united-way",
-    client: "United Way of Anderson County",
-    industry: "Nonprofit",
-    summary:
-      "Accessibility-compliant website redesign aligned with global United Way brand guidelines, built on infrastructure the client owns.",
-    heroImage: undefined,
-  },
-  {
-    slug: "scruggs-tire",
-    client: "Scruggs Tire & Alignment",
-    industry: "Automotive Services",
-    summary:
-      "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a Knoxville auto shop.",
-    heroImage: undefined,
-  },
-  {
-    slug: "i-heart-pr-tours",
-    client: "I Heart PR Tours",
-    industry: "Tourism & Hospitality",
-    summary:
-      "Multi-platform booking integration, OTA optimization, and brand identity for a Puerto Rico tour operator.",
-    heroImage: undefined,
-  },
-];
+import { caseStudies } from "@/lib/case-studies";
 
 export default function WorkCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -121,13 +87,11 @@ export default function WorkCarousel() {
             className="w-[90vw] flex-shrink-0 snap-center"
           >
             <Card className="flex h-full flex-col p-5">
-              {/* Device mockup with placeholder */}
               <div className="mb-4">
                 <DeviceMockup
-                  src={study.heroImage}
-                  alt={`${study.client} website`}
+                  src={study.image}
+                  alt={`${study.client} website screenshot`}
                   variant="browser"
-                  placeholderLabel={study.client}
                 />
               </div>
 
