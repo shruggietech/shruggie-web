@@ -1,36 +1,23 @@
 /**
- * CTASection — Bottom call-to-action with orange gradient bloom
- * and shruggie watermark personality element.
+ * CTASection — Bottom call-to-action with Knoxville skyline silhouette
+ * and interactive particle-node starry sky.
  *
- * Redesign spec reference: §5.5 (CTA Section Redesign)
+ * Redesign spec reference: §5.5 (CTA Section Redesign), §4.1-4.2 (Knoxville Skyline)
  */
 
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import ScrollReveal from "@/components/shared/ScrollReveal";
+import ParticleSky from "@/components/home/ParticleSky";
+import KnoxvilleSkyline from "@/components/home/KnoxvilleSkyline";
 
 export default function CTASection() {
   return (
     <section
       id="cta-section"
-      className="group/cta relative section-bg-cta py-32 md:py-48 overflow-hidden"
+      className="relative bg-[#060608] pt-32 pb-52 md:pt-48 md:pb-64 overflow-hidden"
     >
-      {/* Orange gradient bloom */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 flex items-center justify-center"
-      >
-        <div className="cta-bloom h-[800px] w-[800px] rounded-full bg-[radial-gradient(circle,_rgba(255,83,0,0.08)_0%,_transparent_70%)] md:animate-[cta-bloom-pulse_8s_ease-in-out_infinite] motion-reduce:animate-none" />
-      </div>
-
-      {/* Shruggie watermark */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 flex items-center justify-center select-none"
-      >
-        <span className="font-display text-[120px] leading-none text-white opacity-[0.04] md:opacity-[0.03] md:transition-opacity md:duration-[600ms] md:group-hover/cta:opacity-[0.08]">
-          ¯\_(ツ)_/¯
-        </span>
-      </div>
+      {/* Interactive particle sky — full section background */}
+      <ParticleSky className="absolute inset-0 h-full w-full" />
 
       {/* Content */}
       <div className="container-narrow relative z-10 text-center">
@@ -54,6 +41,9 @@ export default function CTASection() {
           </div>
         </ScrollReveal>
       </div>
+
+      {/* Knoxville skyline — anchored to bottom */}
+      <KnoxvilleSkyline className="absolute bottom-0 left-0 w-full z-[1]" />
     </section>
   );
 }

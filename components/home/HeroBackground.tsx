@@ -47,6 +47,9 @@ const LINE_ALPHA = 0.18;
 /** Ambient drift speed (px/frame at 60fps) — used on mobile / reduced motion fallback */
 const DRIFT_SPEED = 0.4;
 
+/** Radius of ambient drift orbit — multiplied by canvas dimensions */
+const AMBIENT_DRIFT_RADIUS = { x: 0.25, y: 0.2 };
+
 /* ── Shruggie Configuration ─────────────────────────────────────────────── */
 
 /** How close the focal point must be to a shruggie dot to count as "revealed" */
@@ -79,14 +82,17 @@ const SHRUGGIE_RENDER_SIZE = 110;
 /** Dot sampling step — smaller = more dots = sharper image */
 const SHRUGGIE_SAMPLE_STEP = 2;
 
-/** Shruggie dot color — white to contrast against the green grid (dark mode) */
-const SHRUGGIE_COLOR_DARK = { r: 255, g: 255, b: 255 };
-
-/** Shruggie dot color — dark ShruggieTech green for light backgrounds */
-const SHRUGGIE_COLOR_LIGHT = { r: 22, g: 130, b: 68 };
+/** Shruggie dot color — brand green regardless of theme */
+const SHRUGGIE_COLOR = { r: 43, g: 204, b: 115 };
 
 /** Max opacity of shruggie dots when fully revealed */
 const SHRUGGIE_MAX_ALPHA = 0.95;
+
+/** Corner inset from canvas edge for shruggie positioning */
+const SHRUGGIE_CORNER_INSET = 80;
+
+/** Mobile breakpoint — canvas width below which mobile mode is active */
+const MOBILE_CANVAS_BREAKPOINT = 768;
 
 /* ── Shruggie Dot Sampling ──────────────────────────────────────────────── */
 
@@ -154,15 +160,17 @@ function sampleShruggieFromImage(img: HTMLImageElement): Point[] {
   return points;
 }
 
-/** Pick a random position that keeps the shruggie fully in-bounds and away from hero content */
-function randomShruggiePosition(
+/**
+ * Compute (x, y) for a corner index (0=top-left, 1=top-right, 2=bottom-left, 3=bottom-right).
+ * Accounts for the shruggie point cloud bounding box so the entire image stays visible.
+ */
+function cornerPosition(
+  corner: number,
   w: number,
   h: number,
-  points: Point[],
-  avoidX?: number,
-  avoidY?: number
+  points: Point[]
 ): { x: number; y: number } {
-  // Find the bounding box of the points
+  // Find the bounding box of the point cloud
   let minX = Infinity,
     maxX = -Infinity,
     minY = Infinity,
@@ -174,48 +182,30 @@ function randomShruggiePosition(
     if (p.y > maxY) maxY = p.y;
   }
 
-  const pad = 60;
-  const halfW = (maxX - minX) / 2 + pad;
-  const halfH = (maxY - minY) / 2 + pad;
+  const halfW = (maxX - minX) / 2;
+  const halfH = (maxY - minY) / 2;
 
-  // Exclusion zone: hero content area (text + buttons) sits roughly
-  // in the left-center of the canvas — avoid spawning there
-  const exclusionLeft = w * 0.02;
-  const exclusionRight = w * 0.65;
-  const exclusionTop = h * 0.2;
-  const exclusionBottom = h * 0.85;
+  const left = SHRUGGIE_CORNER_INSET + halfW;
+  const right = w - SHRUGGIE_CORNER_INSET - halfW;
+  const top = SHRUGGIE_CORNER_INSET + halfH;
+  const bottom = h - SHRUGGIE_CORNER_INSET - halfH;
 
-  for (let attempts = 0; attempts < 100; attempts++) {
-    const x = halfW + Math.random() * (w - 2 * halfW);
-    const y = halfH + Math.random() * (h - 2 * halfH);
-
-    // Avoid the hero content exclusion zone
-    if (
-      x > exclusionLeft &&
-      x < exclusionRight &&
-      y > exclusionTop &&
-      y < exclusionBottom
-    ) {
-      continue;
-    }
-
-    // Try to avoid placing near the current avoid position
-    if (avoidX !== undefined && avoidY !== undefined) {
-      const dx = x - avoidX;
-      const dy = y - avoidY;
-      if (Math.sqrt(dx * dx + dy * dy) < Math.min(w, h) * 0.3) {
-        continue;
-      }
-    }
-
-    return { x, y };
+  switch (corner) {
+    case 0: return { x: left, y: top };       // top-left
+    case 1: return { x: right, y: top };      // top-right
+    case 2: return { x: left, y: bottom };    // bottom-left
+    case 3: return { x: right, y: bottom };   // bottom-right
+    default: return { x: left, y: top };
   }
+}
 
-  // Fallback
-  return {
-    x: w * 0.3 + Math.random() * w * 0.4,
-    y: h * 0.3 + Math.random() * h * 0.4,
-  };
+/** Pick a random corner (0-3), optionally excluding a specific corner */
+function pickCorner(excludeCorner?: number): number {
+  if (excludeCorner === undefined) {
+    return Math.floor(Math.random() * 4);
+  }
+  const options = [0, 1, 2, 3].filter((c) => c !== excludeCorner);
+  return options[Math.floor(Math.random() * options.length)];
 }
 
 /* ── Shruggie State ─────────────────────────────────────────────────────── */
@@ -248,6 +238,8 @@ interface ShruggieState {
   wiggleY: number;
   /** Has been initialized */
   initialized: boolean;
+  /** Current corner index (0-3) */
+  currentCorner: number;
 }
 
 /* ── Component ──────────────────────────────────────────────────────────── */
@@ -260,6 +252,8 @@ export default function HeroBackground() {
   const reducedMotionRef = useRef(false);
   const isTouchRef = useRef(false);
   const isDarkRef = useRef(true);
+
+  const isMobileCanvasRef = useRef(false);
 
   const shruggieRef = useRef<ShruggieState>({
     points: [],
@@ -277,6 +271,7 @@ export default function HeroBackground() {
     wiggleX: 0,
     wiggleY: 0,
     initialized: false,
+    currentCorner: 0,
   });
 
   const draw = useCallback(() => {
@@ -299,6 +294,13 @@ export default function HeroBackground() {
     ctx.save();
     ctx.scale(dpr, dpr);
 
+    const isMobile = isMobileCanvasRef.current;
+
+    // Mobile multipliers for reduced spotlight
+    const driftRadiusMult = isMobile ? 0.6 : 1;
+    const hoverAlphaMult = isMobile ? 0.7 : 1;
+    const effectiveHoverAlpha = DOT_HOVER_ALPHA * hoverAlphaMult;
+
     // Determine focal point: mouse position or ambient drift
     let focalX: number;
     let focalY: number;
@@ -312,8 +314,8 @@ export default function HeroBackground() {
       // Ambient drift for touch / no-mouse
       const drift = driftRef.current;
       drift.angle += DRIFT_SPEED * 0.005;
-      drift.x = w * 0.5 + Math.cos(drift.angle) * w * 0.25;
-      drift.y = h * 0.5 + Math.sin(drift.angle * 0.7) * h * 0.2;
+      drift.x = w * 0.5 + Math.cos(drift.angle) * w * AMBIENT_DRIFT_RADIUS.x * driftRadiusMult;
+      drift.y = h * 0.5 + Math.sin(drift.angle * 0.7) * h * AMBIENT_DRIFT_RADIUS.y * driftRadiusMult;
       focalX = drift.x;
       focalY = drift.y;
       hasFocus = true;
@@ -323,9 +325,9 @@ export default function HeroBackground() {
       hasFocus = false;
     }
 
-    // ── Shruggie logic ───────────────────────────────────────────────
+    // ── Shruggie logic (desktop only) ─────────────────────────────────
     // Handle flee animation
-    if (shrug.fleeing) {
+    if (!isMobile && shrug.fleeing) {
       const elapsed = now - shrug.fleeStartTime;
       const t = Math.min(elapsed / SHRUGGIE_FLEE_DURATION, 1);
       // Ease-in-out cubic
@@ -348,7 +350,7 @@ export default function HeroBackground() {
     }
 
     // Check if spotlight is over any shruggie dots
-    if (shrug.initialized && hasFocus && !shrug.fleeing) {
+    if (!isMobile && shrug.initialized && hasFocus && !shrug.fleeing) {
       let illuminatedCount = 0;
       for (const p of shrug.points) {
         const px = shrug.x + p.x;
@@ -392,21 +394,17 @@ export default function HeroBackground() {
         shrug.wiggleY = 0;
       }
 
-      // After delay, trigger flee
+      // After delay, trigger flee to a different corner
       if (shrug.revealed && timeSinceReveal > SHRUGGIE_HIDE_DELAY) {
-        const newPos = randomShruggiePosition(
-          w,
-          h,
-          shrug.points,
-          shrug.x,
-          shrug.y
-        );
+        const newCorner = pickCorner(shrug.currentCorner);
+        const newPos = cornerPosition(newCorner, w, h, shrug.points);
         shrug.fleeing = true;
         shrug.fleeStartTime = now;
         shrug.fleeFromX = shrug.x;
         shrug.fleeFromY = shrug.y;
         shrug.fleeToX = newPos.x;
         shrug.fleeToY = newPos.y;
+        shrug.currentCorner = newCorner;
       }
     }
 
@@ -442,7 +440,7 @@ export default function HeroBackground() {
             // Ease-out cubic
             const ease = 1 - (1 - t) * (1 - t) * (1 - t);
             alpha =
-              DOT_BASE_ALPHA + (DOT_HOVER_ALPHA - DOT_BASE_ALPHA) * ease;
+              DOT_BASE_ALPHA + (effectiveHoverAlpha - DOT_BASE_ALPHA) * ease;
             radius = DOT_RADIUS + 1.0 * ease;
             activeDots.push({ x, y, alpha });
           }
@@ -494,7 +492,7 @@ export default function HeroBackground() {
             LINE_ALPHA *
             (1 - dist / LINE_MAX_DISTANCE) *
             Math.min(a.alpha, b.alpha) *
-            (1 / DOT_HOVER_ALPHA);
+            (1 / effectiveHoverAlpha);
 
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
@@ -506,8 +504,8 @@ export default function HeroBackground() {
       }
     }
 
-    // ── Draw shruggie dots ──────────────────────────────────────────
-    if (shrug.initialized && shrug.revealAmount > 0) {
+    // ── Draw shruggie dots (desktop only) ────────────────────────────
+    if (!isMobile && shrug.initialized && shrug.revealAmount > 0) {
       for (const p of shrug.points) {
         const px = shrug.x + p.x + shrug.wiggleX;
         const py = shrug.y + p.y + shrug.wiggleY;
@@ -532,13 +530,11 @@ export default function HeroBackground() {
         const alpha = SHRUGGIE_MAX_ALPHA * dotReveal;
         const radius = 0.8 + 0.4 * dotReveal;
 
-        // Pick color based on current theme
-        const sc = isDarkRef.current ? SHRUGGIE_COLOR_DARK : SHRUGGIE_COLOR_LIGHT;
-
+        // Brand green shruggie dots regardless of theme
         // Crisp dot — no glow, just a clean circle
         ctx.beginPath();
         ctx.arc(px, py, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${sc.r}, ${sc.g}, ${sc.b}, ${alpha})`;
+        ctx.fillStyle = `rgba(${SHRUGGIE_COLOR.r}, ${SHRUGGIE_COLOR.g}, ${SHRUGGIE_COLOR.b}, ${alpha})`;
         ctx.fill();
       }
     }
@@ -591,17 +587,29 @@ export default function HeroBackground() {
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
 
+      // Detect mobile canvas
+      isMobileCanvasRef.current = rect.width < MOBILE_CANVAS_BREAKPOINT;
+
       // Re-initialize shruggie position on resize
       const shrug = shruggieRef.current;
       if (shrug.initialized) {
-        const w = rect.width;
-        const h = rect.height;
-        const pos = randomShruggiePosition(w, h, shrug.points);
-        shrug.x = pos.x;
-        shrug.y = pos.y;
-        shrug.revealed = false;
-        shrug.revealAmount = 0;
-        shrug.fleeing = false;
+        if (isMobileCanvasRef.current) {
+          // Reset shruggie state on mobile — it won't render
+          shrug.revealed = false;
+          shrug.revealAmount = 0;
+          shrug.fleeing = false;
+        } else {
+          const w = rect.width;
+          const h = rect.height;
+          const corner = pickCorner();
+          const pos = cornerPosition(corner, w, h, shrug.points);
+          shrug.x = pos.x;
+          shrug.y = pos.y;
+          shrug.currentCorner = corner;
+          shrug.revealed = false;
+          shrug.revealAmount = 0;
+          shrug.fleeing = false;
+        }
       }
 
       // If reduced motion, just re-draw the static grid
@@ -614,24 +622,31 @@ export default function HeroBackground() {
     resizeObserver.observe(canvas);
     resize();
 
-    // Load shruggie icon image and initialize point cloud
-    loadImage(SHRUGGIE_IMAGE_SRC)
-      .then((img) => {
-        const shrug = shruggieRef.current;
-        shrug.points = sampleShruggieFromImage(img);
-        const rect = canvas.getBoundingClientRect();
-        const pos = randomShruggiePosition(
-          rect.width,
-          rect.height,
-          shrug.points
-        );
-        shrug.x = pos.x;
-        shrug.y = pos.y;
-        shrug.initialized = true;
-      })
-      .catch(() => {
-        // Silently ignore — easter egg just won't appear
-      });
+    // Load shruggie icon image and initialize point cloud (skip on mobile)
+    if (!isMobileCanvasRef.current) {
+      loadImage(SHRUGGIE_IMAGE_SRC)
+        .then((img) => {
+          // Skip initialization if viewport became mobile while loading
+          if (isMobileCanvasRef.current) return;
+          const shrug = shruggieRef.current;
+          shrug.points = sampleShruggieFromImage(img);
+          const rect = canvas.getBoundingClientRect();
+          const corner = pickCorner();
+          const pos = cornerPosition(
+            corner,
+            rect.width,
+            rect.height,
+            shrug.points
+          );
+          shrug.x = pos.x;
+          shrug.y = pos.y;
+          shrug.currentCorner = corner;
+          shrug.initialized = true;
+        })
+        .catch(() => {
+          // Silently ignore — easter egg just won't appear
+        });
+    }
 
     // Mouse tracking on window — works even when cursor is over hero text
     const handleMouseMove = (e: MouseEvent) => {

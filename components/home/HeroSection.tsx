@@ -27,7 +27,7 @@ export default function HeroSection() {
 
       <div className="container-content relative z-10 flex min-h-[85vh] flex-col items-start justify-center py-32 md:py-40">
         <ScrollReveal>
-          <h1 className="max-w-4xl font-display text-display-xl font-bold text-brand-white">
+          <h1 className="max-w-4xl font-display text-display-md md:text-display-xl font-bold text-brand-white">
             Your vision deserves better than a template.
           </h1>
         </ScrollReveal>

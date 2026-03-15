@@ -2,143 +2,17 @@
  * CSS animations for ServiceIllustrationsLarge.
  *
  * Animation lifecycle:
- *   - All animations start paused.
- *   - When the parent has `.is-active`, animations play.
+ *   - All animated elements start in their initial (hidden) state.
+ *   - When a parent element has the `.is-animating` class, animations
+ *     play from the beginning.
+ *   - Removing `.is-animating` resets elements to their initial state.
+ *   - Re-adding `.is-animating` (after a frame gap) restarts all
+ *     animations from scratch.
  *   - `prefers-reduced-motion` disables all animations; elements render
  *     in their final (end) state immediately.
  *
  * Entrance animations complete within ~2–3 s.
  */
-
-/* ── Global animation control ────────────────────────────────────────── */
-
-/* Default: all animated elements are paused */
-.logoMark,
-.logoMarkInner,
-.logoMarkDot,
-.swatch1, .swatch2, .swatch3, .swatch4, .swatch5,
-.typeLine1, .typeLine2, .typeLine3, .typeLine4,
-.typeLineSmall1, .typeLineSmall2, .typeLineSmall3,
-.guidelineV1, .guidelineV2, .guidelineH1, .guidelineH2,
-.crosshairV, .crosshairH,
-.cornerMark,
-.editorFrame,
-.editorDot,
-.codeLine0, .codeLine1, .codeLine2, .codeLine3, .codeLine4,
-.codeLine5, .codeLine6, .codeLine7, .codeLine8, .codeLine9,
-.block0, .block1, .block2,
-.connLine1, .connLine2,
-.connDot1, .connDot2, .connDot3, .connDot4,
-.editorLink,
-.bracketLeft,
-.archLine,
-.dashFrame,
-.lineChart, .lineChartArea,
-.linePoint0, .linePoint1, .linePoint2, .linePoint3, .linePoint4,
-.bar0, .bar1, .bar2, .bar3, .bar4, .bar5, .bar6, .bar7,
-.funnel,
-.funnelDot0, .funnelDot1, .funnelDot2, .funnelDot3, .funnelDot4, .funnelDot5,
-.badge0, .badge1, .badge2,
-.neuralConn0, .neuralConn1, .neuralConn2,
-.neuralNode0, .neuralNode1, .neuralNode2, .neuralNode3,
-.dataFlow0, .dataFlow1, .dataFlow2, .dataFlow3,
-.dataFlow4, .dataFlow5, .dataFlow6, .dataFlow7,
-.outputPulse {
-  animation-play-state: paused;
-  animation-fill-mode: both;
-}
-
-/* When parent has .is-active, run all animations */
-:global(.is-active) .logoMark,
-:global(.is-active) .logoMarkInner,
-:global(.is-active) .logoMarkDot,
-:global(.is-active) .swatch1,
-:global(.is-active) .swatch2,
-:global(.is-active) .swatch3,
-:global(.is-active) .swatch4,
-:global(.is-active) .swatch5,
-:global(.is-active) .typeLine1,
-:global(.is-active) .typeLine2,
-:global(.is-active) .typeLine3,
-:global(.is-active) .typeLine4,
-:global(.is-active) .typeLineSmall1,
-:global(.is-active) .typeLineSmall2,
-:global(.is-active) .typeLineSmall3,
-:global(.is-active) .guidelineV1,
-:global(.is-active) .guidelineV2,
-:global(.is-active) .guidelineH1,
-:global(.is-active) .guidelineH2,
-:global(.is-active) .crosshairV,
-:global(.is-active) .crosshairH,
-:global(.is-active) .cornerMark,
-:global(.is-active) .editorFrame,
-:global(.is-active) .editorDot,
-:global(.is-active) .codeLine0,
-:global(.is-active) .codeLine1,
-:global(.is-active) .codeLine2,
-:global(.is-active) .codeLine3,
-:global(.is-active) .codeLine4,
-:global(.is-active) .codeLine5,
-:global(.is-active) .codeLine6,
-:global(.is-active) .codeLine7,
-:global(.is-active) .codeLine8,
-:global(.is-active) .codeLine9,
-:global(.is-active) .block0,
-:global(.is-active) .block1,
-:global(.is-active) .block2,
-:global(.is-active) .connLine1,
-:global(.is-active) .connLine2,
-:global(.is-active) .connDot1,
-:global(.is-active) .connDot2,
-:global(.is-active) .connDot3,
-:global(.is-active) .connDot4,
-:global(.is-active) .editorLink,
-:global(.is-active) .bracketLeft,
-:global(.is-active) .archLine,
-:global(.is-active) .dashFrame,
-:global(.is-active) .lineChart,
-:global(.is-active) .lineChartArea,
-:global(.is-active) .linePoint0,
-:global(.is-active) .linePoint1,
-:global(.is-active) .linePoint2,
-:global(.is-active) .linePoint3,
-:global(.is-active) .linePoint4,
-:global(.is-active) .bar0,
-:global(.is-active) .bar1,
-:global(.is-active) .bar2,
-:global(.is-active) .bar3,
-:global(.is-active) .bar4,
-:global(.is-active) .bar5,
-:global(.is-active) .bar6,
-:global(.is-active) .bar7,
-:global(.is-active) .funnel,
-:global(.is-active) .funnelDot0,
-:global(.is-active) .funnelDot1,
-:global(.is-active) .funnelDot2,
-:global(.is-active) .funnelDot3,
-:global(.is-active) .funnelDot4,
-:global(.is-active) .funnelDot5,
-:global(.is-active) .badge0,
-:global(.is-active) .badge1,
-:global(.is-active) .badge2,
-:global(.is-active) .neuralConn0,
-:global(.is-active) .neuralConn1,
-:global(.is-active) .neuralConn2,
-:global(.is-active) .neuralNode0,
-:global(.is-active) .neuralNode1,
-:global(.is-active) .neuralNode2,
-:global(.is-active) .neuralNode3,
-:global(.is-active) .dataFlow0,
-:global(.is-active) .dataFlow1,
-:global(.is-active) .dataFlow2,
-:global(.is-active) .dataFlow3,
-:global(.is-active) .dataFlow4,
-:global(.is-active) .dataFlow5,
-:global(.is-active) .dataFlow6,
-:global(.is-active) .dataFlow7,
-:global(.is-active) .outputPulse {
-  animation-play-state: running;
-}
 
 /* ── Reduced-motion: skip all animations, show final state ──────────── */
 
@@ -183,205 +57,163 @@
    A. Strategy & Brand — "Brand System Assembly"
    ════════════════════════════════════════════════════════════════════════ */
 
-/* Logo mark — stroke-dasharray draw-in */
-.logoMark {
-  stroke-dasharray: 700;
-  stroke-dashoffset: 700;
-  animation: drawStroke 1.6s ease-out 0.2s forwards;
-}
+/* Initial states */
+.logoMark     { stroke-dasharray: 700; stroke-dashoffset: 700; }
+.logoMarkInner { stroke-dasharray: 400; stroke-dashoffset: 400; }
+.logoMarkDot  { transform-origin: center; transform: scale(0); }
+.swatch1, .swatch2, .swatch3, .swatch4, .swatch5 { opacity: 0; }
+.typeLine1, .typeLine2, .typeLine3, .typeLine4 { opacity: 0; }
+.typeLineSmall1, .typeLineSmall2, .typeLineSmall3 { opacity: 0; }
+.guidelineV1, .guidelineV2, .guidelineH1, .guidelineH2 { opacity: 0; }
+.crosshairV, .crosshairH { opacity: 0; }
+.cornerMark { opacity: 0; }
 
-.logoMarkInner {
-  stroke-dasharray: 400;
-  stroke-dashoffset: 400;
-  animation: drawStroke 1.4s ease-out 0.6s forwards;
-}
-
-.logoMarkDot {
-  transform-origin: center;
-  transform: scale(0);
-  animation: popIn 0.4s ease-out 1.2s forwards;
-}
-
-/* Color swatches — staggered fade-in */
-.swatch1 { opacity: 0; animation: fadeSlideUp 0.5s ease-out 0.4s forwards; }
-.swatch2 { opacity: 0; animation: fadeSlideUp 0.5s ease-out 0.55s forwards; }
-.swatch3 { opacity: 0; animation: fadeSlideUp 0.5s ease-out 0.7s forwards; }
-.swatch4 { opacity: 0; animation: fadeSlideUp 0.5s ease-out 0.85s forwards; }
-.swatch5 { opacity: 0; animation: fadeSlideUp 0.5s ease-out 1.0s forwards; }
-
-/* Typography specimens — slide in from right */
-.typeLine1  { opacity: 0; animation: slideFromRight 0.6s ease-out 1.0s forwards; }
-.typeLine2  { opacity: 0; animation: slideFromRight 0.6s ease-out 1.1s forwards; }
-.typeLine3  { opacity: 0; animation: slideFromRight 0.6s ease-out 1.2s forwards; }
-.typeLine4  { opacity: 0; animation: slideFromRight 0.6s ease-out 1.3s forwards; }
-.typeLineSmall1 { opacity: 0; animation: slideFromRight 0.5s ease-out 1.4s forwards; }
-.typeLineSmall2 { opacity: 0; animation: slideFromRight 0.5s ease-out 1.5s forwards; }
-.typeLineSmall3 { opacity: 0; animation: slideFromRight 0.5s ease-out 1.6s forwards; }
-
-/* Guidelines — fade in */
-.guidelineV1 { opacity: 0; animation: fadeIn 0.8s ease-out 0.1s forwards; }
-.guidelineV2 { opacity: 0; animation: fadeIn 0.8s ease-out 0.2s forwards; }
-.guidelineH1 { opacity: 0; animation: fadeIn 0.8s ease-out 0.3s forwards; }
-.guidelineH2 { opacity: 0; animation: fadeIn 0.8s ease-out 0.4s forwards; }
-
-/* Crosshairs — fade in */
-.crosshairV { opacity: 0; animation: fadeIn 0.6s ease-out 1.0s forwards; }
-.crosshairH { opacity: 0; animation: fadeIn 0.6s ease-out 1.1s forwards; }
-
-/* Corner marks */
-.cornerMark { opacity: 0; animation: fadeIn 0.6s ease-out 0.1s forwards; }
+/* Animated states */
+:global(.is-animating) .logoMark      { animation: drawStroke 1.6s ease-out 0.2s both; }
+:global(.is-animating) .logoMarkInner  { animation: drawStroke 1.4s ease-out 0.6s both; }
+:global(.is-animating) .logoMarkDot   { animation: popIn 0.4s ease-out 1.2s both; }
+:global(.is-animating) .swatch1 { animation: fadeSlideUp 0.5s ease-out 0.4s both; }
+:global(.is-animating) .swatch2 { animation: fadeSlideUp 0.5s ease-out 0.55s both; }
+:global(.is-animating) .swatch3 { animation: fadeSlideUp 0.5s ease-out 0.7s both; }
+:global(.is-animating) .swatch4 { animation: fadeSlideUp 0.5s ease-out 0.85s both; }
+:global(.is-animating) .swatch5 { animation: fadeSlideUp 0.5s ease-out 1.0s both; }
+:global(.is-animating) .typeLine1  { animation: slideFromRight 0.6s ease-out 1.0s both; }
+:global(.is-animating) .typeLine2  { animation: slideFromRight 0.6s ease-out 1.1s both; }
+:global(.is-animating) .typeLine3  { animation: slideFromRight 0.6s ease-out 1.2s both; }
+:global(.is-animating) .typeLine4  { animation: slideFromRight 0.6s ease-out 1.3s both; }
+:global(.is-animating) .typeLineSmall1 { animation: slideFromRight 0.5s ease-out 1.4s both; }
+:global(.is-animating) .typeLineSmall2 { animation: slideFromRight 0.5s ease-out 1.5s both; }
+:global(.is-animating) .typeLineSmall3 { animation: slideFromRight 0.5s ease-out 1.6s both; }
+:global(.is-animating) .guidelineV1 { animation: fadeIn 0.8s ease-out 0.1s both; }
+:global(.is-animating) .guidelineV2 { animation: fadeIn 0.8s ease-out 0.2s both; }
+:global(.is-animating) .guidelineH1 { animation: fadeIn 0.8s ease-out 0.3s both; }
+:global(.is-animating) .guidelineH2 { animation: fadeIn 0.8s ease-out 0.4s both; }
+:global(.is-animating) .crosshairV { animation: fadeIn 0.6s ease-out 1.0s both; }
+:global(.is-animating) .crosshairH { animation: fadeIn 0.6s ease-out 1.1s both; }
+:global(.is-animating) .cornerMark { animation: fadeIn 0.6s ease-out 0.1s both; }
 
 
 /* ════════════════════════════════════════════════════════════════════════
    B. Development — "Code Architecture"
    ════════════════════════════════════════════════════════════════════════ */
 
-/* Editor frame — fade in */
-.editorFrame { opacity: 0; animation: fadeIn 0.6s ease-out 0.1s forwards; }
-.editorDot   { opacity: 0; animation: popIn 0.3s ease-out 0.4s forwards; }
-
-/* Code lines — staggered write-in from left (scaleX) */
-.codeLine0 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 0.5s forwards; }
-.codeLine1 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 0.62s forwards; }
-.codeLine2 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 0.74s forwards; }
-.codeLine3 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 0.86s forwards; }
-.codeLine4 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 0.98s forwards; }
-.codeLine5 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 1.10s forwards; }
-.codeLine6 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 1.22s forwards; }
-.codeLine7 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 1.34s forwards; }
-.codeLine8 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 1.46s forwards; }
-.codeLine9 { opacity: 0; transform: scaleX(0); transform-origin: left; animation: writeIn 0.4s ease-out 1.58s forwards; }
-
-/* System blocks — slide in from right */
-.block0 { opacity: 0; animation: slideFromRight 0.5s ease-out 0.6s forwards; }
-.block1 { opacity: 0; animation: slideFromRight 0.5s ease-out 0.9s forwards; }
-.block2 { opacity: 0; animation: slideFromRight 0.5s ease-out 1.2s forwards; }
-
-/* Connection lines — draw in after blocks */
-.connLine1 {
-  stroke-dasharray: 60;
-  stroke-dashoffset: 60;
-  animation: drawStroke 0.5s ease-out 1.5s forwards;
+/* Initial states */
+.editorFrame { opacity: 0; }
+.editorDot   { opacity: 0; }
+.codeLine0, .codeLine1, .codeLine2, .codeLine3, .codeLine4,
+.codeLine5, .codeLine6, .codeLine7, .codeLine8, .codeLine9 {
+  opacity: 0; transform: scaleX(0); transform-origin: left;
 }
-.connLine2 {
-  stroke-dasharray: 60;
-  stroke-dashoffset: 60;
-  animation: drawStroke 0.5s ease-out 1.7s forwards;
-}
+.block0, .block1, .block2 { opacity: 0; }
+.connLine1 { stroke-dasharray: 60; stroke-dashoffset: 60; }
+.connLine2 { stroke-dasharray: 60; stroke-dashoffset: 60; }
+.connDot1, .connDot2, .connDot3, .connDot4 { opacity: 0; }
+.editorLink { stroke-dasharray: 100; stroke-dashoffset: 100; }
+.bracketLeft { stroke-dasharray: 300; stroke-dashoffset: 300; }
+.archLine { opacity: 0; }
 
-/* Connection dots — pop in */
-.connDot1 { opacity: 0; animation: popIn 0.3s ease-out 1.4s forwards; }
-.connDot2 { opacity: 0; animation: popIn 0.3s ease-out 1.6s forwards; }
-.connDot3 { opacity: 0; animation: popIn 0.3s ease-out 1.6s forwards; }
-.connDot4 { opacity: 0; animation: popIn 0.3s ease-out 1.8s forwards; }
-
-/* Editor link and bracket */
-.editorLink {
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  animation: drawStroke 0.6s ease-out 1.8s forwards;
-}
-.bracketLeft {
-  stroke-dasharray: 300;
-  stroke-dashoffset: 300;
-  animation: drawStroke 1.0s ease-out 0.3s forwards;
-}
-
-/* Architecture lines */
-.archLine { opacity: 0; animation: fadeIn 0.5s ease-out 2.0s forwards; }
+/* Animated states */
+:global(.is-animating) .editorFrame { animation: fadeIn 0.6s ease-out 0.1s both; }
+:global(.is-animating) .editorDot   { animation: popIn 0.3s ease-out 0.4s both; }
+:global(.is-animating) .codeLine0 { animation: writeIn 0.4s ease-out 0.5s both; }
+:global(.is-animating) .codeLine1 { animation: writeIn 0.4s ease-out 0.62s both; }
+:global(.is-animating) .codeLine2 { animation: writeIn 0.4s ease-out 0.74s both; }
+:global(.is-animating) .codeLine3 { animation: writeIn 0.4s ease-out 0.86s both; }
+:global(.is-animating) .codeLine4 { animation: writeIn 0.4s ease-out 0.98s both; }
+:global(.is-animating) .codeLine5 { animation: writeIn 0.4s ease-out 1.10s both; }
+:global(.is-animating) .codeLine6 { animation: writeIn 0.4s ease-out 1.22s both; }
+:global(.is-animating) .codeLine7 { animation: writeIn 0.4s ease-out 1.34s both; }
+:global(.is-animating) .codeLine8 { animation: writeIn 0.4s ease-out 1.46s both; }
+:global(.is-animating) .codeLine9 { animation: writeIn 0.4s ease-out 1.58s both; }
+:global(.is-animating) .block0 { animation: slideFromRight 0.5s ease-out 0.6s both; }
+:global(.is-animating) .block1 { animation: slideFromRight 0.5s ease-out 0.9s both; }
+:global(.is-animating) .block2 { animation: slideFromRight 0.5s ease-out 1.2s both; }
+:global(.is-animating) .connLine1 { animation: drawStroke 0.5s ease-out 1.5s both; }
+:global(.is-animating) .connLine2 { animation: drawStroke 0.5s ease-out 1.7s both; }
+:global(.is-animating) .connDot1 { animation: popIn 0.3s ease-out 1.4s both; }
+:global(.is-animating) .connDot2 { animation: popIn 0.3s ease-out 1.6s both; }
+:global(.is-animating) .connDot3 { animation: popIn 0.3s ease-out 1.6s both; }
+:global(.is-animating) .connDot4 { animation: popIn 0.3s ease-out 1.8s both; }
+:global(.is-animating) .editorLink { animation: drawStroke 0.6s ease-out 1.8s both; }
+:global(.is-animating) .bracketLeft { animation: drawStroke 1.0s ease-out 0.3s both; }
+:global(.is-animating) .archLine { animation: fadeIn 0.5s ease-out 2.0s both; }
 
 
 /* ════════════════════════════════════════════════════════════════════════
    C. Marketing — "Growth Dashboard"
    ════════════════════════════════════════════════════════════════════════ */
 
-/* Dashboard frame */
-.dashFrame { opacity: 0; animation: fadeIn 0.5s ease-out 0.1s forwards; }
-
-/* Line chart — path draw-in */
-.lineChart {
-  stroke-dasharray: 600;
-  stroke-dashoffset: 600;
-  animation: drawStroke 1.8s ease-out 0.4s forwards;
+/* Initial states */
+.dashFrame { opacity: 0; }
+.lineChart { stroke-dasharray: 600; stroke-dashoffset: 600; }
+.lineChartArea { opacity: 0; }
+.linePoint0, .linePoint1, .linePoint2, .linePoint3, .linePoint4 { opacity: 0; }
+.bar0, .bar1, .bar2, .bar3, .bar4, .bar5, .bar6, .bar7 {
+  transform: scaleY(0); transform-origin: bottom;
 }
-.lineChartArea { opacity: 0; animation: fadeIn 0.6s ease-out 1.6s forwards; }
+.funnel { opacity: 0; }
+.funnelDot0, .funnelDot1, .funnelDot2, .funnelDot3, .funnelDot4, .funnelDot5 { opacity: 0; }
+.badge0, .badge1, .badge2 { transform: scale(0); transform-origin: center; }
 
-/* Line data points — staggered pop-in */
-.linePoint0 { opacity: 0; animation: popIn 0.3s ease-out 0.5s forwards; }
-.linePoint1 { opacity: 0; animation: popIn 0.3s ease-out 0.85s forwards; }
-.linePoint2 { opacity: 0; animation: popIn 0.3s ease-out 1.2s forwards; }
-.linePoint3 { opacity: 0; animation: popIn 0.3s ease-out 1.55s forwards; }
-.linePoint4 { opacity: 0; animation: popIn 0.3s ease-out 1.9s forwards; }
-
-/* Bar chart — bars grow from bottom (scaleY) */
-.bar0 { transform: scaleY(0); transform-origin: bottom; animation: growUp 0.4s ease-out 0.6s forwards; }
-.bar1 { transform: scaleY(0); transform-origin: bottom; animation: growUp 0.4s ease-out 0.72s forwards; }
-.bar2 { transform: scaleY(0); transform-origin: bottom; animation: growUp 0.4s ease-out 0.84s forwards; }
-.bar3 { transform: scaleY(0); transform-origin: bottom; animation: growUp 0.4s ease-out 0.96s forwards; }
-.bar4 { transform: scaleY(0); transform-origin: bottom; animation: growUp 0.4s ease-out 1.08s forwards; }
-.bar5 { transform: scaleY(0); transform-origin: bottom; animation: growUp 0.4s ease-out 1.20s forwards; }
-.bar6 { transform: scaleY(0); transform-origin: bottom; animation: growUp 0.4s ease-out 1.32s forwards; }
-.bar7 { transform: scaleY(0); transform-origin: bottom; animation: growUp 0.4s ease-out 1.44s forwards; }
-
-/* Funnel */
-.funnel { opacity: 0; animation: fadeIn 0.6s ease-out 0.8s forwards; }
-
-/* Funnel flow dots — staggered fade + slide down */
-.funnelDot0 { opacity: 0; animation: fadeSlideDown 0.4s ease-out 1.0s forwards; }
-.funnelDot1 { opacity: 0; animation: fadeSlideDown 0.4s ease-out 1.15s forwards; }
-.funnelDot2 { opacity: 0; animation: fadeSlideDown 0.4s ease-out 1.3s forwards; }
-.funnelDot3 { opacity: 0; animation: fadeSlideDown 0.4s ease-out 1.45s forwards; }
-.funnelDot4 { opacity: 0; animation: fadeSlideDown 0.4s ease-out 1.6s forwards; }
-.funnelDot5 { opacity: 0; animation: fadeSlideDown 0.4s ease-out 1.75s forwards; }
-
-/* Notification badges — scale pop-in */
-.badge0 { transform: scale(0); transform-origin: center; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 2.0s forwards; }
-.badge1 { transform: scale(0); transform-origin: center; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 2.2s forwards; }
-.badge2 { transform: scale(0); transform-origin: center; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 2.4s forwards; }
+/* Animated states */
+:global(.is-animating) .dashFrame { animation: fadeIn 0.5s ease-out 0.1s both; }
+:global(.is-animating) .lineChart { animation: drawStroke 1.8s ease-out 0.4s both; }
+:global(.is-animating) .lineChartArea { animation: fadeIn 0.6s ease-out 1.6s both; }
+:global(.is-animating) .linePoint0 { animation: popIn 0.3s ease-out 0.5s both; }
+:global(.is-animating) .linePoint1 { animation: popIn 0.3s ease-out 0.85s both; }
+:global(.is-animating) .linePoint2 { animation: popIn 0.3s ease-out 1.2s both; }
+:global(.is-animating) .linePoint3 { animation: popIn 0.3s ease-out 1.55s both; }
+:global(.is-animating) .linePoint4 { animation: popIn 0.3s ease-out 1.9s both; }
+:global(.is-animating) .bar0 { animation: growUp 0.4s ease-out 0.6s both; }
+:global(.is-animating) .bar1 { animation: growUp 0.4s ease-out 0.72s both; }
+:global(.is-animating) .bar2 { animation: growUp 0.4s ease-out 0.84s both; }
+:global(.is-animating) .bar3 { animation: growUp 0.4s ease-out 0.96s both; }
+:global(.is-animating) .bar4 { animation: growUp 0.4s ease-out 1.08s both; }
+:global(.is-animating) .bar5 { animation: growUp 0.4s ease-out 1.20s both; }
+:global(.is-animating) .bar6 { animation: growUp 0.4s ease-out 1.32s both; }
+:global(.is-animating) .bar7 { animation: growUp 0.4s ease-out 1.44s both; }
+:global(.is-animating) .funnel { animation: fadeIn 0.6s ease-out 0.8s both; }
+:global(.is-animating) .funnelDot0 { animation: fadeSlideDown 0.4s ease-out 1.0s both; }
+:global(.is-animating) .funnelDot1 { animation: fadeSlideDown 0.4s ease-out 1.15s both; }
+:global(.is-animating) .funnelDot2 { animation: fadeSlideDown 0.4s ease-out 1.3s both; }
+:global(.is-animating) .funnelDot3 { animation: fadeSlideDown 0.4s ease-out 1.45s both; }
+:global(.is-animating) .funnelDot4 { animation: fadeSlideDown 0.4s ease-out 1.6s both; }
+:global(.is-animating) .funnelDot5 { animation: fadeSlideDown 0.4s ease-out 1.75s both; }
+:global(.is-animating) .badge0 { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 2.0s both; }
+:global(.is-animating) .badge1 { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 2.2s both; }
+:global(.is-animating) .badge2 { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 2.4s both; }
 
 
 /* ════════════════════════════════════════════════════════════════════════
    D. AI & Data — "Neural Processing"
    ════════════════════════════════════════════════════════════════════════ */
 
-/* Connection lines — sequential per layer */
-.neuralConn0 {
-  stroke-dasharray: 300;
-  stroke-dashoffset: 300;
-  animation: drawStroke 0.8s ease-out 0.3s forwards;
-}
-.neuralConn1 {
-  stroke-dasharray: 300;
-  stroke-dashoffset: 300;
-  animation: drawStroke 0.8s ease-out 0.9s forwards;
-}
-.neuralConn2 {
-  stroke-dasharray: 300;
-  stroke-dashoffset: 300;
-  animation: drawStroke 0.8s ease-out 1.5s forwards;
-}
+/* Initial states */
+.neuralConn0 { stroke-dasharray: 300; stroke-dashoffset: 300; }
+.neuralConn1 { stroke-dasharray: 300; stroke-dashoffset: 300; }
+.neuralConn2 { stroke-dasharray: 300; stroke-dashoffset: 300; }
+.neuralNode0, .neuralNode1, .neuralNode2, .neuralNode3 { opacity: 0; }
+.dataFlow0, .dataFlow1, .dataFlow2, .dataFlow3,
+.dataFlow4, .dataFlow5, .dataFlow6, .dataFlow7 { opacity: 0; }
+.outputPulse { transform-origin: center; opacity: 0; }
 
-/* Nodes — staggered fade-in per layer */
-.neuralNode0 { opacity: 0; animation: fadeIn 0.4s ease-out 0.2s forwards; }
-.neuralNode1 { opacity: 0; animation: fadeIn 0.4s ease-out 0.8s forwards; }
-.neuralNode2 { opacity: 0; animation: fadeIn 0.4s ease-out 1.4s forwards; }
-.neuralNode3 { opacity: 0; animation: fadeIn 0.4s ease-out 1.9s forwards; }
-
-/* Data flow points — travel left to right */
-.dataFlow0 { opacity: 0; animation: dataTravel 1.2s ease-in-out 0.6s forwards; }
-.dataFlow1 { opacity: 0; animation: dataTravel 1.2s ease-in-out 0.75s forwards; }
-.dataFlow2 { opacity: 0; animation: dataTravel 1.2s ease-in-out 0.9s forwards; }
-.dataFlow3 { opacity: 0; animation: dataTravel 1.2s ease-in-out 1.2s forwards; }
-.dataFlow4 { opacity: 0; animation: dataTravel 1.2s ease-in-out 1.35s forwards; }
-.dataFlow5 { opacity: 0; animation: dataTravel 1.2s ease-in-out 1.5s forwards; }
-.dataFlow6 { opacity: 0; animation: dataTravel 1.2s ease-in-out 1.8s forwards; }
-.dataFlow7 { opacity: 0; animation: dataTravel 1.2s ease-in-out 1.95s forwards; }
-
-/* Output pulse — continuous gentle pulse */
-.outputPulse {
-  transform-origin: center;
-  animation: pulse 3s ease-in-out 2.2s infinite;
-}
+/* Animated states */
+:global(.is-animating) .neuralConn0 { animation: drawStroke 0.8s ease-out 0.3s both; }
+:global(.is-animating) .neuralConn1 { animation: drawStroke 0.8s ease-out 0.9s both; }
+:global(.is-animating) .neuralConn2 { animation: drawStroke 0.8s ease-out 1.5s both; }
+:global(.is-animating) .neuralNode0 { animation: fadeIn 0.4s ease-out 0.2s both; }
+:global(.is-animating) .neuralNode1 { animation: fadeIn 0.4s ease-out 0.8s both; }
+:global(.is-animating) .neuralNode2 { animation: fadeIn 0.4s ease-out 1.4s both; }
+:global(.is-animating) .neuralNode3 { animation: fadeIn 0.4s ease-out 1.9s both; }
+:global(.is-animating) .dataFlow0 { animation: dataTravel 1.2s ease-in-out 0.6s both; }
+:global(.is-animating) .dataFlow1 { animation: dataTravel 1.2s ease-in-out 0.75s both; }
+:global(.is-animating) .dataFlow2 { animation: dataTravel 1.2s ease-in-out 0.9s both; }
+:global(.is-animating) .dataFlow3 { animation: dataTravel 1.2s ease-in-out 1.2s both; }
+:global(.is-animating) .dataFlow4 { animation: dataTravel 1.2s ease-in-out 1.35s both; }
+:global(.is-animating) .dataFlow5 { animation: dataTravel 1.2s ease-in-out 1.5s both; }
+:global(.is-animating) .dataFlow6 { animation: dataTravel 1.2s ease-in-out 1.8s both; }
+:global(.is-animating) .dataFlow7 { animation: dataTravel 1.2s ease-in-out 1.95s both; }
+:global(.is-animating) .outputPulse { animation: pulse 3s ease-in-out 2.2s infinite; }
 
 
 /* ════════════════════════════════════════════════════════════════════════

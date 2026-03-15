@@ -31,19 +31,16 @@ import { caseStudies } from "@/lib/case-studies";
 
 function ClientLogos() {
   return (
-    <div className="mt-8 flex flex-col items-center">
-      <p className="mb-4 text-body-xs uppercase tracking-widest text-text-muted">
-        Trusted by
-      </p>
-      <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12">
+    <div className="mt-8">
+      <div className="flex flex-wrap items-center justify-start gap-6 md:gap-12">
         {caseStudies.map((study) => (
           <Image
             key={study.slug}
             src={study.logo}
             alt={`${study.client} logo`}
             width={160}
-            height={40}
-            className="h-6 w-auto opacity-50 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 md:h-8 lg:h-10"
+            height={48}
+            className="h-8 w-auto opacity-50 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 md:h-10 lg:h-12"
           />
         ))}
       </div>
@@ -109,6 +106,7 @@ export default function WorkScroll() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const pinnedRef = useRef<HTMLDivElement>(null);
   const [currentFrame, setCurrentFrame] = useState(0);
+  const scrollTriggerRef = useRef<{ start: number; end: number } | null>(null);
 
   useLayoutEffect(() => {
     if (shouldReduce) return;
@@ -132,17 +130,20 @@ export default function WorkScroll() {
           scrollTrigger: {
             trigger: pinnedRef.current,
             pin: true,
-            scrub: 0.6,
+            scrub: 0.3,
             snap: {
               snapTo: 1 / (totalFrames - 1),
-              duration: { min: 0.3, max: 0.8 },
-              ease: "power1.inOut",
+              duration: { min: 0.15, max: 0.4 },
+              ease: "power2.inOut",
             },
             end: "+=300%",
             onUpdate: (self) => {
               const progress = self.progress;
               const frame = Math.round(progress * (totalFrames - 1));
               setCurrentFrame(frame);
+
+              // Store scroll positions for programmatic navigation
+              scrollTriggerRef.current = { start: self.start, end: self.end };
             },
           },
         });
@@ -158,16 +159,18 @@ export default function WorkScroll() {
 
         // Animate transitions between frames
         for (let i = 0; i < totalFrames - 1; i++) {
+          // Fade out current frame quickly (first 40% of segment)
           tl.to(
             frames[i],
-            { opacity: 0, y: -60, duration: 1, ease: "power2.inOut" },
+            { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" },
             i,
           );
+          // Fade in next frame (starts at 20%, overlaps only 20%)
           tl.fromTo(
             frames[i + 1],
-            { opacity: 0, y: 60 },
-            { opacity: 1, y: 0, duration: 1, ease: "power2.inOut" },
-            i,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            i + 0.2,
           );
         }
       }, sectionRef);
@@ -191,7 +194,7 @@ export default function WorkScroll() {
       className="section-bg-work"
     >
       {/* Section intro — scrolls naturally */}
-      <div className="py-[var(--section-gap)]">
+      <div className="pt-[var(--section-gap)] pb-0">
         <div className="container-content">
           <ScrollReveal>
             <SectionHeading
@@ -206,18 +209,26 @@ export default function WorkScroll() {
       </div>
 
       {/* Pinned area */}
-      <div ref={pinnedRef} className="relative h-screen w-full overflow-hidden">
+      <div ref={pinnedRef} className="relative mt-8 h-screen w-full overflow-hidden">
         <SectionProgress
           total={caseStudies.length}
           current={currentFrame}
           className="left-6 xl:left-10"
+          labels={caseStudies.map((s) => s.client)}
+          onSelect={(i) => {
+            const st = scrollTriggerRef.current;
+            if (!st) return;
+            const totalFrames = caseStudies.length;
+            const target = st.start + (i / (totalFrames - 1)) * (st.end - st.start);
+            window.scrollTo({ top: target, behavior: "smooth" });
+          }}
         />
 
         {caseStudies.map((study, index) => (
           <div
             key={study.slug}
             data-work-frame
-            className="flex h-full w-full items-center"
+            className={`absolute inset-0 flex h-full w-full items-center ${index === currentFrame ? 'pointer-events-auto' : 'pointer-events-none'}`}
             style={{ opacity: index === 0 ? 1 : 0 }}
           >
             <div className="container-content flex h-full w-full items-center">

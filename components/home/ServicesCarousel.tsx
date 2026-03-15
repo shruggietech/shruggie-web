@@ -25,18 +25,18 @@ import { Card } from "@/components/ui/Card";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import {
-  StrategyBrandIllustration,
-  DevelopmentIllustration,
-  MarketingIllustration,
-  AIDataIllustration,
-} from "@/components/home/ServiceIllustrations";
+  StrategyBrandIllustrationLarge,
+  DevelopmentIllustrationLarge,
+  MarketingIllustrationLarge,
+  AIDataIllustrationLarge,
+} from "@/components/home/ServiceIllustrationsLarge";
 
 interface ServiceItem {
   title: string;
   description: string;
   icon: LucideIcon;
   href: string;
-  Illustration: ComponentType<{ className?: string }>;
+  IllustrationLarge: ComponentType<{ className?: string }>;
 }
 
 const services: ServiceItem[] = [
@@ -46,7 +46,7 @@ const services: ServiceItem[] = [
       "From brand identity to content architecture, we build the visual and strategic foundation your business stands on.",
     icon: Palette,
     href: "/services#strategy-brand",
-    Illustration: StrategyBrandIllustration,
+    IllustrationLarge: StrategyBrandIllustrationLarge,
   },
   {
     title: "Development & Integration",
@@ -54,7 +54,7 @@ const services: ServiceItem[] = [
       "Custom websites, modern web applications, booking systems, payment integrations, and platform migrations. Built to last, built to perform.",
     icon: Code2,
     href: "/services#development",
-    Illustration: DevelopmentIllustration,
+    IllustrationLarge: DevelopmentIllustrationLarge,
   },
   {
     title: "Revenue Flows & Marketing Ops",
@@ -62,7 +62,7 @@ const services: ServiceItem[] = [
       "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Everything that turns visibility into revenue.",
     icon: TrendingUp,
     href: "/services#marketing",
-    Illustration: MarketingIllustration,
+    IllustrationLarge: MarketingIllustrationLarge,
   },
   {
     title: "AI & Data Analysis",
@@ -70,18 +70,26 @@ const services: ServiceItem[] = [
       "Chatbots, RAG systems, workflow automation, and AI consulting. We help you adopt AI that actually works for your business.",
     icon: Brain,
     href: "/services#ai-data",
-    Illustration: AIDataIllustration,
+    IllustrationLarge: AIDataIllustrationLarge,
   },
 ];
 
 export default function ServicesCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const illRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const setCardRef = useCallback(
     (index: number) => (el: HTMLDivElement | null) => {
       cardRefs.current[index] = el;
+    },
+    [],
+  );
+
+  const setIllRef = useCallback(
+    (index: number) => (el: HTMLDivElement | null) => {
+      illRefs.current[index] = el;
     },
     [],
   );
@@ -111,6 +119,17 @@ export default function ServicesCarousel() {
     return () => observer.disconnect();
   }, []);
 
+  // Retrigger SVG draw-on animations when the active card changes.
+  useEffect(() => {
+    illRefs.current.forEach((el) => el?.classList.remove("is-animating"));
+
+    const raf = requestAnimationFrame(() => {
+      illRefs.current[activeIndex]?.classList.add("is-animating");
+    });
+
+    return () => cancelAnimationFrame(raf);
+  }, [activeIndex]);
+
   return (
     <section className="section-bg-services py-[var(--section-gap)]">
       <div className="container-content">
@@ -122,10 +141,28 @@ export default function ServicesCarousel() {
         </ScrollReveal>
       </div>
 
+      {/* Large illustration display area */}
+      <div className="relative mx-auto mt-[var(--component-gap)] h-[220px] max-w-[300px]" aria-hidden="true">
+        {services.map((service, index) => (
+          <div
+            key={service.title}
+            ref={setIllRef(index)}
+            data-illustration
+            className={`absolute inset-0 transition-opacity duration-300 ${
+              index === activeIndex
+                ? "opacity-100"
+                : "opacity-0 pointer-events-none"
+            }`}
+          >
+            <service.IllustrationLarge className="h-full w-full" />
+          </div>
+        ))}
+      </div>
+
       {/* Horizontal scroll strip */}
       <div
         ref={scrollRef}
-        className="mt-[var(--component-gap)] flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[var(--padding-x)] pb-4"
+        className="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[var(--padding-x)] pb-4"
         style={{
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
@@ -145,11 +182,6 @@ export default function ServicesCarousel() {
               >
                 {String(index + 1).padStart(2, "0")}
               </span>
-
-              {/* Static illustration */}
-              <div className="mb-4" aria-hidden="true">
-                <service.Illustration className="h-[100px] w-[120px] opacity-70" />
-              </div>
 
               {/* Icon */}
               <service.icon

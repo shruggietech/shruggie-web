@@ -9,6 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `ParticleSky` component: canvas-based interactive particle field (particles.js style) with drifting nodes, proximity-based connecting lines, and mouse/touch cursor interaction for the CTA section background
+- `KnoxvilleSkyline` component: detailed two-layer SVG silhouette of the Knoxville, TN skyline with window grids, Sunsphere, Henley Street Bridge arches, and church steeples — anchored to the bottom of the CTA section
+
+### Changed
+
+- `CTASection`: replaced orange gradient bloom and shruggie watermark background with interactive `ParticleSky` canvas and `KnoxvilleSkyline` SVG silhouette anchored at bottom
+- `HeroBackground`: refactored shruggie easter egg to use deterministic corner positions (cycling through 4 corners) instead of random placement with exclusion zones; added mobile-specific adjustments (reduced spotlight radius, disabled shruggie interactions below 768px); unified shruggie dot color to brand green regardless of theme; extracted ambient drift radius into configurable constants
+- `HeroSection`: responsive hero heading text — `text-display-md` on mobile scaling up to `text-display-xl` on desktop
+- `ServicesScroll`: tightened scroll-driven transitions — reduced scrub to 0.3, faster snap duration (0.15–0.4s), sharper `power2.inOut` easing, reduced frame travel distance (30px); SVG illustration draw-on animations now retrigger on frame change via `is-animating` class toggle with `requestAnimationFrame` restart
+- `ServicesCarousel`: upgraded from small `ServiceIllustrations` to large-format `ServiceIllustrationsLarge` with a dedicated illustration display area above the carousel; SVG draw-on animations retrigger on active card change
+- `WorkScroll`: same scroll snapping improvements as `ServicesScroll` (scrub 0.3, faster snap, reduced travel); client logo row changed to left-aligned layout with larger logos, removed "Trusted by" label; reduced spacing between section intro and pinned area
+- `SectionProgress`: upgraded from passive progressbar to interactive tab-based navigation with clickable dots, label tooltips on hover, keyboard-accessible focus states (`role="tablist"`, `aria-selected`, focus-visible ring)
+- `ServiceIllustrationsLarge.module.css`: refactored animation lifecycle from pause/play (`.is-active`) to class-toggle restart (`.is-animating`), enabling proper animation restart when revisiting frames via scroll or carousel navigation
+- `docs/ShruggieTech-Website-Redesign-Plan.md`: updated redesign plan to reflect CTA section changes and animation improvements
+
+## [Previous — Case Study Screenshots & Data Centralization]
+
+### Added
+
 - `lib/case-studies.ts`: shared case study data module — single source of truth for slug, client name, industry, summary, image path, and metric, imported by `WorkScroll`, `WorkCarousel`, and `WorkPreview`
 - Case study screenshots: real website screenshots for all three case studies (`public/images/work/united-way.png`, `scruggs-tire.png`, `i-heart-pr-tours.png`) replacing placeholder "Screenshot coming soon" labels
 

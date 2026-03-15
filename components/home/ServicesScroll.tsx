@@ -13,7 +13,7 @@
 
 "use client";
 
-import { useRef, useLayoutEffect, useState } from "react";
+import { useRef, useLayoutEffect, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Palette,
@@ -145,6 +145,7 @@ export default function ServicesScroll() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const pinnedRef = useRef<HTMLDivElement>(null);
   const [currentFrame, setCurrentFrame] = useState(0);
+  const scrollTriggerRef = useRef<{ start: number; end: number } | null>(null);
 
   useLayoutEffect(() => {
     if (shouldReduce) return;
@@ -169,11 +170,11 @@ export default function ServicesScroll() {
           scrollTrigger: {
             trigger: pinnedRef.current,
             pin: true,
-            scrub: 0.6,
+            scrub: 0.3,
             snap: {
               snapTo: 1 / (totalFrames - 1),
-              duration: { min: 0.3, max: 0.8 },
-              ease: "power1.inOut",
+              duration: { min: 0.15, max: 0.4 },
+              ease: "power2.inOut",
             },
             end: "+=400%",
             onUpdate: (self) => {
@@ -181,13 +182,8 @@ export default function ServicesScroll() {
               const frame = Math.round(progress * (totalFrames - 1));
               setCurrentFrame(frame);
 
-              // Toggle .is-active class on the current frame's illustration wrapper
-              frames.forEach((f, idx) => {
-                const illWrapper = f.querySelector<HTMLElement>("[data-illustration]");
-                if (illWrapper) {
-                  illWrapper.classList.toggle("is-active", idx === frame);
-                }
-              });
+              // Store scroll positions for programmatic navigation
+              scrollTriggerRef.current = { start: self.start, end: self.end };
             },
           },
         });
@@ -204,18 +200,18 @@ export default function ServicesScroll() {
         });
 
         for (let i = 0; i < totalFrames - 1; i++) {
-          // Fade out + slide up current frame
+          // Fade out current frame quickly (first 40% of segment)
           tl.to(
             frames[i],
-            { opacity: 0, y: -60, duration: 1, ease: "power2.inOut" },
+            { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" },
             i,
           );
-          // Fade in + slide up next frame
+          // Fade in next frame (starts at 20%, overlaps only 20%)
           tl.fromTo(
             frames[i + 1],
-            { opacity: 0, y: 60 },
-            { opacity: 1, y: 0, duration: 1, ease: "power2.inOut" },
-            i,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            i + 0.2,
           );
         }
       }, sectionRef);
@@ -228,6 +224,23 @@ export default function ServicesScroll() {
     };
   }, [shouldReduce]);
 
+  // Retrigger SVG draw-on animations when the active frame changes.
+  // Removing then re-adding .is-animating forces the browser to restart
+  // CSS animations from scratch.
+  useEffect(() => {
+    const container = pinnedRef.current;
+    if (!container) return;
+
+    const wrappers = container.querySelectorAll<HTMLElement>("[data-illustration]");
+    wrappers.forEach((w) => w.classList.remove("is-animating"));
+
+    const raf = requestAnimationFrame(() => {
+      wrappers[currentFrame]?.classList.add("is-animating");
+    });
+
+    return () => cancelAnimationFrame(raf);
+  }, [currentFrame]);
+
   if (shouldReduce) {
     return <ServicesGrid />;
   }
@@ -238,7 +251,7 @@ export default function ServicesScroll() {
       className="section-bg-services"
     >
       {/* Section intro — scrolls naturally */}
-      <div className="py-[var(--section-gap)]">
+      <div className="pt-[var(--section-gap)] pb-0">
         <div className="container-content">
           <ScrollReveal>
             <SectionHeading
@@ -255,18 +268,26 @@ export default function ServicesScroll() {
       </div>
 
       {/* Pinned area */}
-      <div ref={pinnedRef} className="relative h-screen w-full overflow-hidden">
+      <div ref={pinnedRef} className="relative mt-8 h-screen w-full overflow-hidden">
         <SectionProgress
           total={services.length}
           current={currentFrame}
           className="left-6 xl:left-10"
+          labels={services.map((s) => s.title)}
+          onSelect={(i) => {
+            const st = scrollTriggerRef.current;
+            if (!st) return;
+            const totalFrames = services.length;
+            const target = st.start + (i / (totalFrames - 1)) * (st.end - st.start);
+            window.scrollTo({ top: target, behavior: "smooth" });
+          }}
         />
 
         {services.map((service, index) => (
           <div
             key={service.title}
             data-service-frame
-            className="flex h-full w-full items-center"
+            className={`absolute inset-0 flex h-full w-full items-center ${index === currentFrame ? 'pointer-events-auto' : 'pointer-events-none'}`}
             style={{ opacity: index === 0 ? 1 : 0 }}
           >
             <div className="container-content flex h-full w-full items-center">
@@ -307,7 +328,7 @@ export default function ServicesScroll() {
                 {/* Right column — large animated illustration */}
                 <div
                   data-illustration
-                  className={`flex h-[60vh] items-center justify-center${index === 0 ? " is-active" : ""}`}
+                  className="flex h-[60vh] items-center justify-center"
                   aria-hidden="true"
                 >
                   <service.IllustrationLarge className="h-full w-full opacity-90" />

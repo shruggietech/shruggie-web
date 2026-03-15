@@ -315,28 +315,13 @@ The current CTA section uses an orange gradient bloom with a giant shruggie emot
 
 </div>
 
-**Recommended approach: Detailed SVG Knoxville skyline silhouette with particle-node sky.**
-
-**Reference image provided:** A high-detail black silhouette of the Knoxville skyline (see `docs/assets/knoxville-skyline-reference.png`). This is the target fidelity level, not a simplified geometric abstraction.
+**Recommended approach: SVG Knoxville skyline silhouette with particle-node sky.**
 
 <div style="text-align:justify">
 
-The skyline should be rendered as a detailed SVG silhouette matching the complexity of the reference image. This means individual building shapes with visible window grids, architectural details (cornices, setbacks, rooftop equipment), the Sunsphere with its lattice tower structure, bridge arches (Henley Street Bridge), church steeples, and varied building heights across the full downtown profile. No mountain ridge or background layer behind the buildings; the skyline stands alone against the particle sky. The SVG will consist of multiple `<path>` and `<rect>` elements composited together rather than a single simplified path. The skyline sits at the bottom 20-25% of the section, rendered in a slightly lighter shade than the background (e.g., `#0d0d14` buildings against `#060608` section background) with subtle tonal variation between foreground and background building layers for depth.
+Rather than attempting a photorealistic or illustrated Knoxville rendering (which would be expensive to maintain and hard to get right in code), use a simplified geometric silhouette of the Knoxville skyline rendered as an SVG path. Key landmarks to reference: the Sunsphere, the Tennessee Theatre marquee's vertical profile, the convention center roofline, the Henley Street Bridge, and the general low-rise downtown profile against the ridge of the Great Smoky Mountains in the background. The skyline sits at the bottom 20-25% of the section, rendered in a slightly lighter shade than the background (e.g., `#0a0a0f` skyline against `#060608` background) with a subtle gradient from darker at the base to slightly lighter at the roofline.
 
 </div>
-
-**Landmark inventory from the reference (left to right):**
-
-1. A church or institutional building with a small steeple (far left)
-2. Two tall rectangular towers (likely residential/office, tallest structures on the left cluster)
-3. Several mid-rise buildings with varied profiles and window grids
-4. A distinctive arched/ornamental facade (Market Square area or similar)
-5. A tall Art Deco-style tower with setbacks and a flag/antenna
-6. The Henley Street Bridge arches (low horizontal, center)
-7. A dense cluster of mid-rise office buildings with detailed window patterns
-8. The tallest building in the skyline (likely the Plaza Tower or similar, center-right)
-9. The Sunsphere with its spherical observation deck on a lattice/truss tower (right of center)
-10. Lower institutional buildings and a church steeple (far right)
 
 **The sky above the skyline** uses a particle field of small dots (2-3px, white at 5-15% opacity) scattered randomly, with a subset connected by faint lines (the network-node motif from the hero section, echoed at a smaller scale). This creates visual continuity with the hero's dot grid DNA without duplicating it. A handful of dots can pulse slowly (opacity oscillation over 4-6 seconds, staggered) to simulate twinkling. The particle field renders via CSS (absolutely positioned dots with randomized positions and animation delays) rather than canvas, keeping the implementation lightweight and the CTA text crisply above it all. On mobile, reduce the particle count by 50-60% and disable the connecting lines.
 
@@ -355,7 +340,7 @@ The skyline should be rendered as a detailed SVG silhouette matching the complex
 
 <div style="text-align:justify">
 
-A self-contained SVG component that renders the detailed Knoxville skyline silhouette. The SVG uses `viewBox` with `preserveAspectRatio="xMidYMax slice"` to anchor the skyline to the bottom of its container and scale horizontally without distortion. Unlike a simplified geometric approach, this component uses multiple layered `<path>`, `<rect>`, and `<circle>` elements to render individual buildings with window grids, the Sunsphere's lattice tower, bridge arches, and church steeples at a fidelity level matching the provided reference image. The component should use two tonal layers for depth: background buildings at `#0a0a10` and foreground buildings at `#0d0d14`, both against the section background of `#060608`. No mountain ridge or background terrain. The reference image should be traced or faithfully recreated as SVG paths. The SVG should be approximately 150-200px tall at its tallest point and span 100% width.
+A self-contained SVG component that renders the Knoxville skyline silhouette as a single `<path>` element (or a small set of paths for layered depth). The SVG uses `viewBox` with `preserveAspectRatio="xMidYMax slice"` to anchor the skyline to the bottom of its container and scale horizontally without distortion. The skyline color uses CSS variables for theme adaptability (though the CTA section is always dark).
 
 </div>
 
@@ -507,16 +492,13 @@ The `WorkScroll.tsx` component follows the same GSAP-pinned pattern as `Services
 
 <div style="text-align:justify">
 
-The `CTASection.tsx` is a straightforward section component with an orange gradient bloom `div`, a shruggie watermark `span`, and centered CTA content. The agent needs to: remove the shruggie watermark, create a new `KnoxvilleSkyline.tsx` SVG component with a detailed Knoxville skyline matching the reference image at `docs/assets/knoxville-skyline-reference.png`, create a `ParticleSky.tsx` CSS-based particle field, reposition the orange bloom to the horizon line, and assemble everything in the updated `CTASection.tsx`. The skyline must include individual building silhouettes with window grids, the Sunsphere with its lattice tower, bridge arches, church steeples, and varied architectural profiles. No mountain ridge or background terrain. Two tonal layers for depth (foreground and background buildings).
+The `CTASection.tsx` is a straightforward section component with an orange gradient bloom `div`, a shruggie watermark `span`, and centered CTA content. The agent needs to: remove the shruggie watermark, create a new `KnoxvilleSkyline.tsx` SVG component with a simplified Knoxville skyline path, create a `ParticleSky.tsx` CSS-based particle field, reposition the orange bloom to the horizon line, and assemble everything in the updated `CTASection.tsx`. The skyline SVG path should reference recognizable Knoxville features (Sunsphere dome, mixed low-rise / mid-rise downtown profile, mountain ridge background) in a simplified geometric style.
 
 </div>
 
 **Acceptance criteria:**
 
-- A detailed, recognizable Knoxville skyline silhouette spans the bottom of the CTA section.
-- Key landmarks are identifiable: Sunsphere (lattice tower + sphere), bridge arches, church steeples, varied downtown buildings with window details.
-- No mountain ridge or background terrain behind the buildings.
-- Two tonal layers create depth between foreground and background buildings.
+- A recognizable Knoxville skyline silhouette spans the bottom of the CTA section.
 - A subtle particle field with occasional connecting lines fills the sky above the skyline.
 - The orange bloom glows from the horizon line, creating a "city glow" effect.
 - The shruggie watermark is removed.
