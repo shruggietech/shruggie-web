@@ -96,19 +96,100 @@ function MultiAgentVisual() {
 }
 
 function RustifVisual() {
-  const widths = [80, 60, 95, 45, 70, 85, 55, 90, 40, 75];
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-2">
-      {widths.map((w, i) => (
-        <div
-          key={i}
-          className="h-1.5 rounded-full"
-          style={{
-            width: `${w}%`,
-            backgroundColor: `rgba(20, 184, 166, ${0.1 + (i % 3) * 0.06})`,
-          }}
-        />
-      ))}
+    <div className="flex h-full items-center justify-center">
+      <div className="relative h-48 w-48">
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 192 192"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Central trunk */}
+          <line
+            x1="96" y1="40" x2="96" y2="160"
+            stroke="rgba(20, 184, 166, 0.4)"
+            strokeWidth="2"
+          />
+
+          {/* Top node (head) */}
+          <circle cx="96" cy="36" r="4" fill="rgba(20, 184, 166, 0.5)" />
+
+          {/* Crab claw / forked accent at top */}
+          <path
+            d="M96 40 Q82 28 74 24"
+            stroke="rgba(20, 184, 166, 0.4)"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+          />
+          <path
+            d="M96 40 Q110 28 118 24"
+            stroke="rgba(20, 184, 166, 0.4)"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+          />
+
+          {/* Branch 1 — left, y=60 */}
+          <line
+            x1="96" y1="60" x2="38" y2="60"
+            stroke="rgba(20, 184, 166, 0.25)"
+            strokeWidth="1.5"
+          />
+          <rect x="34" y="58" width="4" height="4" fill="rgba(20, 184, 166, 0.45)" />
+
+          {/* Branch 2 — right, y=78 */}
+          <line
+            x1="96" y1="78" x2="148" y2="78"
+            stroke="rgba(20, 184, 166, 0.2)"
+            strokeWidth="1.5"
+          />
+          <rect x="148" y="76" width="4" height="4" fill="rgba(20, 184, 166, 0.4)" />
+
+          {/* Branch 3 — left, y=96 */}
+          <line
+            x1="96" y1="96" x2="52" y2="96"
+            stroke="rgba(20, 184, 166, 0.3)"
+            strokeWidth="1.5"
+          />
+          <circle cx="50" cy="96" r="3" fill="rgba(20, 184, 166, 0.5)" />
+
+          {/* Branch 4 — right, y=110 */}
+          <line
+            x1="96" y1="110" x2="158" y2="110"
+            stroke="rgba(20, 184, 166, 0.15)"
+            strokeWidth="1.5"
+          />
+          <rect x="158" y="108" width="4" height="4" fill="rgba(20, 184, 166, 0.35)" />
+
+          {/* Branch 5 — both directions, y=126 */}
+          <line
+            x1="60" y1="126" x2="132" y2="126"
+            stroke="rgba(20, 184, 166, 0.2)"
+            strokeWidth="1.5"
+          />
+          <rect x="56" y="124" width="4" height="4" fill="rgba(20, 184, 166, 0.4)" />
+          <circle cx="134" cy="126" r="3" fill="rgba(20, 184, 166, 0.45)" />
+
+          {/* Branch 6 — left, y=144 */}
+          <line
+            x1="96" y1="144" x2="44" y2="144"
+            stroke="rgba(20, 184, 166, 0.25)"
+            strokeWidth="1.5"
+          />
+          <circle cx="42" cy="144" r="3" fill="rgba(20, 184, 166, 0.4)" />
+
+          {/* Branch 7 — right, y=156 */}
+          <line
+            x1="96" y1="156" x2="140" y2="156"
+            stroke="rgba(20, 184, 166, 0.18)"
+            strokeWidth="1.5"
+          />
+          <rect x="140" y="154" width="4" height="4" fill="rgba(20, 184, 166, 0.38)" />
+        </svg>
+      </div>
     </div>
   );
 }
@@ -201,33 +282,35 @@ export default function ResearchSection() {
             const Visual = visualComponents[pub.visual];
             return (
               <ScrollReveal key={pub.title} delay={index * 0.1}>
-                <Card className="relative z-[1]">
-                  <div className="flex flex-col gap-6 md:flex-row">
-                    {/* Left column: text content */}
-                    <div className="flex flex-1 flex-col gap-2 md:w-[60%] md:flex-none">
-                      <h3 className="font-display text-display-sm font-bold text-text-primary">
-                        {pub.title}
-                      </h3>
-                      <p className="text-body-sm text-text-muted">
-                        {pub.author} · {pub.date}
-                      </p>
-                      <p className="mt-1 text-body-md text-text-secondary">
-                        {pub.description}
-                      </p>
-                      <Link
-                        href="/research"
-                        className="mt-3 inline-flex items-center font-display text-body-sm font-medium text-accent transition-colors hover:text-accent-hover"
-                      >
-                        Read paper →
-                      </Link>
-                    </div>
+                <Link
+                  href="/research"
+                  className="block cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary rounded-xl"
+                >
+                  <Card className="relative z-[1]">
+                    <div className="flex flex-col gap-6 md:flex-row">
+                      {/* Left column: text content */}
+                      <div className="flex flex-1 flex-col gap-2 md:w-[60%] md:flex-none">
+                        <h3 className="font-display text-display-sm font-bold text-text-primary">
+                          {pub.title}
+                        </h3>
+                        <p className="text-body-sm text-text-muted">
+                          {pub.author} · {pub.date}
+                        </p>
+                        <p className="mt-1 text-body-md text-text-secondary">
+                          {pub.description}
+                        </p>
+                        <span className="mt-3 inline-flex items-center font-display text-body-sm font-medium text-accent transition-colors group-hover:text-accent-hover">
+                          Read paper →
+                        </span>
+                      </div>
 
-                    {/* Right column: abstract visual (desktop only) */}
-                    <div className="hidden md:flex md:w-[40%] md:items-center md:justify-center">
-                      <Visual />
+                      {/* Right column: abstract visual (desktop only) */}
+                      <div className="hidden md:flex md:w-[40%] md:items-center md:justify-center">
+                        <Visual />
+                      </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               </ScrollReveal>
             );
           })}

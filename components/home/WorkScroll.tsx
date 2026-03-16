@@ -139,7 +139,11 @@ export default function WorkScroll() {
             end: "+=300%",
             onUpdate: (self) => {
               const progress = self.progress;
-              const frame = Math.round(progress * (totalFrames - 1));
+              // Switch frame at start of Phase B (0.45 into each segment)
+              const frame = Math.min(
+                totalFrames - 1,
+                Math.floor(progress * (totalFrames - 1) + 0.55),
+              );
               setCurrentFrame(frame);
 
               // Store scroll positions for programmatic navigation
@@ -153,25 +157,27 @@ export default function WorkScroll() {
           if (i === 0) {
             gsap.set(frame, { opacity: 1, y: 0, position: "absolute", inset: 0 });
           } else {
-            gsap.set(frame, { opacity: 0, y: 60, position: "absolute", inset: 0 });
+            gsap.set(frame, { opacity: 0, y: 20, position: "absolute", inset: 0 });
           }
         });
 
         // Animate transitions between frames
         for (let i = 0; i < totalFrames - 1; i++) {
-          // Fade out current frame quickly (first 40% of segment)
+          // Phase A (0.0–0.35): Outgoing card fades out with upward slide
           tl.to(
             frames[i],
-            { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" },
+            { opacity: 0, y: -20, duration: 0.35, ease: "power2.in" },
             i,
           );
-          // Fade in next frame (starts at 20%, overlaps only 20%)
+          // Dead zone (0.35–0.45): both cards at opacity 0 — no animation
+          // Phase B (0.45–0.80): Incoming card fades in with upward slide
           tl.fromTo(
             frames[i + 1],
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
-            i + 0.2,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" },
+            i + 0.45,
           );
+          // Hold (0.80–1.0): incoming card rests at full opacity
         }
       }, sectionRef);
     }
@@ -231,10 +237,15 @@ export default function WorkScroll() {
             className={`absolute inset-0 flex h-full w-full items-center ${index === currentFrame ? 'pointer-events-auto' : 'pointer-events-none'}`}
             style={{ opacity: index === 0 ? 1 : 0 }}
           >
-            <div className="container-content flex h-full w-full items-center">
-              <div className="grid w-full grid-cols-2 items-center gap-8 lg:gap-12">
-                {/* Left column — content */}
-                <div className="flex flex-col">
+            <div className="flex h-full w-full items-center gap-8 lg:gap-12">
+              {/* Left column — positioned to match container-content alignment */}
+              <div
+                className="flex shrink-0 flex-col"
+                style={{
+                  width: 'min(38%, calc(var(--max-width-content) * 0.38))',
+                  marginLeft: 'max(var(--padding-x), calc((100% - var(--max-width-content)) / 2 + var(--padding-x)))',
+                }}
+              >
                   <Badge className="mb-4 self-start">{study.industry}</Badge>
 
                   <h3 className="font-display text-display-md font-bold text-text-hero">
@@ -253,23 +264,22 @@ export default function WorkScroll() {
 
                   <Link
                     href={`/work/${study.slug}`}
-                    className="mt-6 inline-flex items-center gap-1.5 text-body-md font-medium text-accent transition-colors hover:text-accent-hover"
+                    className="mt-6 inline-flex items-center gap-1.5 text-body-md font-medium text-accent transition-colors hover:text-brand-orange"
                   >
                     Read case study
                     <span aria-hidden="true">→</span>
                   </Link>
                 </div>
 
-                {/* Right column — device mockup */}
-                <div className="flex items-center justify-center">
+                {/* Right column — fills remaining space to viewport edge */}
+                <div className="flex min-w-0 flex-1 items-center justify-center pr-[var(--padding-x)] py-12">
                   <DeviceMockup
                     src={study.image}
                     alt={`${study.client} website screenshot`}
                     variant="browser"
-                    className="w-full shadow-2xl shadow-black/40 transition-shadow duration-300 hover:shadow-[0_25px_60px_-12px_rgba(59,130,246,0.15)]"
+                    className="w-full max-w-3xl shadow-2xl shadow-black/40 transition-shadow duration-300 hover:shadow-[0_25px_60px_-12px_rgba(59,130,246,0.15)]"
                   />
                 </div>
-              </div>
             </div>
           </div>
         ))}

@@ -180,7 +180,11 @@ export default function ServicesScroll() {
             end: "+=400%",
             onUpdate: (self) => {
               const progress = self.progress;
-              const frame = Math.round(progress * (totalFrames - 1));
+              // Switch frame at start of Phase B (0.45 into each segment)
+              const frame = Math.min(
+                totalFrames - 1,
+                Math.floor(progress * (totalFrames - 1) + 0.55),
+              );
               setCurrentFrame(frame);
 
               // Store scroll positions for programmatic navigation
@@ -195,25 +199,27 @@ export default function ServicesScroll() {
             // First frame starts visible
             gsap.set(frame, { opacity: 1, y: 0, position: "absolute", inset: 0 });
           } else {
-            // Subsequent frames start hidden below
-            gsap.set(frame, { opacity: 0, y: 60, position: "absolute", inset: 0 });
+            // Subsequent frames start hidden
+            gsap.set(frame, { opacity: 0, y: 20, position: "absolute", inset: 0 });
           }
         });
 
         for (let i = 0; i < totalFrames - 1; i++) {
-          // Fade out current frame quickly (first 40% of segment)
+          // Phase A (0.0–0.35): Outgoing card fades out with upward slide
           tl.to(
             frames[i],
-            { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" },
+            { opacity: 0, y: -20, duration: 0.35, ease: "power2.in" },
             i,
           );
-          // Fade in next frame (starts at 20%, overlaps only 20%)
+          // Dead zone (0.35–0.45): both cards at opacity 0 — no animation
+          // Phase B (0.45–0.80): Incoming card fades in with upward slide
           tl.fromTo(
             frames[i + 1],
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
-            i + 0.2,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" },
+            i + 0.45,
           );
+          // Hold (0.80–1.0): incoming card rests at full opacity
         }
       }, sectionRef);
     }
@@ -313,10 +319,15 @@ export default function ServicesScroll() {
             className={`absolute inset-0 flex h-full w-full items-center ${index === currentFrame ? 'pointer-events-auto' : 'pointer-events-none'}`}
             style={{ opacity: index === 0 ? 1 : 0 }}
           >
-            <div className="container-content flex h-full w-full items-center">
-              <div className="grid w-full grid-cols-[55%_45%] items-center gap-8 lg:gap-12">
-                {/* Left column — content */}
-                <div className="flex flex-col">
+            <div className="flex h-full w-full items-center gap-8 lg:gap-12">
+              {/* Left column — positioned to match container-content alignment */}
+              <div
+                className="flex shrink-0 flex-col"
+                style={{
+                  width: 'min(38%, calc(var(--max-width-content) * 0.38))',
+                  marginLeft: 'max(var(--padding-x), calc((100% - var(--max-width-content)) / 2 + var(--padding-x)))',
+                }}
+              >
                   {/* Service number watermark */}
                   <span
                     className="mb-4 block bg-gradient-to-r from-brand-green-bright to-[var(--gradient-teal)] bg-clip-text font-display text-[6rem] font-bold leading-none text-transparent opacity-15"
@@ -341,22 +352,21 @@ export default function ServicesScroll() {
 
                   <Link
                     href={service.href}
-                    className="mt-6 inline-flex items-center gap-1.5 text-body-md font-medium text-accent transition-colors hover:text-accent-hover"
+                    className="mt-6 inline-flex items-center gap-1.5 text-body-md font-medium text-accent transition-colors hover:text-brand-orange"
                   >
                     Learn more
                     <span aria-hidden="true">→</span>
                   </Link>
                 </div>
 
-                {/* Right column — large animated illustration */}
+                {/* Right column — large animated illustration, fills to viewport edge */}
                 <div
                   data-illustration
-                  className="flex h-[60vh] items-center justify-center"
+                  className="flex min-w-0 flex-1 items-center justify-center pr-[var(--padding-x)] py-12"
                   aria-hidden="true"
                 >
-                  <service.IllustrationLarge className="h-full w-full opacity-90" />
+                  <service.IllustrationLarge className="h-[75vh] max-h-[85vh] w-full max-w-3xl opacity-90" />
                 </div>
-              </div>
             </div>
           </div>
         ))}

@@ -37,7 +37,7 @@ function BrowserVariant({ src, alt, className, placeholderLabel }: Omit<DeviceMo
       <BrowserChrome />
       <div className="relative aspect-video bg-gray-950">
         {src ? (
-          <Image src={src} alt={alt} fill className="object-contain object-top" sizes="(min-width: 768px) 50vw, 90vw" />
+          <Image src={src} alt={alt} fill className="object-cover object-top" sizes="(min-width: 768px) 50vw, 90vw" />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
             {placeholderLabel && (
@@ -62,7 +62,7 @@ function LaptopVariant({ src, alt, className, placeholderLabel }: Omit<DeviceMoc
           <BrowserChrome />
           <div className="relative aspect-video bg-gray-950">
             {src ? (
-              <Image src={src} alt={alt} fill className="object-contain object-top" sizes="(min-width: 768px) 50vw, 90vw" />
+              <Image src={src} alt={alt} fill className="object-cover object-top" sizes="(min-width: 768px) 50vw, 90vw" />
             ) : (
               <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
                 {placeholderLabel && (

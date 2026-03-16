@@ -53,7 +53,7 @@ const AMBIENT_DRIFT_RADIUS = { x: 0.25, y: 0.2 };
 /* ── Shruggie Configuration ─────────────────────────────────────────────── */
 
 /** How close the focal point must be to a shruggie dot to count as "revealed" */
-const SHRUGGIE_REVEAL_RADIUS = 180;
+const SHRUGGIE_REVEAL_RADIUS = 140;
 
 /** Percentage of shruggie dots that must be illuminated to trigger "found" */
 const SHRUGGIE_REVEAL_THRESHOLD = 0.35;
@@ -77,7 +77,7 @@ const SHRUGGIE_WIGGLE_FREQ = 18;
 const SHRUGGIE_IMAGE_SRC = "/images/logo-icon-only-green.png";
 
 /** Rendered size of the shruggie icon in CSS pixels */
-const SHRUGGIE_RENDER_SIZE = 110;
+const SHRUGGIE_RENDER_SIZE = 85;
 
 /** Dot sampling step — smaller = more dots = sharper image */
 const SHRUGGIE_SAMPLE_STEP = 2;
@@ -89,7 +89,7 @@ const SHRUGGIE_COLOR = { r: 43, g: 204, b: 115 };
 const SHRUGGIE_MAX_ALPHA = 0.95;
 
 /** Corner inset from canvas edge for shruggie positioning */
-const SHRUGGIE_CORNER_INSET = 80;
+const SHRUGGIE_CORNER_INSET = 65;
 
 /** Mobile breakpoint — canvas width below which mobile mode is active */
 const MOBILE_CANVAS_BREAKPOINT = 768;

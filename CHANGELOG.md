@@ -12,9 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ParticleSky` component: canvas-based interactive particle field (particles.js style) with drifting nodes, proximity-based connecting lines, and mouse/touch cursor interaction for the CTA section background
 - `KnoxvilleSkyline` component: detailed two-layer SVG silhouette of the Knoxville, TN skyline with window grids, Sunsphere, Henley Street Bridge arches, and church steeples — anchored to the bottom of the CTA section
 - Custom `nav` breakpoint (1081px) in `globals.css` for navigation responsive switching
+- `docs/ShruggieTech-Homepage-Updates-Plan-v2.md`: v2 UX polish specification covering transition quality, sizing adjustments, hover colors, and Research section improvements
 
 ### Changed
 
+- `HeroBackground`: reduced shruggie easter egg size — render size 110→85px, reveal radius 180→140px, corner inset 80→65px for better proportions against the dot grid
+- `ServicesScroll`: restructured GSAP timeline to sequential fade with dead zone (Phase A fade-out 0–0.35, dead zone 0.35–0.45, Phase B fade-in 0.45–0.80, hold 0.80–1.0) eliminating overlapping text during transitions; expanded right-column illustrations to edge-to-edge layout breaking out of content container; "Learn more" link hover color changed to brand orange
+- `WorkScroll`: same sequential fade transition pattern as ServicesScroll; expanded right-column device mockups to edge-to-edge layout; "Read case study" link hover color changed to brand orange
+- `ResearchSection`: replaced `RustifVisual` placeholder bars with "Crab Claw Parse Tree" SVG graphic evoking Rust/metadata parsing themes; wrapped all research publication cards in `<Link>` for full-card clickability with accessible focus ring
+- `DeviceMockup`: changed screenshot image fit from `object-contain` to `object-cover` for better visual fill in browser frames
 - `KnoxvilleSkyline`: brightened SVG fill colors for better visibility against dark backgrounds, especially on mobile — background layer `#0a0a10` → `#18182a`, foreground layer `#0d0d14` → `#1e1e34`, window/detail accents `#111118` → `#2a2a40`
 - `Header`: navigation breakpoint changed from `md` (768px) to custom `nav` (1081px) so the mobile hamburger menu is used on tablets and narrower desktops where nav links were overflowing
 - `HeroBackground`: mobile ambient drift repositioned to top-right area with horizontal-only movement; mobile interaction radius reduced to 55% of desktop size for tighter dot-highlight focus
@@ -31,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `WorkScroll`: same scroll snapping improvements as `ServicesScroll` (scrub 0.3, faster snap, reduced travel); client logo row changed to left-aligned layout with larger logos, removed "Trusted by" label; reduced spacing between section intro and pinned area
 - `SectionProgress`: upgraded from passive progressbar to interactive tab-based navigation with clickable dots, label tooltips on hover, keyboard-accessible focus states (`role="tablist"`, `aria-selected`, focus-visible ring)
 - `ServiceIllustrationsLarge.module.css`: refactored animation lifecycle from pause/play (`.is-active`) to class-toggle restart (`.is-animating`), enabling proper animation restart when revisiting frames via scroll or carousel navigation
-- `docs/ShruggieTech-Website-Redesign-Plan.md`: updated redesign plan to reflect CTA section changes and animation improvements
+- `docs/ShruggieTech-Website-Redesign-Plan.md`: moved to `docs/archive/`; replaced by v2 plan
 
 ## [Previous — Case Study Screenshots & Data Centralization]
 
