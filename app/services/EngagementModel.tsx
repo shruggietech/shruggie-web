@@ -230,11 +230,12 @@ export default function EngagementModel() {
             <motion.div
               key={phase.number}
               className={cn(
-                "rounded-xl border bg-bg-elevated p-6 md:p-8",
+                "rounded-xl border p-6 md:p-8",
+                "bg-bg-elevated dark:bg-white/[0.03] dark:backdrop-blur-md",
                 "transition-colors duration-300",
                 expanded
                   ? "border-accent shadow-[0_4px_16px_rgba(43,204,115,0.08)]"
-                  : "border-border",
+                  : "border-border dark:border-white/[0.06]",
                 !shouldReduceMotion && "cursor-pointer",
               )}
               onPointerEnter={(e) =>

@@ -108,7 +108,7 @@ export default function ContactForm() {
           autoComplete="name"
           aria-invalid={errors.name ? "true" : undefined}
           aria-describedby={errors.name ? "contact-name-error" : undefined}
-          className="w-full rounded-lg border border-border bg-bg-elevated px-4 py-3 text-body-md text-text-primary placeholder:text-text-muted transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
+          className="w-full rounded-lg border border-border/50 bg-bg-elevated/50 backdrop-blur-sm px-4 py-3 text-body-md text-text-primary placeholder:text-text-muted transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
           placeholder="Your name"
           {...register("name")}
         />
@@ -137,7 +137,7 @@ export default function ContactForm() {
           autoComplete="email"
           aria-invalid={errors.email ? "true" : undefined}
           aria-describedby={errors.email ? "contact-email-error" : undefined}
-          className="w-full rounded-lg border border-border bg-bg-elevated px-4 py-3 text-body-md text-text-primary placeholder:text-text-muted transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
+          className="w-full rounded-lg border border-border/50 bg-bg-elevated/50 backdrop-blur-sm px-4 py-3 text-body-md text-text-primary placeholder:text-text-muted transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
           placeholder="you@company.com"
           {...register("email")}
         />
@@ -164,7 +164,7 @@ export default function ContactForm() {
           id="contact-company"
           type="text"
           autoComplete="organization"
-          className="w-full rounded-lg border border-border bg-bg-elevated px-4 py-3 text-body-md text-text-primary placeholder:text-text-muted transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
+          className="w-full rounded-lg border border-border/50 bg-bg-elevated/50 backdrop-blur-sm px-4 py-3 text-body-md text-text-primary placeholder:text-text-muted transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
           placeholder="Your company (optional)"
           {...register("company")}
         />
@@ -185,7 +185,7 @@ export default function ContactForm() {
           aria-describedby={
             errors.message ? "contact-message-error" : undefined
           }
-          className="w-full resize-y rounded-lg border border-border bg-bg-elevated px-4 py-3 text-body-md text-text-primary placeholder:text-text-muted transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
+          className="w-full resize-y rounded-lg border border-border/50 bg-bg-elevated/50 backdrop-blur-sm px-4 py-3 text-body-md text-text-primary placeholder:text-text-muted transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
           placeholder="Tell us about your project or question"
           {...register("message")}
         />
@@ -210,7 +210,7 @@ export default function ContactForm() {
         </label>
         <select
           id="contact-referral"
-          className="w-full appearance-none rounded-lg border border-border bg-bg-elevated px-4 py-3 text-body-md text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
+          className="w-full appearance-none rounded-lg border border-border/50 bg-bg-elevated/50 backdrop-blur-sm px-4 py-3 text-body-md text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
           {...register("referral")}
         >
           <option value="">Select an option (optional)</option>

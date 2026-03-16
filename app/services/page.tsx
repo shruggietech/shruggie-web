@@ -13,10 +13,12 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/constants";
 import { generateServiceSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
+import PageHero from "@/components/shared/PageHero";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import EngagementModel from "./EngagementModel";
+import ServicePillarSection from "./ServicePillarSection";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -123,64 +125,28 @@ export default function ServicesPage() {
       ))}
 
       {/* ── Section 1: Hero ──────────────────────────────────────────── */}
-      <section className="pb-16 pt-32 md:pb-24 md:pt-40">
-        <div className="container-content">
-          <ScrollReveal>
-            <h1 className="font-display text-display-xl font-bold text-text-primary">
-              Services
-            </h1>
-            <p className="mt-6 max-w-2xl text-body-lg text-text-secondary">
-              We combine deep technical execution with design instinct and
-              business judgment to deliver work that exceeds expectations.
-            </p>
-          </ScrollReveal>
-        </div>
-      </section>
+      <PageHero
+        headline="Services"
+        subheadline="We combine deep technical execution with design instinct and business judgment to deliver work that exceeds expectations."
+        bgClass="section-bg-services"
+      />
 
       {/* ── Section 2: Service Pillars ───────────────────────────────── */}
       {SERVICE_PILLARS.map((pillar, index) => (
-        <section
+        <ServicePillarSection
           key={pillar.id}
           id={pillar.id}
-          className="scroll-mt-24 py-16 md:py-24"
-        >
-          <div className="container-content">
-            <ScrollReveal delay={index * 0.05}>
-              <div className="max-w-3xl">
-                <h2 className="font-display text-display-md font-bold text-text-primary">
-                  {pillar.title}
-                </h2>
-
-                <p className="mt-4 text-body-lg font-medium text-text-primary">
-                  {pillar.lead}
-                </p>
-
-                <p className="mt-4 text-body-md text-text-secondary">
-                  {pillar.body}
-                </p>
-
-                <ul className="mt-8 space-y-3">
-                  {pillar.capabilities.map((capability) => (
-                    <li
-                      key={capability}
-                      className="flex items-start gap-3 text-body-md text-text-secondary"
-                    >
-                      <span
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
-                        aria-hidden="true"
-                      />
-                      {capability}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </ScrollReveal>
-          </div>
-        </section>
+          title={pillar.title}
+          lead={pillar.lead}
+          body={pillar.body}
+          capabilities={pillar.capabilities}
+          index={index}
+          bgClass={index % 2 === 0 ? "bg-bg-primary" : "section-bg-services"}
+        />
       ))}
 
       {/* ── Section 3: Engagement Model ──────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section className="section-bg-work py-16 md:py-24">
         <div className="container-content">
           <ScrollReveal>
             <SectionHeading
@@ -196,7 +162,7 @@ export default function ServicesPage() {
       </section>
 
       {/* ── Section 4: Ownership Thesis ──────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section className="border-t border-accent/10 py-16 md:py-24">
         <div className="container-content">
           <ScrollReveal>
             <div className="max-w-3xl">
@@ -217,7 +183,7 @@ export default function ServicesPage() {
       </section>
 
       {/* ── Section 5: CTA ───────────────────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section className="section-bg-cta py-24 md:py-32">
         <div className="container-content text-center">
           <ScrollReveal>
             <h2 className="font-display text-display-md font-bold text-text-primary">

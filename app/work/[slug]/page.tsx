@@ -1,27 +1,30 @@
 /**
  * Individual case study page — /work/[slug]
  *
- * Renders a full case study with hero header, MDX body (via next-mdx-remote/rsc),
- * Shiki syntax highlighting, and services used section.
+ * Premium dark layout with PageHero, full-width DeviceMockup screenshot,
+ * MDX body with dark-mode optimized typography, service badges in a
+ * glassmorphism card, and ShruggieCTA at the bottom.
  *
- * Uses generateStaticParams to pre-render all published case studies at build time.
- * Reuses MDXComponents from the blog pipeline per sprint plan Item 9.
- *
- * Spec reference: §6.3 (Work / Case Studies)
+ * Spec reference: §6.3 (Work / Case Studies),
+ * ShruggieTech-Site-Design-Consistency-Plan §3.4
  */
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeShiki from "@shikijs/rehype";
-import Image from "next/image";
 import fs from "fs";
 import path from "path";
 
 import { SITE_URL } from "@/lib/constants";
 import { getAllCaseStudiesMeta, getCaseStudyBySlug } from "@/lib/work";
 import { mdxComponents } from "@/components/blog/MDXComponents";
+import PageHero from "@/components/shared/PageHero";
 import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
+import { DeviceMockup } from "@/components/ui/DeviceMockup";
+import ShruggieCTA from "@/components/ui/ShruggieCTA";
+import ScrollReveal from "@/components/shared/ScrollReveal";
 
 interface CaseStudyPageProps {
   params: Promise<{ slug: string }>;
@@ -89,12 +92,17 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
   const hasHeroImage = heroImageExists(meta.heroImage);
 
   return (
-    <article className="py-20">
-      {/* Header */}
-      <header className="container-narrow mb-12">
-        <div className="mb-4 flex flex-wrap items-center gap-3">
+    <article>
+      {/* PageHero */}
+      <PageHero
+        headline={meta.title}
+        subheadline={meta.summary}
+        bgClass="section-bg-work"
+      >
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <Badge>{meta.industry}</Badge>
-          <span className="text-body-sm text-text-muted">
+          <span className="text-body-sm dark:text-[var(--text-muted-warm)] text-text-muted">
+            {meta.client} &middot;{" "}
             {new Date(meta.date).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
@@ -102,59 +110,70 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
             })}
           </span>
         </div>
-        <h1 className="font-display text-display-lg font-bold text-text-primary">
-          {meta.title}
-        </h1>
-        <p className="mt-2 font-display text-display-xs text-accent">
-          {meta.client}
-        </p>
-        <p className="mt-4 text-body-lg text-text-secondary">{meta.summary}</p>
-      </header>
+      </PageHero>
 
-      {/* Hero Image */}
-      {hasHeroImage && (
-        <div className="container-content mb-12">
-          <div className="relative aspect-video overflow-hidden rounded-xl border border-border">
-            <Image
-              src={meta.heroImage}
+      {/* Full-Width DeviceMockup Screenshot */}
+      <section className="section-bg-work py-8 md:py-12">
+        <div className="container-content">
+          <ScrollReveal>
+            <DeviceMockup
+              variant="browser"
+              src={hasHeroImage ? meta.heroImage : undefined}
               alt={`${meta.client} case study screenshot`}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 1200px"
-              priority
+              placeholderLabel={meta.client}
+            />
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* MDX Body */}
+      <section className="bg-bg-primary py-12 md:py-16">
+        <div className="container-narrow">
+          <div className="prose prose-lg dark:prose-invert max-w-none dark:text-[var(--text-body-light)]">
+            <MDXRemote
+              source={content}
+              components={mdxComponents}
+              options={{
+                mdxOptions: {
+                  rehypePlugins: [[rehypeShiki, { theme: "github-dark" }]],
+                },
+              }}
             />
           </div>
         </div>
-      )}
-
-      {/* MDX Body */}
-      <div className="container-narrow">
-        <div className="prose prose-lg dark:prose-invert max-w-none">
-          <MDXRemote
-            source={content}
-            components={mdxComponents}
-            options={{
-              mdxOptions: {
-                rehypePlugins: [[rehypeShiki, { theme: "github-dark" }]],
-              },
-            }}
-          />
-        </div>
-      </div>
+      </section>
 
       {/* Services Used */}
       {meta.services.length > 0 && (
-        <div className="container-narrow mt-12 border-t border-border pt-8">
-          <h2 className="mb-4 font-display text-display-xs font-bold text-text-primary">
-            Services Used
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {meta.services.map((service: string) => (
-              <Badge key={service}>{service}</Badge>
-            ))}
+        <section className="bg-bg-primary pb-12 md:pb-16">
+          <div className="container-narrow">
+            <ScrollReveal>
+              <Card>
+                <h2 className="mb-4 font-display text-display-xs font-bold text-text-primary dark:text-[var(--text-hero)]">
+                  Services Used
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {meta.services.map((service: string) => (
+                    <Badge key={service}>{service}</Badge>
+                  ))}
+                </div>
+              </Card>
+            </ScrollReveal>
           </div>
-        </div>
+        </section>
       )}
+
+      {/* CTA */}
+      <section className="section-bg-cta py-20 md:py-28">
+        <div className="container-content text-center">
+          <ScrollReveal>
+            <h2 className="font-display text-display-sm font-bold text-text-primary dark:text-[var(--text-hero)] mb-6">
+              Ready to see results like these?
+            </h2>
+            <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+          </ScrollReveal>
+        </div>
+      </section>
     </article>
   );
 }

@@ -10,8 +10,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { SITE_URL } from "@/lib/constants";
+import PageHero from "@/components/shared/PageHero";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import SectionHeading from "@/components/ui/SectionHeading";
+import ShruggieCTA from "@/components/ui/ShruggieCTA";
+import Card from "@/components/ui/Card";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -95,28 +98,19 @@ export default function AboutPage() {
   return (
     <>
       {/* ── Section 1: Hero ──────────────────────────────────────────── */}
-      <section className="pb-16 pt-32 md:pb-24 md:pt-40">
-        <div className="container-content">
-          <ScrollReveal>
-            <h1 className="font-display text-display-xl font-bold text-text-primary">
-              About ShruggieTech
-            </h1>
-            <p className="mt-6 max-w-2xl text-body-lg text-text-secondary">
-              A modern technical studio in Knoxville, Tennessee. We build
-              digital systems, software, and AI-driven experiences that help
-              businesses present sharper, operate smarter, and scale further.
-            </p>
-          </ScrollReveal>
-        </div>
-      </section>
+      <PageHero
+        headline="About"
+        subheadline="A small team solving real problems with modern technology. Based in Knoxville, Tennessee."
+        bgClass="section-bg-services"
+      />
 
       {/* ── Section 2: Origin Story ──────────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section className="bg-bg-primary py-16 md:py-24">
         <div className="container-content">
           <ScrollReveal>
             <div className="max-w-3xl">
               <SectionHeading title="Where We Come From" />
-              <p className="mt-6 text-body-lg text-text-secondary">
+              <p className="mt-6 text-body-lg dark:text-[var(--text-body-light)] text-text-secondary">
                 ShruggieTech was founded by William and Natalie Thompson, a
                 husband-and-wife team who have been building technology together
                 for nearly a decade. Before ShruggieTech, they ran an
@@ -134,7 +128,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Section 3: Team ──────────────────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section className="section-bg-services py-16 md:py-24">
         <div className="container-content">
           <ScrollReveal>
             <SectionHeading
@@ -147,7 +141,10 @@ export default function AboutPage() {
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
             {TEAM_MEMBERS.map((member, index) => (
               <ScrollReveal key={member.name} delay={index * 0.08}>
-                <div className="flex flex-col items-center text-center">
+                <Card
+                  hover
+                  className="flex flex-col items-center text-center transition-all duration-300 hover:shadow-[0_4px_16px_rgba(43,204,115,0.08)]"
+                >
                   <div className="aspect-square h-40 w-40 md:h-48 md:w-48 overflow-hidden">
                     <Image
                       src={member.image}
@@ -167,7 +164,7 @@ export default function AboutPage() {
                   <p className="mt-4 text-body-md text-text-secondary">
                     {member.description}
                   </p>
-                </div>
+                </Card>
               </ScrollReveal>
             ))}
           </div>
@@ -175,7 +172,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Section 4: Values ────────────────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section className="bg-bg-primary py-16 md:py-24">
         <div className="container-content">
           <ScrollReveal>
             <SectionHeading
@@ -188,17 +185,26 @@ export default function AboutPage() {
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
             {VALUES.map((value, index) => (
               <ScrollReveal key={value.title} delay={index * 0.08}>
-                <div className="rounded-xl border border-border bg-bg-elevated p-6 md:p-8">
+                <Card hover className="h-full">
                   <h3 className="font-display text-display-sm font-bold text-text-primary">
                     {value.title}
                   </h3>
                   <p className="mt-4 text-body-md text-text-secondary">
                     {value.description}
                   </p>
-                </div>
+                </Card>
               </ScrollReveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Section 5: CTA ───────────────────────────────────────────── */}
+      <section className="section-bg-cta py-16 md:py-24">
+        <div className="container-content flex justify-center">
+          <ScrollReveal>
+            <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+          </ScrollReveal>
         </div>
       </section>
     </>

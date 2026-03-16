@@ -70,7 +70,7 @@ export default function TableOfContents({
             <a
               href={`#${heading.id}`}
               className={cn(
-                "block text-body-sm text-text-muted transition-colors hover:text-accent",
+                "block text-body-sm text-text-muted dark:text-[var(--text-muted-warm)] transition-colors hover:text-accent",
                 heading.level === 3 && "pl-4",
               )}
             >

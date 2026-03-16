@@ -12,6 +12,8 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/constants";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import ContactForm from "@/components/ContactForm";
+import PageHero from "@/components/shared/PageHero";
+import Card from "@/components/ui/Card";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -37,31 +39,25 @@ export default function ContactPage() {
   return (
     <>
       {/* ── Section 1: Hero ──────────────────────────────────────────── */}
-      <section className="pb-16 pt-32 md:pb-24 md:pt-40">
-        <div className="container-content">
-          <ScrollReveal>
-            <h1 className="font-display text-display-xl font-bold text-text-primary">
-              Get in Touch
-            </h1>
-            <p className="mt-6 max-w-2xl text-body-lg text-text-secondary">
-              Whether you have a project in mind or just want to explore what is
-              possible, the first step is a conversation.
-            </p>
-          </ScrollReveal>
-        </div>
-      </section>
+      <PageHero
+        headline="Get in Touch"
+        subheadline="Whether you have a project in mind or just want to explore what is possible, the first step is a conversation."
+        bgClass="section-bg-cta"
+      />
 
       {/* ── Section 2: Contact Form ──────────────────────────────────── */}
       <section className="py-16 md:py-24">
         <div className="container-narrow">
           <ScrollReveal>
-            <ContactForm />
+            <Card>
+              <ContactForm />
+            </Card>
           </ScrollReveal>
         </div>
       </section>
 
       {/* ── Section 3: Direct Contact ────────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section className="section-bg-services py-16 md:py-24">
         <div className="container-narrow">
           <ScrollReveal>
             <div className="rounded-xl border border-border bg-bg-elevated p-6 md:p-8">

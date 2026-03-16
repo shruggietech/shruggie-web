@@ -11,9 +11,10 @@ import type { Metadata } from "next";
 
 import { SITE_URL } from "@/lib/constants";
 import { getPaginatedPosts } from "@/lib/blog";
-import SectionHeading from "@/components/ui/SectionHeading";
+import PageHero from "@/components/shared/PageHero";
 import PostCard from "@/components/blog/PostCard";
 import Pagination from "@/components/blog/Pagination";
+import ShruggieCTA from "@/components/ui/ShruggieCTA";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -41,15 +42,13 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const { posts, totalPages, currentPage } = getPaginatedPosts(page);
 
   return (
-    <div className="py-20">
+    <div>
       {/* Hero */}
-      <section className="container-narrow mb-16">
-        <SectionHeading
-          title="Blog"
-          description="We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business. If you would rather have us handle it, that works too."
-          align="center"
-        />
-      </section>
+      <PageHero
+        headline="Blog"
+        subheadline="We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business. If you would rather have us handle it, that works too."
+        bgClass="bg-bg-secondary"
+      />
 
       {/* Post Grid */}
       <section className="container-narrow">
@@ -67,6 +66,13 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
         {/* Pagination */}
         <Pagination currentPage={currentPage} totalPages={totalPages} />
+      </section>
+
+      {/* CTA */}
+      <section className="py-16 md:py-24">
+        <div className="container-narrow text-center">
+          <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+        </div>
       </section>
     </div>
   );

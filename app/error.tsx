@@ -26,7 +26,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
+    <div className="section-bg-cta flex min-h-[60vh] flex-col items-center justify-center text-center">
       <h1 className="font-display text-display-sm font-bold text-text-primary">
         Something went wrong.
       </h1>

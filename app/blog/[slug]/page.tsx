@@ -85,6 +85,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <JsonLd data={generateBlogPostSchema(meta)} />
       <article className="container-narrow py-20">
         <PostHeader meta={meta} />
+        <div className="border-t border-accent/10 mt-12" />
         <div className="prose prose-lg dark:prose-invert mt-12 max-w-none">
           <MDXRemote
             source={content}

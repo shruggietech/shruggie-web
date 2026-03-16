@@ -38,7 +38,7 @@ export default function PostCard({ post }: PostCardProps) {
           </div>
 
           {/* Title */}
-          <h3 className="font-display text-display-xs font-bold text-text-primary transition-colors group-hover:text-accent">
+          <h3 className="font-display text-display-xs font-bold text-text-primary transition-colors group-hover:text-[#FF5300]">
             {post.title}
           </h3>
 

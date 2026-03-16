@@ -13,6 +13,7 @@ import Badge from "@/components/ui/Badge";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import ScrollReveal from "@/components/shared/ScrollReveal";
+import PageHero from "@/components/shared/PageHero";
 
 interface PainPoint {
   title: string;
@@ -46,20 +47,11 @@ export default function LandingPageTemplate({
   return (
     <>
       {/* Hero */}
-      <section className="py-[var(--section-gap)]">
-        <div className="container-content">
-          <ScrollReveal>
-            <h1 className="max-w-4xl font-display text-display-lg font-bold text-text-primary">
-              {headline}
-            </h1>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <p className="mt-6 max-w-2xl text-body-lg text-text-secondary">
-              {subheadline}
-            </p>
-          </ScrollReveal>
-        </div>
-      </section>
+      <PageHero
+        headline={headline}
+        subheadline={subheadline}
+        bgClass="section-bg-services"
+      />
 
       {/* Pain Points */}
       <section className="py-[var(--section-gap)]">
@@ -108,7 +100,7 @@ export default function LandingPageTemplate({
 
       {/* Social Proof */}
       {socialProof.length > 0 && (
-        <section className="py-[var(--section-gap)]">
+        <section className="section-bg-work py-[var(--section-gap)]">
           <div className="container-content">
             <ScrollReveal>
               <SectionHeading

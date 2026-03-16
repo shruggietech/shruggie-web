@@ -9,6 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `PageHero` shared component: reusable page hero section with dark surface backgrounds, gradient overlay, subtle dot-grid pattern, and `ScrollReveal` entrance animation — used across Services, Work, Research, Products, About, Blog, Contact, and utility pages for consistent hero presentation
+- `ServicePillarSection` component: extracted service pillar rendering into a dedicated component with glassmorphism card treatment, animated SVG pillar illustrations (reusing `ServiceIllustrationsLarge`), and alternating left/right layouts
+- `ResearchVisuals` shared component: decorative SVG graphics for research publication cards, providing unique visuals per publication (parse tree, neural network, waveform, circuit board patterns)
+- `--surface-dark-products` CSS token and `section-bg-products` utility for the Products page dark surface
+- `docs/ShruggieTech-Site-Design-Consistency-Plan.md`: comprehensive specification for extending the homepage design language to all inner pages
+
+### Changed
+
+- **Site-wide design consistency pass**: upgraded all inner pages to carry through the homepage's premium dark design language — glassmorphism cards, section surface colors, extended typography tokens, and orange hover accents
+- Services page: replaced plain text hero and pillar sections with `PageHero` and `ServicePillarSection` components featuring glassmorphism cards and animated SVG illustrations
+- Work page: adopted `PageHero`, glassmorphism card treatments on case study grid, `DeviceMockup` browser frames, and `section-bg-work` surface color
+- Work case study detail pages: upgraded with dark surface backgrounds, glassmorphism metric cards, improved image presentation, and consistent typography tokens
+- Research page: adopted `PageHero`, integrated `ResearchVisuals` decorative SVGs into publication cards, applied `section-bg-research` surface color
+- Products page: adopted `PageHero`, applied `section-bg-products` surface, glassmorphism card styling for product offerings
+- About page: adopted `PageHero` with dark surface, updated team card styling for consistency
+- Blog index and post pages: adopted `PageHero`, consistent card treatments
+- Contact page: adopted `PageHero`, updated form and contact info styling for dark theme consistency
+- Privacy, 404, and error pages: adopted dark surface backgrounds and consistent typography
+- `ThemeEnforcer` / `route-theme.ts`: expanded forced-dark routes to include `/research`, `/products`, `/work` (prefix), and `/for/` (prefix); refactored from exact-match array to support both exact and prefix matching
+- `lib/theme.ts`: updated inline FOUC-prevention script to support prefix-based route matching for dark mode enforcement
+- `ResearchSection` (homepage): simplified by extracting research visuals into shared `ResearchVisuals` component
+- `ContactForm`: updated label and input styling for dark theme consistency
+- `PostCard`: updated hover accent to brand orange
+- `TableOfContents`: updated active link accent to brand orange
+- `LandingPageTemplate`: adopted `PageHero` and consistent dark surface styling for audience landing pages
+- `EngagementModel`: minor styling adjustments for dark theme consistency
+
+### Removed
+
+- `docs/ShruggieTech-Homepage-Updates-Plan-v2.md`: moved to `docs/archive/` (superseded by site-wide consistency plan)
+
+## [Previous — Homepage UX Polish & Animations]
+
+### Added
+
 - `ParticleSky` component: canvas-based interactive particle field (particles.js style) with drifting nodes, proximity-based connecting lines, and mouse/touch cursor interaction for the CTA section background
 - `KnoxvilleSkyline` component: detailed two-layer SVG silhouette of the Knoxville, TN skyline with window grids, Sunsphere, Henley Street Bridge arches, and church steeples — anchored to the bottom of the CTA section
 - Custom `nav` breakpoint (1081px) in `globals.css` for navigation responsive switching

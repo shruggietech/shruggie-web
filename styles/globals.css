@@ -70,6 +70,7 @@
     --surface-dark-rich: #0A0E18;
     --surface-dark-slate: #111318;
     --surface-dark-deep: #060608;
+    --surface-dark-products: #0E1014;
 
     /* Gradient accent colors (redesign §1.1) */
     --gradient-teal: #14B8A6;
@@ -314,6 +315,10 @@
 
 @utility section-bg-cta {
   background-color: var(--surface-dark-deep);
+}
+
+@utility section-bg-products {
+  background-color: var(--surface-dark-products);
 }
 
 

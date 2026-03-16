@@ -11,7 +11,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
+    <div className="section-bg-cta flex min-h-[60vh] flex-col items-center justify-center text-center">
       <h1 className="font-display text-display-xl font-bold text-accent">
         404
       </h1>
@@ -23,13 +23,13 @@ export default function NotFound() {
         Here are some places to start instead.
       </p>
       <nav className="mt-8 flex gap-6" aria-label="Suggested pages">
-        <Link href="/" className="text-accent hover:text-accent-hover">
+        <Link href="/" className="text-accent hover:text-[#FF5300]">
           Homepage
         </Link>
-        <Link href="/services" className="text-accent hover:text-accent-hover">
+        <Link href="/services" className="text-accent hover:text-[#FF5300]">
           Services
         </Link>
-        <Link href="/contact" className="text-accent hover:text-accent-hover">
+        <Link href="/contact" className="text-accent hover:text-[#FF5300]">
           Contact
         </Link>
       </nav>

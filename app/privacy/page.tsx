@@ -11,6 +11,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import PageHero from "@/components/shared/PageHero";
+
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
@@ -27,15 +29,16 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <section className="py-[var(--section-gap)]">
-      <div className="container-narrow">
-        {/* Hero */}
-        <h1 className="font-display text-display-lg font-bold text-text-primary">
-          Privacy Policy
-        </h1>
+    <section className="pb-[var(--section-gap)]">
+      <PageHero
+        headline="Privacy Policy"
+        bgClass="bg-bg-secondary"
+      >
         <p className="mt-2 text-body-sm text-text-muted">
           Effective: March 10, 2026
         </p>
+      </PageHero>
+      <div className="container-narrow">
 
         {/* Policy Content */}
         <div className="prose prose-invert mt-12 max-w-none dark:prose-invert">
