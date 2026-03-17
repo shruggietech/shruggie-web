@@ -115,10 +115,10 @@ const PRODUCTS: Product[] = [
       "A proposed Rust-native metadata processing engine. The next-generation successor to thirty years of metadata infrastructure.",
     statusBadge: "Declaration Phase",
     links: [
-      { label: "Read Declaration", href: "#" },
+      { label: "Read Declaration", href: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de" },
     ],
     programmingLanguage: "Rust",
-    codeRepository: "https://github.com/shruggietech/rustif",
+    codeRepository: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de",
     icon: Cpu,
   },
 ];

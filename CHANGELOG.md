@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `OriginIllustration` component: animated "Origin Journey Blueprint" SVG for the About page "Where We Come From" section — three-chapter timeline (ResoNova era → transition → ShruggieTech/Knoxville) with IntersectionObserver-triggered CSS entrance animations, matching the blueprint line-art style of `ServiceIllustrationsLarge`
+
 ### Changed
 
-- **Contact page**: removed `max-w-2xl` constraint from the contact form Card so the form spans the full container width
+- **Contact page**: removed `max-w-2xl` constraint from the contact form Card so the form spans the full container width; wrapped contact form section with `CTABackground` (ParticleSky + KnoxvilleSkyline)
+- **About page**: replaced inline decorative SVG with new `OriginIllustration` component; redesigned "Where We Come From" section with separate mobile (stacked, centered) and desktop (full-bleed side-by-side) layouts; body text set to `text-justify`
+- **Products page**: updated RUSTif "Read Declaration" and code repository links to point to the actual GitHub Gist
+- **Research page**: updated publication links (ADF, Multi-Agent Coding, RUSTif) to actual GitHub Gist URLs; changed publication cards from Next.js `Link` to native `<a>` with `target="_blank"` / `rel="noopener noreferrer"` for external navigation; removed unused `Link` import
+- **ContactForm**: added custom chevron SVG dropdown indicator to the referral `<select>` field; wrapped select in a relative container
+- `TeamCard`: reduced mobile card height from 480px to 400px; added hover tilt/scale effect (`rotateY(-5deg) scale(1.02)`); expanded "About Me" click target to full lower area of the card front; left-aligned back-face bio text
+- `Pagination`: added bottom margin (`mb-16`) to single-page pagination indicator
+- **Typography**: reduced `--text-body-lg` from `1.25rem` to `1.15rem`
 
 ## [Previous — Custom Illustrations]
 

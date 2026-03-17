@@ -10,7 +10,6 @@
 
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
-import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 
 import { SITE_URL } from "@/lib/constants";
@@ -66,7 +65,7 @@ const PUBLICATIONS: Publication[] = [
     description:
       "A mathematically grounded specification for producing emergent, non-linear emotional behavior and relational bonding in AI agents. Extends Brian Roemmele's Love Equation into a real-time personality engine for agentic architectures.",
     datePublished: "2025-01-15",
-    href: "#",
+    href: "https://gist.github.com/h8rt3rmin8r/f4589f0afb6fcd10d4c499e4a29247ad",
     Visual: ADFVisual,
   },
   {
@@ -77,7 +76,7 @@ const PUBLICATIONS: Publication[] = [
     description:
       "A practical field manual for multi-agent coding workflows: sequential sessions, parallel independent agents, coordinated teams, and the admin-coding divide that makes it all work.",
     datePublished: "2025-02-20",
-    href: "#",
+    href: "https://gist.github.com/h8rt3rmin8r/eebd74f49b0ff5325148105b80fcf37b",
     Visual: MultiAgentVisual,
   },
   {
@@ -87,7 +86,7 @@ const PUBLICATIONS: Publication[] = [
     description:
       "The case for building a Rust-native metadata processing engine to succeed ExifTool. Ecosystem analysis, architectural specification, security threat model, and a call for contributors.",
     datePublished: "2025-03-01",
-    href: "#",
+    href: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de",
     Visual: RustifVisual,
   },
 ];
@@ -123,8 +122,10 @@ export default function ResearchPage() {
         <div className="container-content flex flex-col gap-8 md:gap-12">
           {PUBLICATIONS.map((pub, i) => (
             <ScrollReveal key={pub.id} delay={i * 0.1}>
-              <Link
+              <a
                 href={pub.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group/card block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[#111318] rounded-xl"
               >
                 <Card hover>
@@ -152,7 +153,7 @@ export default function ResearchPage() {
                     </div>
                   </div>
                 </Card>
-              </Link>
+              </a>
             </ScrollReveal>
           ))}
         </div>

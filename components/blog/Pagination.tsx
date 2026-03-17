@@ -25,7 +25,7 @@ export default function Pagination({
 }: PaginationProps) {
   if (totalPages <= 1) {
     return (
-      <div className="mt-12 flex justify-center">
+      <div className="mt-12 mb-16 flex justify-center">
         <span className="text-body-sm text-text-muted">Page 1 of 1</span>
       </div>
     );

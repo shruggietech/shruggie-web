@@ -1,0 +1,164 @@
+/**
+ * CSS animations for OriginIllustration — "Origin Journey Blueprint"
+ *
+ * Animation lifecycle matches ServiceIllustrationsLarge:
+ *   - Elements start hidden.
+ *   - `.is-animating` on parent triggers entrance sequence.
+ *   - `prefers-reduced-motion` shows final state immediately.
+ *
+ * Entrance sequence tells the story chronologically top-to-bottom (~2.8s).
+ */
+
+/* ── Reduced-motion: skip all animations, show final state ──────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .cornerMark,
+  .guideV, .guideH,
+  .journeySpine, .journeySpineDash,
+  .milestoneA, .milestoneADot,
+  .globe, .globeLatitude, .globeMeridian, .globeDot,
+  .globeConn, .globeConnDot,
+  .docFrame, .docLine, .docSeal,
+  .docConn, .docConnDot,
+  .labelA,
+  .transitionDiamond, .transitionDot, .transitionRay,
+  .milestoneB, .milestoneBInner, .milestoneBDot,
+  .serviceIcon1, .serviceIcon2, .serviceIcon3, .serviceIcon4,
+  .serviceConn, .serviceConnDot,
+  .mapPin, .mapPinDot,
+  .labelB,
+  .growthCurve, .growthPoint,
+  .yearLabel, .noiseSquare {
+    animation: none !important;
+    opacity: revert;
+  }
+}
+
+/* ── Initial states ─────────────────────────────────────────────────── */
+
+.cornerMark { opacity: 0; }
+.guideV, .guideH { opacity: 0; }
+
+.journeySpine { stroke-dasharray: 800; stroke-dashoffset: 800; }
+.journeySpineDash { opacity: 0; }
+
+.milestoneA { opacity: 0; transform-origin: center; transform: scale(0); }
+.milestoneADot { opacity: 0; transform-origin: center; transform: scale(0); }
+
+.globe { stroke-dasharray: 200; stroke-dashoffset: 200; }
+.globeLatitude { opacity: 0; }
+.globeMeridian { opacity: 0; }
+.globeDot { opacity: 0; }
+.globeConn { opacity: 0; }
+.globeConnDot { opacity: 0; }
+
+.docFrame { stroke-dasharray: 200; stroke-dashoffset: 200; }
+.docLine { opacity: 0; }
+.docSeal { opacity: 0; }
+.docConn { opacity: 0; }
+.docConnDot { opacity: 0; }
+
+.labelA { opacity: 0; }
+
+.transitionDiamond { opacity: 0; transform-origin: center; transform: scale(0); }
+.transitionDot { opacity: 0; transform-origin: center; transform: scale(0); }
+.transitionRay { opacity: 0; }
+
+.milestoneB { opacity: 0; transform-origin: center; transform: scale(0); }
+.milestoneBInner { opacity: 0; transform-origin: center; transform: scale(0); }
+.milestoneBDot { opacity: 0; transform-origin: center; transform: scale(0); }
+
+.serviceIcon1 { opacity: 0; }
+.serviceIcon2 { opacity: 0; }
+.serviceIcon3 { opacity: 0; }
+.serviceIcon4 { opacity: 0; }
+.serviceConn { opacity: 0; }
+.serviceConnDot { opacity: 0; }
+
+.mapPin { opacity: 0; transform: translateY(-10px); }
+.mapPinDot { opacity: 0; }
+
+.labelB { opacity: 0; }
+
+.growthCurve { opacity: 0; }
+.growthPoint { opacity: 0; }
+
+.yearLabel { opacity: 0; }
+.noiseSquare { opacity: 0; }
+
+/* ── Animated states ────────────────────────────────────────────────── */
+
+/* Layer 1: scaffold */
+:global(.is-animating) .cornerMark { animation: fadeIn 0.6s ease-out 0.1s both; }
+:global(.is-animating) .guideV { animation: fadeIn 0.8s ease-out 0.15s both; }
+:global(.is-animating) .guideH { animation: fadeIn 0.8s ease-out 0.25s both; }
+
+/* Layer 2: journey spine */
+:global(.is-animating) .journeySpine { animation: drawStroke 2.0s ease-out 0.2s both; }
+:global(.is-animating) .journeySpineDash { animation: fadeIn 1.0s ease-out 1.0s both; }
+
+/* Layer 3: Chapter A */
+:global(.is-animating) .globe { animation: drawStroke 0.8s ease-out 0.6s both; }
+:global(.is-animating) .globeLatitude { animation: fadeIn 0.4s ease-out 0.9s both; }
+:global(.is-animating) .globeMeridian { animation: fadeIn 0.4s ease-out 0.85s both; }
+:global(.is-animating) .globeDot { animation: fadeIn 0.3s ease-out 1.0s both; }
+:global(.is-animating) .docFrame { animation: drawStroke 0.6s ease-out 0.8s both; }
+:global(.is-animating) .docLine { animation: fadeIn 0.4s ease-out 1.0s both; }
+:global(.is-animating) .docSeal { animation: fadeIn 0.4s ease-out 1.1s both; }
+:global(.is-animating) .milestoneA { animation: popIn 0.4s ease-out 1.0s both; }
+:global(.is-animating) .milestoneADot { animation: popIn 0.3s ease-out 1.1s both; }
+:global(.is-animating) .globeConn { animation: fadeIn 0.4s ease-out 0.9s both; }
+:global(.is-animating) .globeConnDot { animation: fadeIn 0.3s ease-out 1.0s both; }
+:global(.is-animating) .docConn { animation: fadeIn 0.4s ease-out 1.0s both; }
+:global(.is-animating) .docConnDot { animation: fadeIn 0.3s ease-out 1.1s both; }
+:global(.is-animating) .labelA { animation: fadeIn 0.5s ease-out 1.2s both; }
+
+/* Layer 4: Transition */
+:global(.is-animating) .transitionDiamond { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1.4s both; }
+:global(.is-animating) .transitionDot { animation: popIn 0.3s ease-out 1.5s both; }
+:global(.is-animating) .transitionRay { animation: fadeIn 0.4s ease-out 1.5s both; }
+
+/* Layer 5: Chapter B */
+:global(.is-animating) .milestoneB { animation: popIn 0.4s ease-out 1.7s both; }
+:global(.is-animating) .milestoneBInner { animation: popIn 0.4s ease-out 1.8s both; }
+:global(.is-animating) .milestoneBDot { animation: popIn 0.3s ease-out 1.85s both; }
+:global(.is-animating) .serviceIcon1 { animation: fadeIn 0.4s ease-out 1.8s both; }
+:global(.is-animating) .serviceIcon2 { animation: fadeIn 0.4s ease-out 1.9s both; }
+:global(.is-animating) .serviceIcon3 { animation: fadeIn 0.4s ease-out 2.0s both; }
+:global(.is-animating) .serviceIcon4 { animation: fadeIn 0.4s ease-out 2.1s both; }
+:global(.is-animating) .serviceConn { animation: fadeIn 0.4s ease-out 1.9s both; }
+:global(.is-animating) .serviceConnDot { animation: fadeIn 0.3s ease-out 2.0s both; }
+
+/* Layer 5: Knoxville pin */
+:global(.is-animating) .mapPin { animation: fadeSlideDown 0.5s ease-out 2.4s both; }
+:global(.is-animating) .mapPinDot { animation: fadeIn 0.3s ease-out 2.5s both; }
+:global(.is-animating) .labelB { animation: fadeIn 0.5s ease-out 2.6s both; }
+
+/* Layer 6: Growth trajectory */
+:global(.is-animating) .growthCurve { animation: fadeIn 0.8s ease-out 2.5s both; }
+:global(.is-animating) .growthPoint { animation: fadeIn 0.5s ease-out 2.6s both; }
+
+/* Layer 7: Annotations */
+:global(.is-animating) .yearLabel { animation: fadeIn 0.6s ease-out 2.2s both; }
+:global(.is-animating) .noiseSquare { animation: fadeIn 0.5s ease-out 2.3s both; }
+
+/* ── Keyframes ──────────────────────────────────────────────────────── */
+
+@keyframes drawStroke {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: revert; }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0); }
+  to   { opacity: revert; transform: scale(1); }
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: revert; transform: translateY(0); }
+}

@@ -14,6 +14,7 @@ import ScrollReveal from "@/components/shared/ScrollReveal";
 import ContactForm from "@/components/ContactForm";
 import PageHero from "@/components/shared/PageHero";
 import Card from "@/components/ui/Card";
+import CTABackground from "@/components/shared/CTABackground";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -46,7 +47,7 @@ export default function ContactPage() {
       />
 
       {/* ── Section 2: Contact Form ──────────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <CTABackground className="pt-8 pb-52 md:pt-12 md:pb-96">
         <div className="container-content">
           <ScrollReveal>
             <Card hover={false}>
@@ -54,7 +55,7 @@ export default function ContactPage() {
             </Card>
           </ScrollReveal>
         </div>
-      </section>
+      </CTABackground>
 
 
     </>

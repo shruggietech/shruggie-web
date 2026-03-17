@@ -208,17 +208,35 @@ export default function ContactForm() {
         >
           How did you hear about us?
         </label>
-        <select
-          id="contact-referral"
-          className="w-full appearance-none rounded-lg border border-border/50 bg-bg-elevated/50 backdrop-blur-sm px-4 py-3 text-body-md text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
-          {...register("referral")}
-        >
-          <option value="">Select an option (optional)</option>
-          <option value="Search engine">Search engine</option>
-          <option value="Referral">Referral</option>
-          <option value="Social media">Social media</option>
-          <option value="Other">Other</option>
-        </select>
+        <div className="relative">
+          <select
+            id="contact-referral"
+            className="w-full appearance-none rounded-lg border border-border/50 bg-bg-elevated/50 backdrop-blur-sm px-4 py-3 pr-10 text-body-md text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-brand-green-bright/40"
+            {...register("referral")}
+          >
+            <option value="">Select an option (optional)</option>
+            <option value="Search engine">Search engine</option>
+            <option value="Referral">Referral</option>
+            <option value="Social media">Social media</option>
+            <option value="Other">Other</option>
+          </select>
+          <svg
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-muted"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M4 6l4 4 4-4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
       </div>
 
       {/* Formspree errors */}

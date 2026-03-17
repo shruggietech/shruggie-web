@@ -17,6 +17,7 @@ import Card from "@/components/ui/Card";
 import CTABackground from "@/components/shared/CTABackground";
 import TeamCard from "@/components/about/TeamCard";
 import type { TeamMemberData } from "@/components/about/TeamCard";
+import OriginIllustration from "@/components/about/OriginIllustration";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -114,14 +115,43 @@ export default function AboutPage() {
       />
 
       {/* ── Section 2: Origin Story ──────────────────────────────────── */}
-      <section className="bg-bg-primary py-16 md:py-24">
-        <div className="container-content">
+      <section className="bg-bg-primary py-16 md:py-24 overflow-hidden">
+        {/* Mobile: standard container layout */}
+        <div className="container-content md:hidden">
           <ScrollReveal>
-            <div className="flex flex-col md:flex-row md:items-start md:gap-16">
-              {/* Text column */}
-              <div className="max-w-3xl md:flex-1">
+            <div className="mb-8 flex justify-center">
+              <OriginIllustration />
+            </div>
+            <SectionHeading title="Where We Come From" />
+            <p className="mt-6 text-body-lg text-justify dark:text-[var(--text-body-light)] text-text-secondary">
+              ShruggieTech was founded by William and Natalie Thompson, a
+              husband-and-wife team who have been building technology together
+              for nearly a decade. Before ShruggieTech, they ran an
+              international consulting firm that delivered research to national
+              governments and launch support for technology projects across
+              multiple continents. That venture taught them how to deliver
+              structured, high-stakes work under pressure. ShruggieTech
+              carries that same operational discipline into a broader mission:
+              solving whatever technology problem stands between a business
+              owner and their vision.
+            </p>
+          </ScrollReveal>
+        </div>
+
+        {/* Desktop: full-bleed layout matching Services section pattern */}
+        <div className="hidden md:flex w-full items-center gap-8 lg:gap-12">
+          <ScrollReveal>
+            <div className="flex w-full items-center gap-8 lg:gap-12">
+              {/* Left column — aligned to container-content grid */}
+              <div
+                className="flex shrink-0 flex-col"
+                style={{
+                  width: 'min(45%, calc(var(--max-width-content) * 0.45))',
+                  marginLeft: 'max(var(--padding-x), calc((100% - var(--max-width-content)) / 2 + var(--padding-x)))',
+                }}
+              >
                 <SectionHeading title="Where We Come From" />
-                <p className="mt-6 text-body-lg dark:text-[var(--text-body-light)] text-text-secondary">
+                <p className="mt-6 text-body-lg text-justify dark:text-[var(--text-body-light)] text-text-secondary">
                   ShruggieTech was founded by William and Natalie Thompson, a
                   husband-and-wife team who have been building technology together
                   for nearly a decade. Before ShruggieTech, they ran an
@@ -135,62 +165,12 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              {/* Decorative SVG — growth/journey graphic */}
-              <div className="mt-10 md:mt-0 md:flex-shrink-0 md:w-64 lg:w-80 flex items-center justify-center">
-                <svg
-                  viewBox="0 0 280 320"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-48 md:w-full h-auto opacity-25"
-                  aria-hidden="true"
-                >
-                  {/* Vertical journey line */}
-                  <path
-                    d="M140 30 L140 290"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeDasharray="6 4"
-                    className="text-accent"
-                  />
-
-                  {/* Node 1 — origin */}
-                  <circle cx="140" cy="50" r="8" className="fill-accent/30 stroke-accent" strokeWidth="1.5" />
-                  <circle cx="140" cy="50" r="3" className="fill-accent" />
-
-                  {/* Node 2 — growth */}
-                  <circle cx="140" cy="140" r="8" className="fill-accent/30 stroke-accent" strokeWidth="1.5" />
-                  <circle cx="140" cy="140" r="3" className="fill-accent" />
-
-                  {/* Node 3 — current */}
-                  <circle cx="140" cy="230" r="10" className="fill-accent/40 stroke-accent" strokeWidth="2" />
-                  <circle cx="140" cy="230" r="4" className="fill-accent" />
-
-                  {/* Branching lines from nodes */}
-                  <path d="M148 50 L200 50" stroke="currentColor" strokeWidth="1" className="text-accent/40" />
-                  <path d="M132 140 L80 140" stroke="currentColor" strokeWidth="1" className="text-accent/40" />
-                  <path d="M150 230 L210 230" stroke="currentColor" strokeWidth="1" className="text-accent/40" />
-
-                  {/* Small decorative dots at branch ends */}
-                  <circle cx="204" cy="50" r="3" className="fill-accent/20" />
-                  <circle cx="76" cy="140" r="3" className="fill-accent/20" />
-                  <circle cx="214" cy="230" r="3" className="fill-accent/20" />
-
-                  {/* Map pin at bottom — Knoxville */}
-                  <path
-                    d="M140 270 C140 270 125 255 125 245 C125 236.7 131.7 230 140 230 C148.3 230 155 236.7 155 245 C155 255 140 270 140 270Z"
-                    className="fill-accent/15 stroke-accent"
-                    strokeWidth="1.5"
-                  />
-
-                  {/* Subtle arcing growth curves */}
-                  <path
-                    d="M100 280 Q120 200 140 140 Q160 80 180 40"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    strokeDasharray="3 5"
-                    className="text-accent/20"
-                  />
-                </svg>
+              {/* Right column — illustration fills to viewport edge */}
+              <div
+                className="flex min-w-0 flex-1 items-center justify-center pr-[var(--padding-x)] py-12"
+                aria-hidden="true"
+              >
+                <OriginIllustration />
               </div>
             </div>
           </ScrollReveal>

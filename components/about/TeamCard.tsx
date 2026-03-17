@@ -52,10 +52,12 @@ export default function TeamCard({ member }: TeamCardProps) {
   const [flipped, setFlipped] = useState(false);
 
   return (
-    <div className="perspective-[1200px] h-[480px] md:h-[520px]">
+    <div className="perspective-[1200px] h-[400px] md:h-[520px] group">
       <div
         className={`relative h-full w-full transition-transform duration-500 ease-out [transform-style:preserve-3d] ${
-          flipped ? "[transform:rotateY(180deg)]" : ""
+          flipped
+            ? "[transform:rotateY(180deg)]"
+            : "group-hover:[transform:rotateY(-5deg)_scale(1.02)] group-hover:shadow-lg"
         }`}
       >
         {/* ── Front Face ───────────────────────────────────────────── */}
@@ -99,13 +101,19 @@ export default function TeamCard({ member }: TeamCardProps) {
             </div>
           )}
 
-          <div className="mt-auto pt-6">
-            <button
-              onClick={() => setFlipped(true)}
+          <div
+            className="mt-auto pt-2 md:pt-6 w-full flex-1 flex flex-col items-center justify-end cursor-pointer"
+            onClick={() => setFlipped(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFlipped(true); } }}
+            aria-label={`Learn more about ${member.name}`}
+          >
+            <span
               className="rounded-lg border border-accent/30 px-5 py-2 text-body-sm font-medium text-accent transition-all duration-200 hover:bg-accent/10 hover:border-accent/50"
             >
               About Me
-            </button>
+            </span>
           </div>
         </div>
 
@@ -114,7 +122,7 @@ export default function TeamCard({ member }: TeamCardProps) {
           <h3 className="font-display text-display-sm font-bold text-text-primary">
             {member.name}
           </h3>
-          <p className="mt-4 text-body-md text-text-secondary leading-relaxed">
+          <p className="mt-4 text-body-md text-text-secondary leading-relaxed text-left">
             {member.description}
           </p>
 
