@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Privacy page**: widened content container from `container-narrow` to `container-content` to match navigation/header width
 - **Contact page**: removed `max-w-2xl` constraint from the contact form Card so the form spans the full container width; wrapped contact form section with `CTABackground` (ParticleSky + KnoxvilleSkyline)
 - **About page**: replaced inline decorative SVG with new `OriginIllustration` component; redesigned "Where We Come From" section with separate mobile (stacked, centered) and desktop (full-bleed side-by-side) layouts; body text set to `text-justify`
 - **Products page**: updated RUSTif "Read Declaration" and code repository links to point to the actual GitHub Gist

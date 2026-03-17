@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
           Effective: March 10, 2026
         </p>
       </PageHero>
-      <div className="container-narrow">
+      <div className="container-content">
 
         {/* Policy Content */}
         <div className="prose prose-invert mt-12 max-w-none dark:prose-invert">
