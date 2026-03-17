@@ -49,7 +49,7 @@ export default function ContactPage() {
       <section className="py-16 md:py-24">
         <div className="container-content">
           <ScrollReveal>
-            <Card hover={false} className="max-w-2xl mx-auto">
+            <Card hover={false}>
               <ContactForm />
             </Card>
           </ScrollReveal>

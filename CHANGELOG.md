@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Contact page**: removed `max-w-2xl` constraint from the contact form Card so the form spans the full container width
+
+## [Previous — Custom Illustrations]
+
 ### Added
 
 - `OwnershipSection` component: extracted "You Own Everything We Build" section from the Services page into a dedicated client component with an animated SVG shield/key illustration triggered by IntersectionObserver
