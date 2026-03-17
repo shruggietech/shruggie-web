@@ -9,9 +9,12 @@
  * Spec references: §7.2 (MDX Pipeline), §7.3 (Blog Post Template), §8.2 (JSON-LD)
  */
 
+import fs from "fs";
+import path from "path";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import Image from "next/image";
 import rehypeShiki from "@shikijs/rehype";
 
 import { SITE_URL } from "@/lib/constants";
@@ -80,11 +83,31 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
+  // Check if featured image exists
+  const hasFeaturedImage =
+    meta.featuredImage &&
+    fs.existsSync(path.join(process.cwd(), "public", meta.featuredImage));
+
   return (
     <>
       <JsonLd data={generateBlogPostSchema(meta)} />
-      <article className="container-narrow py-20">
+      <article className="mx-auto max-w-[900px] px-[var(--padding-x)] py-20">
         <PostHeader meta={meta} />
+
+        {/* Featured image */}
+        {hasFeaturedImage && (
+          <div className="mt-12 overflow-hidden rounded-lg border border-border bg-bg-secondary">
+            <Image
+              src={meta.featuredImage!}
+              alt={meta.title}
+              width={900}
+              height={506}
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+        )}
+
         <div className="border-t border-accent/10 mt-12" />
         <div className="prose prose-lg dark:prose-invert mt-12 max-w-none">
           <MDXRemote

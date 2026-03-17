@@ -9,7 +9,16 @@
 
 import type { Metadata } from "next";
 import type { LucideIcon } from "lucide-react";
-import { ExternalLink, Package, Database, FileText, Cpu } from "lucide-react";
+import {
+  ExternalLink,
+  Package,
+  Database,
+  FileText,
+  Cpu,
+  Terminal,
+  GitBranch,
+  Layers,
+} from "lucide-react";
 
 import { SITE_URL } from "@/lib/constants";
 import { generateSoftwareSchema } from "@/lib/schema";
@@ -20,6 +29,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import CTABackground from "@/components/shared/CTABackground";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -150,7 +160,7 @@ export default function ProductsPage() {
               const Icon = product.icon;
               return (
                 <ScrollReveal key={product.id} delay={i * 0.08}>
-                  <Card hover className="flex h-full flex-col">
+                  <Card id={product.id} hover className="flex h-full flex-col">
                     <Icon className="mb-3 h-7 w-7 text-accent" aria-hidden="true" />
                     <div className="flex items-start justify-between gap-4">
                       <h3 className="font-display text-display-xs font-bold text-text-primary">
@@ -185,31 +195,71 @@ export default function ProductsPage() {
 
       {/* Engineering Philosophy */}
       <section className="section-bg-cta pb-16 md:pb-24">
-        <div className="container-narrow pt-16 md:pt-24">
+        <div className="container-content pt-16 md:pt-24">
           <ScrollReveal>
             <div className="border-t border-accent/10 pt-16 md:pt-24">
-              <SectionHeading title="How We Build Software" />
-              <p className="mt-6 text-body-lg leading-relaxed dark:text-[var(--text-body-light)] text-text-secondary">
-                Every ShruggieTech product begins with a specification written for
-                AI-first consumption. Our specifications are structured so that AI
-                coding agents can produce correct implementations within single
-                context windows without interactive clarification. This methodology
-                multiplies engineering throughput without proportional headcount. It
-                is how a two-person studio builds production-grade software tools.
-              </p>
+              <div className="flex flex-col-reverse md:flex-row md:items-center md:gap-16">
+                {/* Text content */}
+                <div className="md:flex-1">
+                  <SectionHeading title="How We Build Software" />
+                  <p className="mt-6 text-body-lg leading-relaxed dark:text-[var(--text-body-light)] text-text-secondary">
+                    Every ShruggieTech product begins with a specification written for
+                    AI-first consumption. Our specifications are structured so that AI
+                    coding agents can produce correct implementations within single
+                    context windows without interactive clarification. This methodology
+                    multiplies engineering throughput without proportional headcount. It
+                    is how a two-person studio builds production-grade software tools.
+                  </p>
+                </div>
+
+                {/* Decorative icon composition */}
+                <div className="relative mb-8 md:mb-0 flex items-center justify-center md:w-[280px] lg:w-[340px] shrink-0">
+                  <svg
+                    viewBox="0 0 200 200"
+                    className="w-48 h-48 md:w-full md:h-auto"
+                    aria-hidden="true"
+                  >
+                    {/* Circuit-style connecting lines */}
+                    <line x1="60" y1="60" x2="140" y2="60" stroke="var(--color-accent)" strokeWidth="1" opacity="0.15" />
+                    <line x1="140" y1="60" x2="140" y2="140" stroke="var(--color-accent)" strokeWidth="1" opacity="0.15" />
+                    <line x1="140" y1="140" x2="60" y2="140" stroke="var(--color-accent)" strokeWidth="1" opacity="0.15" />
+                    <line x1="60" y1="140" x2="60" y2="60" stroke="var(--color-accent)" strokeWidth="1" opacity="0.15" />
+                    <line x1="100" y1="40" x2="100" y2="160" stroke="var(--color-accent)" strokeWidth="1" opacity="0.1" strokeDasharray="4 4" />
+                    <line x1="40" y1="100" x2="160" y2="100" stroke="var(--color-accent)" strokeWidth="1" opacity="0.1" strokeDasharray="4 4" />
+                    {/* Node dots at intersections */}
+                    <circle cx="60" cy="60" r="3" fill="var(--color-accent)" opacity="0.2" />
+                    <circle cx="140" cy="60" r="3" fill="var(--color-accent)" opacity="0.2" />
+                    <circle cx="140" cy="140" r="3" fill="var(--color-accent)" opacity="0.2" />
+                    <circle cx="60" cy="140" r="3" fill="var(--color-accent)" opacity="0.2" />
+                    <circle cx="100" cy="100" r="4" fill="var(--color-accent)" opacity="0.25" />
+                  </svg>
+                  {/* Lucide icons overlaid on the SVG grid */}
+                  <div className="absolute grid grid-cols-2 gap-8 pointer-events-none">
+                    <Terminal className="h-8 w-8 text-accent opacity-25" aria-hidden="true" />
+                    <GitBranch className="h-8 w-8 text-accent opacity-20" aria-hidden="true" />
+                    <Layers className="h-8 w-8 text-accent opacity-20" aria-hidden="true" />
+                    <Cpu className="h-8 w-8 text-accent opacity-25" aria-hidden="true" />
+                  </div>
+                </div>
+              </div>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
       {/* Bottom CTA */}
-      <section className="section-bg-cta py-16 md:py-24">
-        <div className="container-content flex justify-center">
+      <CTABackground>
+        <div className="container-content text-center">
           <ScrollReveal>
-            <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+            <h2 className="font-display text-display-md font-bold text-text-primary">
+              Want to explore our tools or contribute to the codebase?
+            </h2>
+            <div className="mt-8">
+              <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+            </div>
           </ScrollReveal>
         </div>
-      </section>
+      </CTABackground>
     </>
   );
 }

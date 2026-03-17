@@ -102,7 +102,7 @@ export const mdxComponents: MDXComponents = {
   ),
   pre: ({ children, ...props }: HTMLAttributes<HTMLPreElement>) => (
     <pre
-      className="my-6 overflow-x-auto rounded-lg border border-border p-4 text-body-sm"
+      className="my-6 overflow-x-auto rounded-lg border border-border p-4 text-body-sm [&>code]:bg-transparent [&>code]:p-0"
       {...props}
     >
       {children}

@@ -25,6 +25,7 @@ import {
 } from "@/components/shared/ResearchVisuals";
 import Card from "@/components/ui/Card";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
+import CTABackground from "@/components/shared/CTABackground";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -119,7 +120,7 @@ export default function ResearchPage() {
 
       {/* Publication Cards */}
       <section className="section-bg-research pb-24 md:pb-32">
-        <div className="container-narrow flex flex-col gap-8 md:gap-12">
+        <div className="container-content flex flex-col gap-8 md:gap-12">
           {PUBLICATIONS.map((pub, i) => (
             <ScrollReveal key={pub.id} delay={i * 0.1}>
               <Link
@@ -163,10 +164,10 @@ export default function ResearchPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="section-bg-cta py-24 md:py-32">
+      <CTABackground>
         <div className="container-content text-center">
           <ScrollReveal>
-            <h2 className="font-display text-display-sm font-bold text-text-primary dark:text-[var(--text-hero)]">
+            <h2 className="font-display text-display-md font-bold text-text-primary">
               Interested in our research?
             </h2>
             <div className="mt-8">
@@ -174,7 +175,7 @@ export default function ResearchPage() {
             </div>
           </ScrollReveal>
         </div>
-      </section>
+      </CTABackground>
     </>
   );
 }

@@ -61,9 +61,20 @@ export default function Header() {
     };
   }, []);
 
-  // Initialize theme state from DOM
+  // Initialize theme state from DOM and watch for external class changes
   useEffect(() => {
     setIsDark(document.documentElement.classList.contains("dark"));
+
+    // MutationObserver keeps isDark in sync when other code (e.g. ThemeEnforcer)
+    // modifies the class list without going through toggleTheme.
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
   }, []);
 
   // Theme toggle: set cookie + toggle class (§2.6)
@@ -109,12 +120,20 @@ export default function Header() {
             )}
           >
             <Image
-              src={isDark ? "/images/logo-darkbg.png" : "/images/logo-lightbg.png"}
+              src="/images/logo-darkbg.png"
               alt="ShruggieTech logo"
               width={140}
               height={30}
               priority
-              className="h-12 w-auto"
+              className="h-12 w-auto hidden dark:block"
+            />
+            <Image
+              src="/images/logo-lightbg.png"
+              alt="ShruggieTech logo"
+              width={140}
+              height={30}
+              priority
+              className="h-12 w-auto block dark:hidden"
             />
           </Link>
 

@@ -24,6 +24,7 @@ export interface PostMeta {
   readingTime: string; // e.g., "6 min read"
   published: boolean; // false = draft, excluded from production builds
   ogImage?: string; // Optional custom OG image path
+  featuredImage?: string; // Optional hero/feature image path
 }
 
 export function getAllPostsMeta(): PostMeta[] {
@@ -46,6 +47,7 @@ export function getAllPostsMeta(): PostMeta[] {
       readingTime: stats.text,
       published: data.published !== false,
       ogImage: data.ogImage,
+      featuredImage: data.featuredImage,
     } satisfies PostMeta;
   });
 
@@ -71,6 +73,7 @@ export function getPostBySlug(slug: string) {
       readingTime: stats.text,
       published: data.published !== false,
       ogImage: data.ogImage,
+      featuredImage: data.featuredImage,
     } satisfies PostMeta,
     content,
   };

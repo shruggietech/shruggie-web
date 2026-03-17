@@ -9,6 +9,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `CTABackground` shared component: reusable CTA section wrapper with `ParticleSky` background and `KnoxvilleSkyline` anchored to the bottom — extracted from homepage `CTASection` so every page-level CTA can share the same interactive visual treatment
+- `ProcessAccordion` component: accordion + cycle diagram for the "How We Work" section on the Services page — left-side accordion panels with phase details (one open at a time, fixed min-height to eliminate page jumps) and right-side SVG cycle diagram with curved arrow segments that highlight the active phase in brand green
+- `TeamCard` component: flip-card for team member display with CSS 3D transforms — front shows photo, name, title, social icons, and "About Me" button; back shows full bio text and "Back" button
+- `lib/service-links.ts`: maps service name strings (from case study MDX frontmatter) to their corresponding anchor URLs on the Services page, enabling linked service badges
+- `featuredImage` field in blog `PostMeta` interface and MDX frontmatter parsing — optional hero/feature image displayed at the top of blog post pages
+- Social links on team member cards (LinkedIn, GitHub, Facebook, Instagram, Twitch, YouTube) — each team member now displays their relevant social media profiles
+- Shiki code block CSS overrides in `globals.css` — prevents Tailwind prose from overriding Shiki's inline token colors in blog post code blocks
+- `shruggie-feedtools` added to the Products list in the Footer
+- `docs/ShruggieTech-Site-Updates-Plan-v2.md`: v2 feedback-driven updates specification covering 30 items across all pages
+
+### Changed
+
+- **Interactive CTA backgrounds site-wide**: replaced static `section-bg-cta` CTA sections with `CTABackground` (ParticleSky + KnoxvilleSkyline) on Research, Work case study detail, Blog, Products, and About pages — matching the homepage's premium CTA treatment
+- Homepage `CTASection`: refactored to use shared `CTABackground` component instead of inlining `ParticleSky` and `KnoxvilleSkyline` directly
+- Services page: replaced `EngagementModel` with `ProcessAccordion` for the "How We Work" section; added decorative Lucide icon cluster (Shield, Key, FileCheck, Lock) to the "You Own Everything We Build" section with responsive desktop/mobile layouts
+- `ServicePillarSection`: removed glassmorphism Card wrappers from service pillars — now renders content and SVG illustrations in a side-by-side layout with alternating illustration position per index (even = illustration left, odd = illustration right)
+- About page: replaced inline team member rendering with `TeamCard` flip-card component; added decorative Knoxville skyline SVG illustration to the "Where We Come From" section; added `CTABackground` CTA section
+- About page "What We Believe" cards: added default accent glow (`shadow-[0_0_20px_rgba(var(--brand-green-rgb),0.15)]`) so cards glow without requiring hover
+- Blog index page: expanded from `container-narrow` to `container-content` with a two-column grid layout for post cards; added CTA one-liner ("Want to talk tech or explore a project idea?") with `CTABackground`; added top spacing to post grid
+- Blog post pages: expanded content width from `container-narrow` to `max-w-[900px]`; added optional featured image display below `PostHeader`
+- Work case study detail pages: expanded MDX body and services-used sections from `container-narrow` to `max-w-[900px]`; service badges now link to corresponding service pillar anchors via `SERVICE_ANCHOR_MAP`; CTA section replaced with `CTABackground`
+- Research page: expanded publication cards from `container-narrow` to `container-content`; CTA section replaced with `CTABackground`
+- Products page: added `id` attributes to product cards for direct anchor linking; added decorative icon cluster (Terminal, GitBranch, Layers) to "How We Build Software" section; added CTA one-liner and `CTABackground`; expanded from `container-narrow` to `container-content`
+- Contact page: expanded from `container-narrow` to `container-content`; disabled hover glow on contact form Card; removed "Direct Contact" section
+- Footer: expanded social links from GitHub-only to GitHub, Facebook, Instagram, and X (Twitter) with icon-only layout
+- Mobile navigation: added "Home" link to the top of the nav link list
+- Header logo: switched from React state-driven `src` swap to CSS `dark:block`/`dark:hidden` dual-`<Image>` approach with `MutationObserver` to keep `isDark` state in sync when `ThemeEnforcer` modifies the class list externally — eliminates flash-of-wrong-logo on forced-dark routes
+- `ServicesCarousel`: replaced CSS `snap-x snap-mandatory scroll-smooth` with controlled touch handlers (touchstart/touchmove/touchend) ensuring one swipe = one card advance — fixes over-sensitive swipe behavior on mobile where momentum scrolling would skip multiple cards
+- `MDXComponents` `<pre>`: added `[&>code]:bg-transparent [&>code]:p-0` to prevent code block background/padding from doubling up with Shiki output
+- Case study hero images: renamed `heroImage` paths in `i-heart-pr-tours.mdx`, `scruggs-tire.mdx`, and `united-way.mdx` to match updated filenames
+
+### Removed
+
+- `EngagementModel` component: replaced by `ProcessAccordion`
+- Contact page "Direct Contact" section: removed address and placeholder email info
+- `docs/ShruggieTech-Site-Design-Consistency-Plan.md`: moved to `docs/archive/` (superseded by v2 updates plan)
+
+## [Previous — Site-Wide Design Consistency Pass]
+
+### Added
+
 - `PageHero` shared component: reusable page hero section with dark surface backgrounds, gradient overlay, subtle dot-grid pattern, and `ScrollReveal` entrance animation — used across Services, Work, Research, Products, About, Blog, Contact, and utility pages for consistent hero presentation
 - `ServicePillarSection` component: extracted service pillar rendering into a dedicated component with glassmorphism card treatment, animated SVG pillar illustrations (reusing `ServiceIllustrationsLarge`), and alternating left/right layouts
 - `ResearchVisuals` shared component: decorative SVG graphics for research publication cards, providing unique visuals per publication (parse tree, neural network, waveform, circuit board patterns)

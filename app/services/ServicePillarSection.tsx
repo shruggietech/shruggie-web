@@ -1,13 +1,12 @@
 /**
  * ServicePillarSection — Client component for individual service pillar sections.
  *
- * Renders a glassmorphism Card with Lucide icon, pillar content,
- * and an animated SVG illustration in a two-column desktop layout.
+ * Renders pillar content and animated SVG illustration in a two-column
+ * side-by-side layout that alternates illustration position per index.
  * Uses IntersectionObserver (via Framer Motion useInView) to trigger
- * the .is-animating class that starts CSS keyframe entrance animations
- * on the SVG illustrations.
+ * the .is-animating class for CSS keyframe entrance animations on SVGs.
  *
- * Spec reference: ShruggieTech-Site-Design-Consistency-Plan §2.2, §2.3
+ * Spec reference: ShruggieTech-Site-Updates-Plan-v2 §2.1, §2.2
  */
 
 "use client";
@@ -17,7 +16,6 @@ import { useInView, useReducedMotion } from "framer-motion";
 import { Palette, Code2, TrendingUp, Brain } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import Card from "@/components/ui/Card";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import {
   StrategyBrandIllustrationLarge,
@@ -75,6 +73,7 @@ export default function ServicePillarSection({
 
   const Icon = ICON_MAP[id];
   const Illustration = ILLUSTRATION_MAP[id];
+  const isEven = index % 2 === 0;
 
   return (
     <section
@@ -88,19 +87,21 @@ export default function ServicePillarSection({
     >
       <div className="container-content">
         <ScrollReveal delay={index * 0.05}>
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr,0.6fr] gap-8 items-center">
-            {/* Illustration — above card on mobile, right column on desktop */}
+          <div
+            className={cn(
+              "flex flex-col gap-8 md:gap-12 items-center",
+              isEven ? "md:flex-row" : "md:flex-row-reverse",
+            )}
+          >
+            {/* Illustration — above text on mobile, alternating side on desktop */}
             {Illustration && (
-              <div className="order-1 lg:order-2 max-h-[250px] md:max-h-[400px] lg:max-h-none overflow-hidden">
+              <div className="w-full md:w-2/5 shrink-0">
                 <Illustration />
               </div>
             )}
 
-            {/* Card content — below illustration on mobile, left column on desktop */}
-            <Card
-              hover={false}
-              className="order-2 lg:order-1 border-l-2 border-l-accent/20"
-            >
+            {/* Text content — below illustration on mobile */}
+            <div className="w-full md:flex-1">
               {Icon && <Icon size={32} className="text-accent mb-4" />}
 
               <h2 className="font-display text-display-md font-bold text-text-primary">
@@ -129,7 +130,7 @@ export default function ServicePillarSection({
                   </li>
                 ))}
               </ul>
-            </Card>
+            </div>
           </div>
         </ScrollReveal>
       </div>

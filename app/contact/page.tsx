@@ -47,46 +47,16 @@ export default function ContactPage() {
 
       {/* ── Section 2: Contact Form ──────────────────────────────────── */}
       <section className="py-16 md:py-24">
-        <div className="container-narrow">
+        <div className="container-content">
           <ScrollReveal>
-            <Card>
+            <Card hover={false} className="max-w-2xl mx-auto">
               <ContactForm />
             </Card>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* ── Section 3: Direct Contact ────────────────────────────────── */}
-      <section className="section-bg-services py-16 md:py-24">
-        <div className="container-narrow">
-          <ScrollReveal>
-            <div className="rounded-xl border border-border bg-bg-elevated p-6 md:p-8">
-              <h2 className="font-display text-display-sm font-bold text-text-primary">
-                Direct Contact
-              </h2>
 
-              <div className="mt-6 space-y-4 text-body-md text-text-secondary">
-                <p>
-                  <span className="font-medium text-text-primary">
-                    Address:
-                  </span>{" "}
-                  116 Agnes Rd, Ste 200, Knoxville, TN 37919
-                </p>
-
-                <p>
-                  <span className="font-medium text-text-primary">
-                    Email:
-                  </span>{" "}
-                  {/* §1.4 item 7: Contact email pending confirmation */}
-                  <span className="text-text-muted">
-                    Email address coming soon
-                  </span>
-                </p>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
     </>
   );
 }

@@ -15,6 +15,7 @@ import PageHero from "@/components/shared/PageHero";
 import PostCard from "@/components/blog/PostCard";
 import Pagination from "@/components/blog/Pagination";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
+import CTABackground from "@/components/shared/CTABackground";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -51,9 +52,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       />
 
       {/* Post Grid */}
-      <section className="container-narrow">
+      <section className="container-content pt-12 md:pt-16">
         {posts.length > 0 ? (
-          <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {posts.map((post) => (
               <PostCard key={post.slug} post={post} />
             ))}
@@ -69,11 +70,14 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       </section>
 
       {/* CTA */}
-      <section className="py-16 md:py-24">
-        <div className="container-narrow text-center">
+      <CTABackground>
+        <div className="container-content text-center">
+          <p className="mb-6 text-body-lg text-text-secondary">
+            Want to talk tech or explore a project idea?
+          </p>
           <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
         </div>
-      </section>
+      </CTABackground>
     </div>
   );
 }

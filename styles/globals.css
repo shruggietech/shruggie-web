@@ -321,4 +321,28 @@
   background-color: var(--surface-dark-products);
 }
 
+/* ── Shiki Code Block Overrides ─────────────────────────────────────────── */
 
+/*
+ * Prevent Tailwind prose from overriding Shiki's inline token colors.
+ * Shiki sets color via inline style on <span> elements; prose tries to
+ * reset those with its own color rules.
+ */
+@layer base {
+  .prose pre code {
+    color: inherit;
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    border-radius: 0;
+  }
+
+  .prose pre code span {
+    color: inherit;
+  }
+
+  .prose pre {
+    color: inherit;
+    background-color: transparent;
+  }
+}

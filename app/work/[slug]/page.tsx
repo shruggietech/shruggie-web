@@ -16,9 +16,13 @@ import rehypeShiki from "@shikijs/rehype";
 import fs from "fs";
 import path from "path";
 
+import Link from "next/link";
+
 import { SITE_URL } from "@/lib/constants";
+import { SERVICE_ANCHOR_MAP } from "@/lib/service-links";
 import { getAllCaseStudiesMeta, getCaseStudyBySlug } from "@/lib/work";
 import { mdxComponents } from "@/components/blog/MDXComponents";
+import CTABackground from "@/components/shared/CTABackground";
 import PageHero from "@/components/shared/PageHero";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
@@ -128,7 +132,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
 
       {/* MDX Body */}
       <section className="bg-bg-primary py-12 md:py-16">
-        <div className="container-narrow">
+        <div className="mx-auto max-w-[900px] px-[var(--padding-x)]">
           <div className="prose prose-lg dark:prose-invert max-w-none dark:text-[var(--text-body-light)]">
             <MDXRemote
               source={content}
@@ -146,16 +150,25 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
       {/* Services Used */}
       {meta.services.length > 0 && (
         <section className="bg-bg-primary pb-12 md:pb-16">
-          <div className="container-narrow">
+          <div className="mx-auto max-w-[900px] px-[var(--padding-x)]">
             <ScrollReveal>
               <Card>
                 <h2 className="mb-4 font-display text-display-xs font-bold text-text-primary dark:text-[var(--text-hero)]">
                   Services Used
                 </h2>
                 <div className="flex flex-wrap gap-2">
-                  {meta.services.map((service: string) => (
-                    <Badge key={service}>{service}</Badge>
-                  ))}
+                  {meta.services.map((service: string) => {
+                    const anchor = SERVICE_ANCHOR_MAP[service];
+                    return anchor ? (
+                      <Link key={service} href={anchor}>
+                        <Badge className="transition-colors hover:bg-accent/30 hover:text-white cursor-pointer">
+                          {service}
+                        </Badge>
+                      </Link>
+                    ) : (
+                      <Badge key={service}>{service}</Badge>
+                    );
+                  })}
                 </div>
               </Card>
             </ScrollReveal>
@@ -164,7 +177,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
       )}
 
       {/* CTA */}
-      <section className="section-bg-cta py-20 md:py-28">
+      <CTABackground>
         <div className="container-content text-center">
           <ScrollReveal>
             <h2 className="font-display text-display-sm font-bold text-text-primary dark:text-[var(--text-hero)] mb-6">
@@ -173,7 +186,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
             <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
           </ScrollReveal>
         </div>
-      </section>
+      </CTABackground>
     </article>
   );
 }

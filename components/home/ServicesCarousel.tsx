@@ -82,6 +82,12 @@ export default function ServicesCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [sectionVisible, setSectionVisible] = useState(false);
 
+  // Controlled touch handler state
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const isSwiping = useRef(false);
+  const isScrolling = useRef(false);
+
   const setCardRef = useCallback(
     (index: number) => (el: HTMLDivElement | null) => {
       cardRefs.current[index] = el;
@@ -96,12 +102,74 @@ export default function ServicesCarousel() {
     [],
   );
 
+  // Programmatically scroll to a specific card index
+  const scrollToCard = useCallback((index: number) => {
+    const card = cardRefs.current[index];
+    if (!card || !scrollRef.current) return;
+    const container = scrollRef.current;
+    const cardRect = card.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const scrollLeft =
+      container.scrollLeft +
+      cardRect.left -
+      containerRect.left -
+      (containerRect.width - cardRect.width) / 2;
+    isScrolling.current = true;
+    container.scrollTo({ left: scrollLeft, behavior: "smooth" });
+    // Reset scrolling flag after animation completes
+    setTimeout(() => {
+      isScrolling.current = false;
+    }, 400);
+  }, []);
+
+  // Controlled touch handlers to ensure one swipe = one card
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    isSwiping.current = false;
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (isScrolling.current) {
+      e.preventDefault();
+      return;
+    }
+    const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
+    const deltaY = Math.abs(e.touches[0].clientY - touchStartY.current);
+    // If horizontal movement dominates, treat as swipe and prevent default scroll
+    if (deltaX > deltaY && deltaX > 10) {
+      isSwiping.current = true;
+      e.preventDefault();
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (isScrolling.current) return;
+      const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+      const THRESHOLD = 30;
+      if (Math.abs(deltaX) > THRESHOLD) {
+        // Swipe left = next card, swipe right = previous card
+        const direction = deltaX < 0 ? 1 : -1;
+        const targetIndex = Math.max(
+          0,
+          Math.min(services.length - 1, activeIndex + direction),
+        );
+        if (targetIndex !== activeIndex) {
+          scrollToCard(targetIndex);
+        }
+      }
+    },
+    [activeIndex, scrollToCard],
+  );
+
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (isScrolling.current) return;
         for (const entry of entries) {
           if (entry.isIntersecting) {
             const idx = cardRefs.current.indexOf(
@@ -183,20 +251,22 @@ export default function ServicesCarousel() {
         ))}
       </div>
 
-      {/* Horizontal scroll strip */}
+      {/* Horizontal scroll strip — controlled touch handler, no snap/smooth */}
       <div
         ref={scrollRef}
-        className="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[var(--padding-x)] pb-4"
+        className="mt-6 flex gap-4 overflow-x-auto px-[var(--padding-x)] pb-4"
         style={{
           scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
         }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {services.map((service, index) => (
           <div
             key={service.title}
             ref={setCardRef(index)}
-            className="w-[88vw] flex-shrink-0 snap-center"
+            className="w-[88vw] flex-shrink-0"
           >
             <Card className="flex h-full flex-col p-6">
               {/* Service number watermark */}
@@ -251,11 +321,7 @@ export default function ServicesCarousel() {
                 : "w-2 bg-white/20"
             }`}
             onClick={() => {
-              cardRefs.current[index]?.scrollIntoView({
-                behavior: "smooth",
-                block: "nearest",
-                inline: "center",
-              });
+              scrollToCard(index);
             }}
           />
         ))}

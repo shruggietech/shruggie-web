@@ -7,20 +7,12 @@
 
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import ScrollReveal from "@/components/shared/ScrollReveal";
-import ParticleSky from "@/components/home/ParticleSky";
-import KnoxvilleSkyline from "@/components/home/KnoxvilleSkyline";
+import CTABackground from "@/components/shared/CTABackground";
 
 export default function CTASection() {
   return (
-    <section
-      id="cta-section"
-      className="relative bg-[#060608] pt-32 pb-52 md:pt-48 md:pb-64 overflow-hidden"
-    >
-      {/* Interactive particle sky — full section background */}
-      <ParticleSky className="absolute inset-0 h-full w-full" />
-
-      {/* Content */}
-      <div className="container-narrow relative z-10 text-center">
+    <CTABackground>
+      <div id="cta-section" className="container-narrow text-center">
         <ScrollReveal>
           <h2 className="font-display text-display-md md:text-display-lg font-bold text-text-hero">
             Ready to build something?
@@ -41,10 +33,7 @@ export default function CTASection() {
           </div>
         </ScrollReveal>
       </div>
-
-      {/* Knoxville skyline — anchored to bottom */}
-      <KnoxvilleSkyline className="absolute bottom-0 left-0 w-full z-[1]" />
-    </section>
+    </CTABackground>
   );
 }
 

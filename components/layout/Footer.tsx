@@ -10,7 +10,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Github } from "lucide-react";
+import { Github, Facebook, Instagram, Twitter } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+const SOCIAL_LINKS: { href: string; label: string; Icon: LucideIcon }[] = [
+  { href: "https://github.com/shruggietech", label: "GitHub", Icon: Github },
+  { href: "https://www.facebook.com/shruggietech", label: "Facebook", Icon: Facebook },
+  { href: "https://www.instagram.com/shruggietech", label: "Instagram", Icon: Instagram },
+  { href: "https://x.com/shruggietech", label: "X (Twitter)", Icon: Twitter },
+];
 
 const PAGE_LINKS = [
   { href: "/services", label: "Services" },
@@ -25,6 +33,7 @@ const PRODUCT_LINKS = [
   { href: "/products#shruggie-indexer", label: "shruggie-indexer" },
   { href: "/products#metadexer", label: "metadexer" },
   { href: "/products#rustif", label: "rustif" },
+  { href: "/products#shruggie-feedtools", label: "shruggie-feedtools" },
 ] as const;
 
 export default function Footer() {
@@ -102,15 +111,20 @@ export default function Footer() {
             <h3 className="mb-4 font-display text-body-sm font-medium uppercase tracking-wider text-text-muted">
               Connect
             </h3>
-            <a
-              href="https://github.com/shruggietech"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-body-sm text-text-secondary transition-colors duration-200 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
-            >
-              <Github size={18} aria-hidden="true" />
-              github.com/shruggietech
-            </a>
+            <div className="flex items-center gap-4">
+              {SOCIAL_LINKS.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.label}
+                  className="text-text-secondary transition-colors duration-200 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+                >
+                  <link.Icon size={20} aria-hidden="true" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>
