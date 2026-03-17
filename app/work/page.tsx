@@ -23,6 +23,7 @@ import Card from "@/components/ui/Card";
 import { DeviceMockup } from "@/components/ui/DeviceMockup";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import ScrollReveal from "@/components/shared/ScrollReveal";
+import CTABackground from "@/components/shared/CTABackground";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -124,16 +125,18 @@ export default function WorkPage() {
       </section>
 
       {/* CTA */}
-      <section className="section-bg-cta py-20 md:py-28">
+      <CTABackground>
         <div className="container-content text-center">
           <ScrollReveal>
-            <h2 className="font-display text-display-sm font-bold text-text-primary dark:text-[var(--text-hero)] mb-6">
+            <h2 className="font-display text-display-md font-bold text-text-primary">
               Ready to see results like these?
             </h2>
-            <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+            <div className="mt-8">
+              <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+            </div>
           </ScrollReveal>
         </div>
-      </section>
+      </CTABackground>
     </div>
   );
 }

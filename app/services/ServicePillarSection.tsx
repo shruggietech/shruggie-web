@@ -98,11 +98,11 @@ export default function ServicePillarSection({
               <div
                 ref={illustrationRef}
                 className={cn(
-                  "w-full md:w-2/5 shrink-0",
+                  "w-full mx-auto h-[280px] max-w-[360px] md:h-auto md:max-w-none md:w-2/5 shrink-0",
                   (isInView || shouldReduceMotion) && "is-animating",
                 )}
               >
-                <Illustration />
+                <Illustration className="h-full w-full" />
               </div>
             )}
 

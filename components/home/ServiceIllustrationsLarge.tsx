@@ -829,3 +829,229 @@ export function AIDataIllustrationLarge({ className }: IllustrationProps) {
     </svg>
   );
 }
+
+/* ── E. Ownership — "Ownership Transfer Blueprint" ──────────────────── */
+
+export function OwnershipIllustrationLarge({
+  className,
+}: IllustrationProps) {
+  const docLines = [
+    { y: 288, w: 140, op: 0.3 },
+    { y: 306, w: 120, op: 0.25 },
+    { y: 324, w: 150, op: 0.35 },
+    { y: 342, w: 100, op: 0.2 },
+    { y: 360, w: 130, op: 0.28 },
+  ];
+
+  return (
+    <svg
+      viewBox="0 0 600 800"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      width="100%"
+      height="100%"
+      aria-hidden="true"
+    >
+      {/* ── Layer 1: Structural Grid ── */}
+      <line
+        x1="180" y1="60" x2="180" y2="740"
+        stroke="white" strokeWidth="0.5" opacity="0.1"
+        strokeDasharray="6 8"
+        className={styles.ownerGuideV1}
+      />
+      <line
+        x1="420" y1="60" x2="420" y2="740"
+        stroke="white" strokeWidth="0.5" opacity="0.1"
+        strokeDasharray="6 8"
+        className={styles.ownerGuideV2}
+      />
+      <line
+        x1="60" y1="240" x2="540" y2="240"
+        stroke="white" strokeWidth="0.5" opacity="0.1"
+        strokeDasharray="6 8"
+        className={styles.ownerGuideH1}
+      />
+      <line
+        x1="60" y1="560" x2="540" y2="560"
+        stroke="white" strokeWidth="0.5" opacity="0.1"
+        strokeDasharray="6 8"
+        className={styles.ownerGuideH2}
+      />
+
+      {/* ── Layer 7: Corner Marks ── */}
+      <g className={styles.ownerCornerMark}>
+        <line x1="40" y1="80" x2="40" y2="100" stroke="white" strokeWidth="0.75" opacity="0.08" />
+        <line x1="40" y1="80" x2="60" y2="80" stroke="white" strokeWidth="0.75" opacity="0.08" />
+        <line x1="560" y1="80" x2="560" y2="100" stroke="white" strokeWidth="0.75" opacity="0.08" />
+        <line x1="560" y1="80" x2="540" y2="80" stroke="white" strokeWidth="0.75" opacity="0.08" />
+        <line x1="40" y1="720" x2="40" y2="700" stroke="white" strokeWidth="0.75" opacity="0.08" />
+        <line x1="40" y1="720" x2="60" y2="720" stroke="white" strokeWidth="0.75" opacity="0.08" />
+        <line x1="560" y1="720" x2="560" y2="700" stroke="white" strokeWidth="0.75" opacity="0.08" />
+        <line x1="560" y1="720" x2="540" y2="720" stroke="white" strokeWidth="0.75" opacity="0.08" />
+      </g>
+
+      {/* ── Layer 2: Central Document ── */}
+      {/* Document outer frame */}
+      <rect
+        x="100" y="200" width="240" height="320" rx="16"
+        stroke="#2BCC73" strokeWidth="2" opacity="0.6"
+        className={styles.docFrame}
+      />
+      {/* Title bar fill */}
+      <rect
+        x="100" y="200" width="240" height="36" rx="16"
+        fill="#2BCC73" opacity="0.06"
+        className={styles.docTitleBar}
+      />
+      {/* Clip the bottom corners of the title bar */}
+      <rect
+        x="100" y="220" width="240" height="16"
+        fill="#2BCC73" opacity="0.06"
+        className={styles.docTitleBar}
+      />
+
+      {/* Header line inside document */}
+      <rect
+        x="130" y="256" width="160" height="6" rx="3"
+        fill="#2BCC73" opacity="0.5"
+        className={styles.docHeader}
+      />
+
+      {/* Body text lines */}
+      {docLines.map((line, i) => (
+        <rect
+          key={`docLine-${i}`}
+          x={130} y={line.y} width={line.w} height={4} rx={2}
+          fill="#2BCC73" opacity={line.op}
+          className={styles[`docLine${i}`]}
+        />
+      ))}
+
+      {/* Horizontal divider near bottom of document */}
+      <line
+        x1="120" y1="440" x2="320" y2="440"
+        stroke="white" strokeWidth="0.5" opacity="0.08"
+        className={styles.docDivider}
+      />
+
+      {/* Signature scrawl */}
+      <path
+        d="M 140 470 C 150 458 160 480 170 465 S 185 475 195 460 S 210 478 220 464"
+        stroke="#2BCC73" strokeWidth="1.5" opacity="0.5"
+        fill="none" strokeLinecap="round" strokeLinejoin="round"
+        className={styles.signature}
+      />
+
+      {/* ── Layer 3: Security Seal ── */}
+      <circle
+        cx="310" cy="490" r="40"
+        stroke="#2BCC73" strokeWidth="1.5" opacity="0.4"
+        className={styles.sealOuter}
+      />
+      <circle
+        cx="310" cy="490" r="28"
+        stroke="#14B8A6" strokeWidth="1" opacity="0.3"
+        className={styles.sealInner}
+      />
+      {/* Checkmark */}
+      <polyline
+        points="296,490 306,500 326,478"
+        stroke="#2BCC73" strokeWidth="2.5" opacity="0.8"
+        fill="none" strokeLinecap="round" strokeLinejoin="round"
+        className={styles.sealCheck}
+      />
+
+      {/* ── Layer 5: Transfer Arrows ── */}
+      <path
+        d="M 340 280 Q 380 280 420 240"
+        stroke="#2BCC73" strokeWidth="1.5" opacity="0.5" fill="none"
+        className={styles.transferArrow0}
+      />
+      <polygon points="420,236 416,246 424,244" fill="#2BCC73" opacity="0.6"
+        className={styles.transferArrow0}
+      />
+      <path
+        d="M 340 350 Q 380 350 430 350"
+        stroke="#2BCC73" strokeWidth="1.5" opacity="0.5" fill="none"
+        className={styles.transferArrow1}
+      />
+      <polygon points="430,346 430,354 438,350" fill="#2BCC73" opacity="0.6"
+        className={styles.transferArrow1}
+      />
+      <path
+        d="M 340 420 Q 380 440 430 470"
+        stroke="#2BCC73" strokeWidth="1.5" opacity="0.5" fill="none"
+        className={styles.transferArrow2}
+      />
+      <polygon points="432,466 428,474 436,474" fill="#2BCC73" opacity="0.6"
+        className={styles.transferArrow2}
+      />
+      <path
+        d="M 340 480 Q 380 540 430 590"
+        stroke="#2BCC73" strokeWidth="1.5" opacity="0.5" fill="none"
+        className={styles.transferArrow3}
+      />
+      <polygon points="432,586 428,594 436,594" fill="#2BCC73" opacity="0.6"
+        className={styles.transferArrow3}
+      />
+
+      {/* ── Layer 4: Asset Icons ── */}
+
+      {/* Icon A — Domain */}
+      <g className={styles.assetDomain}>
+        {/* Lock icon */}
+        <circle cx="445" cy="232" r="6" stroke="#2BCC73" strokeWidth="1.5" opacity="0.8" />
+        <rect x="441" y="228" width="8" height="6" rx="1" stroke="#2BCC73" strokeWidth="1" opacity="0.7" fill="none" />
+        {/* Address bar */}
+        <rect x="458" y="220" width="80" height="24" rx="8" stroke="#2BCC73" strokeWidth="1.5" opacity="0.7" fill="none" />
+        <text x="476" y="236" fontSize="9" fontFamily="monospace" fill="#2BCC73" opacity="0.6">www</text>
+      </g>
+
+      {/* Icon B — Hosting */}
+      <g className={styles.assetHosting}>
+        {/* Server rack — top unit */}
+        <rect x="450" y="330" width="70" height="20" rx="4" stroke="#2BCC73" strokeWidth="1.5" opacity="0.7" fill="none" />
+        <circle cx="506" cy="340" r="2" fill="#2BCC73" opacity="0.7" />
+        <circle cx="512" cy="340" r="2" fill="white" opacity="0.3" />
+        <circle cx="500" cy="340" r="2" fill="white" opacity="0.3" />
+        {/* Server rack — bottom unit */}
+        <rect x="450" y="356" width="70" height="20" rx="4" stroke="#2BCC73" strokeWidth="1.5" opacity="0.7" fill="none" />
+        <circle cx="506" cy="366" r="2" fill="#2BCC73" opacity="0.7" />
+        <circle cx="512" cy="366" r="2" fill="white" opacity="0.3" />
+        <circle cx="500" cy="366" r="2" fill="white" opacity="0.3" />
+      </g>
+
+      {/* Icon C — Content */}
+      <g className={styles.assetContent}>
+        <rect x="460" y="440" width="50" height="60" rx="6" stroke="#2BCC73" strokeWidth="1.5" opacity="0.7" fill="none" />
+        <rect x="470" y="456" width="30" height="3" rx="1.5" fill="#2BCC73" opacity="0.5" />
+        <rect x="470" y="465" width="24" height="3" rx="1.5" fill="#2BCC73" opacity="0.45" />
+        <rect x="470" y="474" width="28" height="3" rx="1.5" fill="#2BCC73" opacity="0.4" />
+      </g>
+
+      {/* Icon D — Data (cylinder database) */}
+      <g className={styles.assetData}>
+        <ellipse cx="485" cy="575" rx="25" ry="8" stroke="#2BCC73" strokeWidth="1.5" opacity="0.7" fill="none" />
+        <line x1="460" y1="575" x2="460" y2="620" stroke="#2BCC73" strokeWidth="1.5" opacity="0.7" />
+        <line x1="510" y1="575" x2="510" y2="620" stroke="#2BCC73" strokeWidth="1.5" opacity="0.7" />
+        <ellipse cx="485" cy="620" rx="25" ry="8" stroke="#2BCC73" strokeWidth="1.5" opacity="0.7" fill="none" />
+        {/* Table row separators */}
+        <line x1="464" y1="590" x2="506" y2="590" stroke="#2BCC73" strokeWidth="0.75" opacity="0.45" strokeDasharray="4 3" />
+        <line x1="464" y1="605" x2="506" y2="605" stroke="#2BCC73" strokeWidth="0.75" opacity="0.45" strokeDasharray="4 3" />
+      </g>
+
+      {/* ── Layer 6: Key Icon ── */}
+      <g className={styles.keyIcon}>
+        {/* Key head */}
+        <circle cx="480" cy="130" r="16" stroke="#14B8A6" strokeWidth="2" opacity="0.6" fill="none" />
+        <circle cx="480" cy="130" r="6" stroke="#14B8A6" strokeWidth="1.5" opacity="0.5" fill="none" />
+        {/* Key shaft */}
+        <line x1="464" y1="130" x2="430" y2="130" stroke="#14B8A6" strokeWidth="2" opacity="0.6" />
+        {/* Key teeth */}
+        <line x1="440" y1="130" x2="440" y2="138" stroke="#14B8A6" strokeWidth="2" opacity="0.6" />
+        <line x1="448" y1="130" x2="448" y2="136" stroke="#14B8A6" strokeWidth="2" opacity="0.6" />
+      </g>
+    </svg>
+  );
+}

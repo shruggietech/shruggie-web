@@ -68,115 +68,230 @@ const phases: Phase[] = [
   },
 ];
 
-/* ── Arrow Cycle Diagram SVG ──────────────────────────────────────────── */
-
-/** Small speech-bubble icon */
-function DiscussIcon({ x, y, color }: { x: number; y: number; color: string }) {
-  return (
-    <g fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke 0.4s ease" }}>
-      <path d={`M${x - 8},${y - 7} h16 a3,3 0 0,1 3,3 v6 a3,3 0 0,1 -3,3 h-4 l-2.5,3 v-3 h-9.5 a3,3 0 0,1 -3,-3 v-6 a3,3 0 0,1 3,-3 z`} />
-      <circle cx={x - 3} cy={y - 1} r="1" fill={color} stroke="none" />
-      <circle cx={x} cy={y - 1} r="1" fill={color} stroke="none" />
-      <circle cx={x + 3} cy={y - 1} r="1" fill={color} stroke="none" />
-    </g>
-  );
-}
-
-/** Small lightbulb icon */
-function CreateIcon({ x, y, color }: { x: number; y: number; color: string }) {
-  return (
-    <g fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke 0.4s ease" }}>
-      <circle cx={x} cy={y - 3} r="7" />
-      <path d={`M${x - 3},${y + 4} a4,4 0 0,0 6,0`} />
-      <line x1={x - 2} y1={y + 6} x2={x + 2} y2={y + 6} />
-      <line x1={x} y1={y - 12} x2={x} y2={y - 14} />
-      <line x1={x + 7} y1={y - 9} x2={x + 9} y2={y - 10.5} />
-      <line x1={x - 7} y1={y - 9} x2={x - 9} y2={y - 10.5} />
-    </g>
-  );
-}
-
-/** Small rocket icon */
-function RocketIcon({ x, y, color }: { x: number; y: number; color: string }) {
-  return (
-    <g fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke 0.4s ease" }}>
-      <path d={`M${x},${y - 10} c-6,4 -7,10 -7,15 l4.5,3 h5 l4.5,-3 c0,-5 -1,-11 -7,-15 z`} />
-      <circle cx={x} cy={y - 1} r="1.8" />
-      <path d={`M${x - 7},${y + 5} l-3,3 l4.5,0.5`} />
-      <path d={`M${x + 7},${y + 5} l3,3 l-4.5,0.5`} />
-      <line x1={x - 2} y1={y + 8} x2={x - 2.5} y2={y + 11} />
-      <line x1={x} y1={y + 8} x2={x} y2={y + 12} />
-      <line x1={x + 2} y1={y + 8} x2={x + 2.5} y2={y + 11} />
-    </g>
-  );
-}
+/* ── Arrow Cycle Diagram SVG — "Process Cycle Blueprint" ──────────────── */
 
 function CycleDiagram({ activePhase }: { activePhase: number }) {
-  const ORANGE = "#F09040";
-  const ORANGE_DIM = "rgba(240, 144, 64, 0.50)";
-
-  // Nodes: Discuss (top), Create (bottom-right), Deliver (bottom-left)
+  /* Node positions on orbit circle (center 200,195 r≈140) */
   const nodes = [
-    { cx: 195, cy: 112, label: "Discuss" },
-    { cx: 280, cy: 248, label: "Create" },
-    { cx: 110, cy: 248, label: "Deliver" },
+    { cx: 200, cy: 55, label: "Discuss", number: "01" },
+    { cx: 325, cy: 265, label: "Create", number: "02" },
+    { cx: 75, cy: 265, label: "Deliver", number: "03" },
   ];
 
-  const R = 100;
-  const STROKE_W = 20;
-  const ICON_SCALE = 2.8;
-
-  // Z-order: Deliver (back), Create (mid), Discuss (front)
-  const drawOrder = [2, 1, 0];
+  /* Clockwise arrow segments: cubic béziers offset slightly outside orbit */
+  const arrows = [
+    {
+      d: "M 215,60 C 300,55 355,155 320,250",
+      startX: 215, startY: 60,
+      tipX: 320, tipY: 250,
+      tipAngle: 110,
+    },
+    {
+      d: "M 318,280 C 290,365 110,365 82,280",
+      startX: 318, startY: 280,
+      tipX: 82, tipY: 280,
+      tipAngle: 252,
+    },
+    {
+      d: "M 68,250 C 40,155 105,55 185,60",
+      startX: 68, startY: 250,
+      tipX: 185, tipY: 60,
+      tipAngle: 4,
+    },
+  ];
 
   return (
     <svg
-      viewBox="0 0 390 365"
+      viewBox="0 0 400 400"
       className="w-full max-w-[320px] mx-auto md:max-w-none"
       aria-hidden="true"
     >
-      {drawOrder.map((i) => {
-        const node = nodes[i];
+      <defs>
+        {/* Arrow glow filter */}
+        <filter id="arrow-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <style>{`
+          @keyframes processCyclePulse {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 0.15; transform: scale(1.08); }
+          }
+          .process-cycle-pulse {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: processCyclePulse 3s ease-in-out infinite;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .process-cycle-pulse {
+              animation: none !important;
+              opacity: 0.1 !important;
+              transform: none !important;
+            }
+          }
+        `}</style>
+      </defs>
+
+      {/* ── Layer 1: Background Scaffold ── */}
+
+      {/* Orbit circle (dashed) */}
+      <circle
+        cx={200} cy={195} r={140}
+        fill="none" stroke="white" strokeWidth={0.5}
+        opacity={0.08} strokeDasharray="6 8"
+      />
+
+      {/* Center crosshair */}
+      <line x1={200} y1={175} x2={200} y2={215} stroke="white" strokeWidth={0.5} opacity={0.06} />
+      <line x1={180} y1={195} x2={220} y2={195} stroke="white" strokeWidth={0.5} opacity={0.06} />
+
+      {/* Radial spoke lines to each node */}
+      {nodes.map((node, i) => (
+        <line
+          key={`spoke-${i}`}
+          x1={200} y1={195} x2={node.cx} y2={node.cy}
+          stroke="white" strokeWidth={0.5} opacity={0.05}
+          strokeDasharray="3 5"
+        />
+      ))}
+
+      {/* ── Layer 2: Curved Arrow Segments ── */}
+      {arrows.map((arrow, i) => {
         const isActive = activePhase === i;
-        const iconColor = isActive
-          ? "var(--text-primary, #333)"
-          : "var(--text-muted, #9A9A9A)";
-
         return (
-          <g key={i}>
-            {/* Circle with thick orange border */}
-            <circle
-              cx={node.cx}
-              cy={node.cy}
-              r={R}
-              className="fill-[#E5E5E5] dark:fill-[#1A1A1E]"
-              stroke={isActive ? ORANGE : ORANGE_DIM}
-              strokeWidth={STROKE_W}
-              style={{ transition: "stroke 0.4s ease" }}
+          <g key={`arrow-${i}`}>
+            {/* Track layer (always visible rail) */}
+            <path
+              d={arrow.d} fill="none"
+              stroke="white" strokeWidth={1.5} opacity={0.08}
+              strokeLinecap="round"
             />
-
-            {/* Icon (scaled up) */}
-            <g transform={`translate(${node.cx}, ${node.cy - 12}) scale(${ICON_SCALE})`}>
-              {i === 0 && <DiscussIcon x={0} y={0} color={iconColor} />}
-              {i === 1 && <CreateIcon x={0} y={0} color={iconColor} />}
-              {i === 2 && <RocketIcon x={0} y={0} color={iconColor} />}
+            {/* Active layer */}
+            <path
+              d={arrow.d} fill="none"
+              stroke="#2BCC73"
+              strokeWidth={isActive ? 2 : 1.5}
+              strokeLinecap="round"
+              filter={isActive ? "url(#arrow-glow)" : undefined}
+              style={{
+                opacity: isActive ? 0.7 : 0.15,
+                transition: "stroke-opacity 0.4s ease, opacity 0.4s ease, filter 0.4s ease, stroke-width 0.3s ease",
+              }}
+            />
+            {/* Arrowhead */}
+            <g transform={`translate(${arrow.tipX},${arrow.tipY}) rotate(${arrow.tipAngle})`}>
+              <polygon
+                points="0,0 -8,-3.5 -8,3.5"
+                fill="#2BCC73"
+                style={{
+                  opacity: isActive ? 0.7 : 0.15,
+                  transition: "opacity 0.4s ease",
+                }}
+              />
             </g>
+          </g>
+        );
+      })}
 
-            {/* Label */}
+      {/* ── Layer 3: Node Circles ── */}
+      {nodes.map((node, i) => {
+        const isActive = activePhase === i;
+        return (
+          <g key={`node-${i}`}>
+            {/* Outer ring */}
+            <circle
+              cx={node.cx} cy={node.cy} r={32}
+              fill={isActive ? "#2BCC73" : "none"}
+              stroke={isActive ? "#2BCC73" : "white"}
+              strokeWidth={isActive ? 2 : 1}
+              style={{
+                fillOpacity: isActive ? 0.06 : 0,
+                strokeOpacity: isActive ? 0.6 : 0.12,
+                transition: "stroke 0.4s ease, stroke-opacity 0.4s ease, fill 0.4s ease, fill-opacity 0.4s ease, stroke-width 0.3s ease",
+              }}
+            />
+            {/* Inner ring */}
+            <circle
+              cx={node.cx} cy={node.cy} r={20}
+              fill="none"
+              stroke={isActive ? "#14B8A6" : "white"}
+              strokeWidth={isActive ? 1 : 0.5}
+              style={{
+                strokeOpacity: isActive ? 0.35 : 0.06,
+                transition: "stroke 0.4s ease, stroke-opacity 0.4s ease, stroke-width 0.3s ease",
+              }}
+            />
+            {/* Phase number */}
             <text
-              x={node.cx}
-              y={node.cy + 38}
-              textAnchor="middle"
-              dominantBaseline="central"
-              className="text-[16px] font-bold"
-              fill={isActive ? "var(--text-primary, #333)" : "var(--text-secondary, #6B6B6B)"}
-              style={{ transition: "fill 0.4s ease" }}
+              x={node.cx} y={node.cy}
+              fontFamily="monospace" fontSize={14} fontWeight="bold"
+              textAnchor="middle" dominantBaseline="central"
+              fill={isActive ? "#2BCC73" : "white"}
+              style={{
+                opacity: isActive ? 0.9 : 0.25,
+                transition: "fill 0.4s ease, opacity 0.4s ease",
+              }}
+            >
+              {node.number}
+            </text>
+            {/* Label below ring */}
+            <text
+              x={node.cx} y={node.cy + 50}
+              fontSize={12} fontWeight={500}
+              textAnchor="middle" letterSpacing="0.05em"
+              fill={isActive ? "#2BCC73" : "white"}
+              style={{
+                opacity: isActive ? 0.8 : 0.2,
+                transition: "fill 0.4s ease, opacity 0.4s ease",
+              }}
             >
               {node.label}
             </text>
           </g>
         );
       })}
+
+      {/* ── Layer 4: Connection Dots ── */}
+      {arrows.map((arrow, i) => {
+        const isActive = activePhase === i;
+        return (
+          <g key={`dots-${i}`}>
+            <circle
+              cx={arrow.startX} cy={arrow.startY} r={2.5}
+              fill={isActive ? "#2BCC73" : "white"}
+              style={{
+                opacity: isActive ? 0.5 : 0.1,
+                transition: "fill 0.4s ease, opacity 0.4s ease",
+              }}
+            />
+            <circle
+              cx={arrow.tipX} cy={arrow.tipY} r={2.5}
+              fill={isActive ? "#2BCC73" : "white"}
+              style={{
+                opacity: isActive ? 0.5 : 0.1,
+                transition: "fill 0.4s ease, opacity 0.4s ease",
+              }}
+            />
+          </g>
+        );
+      })}
+
+      {/* ── Layer 5: Active Phase Pulse Ring ── */}
+      {nodes.map((node, i) => (
+        <g
+          key={`pulse-${i}`}
+          style={{
+            opacity: activePhase === i ? 1 : 0,
+            transition: "opacity 0.4s ease",
+          }}
+        >
+          <circle
+            cx={node.cx} cy={node.cy} r={38}
+            fill="none" stroke="#2BCC73" strokeWidth={1}
+            className="process-cycle-pulse"
+          />
+        </g>
+      ))}
     </svg>
   );
 }
@@ -282,7 +397,7 @@ export default function ProcessAccordion() {
       </div>
 
       {/* ── Cycle Diagram ────────────────────────────────────────────── */}
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center order-first md:order-last">
         <CycleDiagram activePhase={activePhase} />
       </div>
     </div>

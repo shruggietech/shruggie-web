@@ -15,9 +15,6 @@ import {
   Database,
   FileText,
   Cpu,
-  Terminal,
-  GitBranch,
-  Layers,
 } from "lucide-react";
 
 import { SITE_URL } from "@/lib/constants";
@@ -30,6 +27,7 @@ import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import CTABackground from "@/components/shared/CTABackground";
+import SpecToShipIllustration from "@/components/products/SpecToShipIllustration";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -197,7 +195,7 @@ export default function ProductsPage() {
       <section className="section-bg-cta pb-16 md:pb-24">
         <div className="container-content pt-16 md:pt-24">
           <ScrollReveal>
-            <div className="border-t border-accent/10 pt-16 md:pt-24">
+            <div className="pt-16 md:pt-24">
               <div className="flex flex-col-reverse md:flex-row md:items-center md:gap-16">
                 {/* Text content */}
                 <div className="md:flex-1">
@@ -212,34 +210,9 @@ export default function ProductsPage() {
                   </p>
                 </div>
 
-                {/* Decorative icon composition */}
-                <div className="relative mb-8 md:mb-0 flex items-center justify-center md:w-[280px] lg:w-[340px] shrink-0">
-                  <svg
-                    viewBox="0 0 200 200"
-                    className="w-48 h-48 md:w-full md:h-auto"
-                    aria-hidden="true"
-                  >
-                    {/* Circuit-style connecting lines */}
-                    <line x1="60" y1="60" x2="140" y2="60" stroke="var(--color-accent)" strokeWidth="1" opacity="0.15" />
-                    <line x1="140" y1="60" x2="140" y2="140" stroke="var(--color-accent)" strokeWidth="1" opacity="0.15" />
-                    <line x1="140" y1="140" x2="60" y2="140" stroke="var(--color-accent)" strokeWidth="1" opacity="0.15" />
-                    <line x1="60" y1="140" x2="60" y2="60" stroke="var(--color-accent)" strokeWidth="1" opacity="0.15" />
-                    <line x1="100" y1="40" x2="100" y2="160" stroke="var(--color-accent)" strokeWidth="1" opacity="0.1" strokeDasharray="4 4" />
-                    <line x1="40" y1="100" x2="160" y2="100" stroke="var(--color-accent)" strokeWidth="1" opacity="0.1" strokeDasharray="4 4" />
-                    {/* Node dots at intersections */}
-                    <circle cx="60" cy="60" r="3" fill="var(--color-accent)" opacity="0.2" />
-                    <circle cx="140" cy="60" r="3" fill="var(--color-accent)" opacity="0.2" />
-                    <circle cx="140" cy="140" r="3" fill="var(--color-accent)" opacity="0.2" />
-                    <circle cx="60" cy="140" r="3" fill="var(--color-accent)" opacity="0.2" />
-                    <circle cx="100" cy="100" r="4" fill="var(--color-accent)" opacity="0.25" />
-                  </svg>
-                  {/* Lucide icons overlaid on the SVG grid */}
-                  <div className="absolute grid grid-cols-2 gap-8 pointer-events-none">
-                    <Terminal className="h-8 w-8 text-accent opacity-25" aria-hidden="true" />
-                    <GitBranch className="h-8 w-8 text-accent opacity-20" aria-hidden="true" />
-                    <Layers className="h-8 w-8 text-accent opacity-20" aria-hidden="true" />
-                    <Cpu className="h-8 w-8 text-accent opacity-25" aria-hidden="true" />
-                  </div>
+                {/* Spec-to-Ship Pipeline illustration */}
+                <div className="mb-8 md:mb-0 flex items-center justify-center md:w-[320px] lg:w-[380px] shrink-0">
+                  <SpecToShipIllustration />
                 </div>
               </div>
             </div>

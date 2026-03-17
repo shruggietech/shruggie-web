@@ -128,14 +128,9 @@ export default function ResearchPage() {
                 className="group/card block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[#111318] rounded-xl"
               >
                 <Card hover>
-                  {/* Mobile: visual above text */}
-                  <div className="mb-6 flex items-center justify-center max-h-[200px] md:hidden">
-                    <pub.Visual />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-[1fr,0.4fr] gap-6 items-center">
-                    {/* Text content */}
-                    <div>
+                  <div className="flex flex-col gap-6 md:flex-row">
+                    {/* Left column: text content */}
+                    <div className="flex flex-1 flex-col gap-2 md:w-[60%] md:flex-none">
                       <h3 className="font-display text-display-xs font-bold text-text-primary">
                         {pub.title}
                       </h3>
@@ -151,8 +146,8 @@ export default function ResearchPage() {
                       </span>
                     </div>
 
-                    {/* Desktop: visual on the right */}
-                    <div className="hidden md:flex items-center justify-center">
+                    {/* Right column: abstract visual (desktop only) */}
+                    <div className="hidden md:flex md:w-[40%] md:items-center md:justify-center">
                       <pub.Visual />
                     </div>
                   </div>

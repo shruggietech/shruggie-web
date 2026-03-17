@@ -14,13 +14,13 @@ import { SITE_URL } from "@/lib/constants";
 import { generateServiceSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
 import PageHero from "@/components/shared/PageHero";
-import { Shield, Key, FileCheck, Lock } from "lucide-react";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import CTABackground from "@/components/shared/CTABackground";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import ProcessAccordion from "./ProcessAccordion";
 import ServicePillarSection from "./ServicePillarSection";
+import OwnershipSection from "./OwnershipSection";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -164,45 +164,7 @@ export default function ServicesPage() {
       </section>
 
       {/* ── Section 4: Ownership Thesis ──────────────────────────────── */}
-      <section className="border-t border-accent/10 py-16 md:py-24">
-        <div className="container-content">
-          <ScrollReveal>
-            <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center">
-              <div className="flex-1">
-                <h2 className="font-display text-display-md font-bold text-text-primary">
-                  You Own Everything We Build
-                </h2>
-
-                <p className="mt-6 text-body-lg text-text-secondary">
-                  Your domain, your hosting credentials, your content, your data.
-                  We earn revenue by building things that work, not by controlling
-                  assets that should be yours. Every engagement operates under a
-                  formal Master Services Agreement and Scope of Work. No
-                  handshakes. No ambiguity.
-                </p>
-              </div>
-
-              {/* Decorative icon cluster */}
-              <div className="shrink-0 hidden md:flex items-center justify-center">
-                <div className="relative w-48 h-48">
-                  <Shield size={80} className="absolute top-0 left-1/2 -translate-x-1/2 text-accent/20" strokeWidth={1.2} />
-                  <Key size={36} className="absolute bottom-4 left-2 text-accent/25 -rotate-45" strokeWidth={1.5} />
-                  <FileCheck size={36} className="absolute bottom-4 right-2 text-accent/25 rotate-12" strokeWidth={1.5} />
-                  <Lock size={28} className="absolute top-[52%] left-1/2 -translate-x-1/2 text-accent/30" strokeWidth={1.5} />
-                </div>
-              </div>
-
-              {/* Mobile decorative row */}
-              <div className="flex md:hidden items-center justify-center gap-6">
-                <Shield size={40} className="text-accent/20" strokeWidth={1.2} />
-                <Key size={28} className="text-accent/25 -rotate-45" strokeWidth={1.5} />
-                <FileCheck size={28} className="text-accent/25" strokeWidth={1.5} />
-                <Lock size={24} className="text-accent/30" strokeWidth={1.5} />
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+      <OwnershipSection />
 
       {/* ── Section 5: CTA ───────────────────────────────────────────── */}
       <CTABackground>

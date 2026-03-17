@@ -7,7 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `OwnershipSection` component: extracted "You Own Everything We Build" section from the Services page into a dedicated client component with an animated SVG shield/key illustration triggered by IntersectionObserver
+- `SpecToShipIllustration` component: new animated SVG illustration for the Products page "How We Build Software" section depicting a spec-to-ship pipeline, replacing the inline icon grid
+- `ServiceIllustrationsLarge`: added large-format SVG illustrations for service pillar sections on the homepage
+
 ### Changed
+
+- **ProcessAccordion**: redesigned cycle diagram from circle-based icons to a blueprint-style arrow cycle with numbered nodes, cubic-bézier arrow paths, and arrowhead tips; replaced individual icon components (DiscussIcon, CreateIcon, RocketIcon) with a cleaner geometric design
+- **Products page**: replaced inline decorative SVG grid (Terminal, GitBranch, Layers, Cpu icons) with the new `SpecToShipIllustration` component; removed unused Lucide icon imports; removed `border-t` from the "How We Build Software" section
+- **Services page**: replaced inline "You Own Everything We Build" markup and decorative Lucide icon cluster (Shield, Key, FileCheck, Lock) with `OwnershipSection` component; removed unused icon imports
+- **Research page**: refactored publication card layout from `grid` to `flex` with explicit width columns; removed mobile-only visual duplication above text content
+- **Work page**: replaced static `section-bg-cta` CTA section with `CTABackground` component; updated heading from `text-display-sm` to `text-display-md`; improved CTA button spacing
+- `ServicePillarSection`: added constrained sizing for illustration containers (`h-[280px] max-w-[360px]` on mobile, unconstrained on desktop); illustrations now receive `className="h-full w-full"` for proper fill
+- `ServiceIllustrationsLarge.module.css`: added animation keyframes and styling for large service illustrations
+
+### Previous
 
 - **ProcessAccordion**: redesigned from three sequential phases (Foundation & Setup → Optimization & Growth → Ongoing Partnership) to an iterative Agile cycle (Discuss → Create → Deliver) with updated descriptions and deliverables; replaced curved-arrow cycle diagram with circle-based icons (speech bubble, lightbulb, rocket) using orange accent borders
 - Services page "How We Work" description updated from "three-phase methodology" to "iterative Discuss, Create, Deliver cycle"
