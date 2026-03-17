@@ -68,7 +68,8 @@ export default function ServicePillarSection({
   bgClass,
 }: ServicePillarSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const illustrationRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(illustrationRef, { once: true, margin: "-20% 0px -20% 0px" });
   const shouldReduceMotion = useReducedMotion();
 
   const Icon = ICON_MAP[id];
@@ -82,7 +83,6 @@ export default function ServicePillarSection({
       className={cn(
         "scroll-mt-24 py-16 md:py-24",
         bgClass,
-        (isInView || shouldReduceMotion) && "is-animating",
       )}
     >
       <div className="container-content">
@@ -95,7 +95,13 @@ export default function ServicePillarSection({
           >
             {/* Illustration — above text on mobile, alternating side on desktop */}
             {Illustration && (
-              <div className="w-full md:w-2/5 shrink-0">
+              <div
+                ref={illustrationRef}
+                className={cn(
+                  "w-full md:w-2/5 shrink-0",
+                  (isInView || shouldReduceMotion) && "is-animating",
+                )}
+              >
                 <Illustration />
               </div>
             )}

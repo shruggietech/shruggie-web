@@ -26,6 +26,12 @@ export default function WorkCarousel() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // Controlled touch handler state
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const isSwiping = useRef(false);
+  const isScrolling = useRef(false);
+
   const setCardRef = useCallback(
     (index: number) => (el: HTMLDivElement | null) => {
       cardRefs.current[index] = el;
@@ -33,12 +39,91 @@ export default function WorkCarousel() {
     [],
   );
 
+  // Programmatically scroll to a specific card index
+  const scrollToCard = useCallback((index: number) => {
+    const card = cardRefs.current[index];
+    if (!card || !scrollRef.current) return;
+    const container = scrollRef.current;
+    const cardRect = card.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const scrollLeft =
+      container.scrollLeft +
+      cardRect.left -
+      containerRect.left -
+      (containerRect.width - cardRect.width) / 2;
+    isScrolling.current = true;
+    setActiveIndex(index);
+    container.scrollTo({ left: scrollLeft, behavior: "smooth" });
+    setTimeout(() => {
+      isScrolling.current = false;
+    }, 400);
+  }, []);
+
+  // Store activeIndex in a ref so native event listeners always read the latest value
+  const activeIndexRef = useRef(activeIndex);
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  // Attach non-passive native touch listeners so preventDefault() actually works
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+      isSwiping.current = false;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (isScrolling.current) {
+        e.preventDefault();
+        return;
+      }
+      const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
+      const deltaY = Math.abs(e.touches[0].clientY - touchStartY.current);
+      if (deltaX > deltaY && deltaX > 10) {
+        isSwiping.current = true;
+        e.preventDefault();
+      }
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (isScrolling.current) return;
+      const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+      const THRESHOLD = 30;
+      if (Math.abs(deltaX) > THRESHOLD) {
+        const current = activeIndexRef.current;
+        const direction = deltaX < 0 ? 1 : -1;
+        const targetIndex = Math.max(
+          0,
+          Math.min(caseStudies.length - 1, current + direction),
+        );
+        if (targetIndex !== current) {
+          scrollToCard(targetIndex);
+        }
+      }
+    };
+
+    container.addEventListener("touchstart", onTouchStart, { passive: true });
+    container.addEventListener("touchmove", onTouchMove, { passive: false });
+    container.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    return () => {
+      container.removeEventListener("touchstart", onTouchStart);
+      container.removeEventListener("touchmove", onTouchMove);
+      container.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [scrollToCard]);
+
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (isScrolling.current) return;
         for (const entry of entries) {
           if (entry.isIntersecting) {
             const idx = cardRefs.current.indexOf(
@@ -94,17 +179,16 @@ export default function WorkCarousel() {
       {/* Horizontal scroll strip */}
       <div
         ref={scrollRef}
-        className="mt-[var(--component-gap)] flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[var(--padding-x)] pb-4"
+        className="mt-[var(--component-gap)] flex gap-4 overflow-x-auto px-[var(--padding-x)] pb-4"
         style={{
           scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
         }}
       >
         {caseStudies.map((study, index) => (
           <div
             key={study.slug}
             ref={setCardRef(index)}
-            className="w-[90vw] flex-shrink-0 snap-center"
+            className="w-[90vw] flex-shrink-0"
           >
             <Card className="flex h-full flex-col p-5">
               <div className="mb-4">
@@ -159,11 +243,7 @@ export default function WorkCarousel() {
                 : "w-2 bg-white/20"
             }`}
             onClick={() => {
-              cardRefs.current[index]?.scrollIntoView({
-                behavior: "smooth",
-                block: "nearest",
-                inline: "center",
-              });
+              scrollToCard(index);
             }}
           />
         ))}

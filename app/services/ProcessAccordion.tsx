@@ -1,13 +1,13 @@
 /**
- * ProcessAccordion — Accordion + cycle diagram for the "How We Work" section.
+ * ProcessAccordion — Accordion + arrow cycle for the "How We Work" section.
  *
  * Left side (desktop) / Top (mobile): Three accordion panels showing
  * phase details. Only one panel open at a time. Fixed min-height to
  * eliminate page jumps.
  *
  * Right side (desktop) / Bottom (mobile): SVG cycle diagram with three
- * curved arrow segments. Active phase fills with brand green; inactive
- * arrows stay muted gray.
+ * curved arrow segments connecting Discuss → Create → Deliver in a
+ * continuous loop, reinforcing the iterative Agile nature.
  *
  * Spec reference: ShruggieTech-Site-Updates-Plan-v2 §2.3
  */
@@ -32,141 +32,151 @@ interface Phase {
 const phases: Phase[] = [
   {
     number: "01",
-    title: "Foundation & Setup",
+    title: "Discuss",
     description:
-      "We establish your brand assets, deploy modern web infrastructure, and integrate the systems your business needs to operate independently. The goal is a functional, consistently branded digital presence.",
+      "Every cycle begins with open conversation. We align on goals, review priorities, and define the scope of what comes next. Your input drives every decision — no assumptions, no black boxes.",
     deliverables: [
-      "Brand identity system",
-      "Website build and deployment",
-      "DNS and hosting on infrastructure you own",
-      "Booking/payment integrations",
+      "Requirements gathering and discovery",
+      "Sprint planning and backlog refinement",
+      "Stakeholder alignment and feedback review",
+      "Priority definition and scope agreement",
     ],
   },
   {
     number: "02",
-    title: "Optimization & Growth",
+    title: "Create",
     description:
-      "Once systems are in place, we make them perform. Algorithm analysis, content freshness, A/B testing, and conversion optimization across every relevant platform.",
+      "We design, build, and iterate. From wireframes to working code, the create phase turns your requirements into tangible results through focused, rapid development.",
     deliverables: [
-      "SEO and AEO implementation",
-      "Analytics architecture (GA4, GTM)",
-      "Ad campaign setup and tuning",
-      "Review generation workflows",
+      "UI/UX design and prototyping",
+      "Development and integration",
+      "Quality assurance and testing",
+      "Iterative refinement and demos",
     ],
   },
   {
     number: "03",
-    title: "Ongoing Partnership",
+    title: "Deliver",
     description:
-      "Continuous storytelling, community engagement, channel expansion, and reputation management. We grow with you.",
+      "When the work is ready, we deploy, measure, and optimize. Every delivery is a checkpoint — review the results, gather feedback, and feed it back into the next cycle.",
     deliverables: [
-      "Social media content calendar",
-      "Monthly performance reporting",
-      "Content refresh cycles",
-      "Channel expansion strategy",
+      "Deployment and launch",
+      "Performance monitoring and analytics",
+      "Stakeholder review and sign-off",
+      "Retrospective and continuous improvement",
     ],
   },
 ];
 
-/* ── Cycle Diagram SVG ──────────────────────────────────────────────────── */
+/* ── Arrow Cycle Diagram SVG ──────────────────────────────────────────── */
+
+/** Small speech-bubble icon */
+function DiscussIcon({ x, y, color }: { x: number; y: number; color: string }) {
+  return (
+    <g fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke 0.4s ease" }}>
+      <path d={`M${x - 8},${y - 7} h16 a3,3 0 0,1 3,3 v6 a3,3 0 0,1 -3,3 h-4 l-2.5,3 v-3 h-9.5 a3,3 0 0,1 -3,-3 v-6 a3,3 0 0,1 3,-3 z`} />
+      <circle cx={x - 3} cy={y - 1} r="1" fill={color} stroke="none" />
+      <circle cx={x} cy={y - 1} r="1" fill={color} stroke="none" />
+      <circle cx={x + 3} cy={y - 1} r="1" fill={color} stroke="none" />
+    </g>
+  );
+}
+
+/** Small lightbulb icon */
+function CreateIcon({ x, y, color }: { x: number; y: number; color: string }) {
+  return (
+    <g fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke 0.4s ease" }}>
+      <circle cx={x} cy={y - 3} r="7" />
+      <path d={`M${x - 3},${y + 4} a4,4 0 0,0 6,0`} />
+      <line x1={x - 2} y1={y + 6} x2={x + 2} y2={y + 6} />
+      <line x1={x} y1={y - 12} x2={x} y2={y - 14} />
+      <line x1={x + 7} y1={y - 9} x2={x + 9} y2={y - 10.5} />
+      <line x1={x - 7} y1={y - 9} x2={x - 9} y2={y - 10.5} />
+    </g>
+  );
+}
+
+/** Small rocket icon */
+function RocketIcon({ x, y, color }: { x: number; y: number; color: string }) {
+  return (
+    <g fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke 0.4s ease" }}>
+      <path d={`M${x},${y - 10} c-6,4 -7,10 -7,15 l4.5,3 h5 l4.5,-3 c0,-5 -1,-11 -7,-15 z`} />
+      <circle cx={x} cy={y - 1} r="1.8" />
+      <path d={`M${x - 7},${y + 5} l-3,3 l4.5,0.5`} />
+      <path d={`M${x + 7},${y + 5} l3,3 l-4.5,0.5`} />
+      <line x1={x - 2} y1={y + 8} x2={x - 2.5} y2={y + 11} />
+      <line x1={x} y1={y + 8} x2={x} y2={y + 12} />
+      <line x1={x + 2} y1={y + 8} x2={x + 2.5} y2={y + 11} />
+    </g>
+  );
+}
 
 function CycleDiagram({ activePhase }: { activePhase: number }) {
-  const INACTIVE = "var(--color-gray-600, #52525b)";
-  const ACTIVE = "#2BCC73";
+  const ORANGE = "#F09040";
+  const ORANGE_DIM = "rgba(240, 144, 64, 0.50)";
 
-  // Node positions (on a circle, top-centered)
-  // Phase 01 at top, 02 at bottom-right, 03 at bottom-left
+  // Nodes: Discuss (top), Create (bottom-right), Deliver (bottom-left)
   const nodes = [
-    { cx: 150, cy: 40, label: "01", title: "Foundation" },
-    { cx: 260, cy: 220, label: "02", title: "Optimization" },
-    { cx: 40, cy: 220, label: "03", title: "Partnership" },
+    { cx: 195, cy: 112, label: "Discuss" },
+    { cx: 280, cy: 248, label: "Create" },
+    { cx: 110, cy: 248, label: "Deliver" },
   ];
 
-  // Curved arrow paths between nodes (clockwise)
-  const arrows = [
-    // Phase 01: top → bottom-right
-    "M 168,56 C 220,80 260,140 262,200",
-    // Phase 02: bottom-right → bottom-left
-    "M 244,236 C 200,280 100,280 56,236",
-    // Phase 03: bottom-left → top
-    "M 38,200 C 36,140 76,80 132,56",
-  ];
+  const R = 100;
+  const STROKE_W = 20;
+  const ICON_SCALE = 2.8;
+
+  // Z-order: Deliver (back), Create (mid), Discuss (front)
+  const drawOrder = [2, 1, 0];
 
   return (
     <svg
-      viewBox="0 0 300 300"
-      className="w-full max-w-[280px] mx-auto md:max-w-none"
+      viewBox="0 0 390 365"
+      className="w-full max-w-[320px] mx-auto md:max-w-none"
       aria-hidden="true"
     >
-      <defs>
-        {/* Arrowhead markers for each phase */}
-        {[0, 1, 2].map((i) => (
-          <marker
-            key={i}
-            id={`arrow-${i}`}
-            markerWidth="10"
-            markerHeight="8"
-            refX="9"
-            refY="4"
-            orient="auto"
-          >
-            <path
-              d="M 0 0 L 10 4 L 0 8 Z"
-              fill={activePhase === i ? ACTIVE : INACTIVE}
-              style={{ transition: "fill 0.4s ease" }}
+      {drawOrder.map((i) => {
+        const node = nodes[i];
+        const isActive = activePhase === i;
+        const iconColor = isActive
+          ? "var(--text-primary, #333)"
+          : "var(--text-muted, #9A9A9A)";
+
+        return (
+          <g key={i}>
+            {/* Circle with thick orange border */}
+            <circle
+              cx={node.cx}
+              cy={node.cy}
+              r={R}
+              className="fill-[#E5E5E5] dark:fill-[#1A1A1E]"
+              stroke={isActive ? ORANGE : ORANGE_DIM}
+              strokeWidth={STROKE_W}
+              style={{ transition: "stroke 0.4s ease" }}
             />
-          </marker>
-        ))}
-      </defs>
 
-      {/* Arrow paths */}
-      {arrows.map((d, i) => (
-        <path
-          key={i}
-          d={d}
-          fill="none"
-          stroke={activePhase === i ? ACTIVE : INACTIVE}
-          strokeWidth={2.5}
-          strokeLinecap="round"
-          markerEnd={`url(#arrow-${i})`}
-          style={{ transition: "stroke 0.4s ease" }}
-        />
-      ))}
+            {/* Icon (scaled up) */}
+            <g transform={`translate(${node.cx}, ${node.cy - 12}) scale(${ICON_SCALE})`}>
+              {i === 0 && <DiscussIcon x={0} y={0} color={iconColor} />}
+              {i === 1 && <CreateIcon x={0} y={0} color={iconColor} />}
+              {i === 2 && <RocketIcon x={0} y={0} color={iconColor} />}
+            </g>
 
-      {/* Phase nodes */}
-      {nodes.map((node, i) => (
-        <g key={i}>
-          <circle
-            cx={node.cx}
-            cy={node.cy}
-            r={28}
-            fill={activePhase === i ? "rgba(43,204,115,0.12)" : "rgba(255,255,255,0.03)"}
-            stroke={activePhase === i ? ACTIVE : INACTIVE}
-            strokeWidth={2}
-            style={{ transition: "fill 0.4s ease, stroke 0.4s ease" }}
-          />
-          <text
-            x={node.cx}
-            y={node.cy - 4}
-            textAnchor="middle"
-            dominantBaseline="central"
-            className="fill-text-primary font-display text-[14px] font-bold"
-          >
-            {node.label}
-          </text>
-          <text
-            x={node.cx}
-            y={node.cy + 12}
-            textAnchor="middle"
-            dominantBaseline="central"
-            className="text-[9px] font-medium"
-            fill={activePhase === i ? ACTIVE : "var(--color-text-secondary, #a1a1aa)"}
-            style={{ transition: "fill 0.4s ease" }}
-          >
-            {node.title}
-          </text>
-        </g>
-      ))}
+            {/* Label */}
+            <text
+              x={node.cx}
+              y={node.cy + 38}
+              textAnchor="middle"
+              dominantBaseline="central"
+              className="text-[16px] font-bold"
+              fill={isActive ? "var(--text-primary, #333)" : "var(--text-secondary, #6B6B6B)"}
+              style={{ transition: "fill 0.4s ease" }}
+            >
+              {node.label}
+            </text>
+          </g>
+        );
+      })}
     </svg>
   );
 }

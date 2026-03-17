@@ -154,7 +154,7 @@ export default function ServicesPage() {
             <SectionHeading
               label="OUR PROCESS"
               title="How We Work"
-              description="Every engagement follows a three-phase methodology."
+              description="Every engagement follows an iterative Discuss, Create, Deliver cycle."
               align="center"
             />
           </ScrollReveal>

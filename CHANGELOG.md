@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **ProcessAccordion**: redesigned from three sequential phases (Foundation & Setup → Optimization & Growth → Ongoing Partnership) to an iterative Agile cycle (Discuss → Create → Deliver) with updated descriptions and deliverables; replaced curved-arrow cycle diagram with circle-based icons (speech bubble, lightbulb, rocket) using orange accent borders
+- Services page "How We Work" description updated from "three-phase methodology" to "iterative Discuss, Create, Deliver cycle"
+- `ServicePillarSection`: scoped `is-animating` class and `useInView` detection to the illustration wrapper instead of the entire section for more precise animation triggering
+- `ServicesCarousel`: replaced React synthetic touch handlers with non-passive native `touchmove` listeners via `useEffect` so `preventDefault()` correctly blocks page scroll during horizontal swipes; fixed stale-closure issue by tracking `activeIndex` in a ref
+- `WorkCarousel`: added controlled programmatic scroll-to-card touch handling (matching `ServicesCarousel` pattern); removed CSS `snap-x snap-mandatory scroll-smooth` and `WebkitOverflowScrolling` in favor of explicit `scrollToCard` logic; updated dot indicator click handlers to use `scrollToCard`
+
+## [Previous — Site-Wide v2 Updates]
+
 ### Added
 
 - `CTABackground` shared component: reusable CTA section wrapper with `ParticleSky` background and `KnoxvilleSkyline` anchored to the bottom — extracted from homepage `CTASection` so every page-level CTA can share the same interactive visual treatment

@@ -115,6 +115,7 @@ export default function ServicesCarousel() {
       containerRect.left -
       (containerRect.width - cardRect.width) / 2;
     isScrolling.current = true;
+    setActiveIndex(index);
     container.scrollTo({ left: scrollLeft, behavior: "smooth" });
     // Reset scrolling flag after animation completes
     setTimeout(() => {
@@ -122,46 +123,64 @@ export default function ServicesCarousel() {
     }, 400);
   }, []);
 
-  // Controlled touch handlers to ensure one swipe = one card
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-    isSwiping.current = false;
-  }, []);
+  // Store activeIndex in a ref so native event listeners always read the latest value
+  const activeIndexRef = useRef(activeIndex);
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (isScrolling.current) {
-      e.preventDefault();
-      return;
-    }
-    const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
-    const deltaY = Math.abs(e.touches[0].clientY - touchStartY.current);
-    // If horizontal movement dominates, treat as swipe and prevent default scroll
-    if (deltaX > deltaY && deltaX > 10) {
-      isSwiping.current = true;
-      e.preventDefault();
-    }
-  }, []);
+  // Attach non-passive native touch listeners so preventDefault() actually works
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
 
-  const handleTouchEnd = useCallback(
-    (e: React.TouchEvent) => {
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+      isSwiping.current = false;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (isScrolling.current) {
+        e.preventDefault();
+        return;
+      }
+      const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
+      const deltaY = Math.abs(e.touches[0].clientY - touchStartY.current);
+      // If horizontal movement dominates, treat as swipe and prevent native scroll
+      if (deltaX > deltaY && deltaX > 10) {
+        isSwiping.current = true;
+        e.preventDefault();
+      }
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
       if (isScrolling.current) return;
       const deltaX = e.changedTouches[0].clientX - touchStartX.current;
       const THRESHOLD = 30;
       if (Math.abs(deltaX) > THRESHOLD) {
-        // Swipe left = next card, swipe right = previous card
+        const current = activeIndexRef.current;
         const direction = deltaX < 0 ? 1 : -1;
         const targetIndex = Math.max(
           0,
-          Math.min(services.length - 1, activeIndex + direction),
+          Math.min(services.length - 1, current + direction),
         );
-        if (targetIndex !== activeIndex) {
+        if (targetIndex !== current) {
           scrollToCard(targetIndex);
         }
       }
-    },
-    [activeIndex, scrollToCard],
-  );
+    };
+
+    container.addEventListener("touchstart", onTouchStart, { passive: true });
+    container.addEventListener("touchmove", onTouchMove, { passive: false });
+    container.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    return () => {
+      container.removeEventListener("touchstart", onTouchStart);
+      container.removeEventListener("touchmove", onTouchMove);
+      container.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [scrollToCard]);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -258,9 +277,6 @@ export default function ServicesCarousel() {
         style={{
           scrollbarWidth: "none",
         }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
         {services.map((service, index) => (
           <div
