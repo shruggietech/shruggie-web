@@ -1,0 +1,239 @@
+---
+title: "Multi-Agent Coding Workflows for Solo Developers and Small Teams"
+date: "2025-02-20"
+author: "William Thompson"
+category: "Engineering"
+excerpt: "A practical field manual for multi-agent coding workflows: sequential sessions, parallel independent agents, coordinated teams, and the admin-coding divide that makes it all work."
+published: true
+---
+
+## Introduction
+
+If you have been writing code with the help of a single AI chat window inside your IDE, you are already ahead of most developers. But the tooling landscape shifted dramatically in late 2025 and early 2026. The sequential pattern of "chat, review, commit, repeat" is being replaced by parallel workflows where multiple AI coding agents work on different parts of your project simultaneously. You oversee the results rather than babysitting each keystroke.
+
+This guide explains how multi-agent coding workflows actually operate, what tools exist to support them, and how to adopt them without overhauling a development process that already works for you. It is written for developers who work alone or in small teams, who commit to a single main branch, who prefer Visual Studio Code, and who want to understand the practical mechanics before investing time in setup.
+
+## What "Multi-Agent" Actually Means
+
+The term "multi-agent" is used loosely in AI development circles. It helps to distinguish three concrete patterns that are all grouped under this umbrella.
+
+**Sequential agent sessions** are what most solo developers do today. You open a chat panel in your IDE, describe a task, review the output, commit, and move to the next task. One agent, one task, one conversation at a time. This is the baseline.
+
+**Parallel independent agents** run multiple AI coding sessions simultaneously, each working on a different task in an isolated copy of your repository. You might have one agent writing unit tests for module A while another refactors module B and a third updates documentation. Each agent operates in its own Git worktree (a separate working directory linked to the same repository), so their file changes cannot conflict with each other or with your active workspace. You review and merge each agent's work when it finishes.
+
+**Coordinated agent teams** go a step further. A lead agent breaks a complex task into subtasks and delegates them to multiple subordinate agents that can communicate with each other, share discoveries, and coordinate through a shared task list. This is the newest pattern, currently available as an experimental feature in Claude Code (Agent Teams) and supported at the orchestration level by tools like Superset.
+
+Most developers adopting multi-agent workflows in 2026 are using the second pattern: parallel independent agents. It delivers the largest productivity gain relative to its complexity, and it works today with stable, well-documented tools.
+
+## How Parallel Agents Work in Practice
+
+The mechanics are straightforward once you understand the underlying Git feature that makes them possible.
+
+### Git Worktrees: The Isolation Mechanism
+
+A Git worktree is a separate working directory that shares the same repository history as your main checkout. You can create one with a single command:
+
+```bash
+git worktree add ../my-feature-branch feature-branch-name
+```
+
+This creates a new directory (`../my-feature-branch`) checked out to a new branch. The directory has its own files, its own staged changes, and its own HEAD, but it shares the same `.git` object store as your primary working directory. Changes made in one worktree do not appear in another until you merge the branches.
+
+This is the mechanism that tools like Superset and VS Code's background agents use to isolate parallel coding sessions. Each agent gets its own worktree. When the agent finishes, you review the diff and merge the branch.
+
+### The Developer's Role
+
+In a parallel agent workflow, your role shifts from "pair programmer watching every line" to "technical lead reviewing completed work." The cycle looks like this:
+
+1. You identify two or more tasks that can proceed independently (e.g., "add input validation to the CLI" and "write integration tests for the vault module").
+2. You assign each task to a separate agent session, providing clear instructions and relevant context.
+3. The agents work simultaneously in isolated worktrees. You can monitor progress, but you do not need to interact with each agent continuously.
+4. When an agent finishes, you review the diff, run tests, and either merge or request revisions.
+5. You resolve any merge conflicts that arise when integrating the branches.
+
+The productivity gain comes from the time you reclaim while agents work in parallel. Instead of waiting for one agent to finish before starting the next task, you dispatch multiple tasks and review them as they complete.
+
+## The Tool Landscape in 2026
+
+There is no single tool that handles everything. The ecosystem is organized in layers, and most developers combine tools from different layers based on their needs.
+
+### Layer 1: The Coding Agent (Does the Actual Work)
+
+A coding agent is the AI that reads your files, writes code, runs commands, and proposes changes. The leading options as of early 2026:
+
+**Claude Code** is Anthropic's terminal-based coding agent. It understands entire codebases, edits files directly, and supports multi-agent coordination through its Agent Teams feature. It runs in the terminal and integrates with VS Code, JetBrains IDEs, and other editors. Claude Code requires a Claude subscription (Pro, Max, or Team) or an Anthropic API key.
+
+- Official documentation: [https://code.claude.com/docs](https://code.claude.com/docs)
+- Installation: `npm install -g @anthropic-ai/claude-code` (requires Node.js 18+)
+- VS Code integration: Install the Claude Code extension from the VS Code marketplace
+
+**OpenCode** is an open-source, provider-agnostic terminal agent with over 100,000 GitHub stars. It supports 75+ LLM providers (including Claude, GPT, Gemini, and local models via Ollama), has a polished terminal UI, and offers multi-session support for running parallel agents on the same project.
+
+- Repository: [https://github.com/anomalyco/opencode](https://github.com/anomalyco/opencode)
+- Installation varies by platform; see the repository README
+
+**Aider** is an open-source terminal agent focused on Git-native workflows. Every edit is automatically committed with a descriptive message. It supports nearly every major LLM and is particularly strong for multi-file refactoring where clean version history matters.
+
+- Repository: [https://github.com/paul-gauthier/aider](https://github.com/paul-gauthier/aider)
+- Installation: `pip install aider-chat`
+
+**GitHub Copilot** is the most widely adopted agent (15+ million developers), available as an inline IDE assistant, a background agent (via Copilot CLI), and a cloud agent that runs on GitHub's infrastructure and creates pull requests autonomously.
+
+- Documentation: [https://code.visualstudio.com/docs/copilot](https://code.visualstudio.com/docs/copilot)
+- Requires a GitHub Copilot subscription ($10/month for Individual, $19/month for Pro+)
+
+### Layer 2: The Orchestrator (Manages Multiple Agents)
+
+An orchestrator coordinates multiple agent sessions running in parallel. It handles worktree creation, branch management, session monitoring, and diff review.
+
+**Superset** is an open-source desktop application purpose-built for this role. It runs any CLI-based coding agent (Claude Code, OpenCode, Aider, Codex, or anything else that operates in a terminal) across isolated Git worktrees. You launch tasks, monitor agent status from a unified dashboard, review diffs with a built-in viewer, and merge completed work. It integrates with VS Code, Cursor, JetBrains IDEs, and Xcode.
+
+- Repository: [https://github.com/superset-sh/superset](https://github.com/superset-sh/superset)
+- Website: [https://superset.sh](https://superset.sh)
+- Licensed under Apache 2.0, runs entirely locally with zero telemetry
+
+**VS Code's built-in agent system** (available since VS Code 1.107, November 2025) provides three agent tiers directly within the editor: local agents (interactive, in-editor), background agents (autonomous, worktree-isolated, running on your machine via Copilot CLI), and cloud agents (running on remote infrastructure via GitHub Copilot coding agent). You can hand off tasks between tiers, monitor all sessions from a unified Chat view, and delegate work using the `/delegate` command.
+
+- Documentation: [https://code.visualstudio.com/docs/copilot/agents/overview](https://code.visualstudio.com/docs/copilot/agents/overview)
+- Tutorial: [https://code.visualstudio.com/docs/copilot/agents/agents-tutorial](https://code.visualstudio.com/docs/copilot/agents/agents-tutorial)
+
+### Layer 3: The Admin Layer (Strategic Direction)
+
+This is where high-level project planning, specification authoring, brainstorming, and roadmap decisions happen. Today, this layer almost always lives in a browser-based AI chat (Claude.ai, ChatGPT, Gemini) because these conversations require rich personal context, project history, and the kind of verbose, iterative dialogue that would be wasteful to include in a coding agent's context window.
+
+There is an inherent tension between the admin layer and the coding layer. Coding agents need to be cost-effective, which means stripping out all the personal backstory and project philosophy that makes admin conversations productive. Meanwhile, browser-based admin chats lack intimate knowledge of the current codebase state, and efforts to bridge that gap run into context window limitations.
+
+The practical solution adopted by most developers in 2026 is not to merge these layers, but to establish a clean handoff protocol between them. The admin layer produces written artifacts (specifications, sprint plans, task descriptions) that are checked into the repository where coding agents can read them. The coding layer produces commits and changelogs that feed back into the admin layer's next planning session.
+
+## VS Code Agent Types: A Practical Walkthrough
+
+Since VS Code is the most common development environment, the following section explains each of its agent types in concrete, step-by-step detail.
+
+### Prerequisites
+
+Before using any VS Code agent features, verify the following:
+
+1. You are running VS Code version 1.107 or later (check via **Help > About**).
+2. You have a GitHub Copilot subscription (Free, Individual, Pro+, or Enterprise).
+3. The setting `chat.agent.enabled` is set to `true`. To check: open Settings (Ctrl+Comma), search for `chat.agent.enabled`, and confirm the checkbox is ticked. Note: if your organization manages VS Code settings, this may be controlled at the org level.
+4. You have Git installed and your project is under Git version control.
+
+### Local Agent (Interactive, In-Editor)
+
+A local agent is the traditional interactive chat experience, enhanced with agentic capabilities (file editing, command execution, multi-step reasoning).
+
+**How to start a local agent session:**
+
+1. Open the Chat view: press **Ctrl+Alt+I** (Windows/Linux) or **Ctrl+Cmd+I** (macOS). Alternatively, click the chat icon in the Activity Bar on the left side of VS Code.
+2. In the dropdown at the top of the Chat view, select **Agent** (not "Chat" or "Edit").
+3. Type your task description and press Enter.
+4. The agent will propose changes. Review them in the diff view that appears, then accept or reject each change.
+
+**When to use local agents:** Interactive exploration, quick prototyping, tasks where you want to steer the agent in real-time.
+
+### Background Agent (Autonomous, Worktree-Isolated)
+
+A background agent runs on your local machine in its own Git worktree. It works autonomously while you continue editing in VS Code. You can run multiple background agents simultaneously on different tasks.
+
+**How to start a background agent session:**
+
+1. Open the Chat view (Ctrl+Alt+I).
+2. Click the **New Chat (+)** button and select **New Background Agent** from the dropdown. Alternatively, open the Command Palette (Ctrl+Shift+P), type "Chat: New Background Agent", and press Enter.
+3. You will be asked whether to run the agent against your current workspace or in a dedicated worktree. **Choose "Worktree"** for isolation.
+4. Type your task description and press Enter.
+5. The agent begins working. A status indicator appears in the Chat view's session list. You can switch to other work in your editor.
+6. When the agent finishes, select its session from the list to review the changes. Click **Apply** to merge the changes into your main workspace, or provide follow-up instructions.
+
+**When to use background agents:** Well-defined tasks with clear scope, such as implementing a feature from a plan, writing tests for an existing module, or fixing a batch of lint errors. You can run several of these in parallel.
+
+### Cloud Agent (Remote, GitHub-Integrated)
+
+A cloud agent runs on GitHub's infrastructure rather than your machine. It works with your GitHub repository and creates a pull request with its changes. This is useful for tasks that benefit from team review workflows or that you want to run without tying up local resources.
+
+**How to start a cloud agent session:**
+
+1. **Prerequisite:** Your project must be published to a GitHub repository. If it is not, run the **Publish to GitHub** command from the Command Palette (Ctrl+Shift+P).
+2. Open the Chat view and click **New Chat (+) > New Cloud Agent**.
+3. Select the cloud agent provider (Copilot coding agent is the default; Claude and Codex are available if you enable third-party agents in your Copilot account settings at [https://github.com/settings/copilot](https://github.com/settings/copilot)).
+4. Type your task description and press Enter.
+5. The agent works remotely. When it finishes, it creates a pull request on GitHub. You can review the PR in VS Code (if you have the GitHub Pull Requests extension installed) or on github.com.
+
+**How to hand off a local or background session to a cloud agent:**
+
+1. In the Chat view, open the session you want to hand off.
+2. For a local session: change the session type dropdown from "Agent" to "Cloud Agent."
+3. For a background session: type `/delegate` in the chat input and press Enter.
+4. The full conversation history and context transfer to a new cloud agent session. The original session is archived.
+
+**When to use cloud agents:** Tasks with well-defined scope that benefit from GitHub's PR review workflow, or tasks you want to run without consuming local compute.
+
+### Enabling Third-Party Agents (Claude, Codex) in VS Code
+
+1. Navigate to [https://github.com/settings/copilot](https://github.com/settings/copilot) in your browser.
+2. Under "Agent policy," enable third-party agents.
+3. Back in VS Code, open Settings (Ctrl+Comma) and search for `github.copilot.chat.claudeAgent.enabled`. Set it to `true`.
+4. For Codex: install the OpenAI Codex extension from the VS Code marketplace and ensure you have a Copilot Pro+ subscription.
+5. Restart VS Code. Third-party agents now appear as options in the cloud agent and session type dropdowns.
+
+## Using Superset for Parallel Agent Orchestration
+
+Superset is the dedicated orchestration tool for developers who want to run many CLI agents in parallel outside of an IDE. It is particularly useful if you use Claude Code or Aider as your primary coding agent.
+
+### Installation
+
+Superset is a desktop application available for macOS, Windows, and Linux. Download the latest release from [https://superset.sh](https://superset.sh) or build from source via the GitHub repository.
+
+### Core Workflow
+
+1. **Open Superset** and point it at your Git repository.
+2. **Create a new task** (Cmd+T on macOS). Superset automatically creates a Git worktree and a new branch for the task.
+3. **Write your task description** in the prompt area. Superset launches a CLI agent session (Claude Code by default) inside the isolated worktree.
+4. **Repeat** for additional tasks. Each task gets its own worktree, branch, and terminal session.
+5. **Monitor** all running agents from Superset's dashboard. Status indicators show whether an agent is working, waiting for input, or finished.
+6. **Review** completed work using Superset's built-in diff viewer. You can also click to open the worktree in VS Code or another editor for a more detailed inspection.
+7. **Merge** approved changes back into your main branch.
+
+### Workspace Presets
+
+Superset supports automated environment setup via a `.superset/config.json` file in your repository root:
+
+```json
+{
+  "setup": ["./.superset/setup.sh"],
+  "teardown": ["./.superset/teardown.sh"]
+}
+```
+
+The setup script runs automatically when a new worktree is created, handling tasks like copying `.env` files and installing dependencies. This ensures each agent starts with a consistent environment.
+
+## The Admin-Coding Divide: A Bridging Strategy
+
+The gap between high-level project administration (conducted in browser-based AI chats) and low-level coding work (conducted in IDE or terminal agents) is the largest unresolved friction point in AI-assisted development workflows.
+
+The root cause is context economics. A productive admin conversation might reference months of project history, personal preferences, architectural philosophy, and domain-specific terminology. Loading all of that into a coding agent's context window would be expensive, slow, and would crowd out the codebase context the agent actually needs to write correct code.
+
+The most effective bridge is a set of written artifacts that flow in one direction: from the admin layer down to the coding layer.
+
+**Specifications** define the behavioral contract for each component. They are the single source of truth that coding agents consult when making design decisions. A well-written specification makes interactive clarification unnecessary.
+
+**Sprint plans** decompose upcoming work into self-contained task descriptions, each written with enough context for an AI coding agent to execute independently within a single context window.
+
+**CLAUDE.md / AGENTS.md files** (or their equivalent in other agent ecosystems) sit in the repository root and provide persistent project-level context that agents read at session start. These files contain coding conventions, architectural constraints, repository structure overviews, and any other context that would otherwise need to be repeated in every conversation.
+
+**Changelogs and commit history** flow in the reverse direction, from the coding layer back to the admin layer. The admin chat reviews these outputs when planning the next sprint.
+
+This approach does not merge the two layers. It accepts that they serve fundamentally different purposes and connects them through durable, version-controlled documents rather than trying to share a context window.
+
+## Practical Recommendations
+
+**If you are currently using a single interactive chat window in VS Code and committing to main:**
+
+Start with VS Code's background agents. This requires the least change to your existing workflow. Plan your task interactively using a local agent, then hand it off to a background agent for autonomous execution. Run two or three background agents in parallel on different tasks. Review and merge when they finish. You do not need to learn Git branching strategies; VS Code handles the worktree creation and cleanup for you. Your merges will land on your main branch as before.
+
+**If you want to scale beyond three or four parallel agents, or if you prefer Claude Code over Copilot:**
+
+Add Superset to your toolkit. It handles worktree management, session monitoring, and diff review for any number of CLI agents. You still review the final cumulative codebase in VS Code; Superset provides the orchestration and monitoring layer on top.
+
+**If you want coordinated multi-agent work on complex tasks:**
+
+Explore Claude Code's Agent Teams feature. This is experimental and carries a significant token cost (roughly 5x per teammate), but for tasks that genuinely benefit from multiple perspectives (e.g., "refactor this module from three angles: API design, database migrations, and test coverage"), it can produce better results than

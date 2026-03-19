@@ -152,7 +152,7 @@ export default function WorkCarousel() {
         <ScrollReveal>
           <SectionHeading
             label="OUR WORK"
-            title="Real results for real businesses."
+            title="We don't do mock-ups. These shipped."
           />
         </ScrollReveal>
         <ScrollReveal delay={0.1}>

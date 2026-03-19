@@ -19,7 +19,6 @@ import PageHero from "@/components/shared/PageHero";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import {
   ADFVisual,
-  MultiAgentVisual,
   RustifVisual,
 } from "@/components/shared/ResearchVisuals";
 import Card from "@/components/ui/Card";
@@ -67,17 +66,6 @@ const PUBLICATIONS: Publication[] = [
     datePublished: "2025-01-15",
     href: "https://gist.github.com/h8rt3rmin8r/f4589f0afb6fcd10d4c499e4a29247ad",
     Visual: ADFVisual,
-  },
-  {
-    id: "multi-agent-guide",
-    title:
-      "Multi-Agent Coding Workflows for Solo Developers and Small Teams",
-    author: "William Thompson",
-    description:
-      "A practical field manual for multi-agent coding workflows: sequential sessions, parallel independent agents, coordinated teams, and the admin-coding divide that makes it all work.",
-    datePublished: "2025-02-20",
-    href: "https://gist.github.com/h8rt3rmin8r/eebd74f49b0ff5325148105b80fcf37b",
-    Visual: MultiAgentVisual,
   },
   {
     id: "rustif-declaration",

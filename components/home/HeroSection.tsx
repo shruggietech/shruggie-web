@@ -28,16 +28,15 @@ export default function HeroSection() {
       <div className="container-content relative z-10 flex min-h-[85vh] flex-col items-start justify-center pt-44 pb-32 md:py-40">
         <ScrollReveal>
           <h1 className="max-w-4xl font-display text-display-md md:text-display-xl font-bold text-brand-white">
-            Your vision deserves better than a template.
+            We advance your vision.
           </h1>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
           <p className="mt-6 max-w-2xl text-body-lg text-[#595959] dark:text-white">
             You have a business to run. We handle the technology that makes it
-            grow. Modern websites, marketing engines, AI integrations, and custom
-            software, built for you without the enterprise price tag or the
-            vendor lock-in.
+            grow: modern websites, marketing engines, AI integrations, and custom
+            software, shaped around how you actually work.
           </p>
         </ScrollReveal>
 
@@ -47,7 +46,7 @@ export default function HeroSection() {
             <Link href="/work">
               <Button
                 variant="secondary"
-                className="bg-white dark:bg-black"
+                className="bg-white dark:bg-black border-white"
               >
                 See Our Work
               </Button>

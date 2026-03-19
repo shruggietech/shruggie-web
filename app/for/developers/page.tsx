@@ -84,13 +84,6 @@ export default function DevelopersPage() {
         },
         {
           type: "research",
-          title: "Multi-Agent Coding Workflows",
-          description:
-            "A practical guide to coordinating multiple AI coding agents.",
-          href: "/research",
-        },
-        {
-          type: "research",
           title: "rustif Declaration",
           description:
             "The design philosophy and architectural rationale behind rustif.",

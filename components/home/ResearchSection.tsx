@@ -11,12 +11,10 @@
 
 "use client";
 
-import Link from "next/link";
-
 import { Card } from "@/components/ui/Card";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/shared/ScrollReveal";
-import { ADFVisual, MultiAgentVisual, RustifVisual } from "@/components/shared/ResearchVisuals";
+import { ADFVisual, RustifVisual } from "@/components/shared/ResearchVisuals";
 import { motion, useReducedMotion } from "framer-motion";
 
 interface Publication {
@@ -24,7 +22,8 @@ interface Publication {
   description: string;
   author: string;
   date: string;
-  visual: "adf" | "multi-agent" | "rustif";
+  visual: "adf" | "rustif";
+  href: string;
 }
 
 const publications: Publication[] = [
@@ -35,14 +34,7 @@ const publications: Publication[] = [
     author: "William Thompson",
     date: "2025",
     visual: "adf",
-  },
-  {
-    title: "Multi-Agent Development Guide",
-    description:
-      "Practical patterns for orchestrating multi-agent coding workflows with specification-driven handoffs.",
-    author: "William Thompson",
-    date: "2025",
-    visual: "multi-agent",
+    href: "https://gist.github.com/h8rt3rmin8r/f4589f0afb6fcd10d4c499e4a29247ad",
   },
   {
     title: "rustif Declaration",
@@ -51,6 +43,7 @@ const publications: Publication[] = [
     author: "William Thompson",
     date: "2025",
     visual: "rustif",
+    href: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de",
   },
 ];
 
@@ -59,7 +52,6 @@ const publications: Publication[] = [
 
 const visualComponents: Record<Publication["visual"], React.ComponentType> = {
   adf: ADFVisual,
-  "multi-agent": MultiAgentVisual,
   rustif: RustifVisual,
 };
 
@@ -77,12 +69,6 @@ fn parse_metadata(input: &str) -> Result<Meta> {
   validate_schema(&tokens)?;
   Ok(Meta::from(tokens))
 }
-
-const orchestrator = new AgentPool({
-  strategy: "round-robin",
-  maxConcurrency: 4,
-  handoff: "spec-driven",
-});
 
 /// Transparent specification layers
 pub struct RustifDecl {
@@ -145,8 +131,10 @@ export default function ResearchSection() {
             const Visual = visualComponents[pub.visual];
             return (
               <ScrollReveal key={pub.title} delay={index * 0.1}>
-                <Link
-                  href="/research"
+                <a
+                  href={pub.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="block cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary rounded-xl"
                 >
                   <Card className="relative z-[1]">
@@ -173,7 +161,7 @@ export default function ResearchSection() {
                       </div>
                     </div>
                   </Card>
-                </Link>
+                </a>
               </ScrollReveal>
             );
           })}

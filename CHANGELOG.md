@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Blog**: new post "Multi-Agent Coding Workflows for Solo Developers and Small Teams" — practical field manual covering sequential sessions, parallel independent agents, coordinated teams, VS Code agent types, Superset orchestration, and the admin-coding divide
+
+### Changed
+
+- **Homepage hero**: rewrote headline ("We advance your vision.") and subheading copy; tightened CTA section subtitle; added `border-white` to "See Our Work" button
+- **Homepage services section**: updated heading from "Full-stack capability, studio-scale delivery." to "Full-stack capability, boutique delivery."; changed subtitle from "4 practice areas. 40+ capabilities. One team." to "One point of contact. Every layer."; rewrote Digital Strategy & Brand, Revenue Flows & Marketing Ops, and AI & Data Analysis card descriptions across `ServicesCarousel`, `ServicesPreview`, and `ServicesScroll`
+- **Homepage work section**: changed heading from "Real results for real businesses." to "We don't do mock-ups. These shipped." across `WorkCarousel`, `WorkPreview`, and `WorkScroll`; removed description from `WorkPreview`
+- **Homepage research section**: removed Multi-Agent Development Guide publication card; reduced from three publications to two (ADF + rustif); added direct external links (`href`, `target="_blank"`) to publication titles and "Read paper" links instead of routing to `/research`; removed unused `Link` import; cleaned up code snippet block
+- **Research page**: removed Multi-Agent Coding Workflows publication card; removed `MultiAgentVisual` import
+- **Landing pages**: removed Multi-Agent Coding Workflows research card from Developers and Technical Teams landing pages
+- **Case study summaries**: rewrote United Way summary and metric ("Minimal revision cycles"); updated Scruggs Tire metric ("Full ownership restored"); rewrote I Heart PR Tours summary and metric ("Flexible engagement model")
+
+### Removed
+
+- `content/blog/example-post.mdx`: deleted placeholder blog post
+- `MultiAgentVisual` usage from `ResearchSection` and `ResearchPreview` visual maps
+
+## [Previous — Copy & Content Refinements]
+
 ### Changed
 
 - **Services page**: generalized service pillar descriptions to be technology-agnostic — removed specific vendor/platform references (WordPress, Bokun, GetYourGuide, Azure AI Search, TripAdvisor, Viator, Expedia) in favor of broader capability language; updated Development, Marketing, and AI pillar body text and capability lists

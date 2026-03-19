@@ -62,13 +62,6 @@ export default function TechnicalTeamsPage() {
             "A structured framework for orchestrating multi-agent AI workflows with specification-driven development.",
           href: "/research",
         },
-        {
-          type: "research",
-          title: "Multi-Agent Coding Workflows",
-          description:
-            "A practical guide to coordinating multiple AI coding agents across complex development tasks.",
-          href: "/research",
-        },
       ]}
     />
   );

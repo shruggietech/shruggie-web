@@ -57,7 +57,7 @@ function WorkGrid() {
         <ScrollReveal>
           <SectionHeading
             label="OUR WORK"
-            title="Real results for real businesses."
+            title="We don't do mock-ups. These shipped."
           />
         </ScrollReveal>
         <ScrollReveal delay={0.1}>
@@ -205,7 +205,7 @@ export default function WorkScroll() {
           <ScrollReveal>
             <SectionHeading
               label="OUR WORK"
-              title="Real results for real businesses."
+              title="We don't do mock-ups. These shipped."
             />
           </ScrollReveal>
           <ScrollReveal delay={0.1}>

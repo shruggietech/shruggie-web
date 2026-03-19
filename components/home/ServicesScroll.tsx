@@ -55,7 +55,7 @@ const services: ServiceItem[] = [
   {
     title: "Digital Strategy & Brand",
     description:
-      "From brand identity to content architecture, we build the visual and strategic foundation your business stands on.",
+      "Brand identity, content architecture, visual systems, and marketing collateral. The strategic foundation everything else stands on.",
     icon: Palette,
     href: "/services#strategy-brand",
     Illustration: StrategyBrandIllustration,
@@ -73,7 +73,7 @@ const services: ServiceItem[] = [
   {
     title: "Revenue Flows & Marketing Ops",
     description:
-      "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Everything that turns visibility into revenue.",
+      "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Turning visibility into revenue.",
     icon: TrendingUp,
     href: "/services#marketing",
     Illustration: MarketingIllustration,
@@ -82,7 +82,7 @@ const services: ServiceItem[] = [
   {
     title: "AI & Data Analysis",
     description:
-      "Chatbots, RAG systems, workflow automation, and AI consulting. We help you adopt AI that actually works for your business.",
+      "Chatbots, RAG systems, workflow automation, and AI consulting. AI that solves real problems, not just demos well.",
     icon: Brain,
     href: "/services#ai-data",
     Illustration: AIDataIllustration,
@@ -99,8 +99,8 @@ function ServicesGrid() {
         <ScrollReveal>
           <SectionHeading
             label="WHAT WE DO"
-            title="Full-stack capability, studio-scale delivery."
-            description="4 practice areas. 40+ capabilities. One team."
+            title="Full-stack capability, boutique delivery."
+            description="One point of contact. Every layer."
           />
         </ScrollReveal>
 
@@ -285,12 +285,12 @@ export default function ServicesScroll() {
           <ScrollReveal>
             <SectionHeading
               label="WHAT WE DO"
-              title="Full-stack capability, studio-scale delivery."
+              title="Full-stack capability, boutique delivery."
             />
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
             <p className="mt-6 font-display text-body-lg font-medium text-text-body-light">
-              4 practice areas. 40+ capabilities. One team.
+              One point of contact. Every layer.
             </p>
           </ScrollReveal>
         </div>

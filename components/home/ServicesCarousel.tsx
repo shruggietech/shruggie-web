@@ -43,7 +43,7 @@ const services: ServiceItem[] = [
   {
     title: "Digital Strategy & Brand",
     description:
-      "From brand identity to content architecture, we build the visual and strategic foundation your business stands on.",
+      "Brand identity, content architecture, visual systems, and marketing collateral. The strategic foundation everything else stands on.",
     icon: Palette,
     href: "/services#strategy-brand",
     IllustrationLarge: StrategyBrandIllustrationLarge,
@@ -59,7 +59,7 @@ const services: ServiceItem[] = [
   {
     title: "Revenue Flows & Marketing Ops",
     description:
-      "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Everything that turns visibility into revenue.",
+      "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Turning visibility into revenue.",
     icon: TrendingUp,
     href: "/services#marketing",
     IllustrationLarge: MarketingIllustrationLarge,
@@ -67,7 +67,7 @@ const services: ServiceItem[] = [
   {
     title: "AI & Data Analysis",
     description:
-      "Chatbots, RAG systems, workflow automation, and AI consulting. We help you adopt AI that actually works for your business.",
+      "Chatbots, RAG systems, workflow automation, and AI consulting. AI that solves real problems, not just demos well.",
     icon: Brain,
     href: "/services#ai-data",
     IllustrationLarge: AIDataIllustrationLarge,
@@ -247,7 +247,7 @@ export default function ServicesCarousel() {
         <ScrollReveal>
           <SectionHeading
             label="WHAT WE DO"
-            title="Full-stack capability, studio-scale delivery."
+            title="Full-stack capability, boutique delivery."
           />
         </ScrollReveal>
       </div>

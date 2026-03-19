@@ -1,14 +1,12 @@
 /**
  * ResearchPreview — Publication cards for original research.
  *
- * Three research publications (ADF, Multi-Agent Guide, rustif Declaration)
+ * Two research publications (ADF, rustif Declaration)
  * displayed vertically. Each card shows title, description, author, and
  * link to /research.
  *
  * Spec reference: §6.1 (Homepage — Section 4: Research Preview)
  */
-
-import Link from "next/link";
 
 import { Card } from "@/components/ui/Card";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -18,6 +16,7 @@ interface Publication {
   title: string;
   description: string;
   author: string;
+  href: string;
 }
 
 const publications: Publication[] = [
@@ -26,18 +25,14 @@ const publications: Publication[] = [
     description:
       "A framework for emotional state simulation in AI agents, enabling contextual affective responses in conversational systems.",
     author: "William Thompson",
-  },
-  {
-    title: "Multi-Agent Development Guide",
-    description:
-      "Practical patterns for orchestrating multi-agent coding workflows with specification-driven handoffs.",
-    author: "William Thompson",
+    href: "https://gist.github.com/h8rt3rmin8r/f4589f0afb6fcd10d4c499e4a29247ad",
   },
   {
     title: "rustif Declaration",
     description:
       "A manifesto for building transparent, specification-first metadata systems in Rust.",
     author: "William Thompson",
+    href: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de",
   },
 ];
 
@@ -49,7 +44,7 @@ export default function ResearchPreview() {
           <SectionHeading
             label="RESEARCH"
             title="We write about what we build."
-            description="Original research in AI agent architecture, multi-agent development workflows, and metadata systems engineering."
+            description="Original research in AI agent architecture and metadata systems engineering."
           />
         </ScrollReveal>
 
@@ -59,7 +54,14 @@ export default function ResearchPreview() {
               <Card className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-8">
                 <div className="flex-1">
                   <h3 className="font-display text-display-sm font-bold text-text-primary">
-                    {pub.title}
+                    <a
+                      href={pub.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition-colors hover:text-accent"
+                    >
+                      {pub.title}
+                    </a>
                   </h3>
                   <p className="mt-1 text-body-md text-text-secondary">
                     {pub.description}
@@ -68,12 +70,14 @@ export default function ResearchPreview() {
                     {pub.author}
                   </p>
                 </div>
-                <Link
-                  href="/research"
+                <a
+                  href={pub.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center whitespace-nowrap font-display text-body-sm font-medium text-accent transition-colors hover:text-accent-hover"
                 >
                   Read paper →
-                </Link>
+                </a>
               </Card>
             </ScrollReveal>
           ))}

@@ -22,9 +22,9 @@ export const caseStudies: CaseStudy[] = [
     client: "United Way of Anderson County",
     industry: "Nonprofit",
     summary:
-      "Accessibility-compliant website redesign aligned with global United Way brand guidelines, built on infrastructure the client owns.",
+      "Complete rebrand and website redesign for a community nonprofit, delivered right the first time, from design to content to brand implementation.",
     image: "/images/work/united-way.png",
-    metric: "100% client-owned infrastructure",
+    metric: "Minimal revision cycles",
     logo: "/images/logos/united-way.svg",
   },
   {
@@ -34,7 +34,7 @@ export const caseStudies: CaseStudy[] = [
     summary:
       "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a local auto shop.",
     image: "/images/work/scruggs-tire.png",
-    metric: "Launched in 6 weeks",
+    metric: "Full ownership restored",
     logo: "/images/logos/scruggs-tire.svg",
   },
   {
@@ -42,9 +42,9 @@ export const caseStudies: CaseStudy[] = [
     client: "I Heart PR Tours",
     industry: "Tourism & Hospitality",
     summary:
-      "Multi-platform booking integration, OTA optimization, and brand identity for a Puerto Rico tour operator.",
+      "Ground-up brand identity, website, social media management, and multi-platform booking integration for a Puerto Rico tour operator, backed by a partnership structured around growth.",
     image: "/images/work/i-heart-pr-tours.png",
-    metric: "5 booking platforms unified",
+    metric: "Flexible engagement model",
     logo: "/images/logos/i-heart-pr-tours.svg",
   },
 ];

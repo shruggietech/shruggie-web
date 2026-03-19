@@ -21,9 +21,8 @@ export default function CTASection() {
 
         <ScrollReveal delay={0.1}>
           <p className="mx-auto mt-6 max-w-[600px] text-body-lg text-text-body-light">
-            Whether you need a website, a strategy, or someone to untangle the
-            mess your last vendor left behind — the first step is a
-            conversation.
+            New build, rescue mission, or something in between. The first step
+            is a conversation.
           </p>
         </ScrollReveal>
 
