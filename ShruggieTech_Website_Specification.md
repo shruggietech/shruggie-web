@@ -1407,7 +1407,7 @@ Case study body content:
 |-------|---------|
 | Title | "Rescuing a Local Business from Vendor Lock-In" |
 | Industry tag | Automotive Services |
-| Summary card text | "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a Knoxville auto shop." |
+| Summary card text | "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a local auto shop." |
 | Hero image | Before/after browser screenshot (pending asset from §1.4 item 6) |
 
 Case study body content:
@@ -1467,7 +1467,7 @@ title: "Rescuing a Local Business from Vendor Lock-In"
 client: "Scruggs Tire & Alignment"
 industry: "Automotive Services"
 date: "2025-11-15"
-summary: "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a Knoxville auto shop."
+summary: "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a local auto shop."
 services:
   - "Vendor Displacement Advisory"
   - "Forensic Contract Audit"

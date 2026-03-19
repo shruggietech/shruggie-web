@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Services page**: generalized service pillar descriptions to be technology-agnostic — removed specific vendor/platform references (WordPress, Bokun, GetYourGuide, Azure AI Search, TripAdvisor, Viator, Expedia) in favor of broader capability language; updated Development, Marketing, and AI pillar body text and capability lists
+- **Scruggs Tire case study**: changed summary wording from "Knoxville auto shop" to "local auto shop" across site spec, MDX frontmatter, and case-studies data
+- **Logo assets**: updated `logo-darkbg.png` and `logo-lightbg.png`
+
+## [Previous — Illustrations & UI Refinements]
+
 ### Added
 
 - `OriginIllustration` component: animated "Origin Journey Blueprint" SVG for the About page "Where We Come From" section — three-chapter timeline (ResoNova era → transition → ShruggieTech/Knoxville) with IntersectionObserver-triggered CSS entrance animations, matching the blueprint line-art style of `ServiceIllustrationsLarge`

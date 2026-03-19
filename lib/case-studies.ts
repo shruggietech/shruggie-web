@@ -32,7 +32,7 @@ export const caseStudies: CaseStudy[] = [
     client: "Scruggs Tire & Alignment",
     industry: "Automotive Services",
     summary:
-      "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a Knoxville auto shop.",
+      "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a local auto shop.",
     image: "/images/work/scruggs-tire.png",
     metric: "Launched in 6 weeks",
     logo: "/images/logos/scruggs-tire.svg",
