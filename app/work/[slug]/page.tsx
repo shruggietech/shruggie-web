@@ -106,12 +106,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Badge>{meta.industry}</Badge>
           <span className="text-body-sm dark:text-[var(--text-muted-warm)] text-text-muted">
-            {meta.client} &middot;{" "}
-            {new Date(meta.date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+            {meta.client}
           </span>
         </div>
       </PageHero>

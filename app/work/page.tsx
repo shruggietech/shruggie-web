@@ -28,14 +28,14 @@ import CTABackground from "@/components/shared/CTABackground";
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Real problems, real solutions, real results. Here is what we have built for our clients.",
+    "No mock-ups. No hypotheticals. Every project on this page shipped.",
   alternates: {
     canonical: `${SITE_URL}/work`,
   },
   openGraph: {
     title: "Work | ShruggieTech",
     description:
-      "Real problems, real solutions, real results. Here is what we have built for our clients.",
+      "No mock-ups. No hypotheticals. Every project on this page shipped.",
     url: `${SITE_URL}/work`,
     type: "website",
   },
@@ -51,8 +51,8 @@ function CaseStudyCard({ study }: { study: CaseStudyMeta }) {
   const hasHeroImage = heroImageExists(study.heroImage);
 
   return (
-    <Link href={`/work/${study.slug}`} className="group block">
-      <Card className="overflow-hidden transition-all duration-300 group-hover:border-accent/40">
+    <Link href={`/work/${study.slug}`} className="group block h-full">
+      <Card className="overflow-hidden transition-all duration-300 group-hover:border-accent/40 h-full flex flex-col">
         {/* DeviceMockup Screenshot */}
         <div className="-mx-6 -mt-6 mb-6 md:-mx-8 md:-mt-8 md:mb-8 p-4 md:p-6 bg-black/20">
           <DeviceMockup
@@ -64,16 +64,9 @@ function CaseStudyCard({ study }: { study: CaseStudyMeta }) {
         </div>
 
         {/* Content */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 flex-1">
           <div className="flex flex-wrap items-center gap-3">
             <Badge>{study.industry}</Badge>
-            <span className="text-body-xs dark:text-[var(--text-muted-warm)] text-text-muted">
-              {new Date(study.date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </span>
           </div>
 
           <h3 className="font-display text-display-xs font-bold text-text-primary dark:text-[var(--text-hero)] transition-colors group-hover:text-accent">
@@ -84,7 +77,7 @@ function CaseStudyCard({ study }: { study: CaseStudyMeta }) {
             {study.summary}
           </p>
 
-          <span className="text-body-sm font-medium text-accent transition-colors group-hover:text-[#FF5300]">
+          <span className="text-body-sm font-medium text-accent transition-colors group-hover:text-[#FF5300] mt-auto">
             Read case study &rarr;
           </span>
         </div>
@@ -101,7 +94,7 @@ export default function WorkPage() {
       {/* Hero */}
       <PageHero
         headline="Work"
-        subheadline="Real problems, real solutions, real results. Here is what we have built for our clients."
+        subheadline="Real results for real businesses. See for yourself."
         bgClass="section-bg-work"
       />
 
@@ -111,7 +104,7 @@ export default function WorkPage() {
           {studies.length > 0 ? (
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {studies.map((study, i) => (
-                <ScrollReveal key={study.slug} delay={i * 0.1}>
+                <ScrollReveal key={study.slug} delay={i * 0.1} className="h-full">
                   <CaseStudyCard study={study} />
                 </ScrollReveal>
               ))}

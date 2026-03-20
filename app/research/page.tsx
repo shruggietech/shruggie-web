@@ -30,14 +30,14 @@ import CTABackground from "@/components/shared/CTABackground";
 export const metadata: Metadata = {
   title: "Research",
   description:
-    "Original research and technical writing from the ShruggieTech team. We publish what we learn.",
+    "Technical writing and original research from real project work. We publish what we learn.",
   alternates: {
     canonical: `${SITE_URL}/research`,
   },
   openGraph: {
     title: "Research | ShruggieTech",
     description:
-      "Original research and technical writing from the ShruggieTech team. We publish what we learn.",
+      "Technical writing and original research from real project work. We publish what we learn.",
     url: `${SITE_URL}/research`,
     type: "website",
   },
@@ -101,7 +101,7 @@ export default function ResearchPage() {
       {/* Hero */}
       <PageHero
         headline="Research"
-        subheadline="Original research and technical writing from the ShruggieTech team. We publish what we learn."
+        subheadline="Technical writing and original research from real project work. We publish what we learn."
         bgClass="section-bg-research"
       />
 

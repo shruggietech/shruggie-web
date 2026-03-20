@@ -27,14 +27,14 @@ import OwnershipSection from "./OwnershipSection";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "We combine deep technical execution with design instinct and business judgment to deliver work that exceeds expectations.",
+    "Strategy, design, development, and marketing, shaped around how your business actually operates.",
   alternates: {
     canonical: `${SITE_URL}/services`,
   },
   openGraph: {
     title: "Services | ShruggieTech",
     description:
-      "We combine deep technical execution with design instinct and business judgment to deliver work that exceeds expectations.",
+      "Strategy, design, development, and marketing, shaped around how your business actually operates.",
     url: `${SITE_URL}/services`,
     type: "website",
   },
@@ -55,38 +55,38 @@ const SERVICE_PILLARS: ServicePillar[] = [
     id: "strategy-brand",
     title: "Digital Strategy & Brand",
     lead: "Your brand is the first thing people see and the last thing they remember. We make both count.",
-    body: "We build visual identity systems, brand standards kits, and content architecture from scratch or refresh what already exists. Every logo, color choice, and typographic decision is made with purpose. We plan sitemaps, define content hierarchy, and ensure your brand translates consistently across every platform and touchpoint.",
+    body: "We build visual identity systems, brand standards kits, and content architecture from scratch, or refresh what already exists. Your brand should translate consistently across every platform and touchpoint, and we make sure it does.",
     capabilities: [
       "Logo design and visual identity systems",
       "Color palette and typography systems",
-      "Brand standards kits for cross-platform consistency",
+      "Brand standards kits",
       "Website strategy and content architecture",
-      "Marketing collateral (business cards, print materials)",
+      "Marketing collateral and print materials",
     ],
   },
   {
     id: "development",
     title: "Development & Integration",
     lead: "We build, migrate, and integrate. From marketing sites to custom applications, we handle the full technical stack.",
-    body: "Our development work spans custom website builds, modern web applications, CMS evaluation and migration, DNS and hosting configuration, third-party system integrations, payment processing setup, and full platform replatforming. We work across whatever stack fits the project, from static marketing sites to interactive Next.js applications. We are particularly experienced at rescuing businesses from legacy vendor lock-in: extracting domains, migrating data, and rebuilding onto infrastructure the client actually owns.",
+    body: "We work across whatever stack fits the project, not whatever stack we prefer. New build, migration, or a compatibility layer over systems you can't replace, the approach is shaped by your situation, not ours.",
     capabilities: [
       "Custom website design and development",
-      "Modern web applications (React, Next.js, and beyond)",
+      "Modern web applications",
       "CMS deployment, configuration, and migration",
-      "Third-party integrations (booking, payment, scheduling, and other business systems)",
+      "Third-party integrations",
       "DNS management and hosting configuration",
-      "Vendor displacement and replatforming (Rescue & Replatform)",
+      "Vendor displacement and replatforming",
     ],
   },
   {
     id: "marketing",
     title: "Revenue Flows & Marketing Operations",
     lead: "Visibility means nothing without conversion. We build the systems that turn attention into revenue.",
-    body: "We implement SEO strategy, Answer Engine Optimization (AEO) for AI-mediated search, Google and Meta ad campaigns, social media content calendars, review generation workflows, analytics architecture (GA4, GTM, Search Console), and multi-platform content planning. We tailor our approach to your industry, whether that means optimizing marketplace listings, building local search visibility, or engineering conversion funnels for e-commerce.",
+    body: "Every business converts differently. A tour operator needs marketplace visibility. A local shop needs to own local search. An e-commerce brand needs a conversion funnel that doesn't leak. We tailor the strategy to how your customers actually find and buy from you.",
     capabilities: [
       "SEO strategy and execution",
-      "Answer Engine Optimization (AEO) with advanced schema markup",
-      "Google Ads and Meta/Facebook advertising",
+      "Answer Engine Optimization (AEO) with schema markup",
+      "Google Ads and Meta advertising",
       "Social media strategy and content planning",
       "Analytics implementation (GA4, GTM, Search Console)",
       "Review generation and reputation management",
@@ -97,7 +97,7 @@ const SERVICE_PILLARS: ServicePillar[] = [
     id: "ai-data",
     title: "AI & Data Analysis",
     lead: "AI is not magic. It is infrastructure. We help you build AI systems that solve real problems.",
-    body: "We design and deploy conversational AI assistants, retrieval-augmented generation (RAG) systems, semantic search implementations, and workflow automation pipelines. Our AI work is grounded in published research (including the Affective Dynamics Framework for emotional state simulation in AI agents) and production experience across cloud and local inference environments. We also provide strategic consulting on AI adoption for businesses exploring how to integrate AI into existing operations.",
+    body: "Most businesses don't need a custom model. They need AI wired into the systems they already use: answering customer questions, automating repetitive workflows, or surfacing the right data at the right time. We figure out where AI actually helps and build it into your operations.",
     capabilities: [
       "Conversational AI and chatbot development",
       "RAG system design and implementation",
@@ -128,7 +128,7 @@ export default function ServicesPage() {
       {/* ── Section 1: Hero ──────────────────────────────────────────── */}
       <PageHero
         headline="Services"
-        subheadline="We combine deep technical execution with design instinct and business judgment to deliver work that exceeds expectations."
+        subheadline="Strategy, design, development, and marketing, shaped around how your business actually operates."
         bgClass="section-bg-services"
       />
 

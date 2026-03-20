@@ -34,14 +34,14 @@ import SpecToShipIllustration from "@/components/products/SpecToShipIllustration
 export const metadata: Metadata = {
   title: "Products",
   description:
-    "Open-source tools and software products built by ShruggieTech. We build things we need, then share them with the community.",
+    "We build things we need, then share them with the community.",
   alternates: {
     canonical: `${SITE_URL}/products`,
   },
   openGraph: {
     title: "Products | ShruggieTech",
     description:
-      "Open-source tools and software products built by ShruggieTech. We build things we need, then share them with the community.",
+      "We build things we need, then share them with the community.",
     url: `${SITE_URL}/products`,
     type: "website",
   },
@@ -146,7 +146,7 @@ export default function ProductsPage() {
       {/* Hero */}
       <PageHero
         headline="Products"
-        subheadline="Open-source tools and software products built by ShruggieTech. We build things we need, then share them with the community."
+        subheadline="We build things we need, then share them with the community."
         bgClass="section-bg-products"
       />
 
@@ -201,12 +201,7 @@ export default function ProductsPage() {
                 <div className="md:flex-1">
                   <SectionHeading title="How We Build Software" />
                   <p className="mt-6 text-body-lg leading-relaxed dark:text-[var(--text-body-light)] text-text-secondary">
-                    Every ShruggieTech product begins with a specification written for
-                    AI-first consumption. Our specifications are structured so that AI
-                    coding agents can produce correct implementations within single
-                    context windows without interactive clarification. This methodology
-                    multiplies engineering throughput without proportional headcount. It
-                    is how a two-person studio builds production-grade software tools.
+                    Every product begins with a specification written for AI-first consumption. Our specs are structured so AI coding agents can produce correct implementations within single context windows without interactive clarification. This methodology multiplies engineering throughput without proportional headcount. It is how a small team builds production-grade software tools.
                   </p>
                 </div>
 
@@ -225,10 +220,10 @@ export default function ProductsPage() {
         <div className="container-content text-center">
           <ScrollReveal>
             <h2 className="font-display text-display-md font-bold text-text-primary">
-              Want to explore our tools or contribute to the codebase?
+              The code is open. Jump in.
             </h2>
             <div className="mt-8">
-              <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+              <ShruggieCTA href="https://github.com/shruggietech">View on GitHub</ShruggieCTA>
             </div>
           </ScrollReveal>
         </div>

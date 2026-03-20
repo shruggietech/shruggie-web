@@ -124,16 +124,7 @@ export default function AboutPage() {
             </div>
             <SectionHeading title="Where We Come From" />
             <p className="mt-6 text-body-lg text-justify dark:text-[var(--text-body-light)] text-text-secondary">
-              ShruggieTech was founded by William and Natalie Thompson, a
-              husband-and-wife team who have been building technology together
-              for nearly a decade. Before ShruggieTech, they ran an
-              international consulting firm that delivered research to national
-              governments and launch support for technology projects across
-              multiple continents. That venture taught them how to deliver
-              structured, high-stakes work under pressure. ShruggieTech
-              carries that same operational discipline into a broader mission:
-              solving whatever technology problem stands between a business
-              owner and their vision.
+              Founded by William and Natalie Thompson, a husband-and-wife team who have been building technology together for nearly a decade. Before ShruggieTech, they ran an international consulting firm that delivered research to national governments and launch support for technology projects across multiple continents. That venture taught them how to deliver structured, high-stakes work under pressure. That same operational discipline now drives a broader mission: solving whatever technology problem stands between a business owner and their vision.
             </p>
           </ScrollReveal>
         </div>
@@ -231,12 +222,14 @@ export default function AboutPage() {
 
       {/* ── Section 5: CTA ───────────────────────────────────────────── */}
       <CTABackground>
-        <div className="container-content flex flex-col items-center text-center">
+        <div className="container-content text-center">
           <ScrollReveal>
-            <p className="mb-6 text-body-lg text-white/70">
+            <h2 className="font-display text-display-md font-bold text-text-primary">
               Ready to work with a team that actually cares?
-            </p>
-            <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+            </h2>
+            <div className="mt-8">
+              <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+            </div>
           </ScrollReveal>
         </div>
       </CTABackground>

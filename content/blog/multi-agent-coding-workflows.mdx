@@ -1,6 +1,6 @@
 ---
 title: "Multi-Agent Coding Workflows for Solo Developers and Small Teams"
-date: "2025-02-20"
+date: "2026-03-08"
 author: "William Thompson"
 category: "Engineering"
 excerpt: "A practical field manual for multi-agent coding workflows: sequential sessions, parallel independent agents, coordinated teams, and the admin-coding divide that makes it all work."
@@ -236,4 +236,32 @@ Add Superset to your toolkit. It handles worktree management, session monitoring
 
 **If you want coordinated multi-agent work on complex tasks:**
 
-Explore Claude Code's Agent Teams feature. This is experimental and carries a significant token cost (roughly 5x per teammate), but for tasks that genuinely benefit from multiple perspectives (e.g., "refactor this module from three angles: API design, database migrations, and test coverage"), it can produce better results than
+Explore Claude Code's Agent Teams feature. This is experimental and carries a significant token cost (roughly 5x per teammate), but for tasks that genuinely benefit from multiple perspectives (e.g., "refactor this module from three angles: API design, database migrations, and test coverage"), it can produce better results than dispatching the same task to a single agent repeatedly. Start with two teammates on a well-scoped problem before scaling up. Monitor token consumption closely during your first few sessions so you can calibrate whether the quality improvement justifies the cost for your particular workload.
+
+**If your biggest bottleneck is the gap between planning and execution:**
+
+Invest in the bridging artifacts described in the Admin-Coding Divide section above. Write a **CLAUDE.md** or **AGENTS.md** file for your repository that captures your coding conventions, architectural constraints, and project structure. Author task descriptions as self-contained documents with enough context for an agent to execute without follow-up questions. This is the lowest-cost, highest-leverage change you can make, and it pays dividends regardless of which tools you use. A coding agent that starts a session with clear written context will outperform one that has to infer your intentions from file names and comments.
+
+**If you are evaluating multiple coding agents and unsure which to commit to:**
+
+Try more than one. The orchestration layer (Superset, VS Code background agents) is largely agent-agnostic. You can run Claude Code on one task and Aider on another in parallel, compare the results, and decide based on output quality rather than marketing. The cost of experimenting is low because each agent operates in an isolated worktree. A bad result from one agent does not contaminate your codebase or interfere with the others.
+
+## What to Expect Going Wrong
+
+Multi-agent workflows introduce failure modes that do not exist in single-agent development. Knowing what to watch for will save you time.
+
+**Merge conflicts are the most common issue.** Two agents working on nominally independent tasks will occasionally touch the same file. A test file, a shared configuration module, or a common utility function can become a conflict point even when the tasks themselves are unrelated. The fix is straightforward (resolve the conflict manually when merging), but the frequency increases with the number of parallel agents. If you find yourself resolving conflicts on every merge, your task decomposition is too coarse and you need to split work along cleaner file boundaries.
+
+**Context drift happens when an agent makes assumptions that conflict with work completed by another agent in a different worktree.** Agent A refactors a function signature while Agent B writes new code that calls the old signature. Neither agent is wrong in isolation. The problem only surfaces at merge time. The mitigation is to avoid assigning tasks that touch the same interfaces simultaneously, or to sequence them so that one completes and merges before the other begins.
+
+**Runaway agents are a risk with any autonomous coding tool.** An agent that misunderstands the task can generate hundreds of lines of confidently wrong code, rewrite files it should not have touched, or enter a loop of failed tests and increasingly desperate fixes. Set a time or iteration limit on agent sessions if your tool supports it. Review diffs before merging, not after. The review step is not optional in a multi-agent workflow; it is the primary quality gate.
+
+**Token cost accumulation is easy to underestimate.** Five parallel agents each consuming a full context window will burn through API credits or subscription quotas faster than a single sequential session. Track your usage during the first week of adoption so you have a realistic baseline for budgeting.
+
+## Conclusion
+
+The shift from single-agent to multi-agent development is not a paradigm change. It is a workflow optimization. You are still the architect, the reviewer, and the decision-maker. The agents do not collaborate with each other in any deep sense; they execute isolated tasks in parallel and present you with results to evaluate.
+
+The tools that support this workflow (VS Code background agents, Superset, Claude Code Agent Teams) are production-ready for solo developers and small teams today, with the caveat that coordinated agent teams remain experimental and expensive. The underlying mechanism (Git worktrees) is mature and well-understood. The learning curve is modest if you already use Git and VS Code.
+
+Start with one change: the next time you have two independent tasks, run them in parallel instead of sequentially. Use VS Code's background agents or Superset to manage the isolation. Review the diffs, merge the branches, and see whether the time savings justify the five minutes of setup. For most developers, they will.

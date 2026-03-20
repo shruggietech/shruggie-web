@@ -36,11 +36,7 @@ export default function OwnershipSection() {
               </h2>
 
               <p className="mt-6 text-body-lg text-text-secondary">
-                Your domain, your hosting credentials, your content, your data.
-                We earn revenue by building things that work, not by controlling
-                assets that should be yours. Every engagement operates under a
-                formal Master Services Agreement and Scope of Work. No
-                handshakes. No ambiguity.
+                Your domain, your hosting credentials, your content, your data. We earn revenue by building things that work. Your assets stay yours. Every engagement operates under a formal Master Services Agreement and Scope of Work. No handshakes. No ambiguity.
               </p>
             </div>
 

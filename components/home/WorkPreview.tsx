@@ -24,7 +24,7 @@ export default function WorkPreview() {
         <ScrollReveal>
           <SectionHeading
             label="OUR WORK"
-            title="We don't do mock-ups. These shipped."
+            title="Real results for real businesses"
           />
         </ScrollReveal>
 

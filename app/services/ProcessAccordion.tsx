@@ -34,7 +34,7 @@ const phases: Phase[] = [
     number: "01",
     title: "Discuss",
     description:
-      "Every cycle begins with open conversation. We align on goals, review priorities, and define the scope of what comes next. Your input drives every decision — no assumptions, no black boxes.",
+      "Every cycle begins with open conversation. We align on goals, review priorities, and define the scope of what comes next. Your input drives every decision.",
     deliverables: [
       "Requirements gathering and discovery",
       "Sprint planning and backlog refinement",
@@ -46,7 +46,7 @@ const phases: Phase[] = [
     number: "02",
     title: "Create",
     description:
-      "We design, build, and iterate. From wireframes to working code, the create phase turns your requirements into tangible results through focused, rapid development.",
+      "We design, build, and iterate. From wireframes to working code, your requirements become tangible results through focused, rapid development.",
     deliverables: [
       "UI/UX design and prototyping",
       "Development and integration",
@@ -58,7 +58,7 @@ const phases: Phase[] = [
     number: "03",
     title: "Deliver",
     description:
-      "When the work is ready, we deploy, measure, and optimize. Every delivery is a checkpoint — review the results, gather feedback, and feed it back into the next cycle.",
+      "When the work is ready, we deploy, measure, and optimize. Every delivery closes a loop: review the results, gather feedback, and feed it back into the next cycle.",
     deliverables: [
       "Deployment and launch",
       "Performance monitoring and analytics",

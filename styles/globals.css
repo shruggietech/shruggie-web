@@ -42,7 +42,7 @@
     --border-color: #E5E5E5;
     --accent-color: #2BCC73;
     --accent-hover-color: #00AB21;
-    --cta-color: #FF5300;
+    --cta-color: #C24000; /* Darkened from #FF5300 for WCAG AA (4.6:1 vs white) */
 
     /* Layout constants (spec §2.3) — mobile defaults */
     --max-width-content: 1200px;
@@ -63,7 +63,7 @@
     --border-color: #262626;
     --accent-color: #2BCC73;
     --accent-hover-color: #00AB21;
-    --cta-color: #FF5300;
+    --cta-color: #C24000; /* Darkened from #FF5300 for WCAG AA (4.6:1 vs white) */
 
     /* Section surface colors (redesign §1.1–1.2) */
     --surface-dark-warm: #0D0F12;

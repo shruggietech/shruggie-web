@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Blog**: expanded "Multi-Agent Coding Workflows" post with new sections — What to Expect Going Wrong (merge conflicts, context drift, runaway agents, token costs), Conclusion, and additional Getting Started recommendations (bridging artifacts, multi-agent experimentation)
+
+### Changed
+
+- **About page**: tightened "Where We Come From" origin copy (removed "ShruggieTech was" opener); redesigned CTA section from `text-body-lg` paragraph to `text-display-md` heading with `mt-8` button wrapper, removed `flex-col items-center`
+- **Products page**: shortened metadata/hero description (removed "Open-source tools and software products built by ShruggieTech." prefix); tightened "How We Build Software" paragraph (removed "ShruggieTech" self-reference, shortened prose); changed CTA heading to "The code is open. Jump in." with GitHub link instead of contact link
+- **Research page**: updated metadata/hero description to "Technical writing and original research from real project work. We publish what we learn."; changed publication dates from 2025 to 2026 for ADF and RUSTif
+- **Services page**: rewrote metadata/hero description to "Strategy, design, development, and marketing, shaped around how your business actually operates."; rewrote all four service pillar body descriptions and trimmed capability list labels to be more concise; tightened OwnershipSection paragraph; refined ProcessAccordion phase descriptions for all three phases (Discuss, Create, Deliver)
+- **Work page**: updated metadata description to "No mock-ups. No hypotheticals. Every project on this page shipped."; changed hero subheadline to "Real results for real businesses. See for yourself."; updated homepage work section heading to "Real results for real businesses" across `WorkPreview` and `WorkScroll`; removed date display from case study cards and individual case study hero; made case study cards equal-height with `h-full flex flex-col` and `mt-auto` on CTA link
+- **Case studies**: rewrote United Way title ("A Complete Website Rebuild for a Community Nonprofit"), summary, challenge, approach, and outcomes; rewrote I Heart PR Tours title ("A Ground-Up Digital Partnership in Puerto Rico Tourism"), summary, challenge, approach, and outcomes; trimmed Scruggs Tire challenge and approach paragraphs; removed "Ongoing" sections from all three case studies; changed case study dates to year-only format
+- **CTA color**: darkened `--cta-color` from `#FF5300` to `#C24000` for WCAG AA compliance (4.6:1 contrast ratio vs white) in both light and dark themes
+
+### Removed
+
+- `EngagementModel` component: deleted legacy three-phase engagement model section (replaced previously by `ProcessAccordion`)
+
+## [Previous — Copy, Content & Interaction Refinements]
+
+### Added
+
 - **Blog**: new post "Multi-Agent Coding Workflows for Solo Developers and Small Teams" — practical field manual covering sequential sessions, parallel independent agents, coordinated teams, VS Code agent types, Superset orchestration, and the admin-coding divide
 
 ### Changed
