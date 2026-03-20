@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `BackToTop` component: floating scroll-to-top button that appears after 500px of scroll — fixed bottom-right, CTA-colored with chevron icon, smooth fade/slide entrance animation, keyboard-accessible with `focus-visible` outline
 - **Blog**: expanded "Multi-Agent Coding Workflows" post with new sections — What to Expect Going Wrong (merge conflicts, context drift, runaway agents, token costs), Conclusion, and additional Getting Started recommendations (bridging artifacts, multi-agent experimentation)
 
 ### Changed

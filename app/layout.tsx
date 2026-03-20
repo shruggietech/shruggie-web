@@ -21,6 +21,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SkipLink from "@/components/ui/SkipLink";
 import CookieConsent from "@/components/shared/CookieConsent";
+import BackToTop from "@/components/shared/BackToTop";
 import ThemeEnforcer from "@/components/shared/ThemeEnforcer";
 import JsonLd from "@/components/shared/JsonLd";
 
@@ -164,6 +165,7 @@ export default function RootLayout({
           <Header />
           <main id="main-content">{children}</main>
           <Footer />
+          <BackToTop />
           <CookieConsent />
         </LenisProvider>
       </body>
