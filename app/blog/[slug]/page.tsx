@@ -19,9 +19,11 @@ import rehypeShiki from "@shikijs/rehype";
 
 import { SITE_URL } from "@/lib/constants";
 import { getAllPostsMeta, getPostBySlug } from "@/lib/blog";
+import { extractHeadings } from "@/lib/utils";
 import { generateBlogPostSchema } from "@/lib/schema";
 import { mdxComponents } from "@/components/blog/MDXComponents";
 import PostHeader from "@/components/blog/PostHeader";
+import TableOfContents from "@/components/blog/TableOfContents";
 import JsonLd from "@/components/shared/JsonLd";
 
 interface BlogPostPageProps {
@@ -88,37 +90,63 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     meta.featuredImage &&
     fs.existsSync(path.join(process.cwd(), "public", meta.featuredImage));
 
+  const headings = extractHeadings(content);
+
   return (
     <>
       <JsonLd data={generateBlogPostSchema(meta)} />
-      <article className="mx-auto max-w-[900px] px-[var(--padding-x)] py-20">
-        <PostHeader meta={meta} />
+      <article className="py-20">
+        {/* Header + featured image — always centered */}
+        <div className="mx-auto max-w-[900px] px-[var(--padding-x)]">
+          <PostHeader meta={meta} />
 
-        {/* Featured image */}
-        {hasFeaturedImage && (
-          <div className="mt-12 overflow-hidden rounded-lg border border-border bg-bg-secondary">
-            <Image
-              src={meta.featuredImage!}
-              alt={meta.title}
-              width={900}
-              height={506}
-              className="w-full h-auto"
-              priority
-            />
+          {/* Featured image */}
+          {hasFeaturedImage && (
+            <div className="mt-12 overflow-hidden rounded-lg border border-border bg-bg-secondary">
+              <Image
+                src={meta.featuredImage!}
+                alt={meta.title}
+                width={900}
+                height={506}
+                className="w-full h-auto"
+                priority
+              />
+            </div>
+          )}
+
+          <div className="border-t border-accent/10 mt-12" />
+        </div>
+
+        {/* Collapsible ToC for screens below xl — sticky below header */}
+        {headings.length > 0 && (
+          <div className="sticky top-16 z-10 mt-8 bg-bg-primary py-3 xl:hidden">
+            <div className="mx-auto max-w-[900px] px-[var(--padding-x)]">
+              <TableOfContents headings={headings} collapsible />
+            </div>
           </div>
         )}
 
-        <div className="border-t border-accent/10 mt-12" />
-        <div className="prose prose-lg dark:prose-invert mt-12 max-w-none">
-          <MDXRemote
-            source={content}
-            components={mdxComponents}
-            options={{
-              mdxOptions: {
-                rehypePlugins: [[rehypeShiki, { theme: "github-dark" }]],
-              },
-            }}
-          />
+        {/* Content area with optional desktop ToC sidebar */}
+        <div className="mx-auto mt-12 max-w-[900px] px-[var(--padding-x)] xl:flex xl:max-w-[1400px] xl:gap-16">
+          {headings.length > 0 && (
+            <aside className="hidden w-[260px] shrink-0 xl:block">
+              <TableOfContents
+                headings={headings}
+                className="sticky top-24"
+              />
+            </aside>
+          )}
+          <div className="prose prose-lg dark:prose-invert mx-auto min-w-0 max-w-[900px] flex-1 xl:mx-0 prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0 prose-pre:border-0 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_span]:!bg-transparent">
+            <MDXRemote
+              source={content}
+              components={mdxComponents}
+              options={{
+                mdxOptions: {
+                  rehypePlugins: [[rehypeShiki, { theme: "github-dark" }]],
+                },
+              }}
+            />
+          </div>
         </div>
       </article>
     </>

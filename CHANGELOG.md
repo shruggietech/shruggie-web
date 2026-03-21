@@ -9,11 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Blog Table of Contents**: sticky desktop sidebar (xl+ breakpoints) and collapsible sticky mobile disclosure with IntersectionObserver-based active heading highlighting; `TableOfContents` rewritten as a client component with active-state border/color styling
+- `CopyCodeBlock` component: copy-to-clipboard button overlay on code blocks — appears on hover with `Copy`/`Check` icon feedback, replaces plain `<pre>` in MDX rendering
+- **MDX heading IDs**: `h2` and `h3` components now auto-generate slugified `id` attributes with `scroll-mt-24` for smooth anchor offset
+- `slugify()` and `extractHeadings()` utilities plus `TocItem` interface exported from `lib/utils.ts`
 - `BackToTop` component: floating scroll-to-top button that appears after 500px of scroll — fixed bottom-right, CTA-colored with chevron icon, smooth fade/slide entrance animation, keyboard-accessible with `focus-visible` outline
 - **Blog**: expanded "Multi-Agent Coding Workflows" post with new sections — What to Expect Going Wrong (merge conflicts, context drift, runaway agents, token costs), Conclusion, and additional Getting Started recommendations (bridging artifacts, multi-agent experimentation)
 
 ### Changed
 
+- **Blog post layout**: restructured article to a two-column layout on xl screens (1400px max-width) with 260px sidebar for ToC; content area resets shiki code block prose styles (`prose-pre:bg-transparent`, etc.)
+- **Homepage metadata**: changed em dash (—) to hyphen (-) in page title and OpenGraph title
+- **Global CSS**: changed `overflow-x: hidden` to `overflow-x: clip` on `html, body` to prevent scroll anchoring issues while still clipping overflow
 - **About page**: tightened "Where We Come From" origin copy (removed "ShruggieTech was" opener); redesigned CTA section from `text-body-lg` paragraph to `text-display-md` heading with `mt-8` button wrapper, removed `flex-col items-center`
 - **Products page**: shortened metadata/hero description (removed "Open-source tools and software products built by ShruggieTech." prefix); tightened "How We Build Software" paragraph (removed "ShruggieTech" self-reference, shortened prose); changed CTA heading to "The code is open. Jump in." with GitHub link instead of contact link
 - **Research page**: updated metadata/hero description to "Technical writing and original research from real project work. We publish what we learn."; changed publication dates from 2025 to 2026 for ADF and RUSTif

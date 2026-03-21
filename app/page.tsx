@@ -19,13 +19,13 @@ import ResearchSection from "@/components/home/ResearchSection";
 import CTASection from "@/components/home/CTASection";
 
 export const metadata: Metadata = {
-  title: "ShruggieTech — Modern Digital Systems, Software, and AI",
+  title: "ShruggieTech - Modern Digital Systems, Software, and AI",
   description: SITE_DESCRIPTION,
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "ShruggieTech — Modern Digital Systems, Software, and AI",
+    title: "ShruggieTech - Modern Digital Systems, Software, and AI",
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     type: "website",

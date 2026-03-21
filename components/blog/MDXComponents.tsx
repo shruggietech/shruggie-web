@@ -10,7 +10,20 @@
 import type { MDXComponents } from "mdx/types";
 import type { ReactNode, HTMLAttributes } from "react";
 
-import { cn } from "@/lib/utils";
+import { cn, slugify } from "@/lib/utils";
+import CopyCodeBlock from "@/components/blog/CopyCodeBlock";
+
+/** Recursively extract text content from React children. */
+function getTextContent(node: ReactNode): string {
+  if (typeof node === "string") return node;
+  if (typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(getTextContent).join("");
+  if (node && typeof node === "object" && "props" in node) {
+    const el = node as { props: { children?: ReactNode } };
+    return getTextContent(el.props.children);
+  }
+  return "";
+}
 
 interface CalloutProps {
   type?: "info" | "warning";
@@ -33,22 +46,30 @@ function Callout({ type = "info", children }: CalloutProps) {
 }
 
 export const mdxComponents: MDXComponents = {
-  h2: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-    <h2
-      className="mt-12 mb-4 font-display text-display-sm font-bold text-text-primary"
-      {...props}
-    >
-      {children}
-    </h2>
-  ),
-  h3: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-    <h3
-      className="mt-8 mb-3 font-display text-[1.375rem] font-bold text-text-primary"
-      {...props}
-    >
-      {children}
-    </h3>
-  ),
+  h2: ({ children, id, ...props }: HTMLAttributes<HTMLHeadingElement>) => {
+    const headingId = id || slugify(getTextContent(children));
+    return (
+      <h2
+        id={headingId}
+        className="mt-12 mb-4 scroll-mt-24 font-display text-display-sm font-bold text-text-primary"
+        {...props}
+      >
+        {children}
+      </h2>
+    );
+  },
+  h3: ({ children, id, ...props }: HTMLAttributes<HTMLHeadingElement>) => {
+    const headingId = id || slugify(getTextContent(children));
+    return (
+      <h3
+        id={headingId}
+        className="mt-8 mb-3 scroll-mt-24 font-display text-[1.375rem] font-bold text-text-primary"
+        {...props}
+      >
+        {children}
+      </h3>
+    );
+  },
   p: ({ children, ...props }: HTMLAttributes<HTMLParagraphElement>) => (
     <p
       className="mb-5 text-body-md leading-relaxed text-text-secondary"
@@ -100,13 +121,6 @@ export const mdxComponents: MDXComponents = {
       {children}
     </blockquote>
   ),
-  pre: ({ children, ...props }: HTMLAttributes<HTMLPreElement>) => (
-    <pre
-      className="my-6 overflow-x-auto rounded-lg border border-border p-4 text-body-sm [&>code]:bg-transparent [&>code]:p-0"
-      {...props}
-    >
-      {children}
-    </pre>
-  ),
+  pre: CopyCodeBlock,
   Callout: Callout as unknown as React.ComponentType,
 };

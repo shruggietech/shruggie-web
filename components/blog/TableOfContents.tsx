@@ -1,84 +1,115 @@
 /**
- * TableOfContents — Sidebar navigation with anchor links.
+ * TableOfContents — Sidebar navigation with anchor links and active tracking.
  *
- * Extracts h2/h3 headings from raw MDX content and renders a sticky
- * sidebar navigation with jump links.
+ * Renders a sticky sidebar (desktop) or collapsible disclosure (mobile)
+ * with IntersectionObserver-based active heading highlighting.
  *
  * Spec reference: §7.3 (Blog Post Template)
- *
- * Note: This is a v1.0.0 implementation. Active heading tracking
- * via IntersectionObserver is deferred to a future sprint.
  */
 
-import { cn } from "@/lib/utils";
+"use client";
 
-interface TocItem {
-  id: string;
-  text: string;
-  level: 2 | 3;
-}
+import { useState, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
+import type { TocItem } from "@/lib/utils";
 
 interface TableOfContentsProps {
-  content: string;
+  headings: TocItem[];
   className?: string;
-}
-
-/**
- * Parse raw MDX content for headings (## and ###).
- * Generates IDs by slugifying heading text.
- */
-function extractHeadings(content: string): TocItem[] {
-  const headingRegex = /^(#{2,3})\s+(.+)$/gm;
-  const headings: TocItem[] = [];
-  let match: RegExpExecArray | null;
-
-  while ((match = headingRegex.exec(content)) !== null) {
-    const level = match[1].length as 2 | 3;
-    const text = match[2].trim();
-    const id = text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-
-    headings.push({ id, text, level });
-  }
-
-  return headings;
+  /** Render as a collapsible details/summary element (mobile). */
+  collapsible?: boolean;
 }
 
 export default function TableOfContents({
-  content,
+  headings,
   className,
+  collapsible = false,
 }: TableOfContentsProps) {
-  const headings = extractHeadings(content);
+  const [activeId, setActiveId] = useState<string>("");
+  const headingsRef = useRef(headings);
+  headingsRef.current = headings;
 
-  if (headings.length === 0) {
-    return null;
+  useEffect(() => {
+    const elements = headingsRef.current
+      .map(({ id }) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: "-80px 0px -80% 0px" },
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [headings]);
+
+  if (headings.length === 0) return null;
+
+  const links = (
+    <ul className="space-y-1 border-l border-border">
+      {headings.map((h) => (
+        <li key={h.id}>
+          <a
+            href={`#${h.id}`}
+            className={cn(
+              "-ml-px block border-l-2 py-1 pl-4 text-body-sm transition-colors",
+              activeId === h.id
+                ? "border-accent text-accent font-medium"
+                : "border-transparent text-text-secondary hover:text-accent hover:border-accent/50",
+            )}
+          >
+            {h.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+
+  if (collapsible) {
+    return (
+      <details
+        className={cn(
+          "group rounded-lg border border-border p-4",
+          className,
+        )}
+      >
+        <summary className="flex cursor-pointer list-none items-center gap-2 font-display text-body-sm font-medium text-accent [&::-webkit-details-marker]:hidden">
+          <svg
+            className="h-4 w-4 shrink-0 transition-transform group-open:rotate-90"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m8.25 4.5 7.5 7.5-7.5 7.5"
+            />
+          </svg>
+          On this page
+        </summary>
+        <div className="mt-3 max-h-[40vh] overflow-y-auto">{links}</div>
+      </details>
+    );
   }
 
   return (
-    <nav
-      aria-label="Table of contents"
-      className={cn("sticky top-24", className)}
-    >
+    <nav aria-label="Table of contents" className={className}>
       <p className="mb-3 font-display text-body-sm font-medium uppercase tracking-widest text-accent">
         On this page
       </p>
-      <ul className="space-y-2">
-        {headings.map((heading) => (
-          <li key={heading.id}>
-            <a
-              href={`#${heading.id}`}
-              className={cn(
-                "block text-body-sm text-text-muted dark:text-[var(--text-muted-warm)] transition-colors hover:text-accent",
-                heading.level === 3 && "pl-4",
-              )}
-            >
-              {heading.text}
-            </a>
-          </li>
-        ))}
-      </ul>
+      {links}
     </nav>
   );
 }
