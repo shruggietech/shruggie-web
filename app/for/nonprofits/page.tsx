@@ -9,6 +9,7 @@
 
 import type { Metadata } from "next";
 
+import { getOgImageUrl } from "@/lib/constants";
 import LandingPageTemplate from "@/components/shared/LandingPageTemplate";
 
 export const metadata: Metadata = {
@@ -22,6 +23,21 @@ export const metadata: Metadata = {
       "You need a digital presence that reflects the seriousness of your work, meets accessibility standards, and stays within a grant-funded budget. We build exactly that.",
     url: "/for/nonprofits",
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Nonprofits"),
+        width: 1200,
+        height: 630,
+        alt: "Nonprofits | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nonprofits | ShruggieTech",
+    description:
+      "You need a digital presence that reflects the seriousness of your work, meets accessibility standards, and stays within a grant-funded budget. We build exactly that.",
+    images: [getOgImageUrl("Nonprofits")],
   },
 };
 

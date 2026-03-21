@@ -13,7 +13,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
+import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
 import { getThemeScript } from "@/lib/theme";
 import { generateOrganizationSchema } from "@/lib/schema";
 import LenisProvider from "@/components/layout/LenisProvider";
@@ -118,6 +118,23 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
   manifest: "/site.webmanifest",
+  openGraph: {
+    siteName: SITE_NAME,
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "ShruggieTech — Modern Digital Systems, Software, and AI",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 // ── Root Layout ────────────────────────────────────────────────────────────

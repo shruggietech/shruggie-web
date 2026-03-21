@@ -9,7 +9,7 @@
 
 import type { Metadata } from "next";
 
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { getPaginatedPosts } from "@/lib/blog";
 import PageHero from "@/components/shared/PageHero";
 import PostCard from "@/components/blog/PostCard";
@@ -30,6 +30,21 @@ export const metadata: Metadata = {
       "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business.",
     url: `${SITE_URL}/blog`,
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Blog"),
+        width: 1200,
+        height: 630,
+        alt: "Blog | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | ShruggieTech",
+    description:
+      "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business.",
+    images: [getOgImageUrl("Blog")],
   },
 };
 

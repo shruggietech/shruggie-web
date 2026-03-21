@@ -8,7 +8,7 @@
 
 import type { Metadata } from "next";
 
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import PageHero from "@/components/shared/PageHero";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -34,6 +34,21 @@ export const metadata: Metadata = {
       "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences that help businesses present sharper, operate smarter, and scale further.",
     url: `${SITE_URL}/about`,
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("About ShruggieTech"),
+        width: 1200,
+        height: 630,
+        alt: "About ShruggieTech | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About ShruggieTech | ShruggieTech",
+    description:
+      "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences that help businesses present sharper, operate smarter, and scale further.",
+    images: [getOgImageUrl("About ShruggieTech")],
   },
 };
 
@@ -142,7 +157,7 @@ export default function AboutPage() {
                 }}
               >
                 <SectionHeading title="Where We Come From" />
-                <p className="mt-6 text-body-lg text-justify dark:text-[var(--text-body-light)] text-text-secondary">
+                <p className="mt-6 text-body-lg dark:text-[var(--text-body-light)] text-text-secondary">
                   ShruggieTech was founded by William and Natalie Thompson, a
                   husband-and-wife team who have been building technology together
                   for nearly a decade. Before ShruggieTech, they ran an

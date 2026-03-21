@@ -11,6 +11,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { getOgImageUrl } from "@/lib/constants";
 import PageHero from "@/components/shared/PageHero";
 
 export const metadata: Metadata = {
@@ -24,6 +25,21 @@ export const metadata: Metadata = {
       "ShruggieTech privacy policy. Learn how we collect, use, and protect your information.",
     url: "/privacy",
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Privacy Policy"),
+        width: 1200,
+        height: 630,
+        alt: "Privacy Policy | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | ShruggieTech",
+    description:
+      "ShruggieTech privacy policy. Learn how we collect, use, and protect your information.",
+    images: [getOgImageUrl("Privacy Policy")],
   },
 };
 

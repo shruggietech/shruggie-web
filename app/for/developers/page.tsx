@@ -9,6 +9,7 @@
 
 import type { Metadata } from "next";
 
+import { getOgImageUrl } from "@/lib/constants";
 import LandingPageTemplate from "@/components/shared/LandingPageTemplate";
 
 export const metadata: Metadata = {
@@ -22,6 +23,21 @@ export const metadata: Metadata = {
       "We build open-source tools for file indexing, metadata processing, and asset management. We publish our research. We share what we learn.",
     url: "/for/developers",
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Developers"),
+        width: 1200,
+        height: 630,
+        alt: "Developers | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Developers | ShruggieTech",
+    description:
+      "We build open-source tools for file indexing, metadata processing, and asset management. We publish our research. We share what we learn.",
+    images: [getOgImageUrl("Developers")],
   },
 };
 

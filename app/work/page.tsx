@@ -15,7 +15,7 @@ import Link from "next/link";
 import fs from "fs";
 import path from "path";
 
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { getAllCaseStudiesMeta, type CaseStudyMeta } from "@/lib/work";
 import PageHero from "@/components/shared/PageHero";
 import Badge from "@/components/ui/Badge";
@@ -38,6 +38,21 @@ export const metadata: Metadata = {
       "No mock-ups. No hypotheticals. Every project on this page shipped.",
     url: `${SITE_URL}/work`,
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Our Work"),
+        width: 1200,
+        height: 630,
+        alt: "Our Work | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Our Work | ShruggieTech",
+    description:
+      "No mock-ups. No hypotheticals. Every project on this page shipped.",
+    images: [getOgImageUrl("Our Work")],
   },
 };
 

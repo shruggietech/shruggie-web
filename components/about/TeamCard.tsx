@@ -61,7 +61,7 @@ export default function TeamCard({ member }: TeamCardProps) {
         }`}
       >
         {/* ── Front Face ───────────────────────────────────────────── */}
-        <div className="absolute inset-0 [backface-visibility:hidden] rounded-xl border border-border dark:border-white/[0.06] bg-bg-elevated dark:bg-white/[0.03] dark:backdrop-blur-xl p-6 md:p-8 flex flex-col items-center text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="absolute inset-0 [backface-visibility:hidden] rounded-xl border border-border dark:border-white/[0.06] bg-bg-elevated dark:bg-white/[0.03] dark:backdrop-blur-xl p-6 md:p-8 flex flex-col items-center text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-colors duration-300 group-hover:border-accent/40 dark:group-hover:border-brand-green-bright/20">
           <div className="aspect-square h-40 w-40 md:h-48 md:w-48 overflow-hidden flex-shrink-0">
             <Image
               src={member.image}
@@ -118,7 +118,14 @@ export default function TeamCard({ member }: TeamCardProps) {
         </div>
 
         {/* ── Back Face ────────────────────────────────────────────── */}
-        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-xl border border-border dark:border-white/[0.06] bg-bg-elevated dark:bg-white/[0.03] dark:backdrop-blur-xl p-6 md:p-8 flex flex-col items-center justify-center text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div
+          className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-xl border border-border dark:border-white/[0.06] bg-bg-elevated dark:bg-white/[0.03] dark:backdrop-blur-xl p-6 md:p-8 flex flex-col items-center justify-center text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] cursor-pointer"
+          onClick={() => setFlipped(false)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFlipped(false); } }}
+          aria-label={`Flip back to ${member.name} front`}
+        >
           <h3 className="font-display text-display-sm font-bold text-text-primary">
             {member.name}
           </h3>

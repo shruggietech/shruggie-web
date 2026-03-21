@@ -9,6 +9,7 @@
 
 import type { Metadata } from "next";
 
+import { getOgImageUrl } from "@/lib/constants";
 import LandingPageTemplate from "@/components/shared/LandingPageTemplate";
 
 export const metadata: Metadata = {
@@ -22,6 +23,21 @@ export const metadata: Metadata = {
       "We speak your language. AI integrations, custom tooling, RAG architectures, and automation pipelines, built by engineers with published research and production experience.",
     url: "/for/technical-teams",
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Technical Teams"),
+        width: 1200,
+        height: 630,
+        alt: "Technical Teams | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Technical Teams | ShruggieTech",
+    description:
+      "We speak your language. AI integrations, custom tooling, RAG architectures, and automation pipelines, built by engineers with published research and production experience.",
+    images: [getOgImageUrl("Technical Teams")],
   },
 };
 

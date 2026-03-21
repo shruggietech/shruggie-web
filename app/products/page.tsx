@@ -17,7 +17,7 @@ import {
   Cpu,
 } from "lucide-react";
 
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { generateSoftwareSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
 import PageHero from "@/components/shared/PageHero";
@@ -44,6 +44,21 @@ export const metadata: Metadata = {
       "We build things we need, then share them with the community.",
     url: `${SITE_URL}/products`,
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Products"),
+        width: 1200,
+        height: 630,
+        alt: "Products | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Products | ShruggieTech",
+    description:
+      "We build things we need, then share them with the community.",
+    images: [getOgImageUrl("Products")],
   },
 };
 

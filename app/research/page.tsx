@@ -12,7 +12,7 @@ import type { Metadata } from "next";
 import type { ComponentType } from "react";
 import { ExternalLink } from "lucide-react";
 
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { generateTechArticleSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
 import PageHero from "@/components/shared/PageHero";
@@ -40,6 +40,21 @@ export const metadata: Metadata = {
       "Technical writing and original research from real project work. We publish what we learn.",
     url: `${SITE_URL}/research`,
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Research"),
+        width: 1200,
+        height: 630,
+        alt: "Research | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Research | ShruggieTech",
+    description:
+      "Technical writing and original research from real project work. We publish what we learn.",
+    images: [getOgImageUrl("Research")],
   },
 };
 

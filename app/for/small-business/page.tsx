@@ -9,6 +9,7 @@
 
 import type { Metadata } from "next";
 
+import { getOgImageUrl } from "@/lib/constants";
 import LandingPageTemplate from "@/components/shared/LandingPageTemplate";
 
 export const metadata: Metadata = {
@@ -24,6 +25,21 @@ export const metadata: Metadata = {
       "If your website was built by someone who disappeared, your marketing vendor charges you monthly for things you cannot see, or you are not sure who actually owns your domain, we can help.",
     url: "/for/small-business",
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Small Business"),
+        width: 1200,
+        height: 630,
+        alt: "Small Business | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Small Business | ShruggieTech",
+    description:
+      "If your website was built by someone who disappeared, your marketing vendor charges you monthly for things you cannot see, or you are not sure who actually owns your domain, we can help.",
+    images: [getOgImageUrl("Small Business")],
   },
 };
 

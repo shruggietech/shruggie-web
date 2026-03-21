@@ -18,7 +18,7 @@ import path from "path";
 
 import Link from "next/link";
 
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { SERVICE_ANCHOR_MAP } from "@/lib/service-links";
 import { getAllCaseStudiesMeta, getCaseStudyBySlug } from "@/lib/work";
 import { mdxComponents } from "@/components/blog/MDXComponents";
@@ -59,8 +59,23 @@ export async function generateMetadata({
         url: `${SITE_URL}/work/${meta.slug}`,
         type: "article",
         images: meta.heroImage
-          ? [{ url: `${SITE_URL}${meta.heroImage}` }]
-          : [{ url: `${SITE_URL}/images/og/default.png` }],
+          ? [{ url: `${SITE_URL}${meta.heroImage}`, width: 1200, height: 630, alt: meta.title }]
+          : [
+              {
+                url: getOgImageUrl(meta.title),
+                width: 1200,
+                height: 630,
+                alt: meta.title,
+              },
+            ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${meta.client} — ${meta.title} | ShruggieTech`,
+        description: meta.summary,
+        images: meta.heroImage
+          ? [`${SITE_URL}${meta.heroImage}`]
+          : [getOgImageUrl(meta.title)],
       },
     };
   } catch {

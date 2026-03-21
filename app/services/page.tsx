@@ -10,7 +10,7 @@
 
 import type { Metadata } from "next";
 
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { generateServiceSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
 import PageHero from "@/components/shared/PageHero";
@@ -37,6 +37,21 @@ export const metadata: Metadata = {
       "Strategy, design, development, and marketing, shaped around how your business actually operates.",
     url: `${SITE_URL}/services`,
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Services"),
+        width: 1200,
+        height: 630,
+        alt: "Services | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Services | ShruggieTech",
+    description:
+      "Strategy, design, development, and marketing, shaped around how your business actually operates.",
+    images: [getOgImageUrl("Services")],
   },
 };
 

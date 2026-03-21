@@ -17,7 +17,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import rehypeShiki from "@shikijs/rehype";
 
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { getAllPostsMeta, getPostBySlug } from "@/lib/blog";
 import { extractHeadings } from "@/lib/utils";
 import { generateBlogPostSchema } from "@/lib/schema";
@@ -57,8 +57,23 @@ export async function generateMetadata({
         publishedTime: meta.date,
         authors: [meta.author],
         images: meta.ogImage
-          ? [{ url: meta.ogImage }]
-          : [{ url: `${SITE_URL}/images/og/default.png` }],
+          ? [{ url: meta.ogImage, width: 1200, height: 630, alt: meta.title }]
+          : [
+              {
+                url: getOgImageUrl(meta.title, meta.author),
+                width: 1200,
+                height: 630,
+                alt: meta.title,
+              },
+            ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${meta.title} | ShruggieTech`,
+        description: meta.excerpt,
+        images: meta.ogImage
+          ? [meta.ogImage]
+          : [getOgImageUrl(meta.title, meta.author)],
       },
     };
   } catch {

@@ -9,7 +9,7 @@
 
 import type { Metadata } from "next";
 
-import { SITE_DESCRIPTION, SITE_URL } from "@/lib/constants";
+import { SITE_DESCRIPTION, SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { generateWebSiteSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
 import HeroSection from "@/components/home/HeroSection";
@@ -29,6 +29,20 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("ShruggieTech — Modern Digital Systems, Software, and AI"),
+        width: 1200,
+        height: 630,
+        alt: "ShruggieTech — Modern Digital Systems, Software, and AI | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ShruggieTech — Modern Digital Systems, Software, and AI | ShruggieTech",
+    description: SITE_DESCRIPTION,
+    images: [getOgImageUrl("ShruggieTech — Modern Digital Systems, Software, and AI")],
   },
 };
 

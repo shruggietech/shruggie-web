@@ -11,7 +11,7 @@ import type { Metadata } from "next";
 import { Github, Facebook, Instagram, Twitter } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import ContactForm from "@/components/ContactForm";
 import PageHero from "@/components/shared/PageHero";
@@ -40,6 +40,21 @@ export const metadata: Metadata = {
       "Whether you have a project in mind or just want to explore what is possible, the first step is a conversation.",
     url: `${SITE_URL}/contact`,
     type: "website",
+    images: [
+      {
+        url: getOgImageUrl("Contact"),
+        width: 1200,
+        height: 630,
+        alt: "Contact | ShruggieTech",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact | ShruggieTech",
+    description:
+      "Whether you have a project in mind or just want to explore what is possible, the first step is a conversation.",
+    images: [getOgImageUrl("Contact")],
   },
 };
 
