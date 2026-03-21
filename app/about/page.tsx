@@ -174,7 +174,7 @@ export default function AboutPage() {
           <ScrollReveal>
             <SectionHeading
               label="THE TEAM"
-              title="The People Behind the Work"
+              title="Who We Are"
               align="center"
             />
           </ScrollReveal>

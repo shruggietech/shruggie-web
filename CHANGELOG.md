@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **About page**: renamed team section heading from "The People Behind the Work" to "Who We Are"
+- **Blog post featured image**: widened featured image to full container width (1400px) instead of being constrained to the 900px article column
+- **Contact page**: reordered layout so social media links appear above the contact form
+- **Blog**: added featured image to "Multi-Agent Coding Workflows" post
+
+## [0.5.0] — 2026-03-20
+
 ### Fixed
 
 - **Blog code blocks**: removed `prose-pre:p-0` override from blog post content wrapper so code block padding renders correctly

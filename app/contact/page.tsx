@@ -59,11 +59,6 @@ export default function ContactPage() {
       <CTABackground className="pt-8 pb-52 md:pt-12 md:pb-96">
         <div className="container-content">
           <ScrollReveal>
-            <Card hover={false}>
-              <ContactForm />
-            </Card>
-          </ScrollReveal>
-          <ScrollReveal>
             <div className="mb-12 text-center">
               <p className="mx-auto mt-12 max-w-lg text-body text-text-secondary">
                 Stay up to date with our latest work, research, and insights.
@@ -86,6 +81,11 @@ export default function ContactPage() {
                 ))}
               </div>
             </div>
+          </ScrollReveal>
+          <ScrollReveal>
+            <Card hover={false}>
+              <ContactForm />
+            </Card>
           </ScrollReveal>
         </div>
       </CTABackground>

@@ -96,24 +96,28 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <>
       <JsonLd data={generateBlogPostSchema(meta)} />
       <article className="py-20">
-        {/* Header + featured image — always centered */}
+        {/* Header — always centered */}
         <div className="mx-auto max-w-[900px] px-[var(--padding-x)]">
           <PostHeader meta={meta} />
+        </div>
 
-          {/* Featured image */}
-          {hasFeaturedImage && (
-            <div className="mt-12 overflow-hidden rounded-lg border border-border bg-bg-secondary">
+        {/* Featured image — full container width */}
+        {hasFeaturedImage && (
+          <div className="mx-auto mt-12 max-w-[var(--max-width-content)] px-[var(--padding-x)]">
+            <div className="overflow-hidden rounded-lg border border-border bg-bg-secondary">
               <Image
                 src={meta.featuredImage!}
                 alt={meta.title}
-                width={900}
-                height={506}
+                width={1400}
+                height={788}
                 className="w-full h-auto"
                 priority
               />
             </div>
-          )}
+          </div>
+        )}
 
+        <div className="mx-auto max-w-[900px] px-[var(--padding-x)]">
           <div className="border-t border-accent/10 mt-12" />
         </div>
 
