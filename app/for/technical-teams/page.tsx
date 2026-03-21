@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Technical Teams"),
+        url: getOgImageUrl("Technical Teams", { description: "We speak your language. AI integrations, custom tooling, RAG architectures, and automation pipelines, built by engineers with published research and production experience." }),
         width: 1200,
         height: 630,
         alt: "Technical Teams | ShruggieTech",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     title: "Technical Teams | ShruggieTech",
     description:
       "We speak your language. AI integrations, custom tooling, RAG architectures, and automation pipelines, built by engineers with published research and production experience.",
-    images: [getOgImageUrl("Technical Teams")],
+    images: [getOgImageUrl("Technical Teams", { description: "We speak your language. AI integrations, custom tooling, RAG architectures, and automation pipelines, built by engineers with published research and production experience." })],
   },
 };
 

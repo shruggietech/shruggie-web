@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Contact"),
+        url: getOgImageUrl("Contact", { description: "Whether you have a project in mind or just want to explore what is possible, the first step is a conversation." }),
         width: 1200,
         height: 630,
         alt: "Contact | ShruggieTech",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     title: "Contact | ShruggieTech",
     description:
       "Whether you have a project in mind or just want to explore what is possible, the first step is a conversation.",
-    images: [getOgImageUrl("Contact")],
+    images: [getOgImageUrl("Contact", { description: "Whether you have a project in mind or just want to explore what is possible, the first step is a conversation." })],
   },
 };
 

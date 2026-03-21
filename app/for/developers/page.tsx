@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Developers"),
+        url: getOgImageUrl("Developers", { description: "We build open-source tools for file indexing, metadata processing, and asset management. We publish our research. We share what we learn." }),
         width: 1200,
         height: 630,
         alt: "Developers | ShruggieTech",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     title: "Developers | ShruggieTech",
     description:
       "We build open-source tools for file indexing, metadata processing, and asset management. We publish our research. We share what we learn.",
-    images: [getOgImageUrl("Developers")],
+    images: [getOgImageUrl("Developers", { description: "We build open-source tools for file indexing, metadata processing, and asset management. We publish our research. We share what we learn." })],
   },
 };
 

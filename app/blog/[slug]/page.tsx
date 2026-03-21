@@ -43,6 +43,13 @@ export async function generateMetadata({
   try {
     const { meta } = getPostBySlug(resolvedParams.slug);
 
+    // Priority chain: ogImage → featuredImage → dynamic /api/og card
+    const ogImageUrl = meta.ogImage
+      ? meta.ogImage.startsWith("http") ? meta.ogImage : `${SITE_URL}${meta.ogImage}`
+      : meta.featuredImage
+        ? `${SITE_URL}${meta.featuredImage}`
+        : getOgImageUrl(meta.title, { author: meta.author });
+
     return {
       title: meta.title,
       description: meta.excerpt,
@@ -56,24 +63,20 @@ export async function generateMetadata({
         type: "article",
         publishedTime: meta.date,
         authors: [meta.author],
-        images: meta.ogImage
-          ? [{ url: meta.ogImage, width: 1200, height: 630, alt: meta.title }]
-          : [
-              {
-                url: getOgImageUrl(meta.title, meta.author),
-                width: 1200,
-                height: 630,
-                alt: meta.title,
-              },
-            ],
+        images: [
+          {
+            url: ogImageUrl,
+            width: 1200,
+            height: 630,
+            alt: meta.title,
+          },
+        ],
       },
       twitter: {
         card: "summary_large_image",
         title: `${meta.title} | ShruggieTech`,
         description: meta.excerpt,
-        images: meta.ogImage
-          ? [meta.ogImage]
-          : [getOgImageUrl(meta.title, meta.author)],
+        images: [ogImageUrl],
       },
     };
   } catch {

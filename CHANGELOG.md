@@ -7,21 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- **Dynamic OG images**: `getOgImageUrl()` helper in `lib/constants.ts` generates dynamic `/api/og` URLs with title and optional author params
-- **Per-page OpenGraph & Twitter metadata**: every page (`about`, `blog`, `blog/[slug]`, `contact`, `products`, `services`, `work`, `work/[slug]`, `research`, `privacy`, `for/*`, homepage) now exports explicit `openGraph` and `twitter` metadata with dynamic OG images, dimensions, and alt text
-- **Root layout OG defaults**: added fallback `openGraph` and `twitter` fields to the root `metadata` export so every page inherits social card settings
-
 ### Changed
 
-- **OG image route**: replaced text-based "SHRUGGIETECH" label with the actual logo (`logo-darkbg.png` fetched and base64-encoded at render time); added `shruggie.tech` domain footer
-- **About page**: renamed team section heading from "The People Behind the Work" to "Who We Are"; removed `text-justify` from the origin story paragraph
-- **TeamCard**: added hover border accent (`border-accent/40` / `brand-green-bright/20`); made back face clickable/tappable to flip the card back (with keyboard and ARIA support)
-- **Blog post featured image**: widened featured image to full container width (1400px) instead of being constrained to the 900px article column
-- **Blog post OG images**: blog posts now generate dynamic OG images with title and author; falls back to `getOgImageUrl()` when no custom `ogImage` is set
-- **Contact page**: reordered layout so social media links appear above the contact form
-- **Blog**: added featured image to "Multi-Agent Coding Workflows" post
+- **OG image route redesign**: completely overhauled `/api/og` card design with textured dark background, green accent bars (top/bottom), decorative dot clusters, vertical stripe, radial gradients, and responsive title sizing; added `description` query param support and graceful logo-fetch fallback
+- **`getOgImageUrl()` API**: changed second parameter from positional `author` string to an options object (`{ description?, author? }`) for extensibility
+- **Per-page OG descriptions**: all pages now pass page-specific descriptions to `getOgImageUrl()` for richer social cards (about, blog, contact, products, services, work, research, privacy, for/*, homepage)
+- **Blog post OG images**: simplified image selection with priority chain (ogImage → featuredImage → dynamic card); unified OG/Twitter image references into a single `ogImageUrl` variable
+- **Case study OG images**: simplified image selection with priority chain (heroImage → dynamic card); improved alt text to use `"{client} case study"` format
 
 ## [0.5.0] — 2026-03-20
 

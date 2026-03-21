@@ -31,18 +31,18 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("ShruggieTech — Modern Digital Systems, Software, and AI"),
+        url: getOgImageUrl("ShruggieTech", { description: "Modern digital systems, software, and AI-driven experiences that help businesses present sharper, operate smarter, and scale further." }),
         width: 1200,
         height: 630,
-        alt: "ShruggieTech — Modern Digital Systems, Software, and AI | ShruggieTech",
+        alt: "ShruggieTech | ShruggieTech",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ShruggieTech — Modern Digital Systems, Software, and AI | ShruggieTech",
+    title: "ShruggieTech | ShruggieTech",
     description: SITE_DESCRIPTION,
-    images: [getOgImageUrl("ShruggieTech — Modern Digital Systems, Software, and AI")],
+    images: [getOgImageUrl("ShruggieTech", { description: "Modern digital systems, software, and AI-driven experiences that help businesses present sharper, operate smarter, and scale further." })],
   },
 };
 

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Small Business"),
+        url: getOgImageUrl("Small Business", { description: "If your website was built by someone who disappeared, your marketing vendor charges you monthly for things you cannot see, or you are not sure who actually owns your domain, we can help." }),
         width: 1200,
         height: 630,
         alt: "Small Business | ShruggieTech",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     title: "Small Business | ShruggieTech",
     description:
       "If your website was built by someone who disappeared, your marketing vendor charges you monthly for things you cannot see, or you are not sure who actually owns your domain, we can help.",
-    images: [getOgImageUrl("Small Business")],
+    images: [getOgImageUrl("Small Business", { description: "If your website was built by someone who disappeared, your marketing vendor charges you monthly for things you cannot see, or you are not sure who actually owns your domain, we can help." })],
   },
 };
 

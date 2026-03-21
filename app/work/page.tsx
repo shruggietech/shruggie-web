@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Our Work"),
+        url: getOgImageUrl("Our Work", { description: "No mock-ups. No hypotheticals. Every project on this page shipped." }),
         width: 1200,
         height: 630,
         alt: "Our Work | ShruggieTech",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     title: "Our Work | ShruggieTech",
     description:
       "No mock-ups. No hypotheticals. Every project on this page shipped.",
-    images: [getOgImageUrl("Our Work")],
+    images: [getOgImageUrl("Our Work", { description: "No mock-ups. No hypotheticals. Every project on this page shipped." })],
   },
 };
 

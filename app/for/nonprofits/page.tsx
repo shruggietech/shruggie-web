@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Nonprofits"),
+        url: getOgImageUrl("Nonprofits", { description: "You need a digital presence that reflects the seriousness of your work, meets accessibility standards, and stays within a grant-funded budget. We build exactly that." }),
         width: 1200,
         height: 630,
         alt: "Nonprofits | ShruggieTech",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     title: "Nonprofits | ShruggieTech",
     description:
       "You need a digital presence that reflects the seriousness of your work, meets accessibility standards, and stays within a grant-funded budget. We build exactly that.",
-    images: [getOgImageUrl("Nonprofits")],
+    images: [getOgImageUrl("Nonprofits", { description: "You need a digital presence that reflects the seriousness of your work, meets accessibility standards, and stays within a grant-funded budget. We build exactly that." })],
   },
 };
 

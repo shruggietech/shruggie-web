@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("About ShruggieTech"),
+        url: getOgImageUrl("About ShruggieTech", { description: "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences." }),
         width: 1200,
         height: 630,
         alt: "About ShruggieTech | ShruggieTech",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     title: "About ShruggieTech | ShruggieTech",
     description:
       "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences that help businesses present sharper, operate smarter, and scale further.",
-    images: [getOgImageUrl("About ShruggieTech")],
+    images: [getOgImageUrl("About ShruggieTech", { description: "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences." })],
   },
 };
 

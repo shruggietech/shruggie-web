@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Products"),
+        url: getOgImageUrl("Products", { description: "We build things we need, then share them with the community." }),
         width: 1200,
         height: 630,
         alt: "Products | ShruggieTech",
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     title: "Products | ShruggieTech",
     description:
       "We build things we need, then share them with the community.",
-    images: [getOgImageUrl("Products")],
+    images: [getOgImageUrl("Products", { description: "We build things we need, then share them with the community." })],
   },
 };
 

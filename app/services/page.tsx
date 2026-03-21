@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Services"),
+        url: getOgImageUrl("Services", { description: "Strategy, design, development, and marketing, shaped around how your business actually operates." }),
         width: 1200,
         height: 630,
         alt: "Services | ShruggieTech",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     title: "Services | ShruggieTech",
     description:
       "Strategy, design, development, and marketing, shaped around how your business actually operates.",
-    images: [getOgImageUrl("Services")],
+    images: [getOgImageUrl("Services", { description: "Strategy, design, development, and marketing, shaped around how your business actually operates." })],
   },
 };
 

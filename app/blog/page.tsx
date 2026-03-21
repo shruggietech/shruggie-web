@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Blog"),
+        url: getOgImageUrl("Blog", { description: "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business." }),
         width: 1200,
         height: 630,
         alt: "Blog | ShruggieTech",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: "Blog | ShruggieTech",
     description:
       "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business.",
-    images: [getOgImageUrl("Blog")],
+    images: [getOgImageUrl("Blog", { description: "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business." })],
   },
 };
 

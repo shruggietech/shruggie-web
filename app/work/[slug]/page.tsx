@@ -47,6 +47,11 @@ export async function generateMetadata({
   try {
     const { meta } = getCaseStudyBySlug(resolvedParams.slug);
 
+    // Priority chain: heroImage (if non-empty) → dynamic /api/og card
+    const ogImageUrl = meta.heroImage
+      ? `${SITE_URL}${meta.heroImage}`
+      : getOgImageUrl(`${meta.client} — ${meta.title}`);
+
     return {
       title: `${meta.client} — ${meta.title}`,
       description: meta.summary,
@@ -58,24 +63,20 @@ export async function generateMetadata({
         description: meta.summary,
         url: `${SITE_URL}/work/${meta.slug}`,
         type: "article",
-        images: meta.heroImage
-          ? [{ url: `${SITE_URL}${meta.heroImage}`, width: 1200, height: 630, alt: meta.title }]
-          : [
-              {
-                url: getOgImageUrl(meta.title),
-                width: 1200,
-                height: 630,
-                alt: meta.title,
-              },
-            ],
+        images: [
+          {
+            url: ogImageUrl,
+            width: 1200,
+            height: 630,
+            alt: `${meta.client} case study`,
+          },
+        ],
       },
       twitter: {
         card: "summary_large_image",
         title: `${meta.client} — ${meta.title} | ShruggieTech`,
         description: meta.summary,
-        images: meta.heroImage
-          ? [`${SITE_URL}${meta.heroImage}`]
-          : [getOgImageUrl(meta.title)],
+        images: [ogImageUrl],
       },
     };
   } catch {

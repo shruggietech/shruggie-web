@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Privacy Policy"),
+        url: getOgImageUrl("Privacy Policy", { description: "ShruggieTech privacy policy. Learn how we collect, use, and protect your information." }),
         width: 1200,
         height: 630,
         alt: "Privacy Policy | ShruggieTech",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy | ShruggieTech",
     description:
       "ShruggieTech privacy policy. Learn how we collect, use, and protect your information.",
-    images: [getOgImageUrl("Privacy Policy")],
+    images: [getOgImageUrl("Privacy Policy", { description: "ShruggieTech privacy policy. Learn how we collect, use, and protect your information." })],
   },
 };
 
