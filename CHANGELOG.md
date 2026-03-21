@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **OG card mobile optimisation**: redesigned `/api/og` card layout for mobile thumbnail legibility — adaptive title sizing (56/68/80px based on length), larger description (36px) and author text (32px), bigger logo (56px height), wider green divider with gradient fill; removed domain footer to reclaim vertical space
+- **OG card decorative elements**: replaced single vertical stripe and sparse dot clusters with corner brackets (top-right/bottom-right) containing symmetrical dot clusters, a left-side vertical accent bar, and a horizontal scaffold line across the lower third; separated background radial gradients into distinct top-right and bottom-left glow layers
+- **OG card accent bars**: increased top/bottom accent bar thickness from 4px to 5px and added left-edge vertical bar for stronger framing at small sizes
 - **OG image route redesign**: completely overhauled `/api/og` card design with textured dark background, green accent bars (top/bottom), decorative dot clusters, vertical stripe, radial gradients, and responsive title sizing; added `description` query param support and graceful logo-fetch fallback
 - **`getOgImageUrl()` API**: changed second parameter from positional `author` string to an options object (`{ description?, author? }`) for extensibility
 - **Per-page OG descriptions**: all pages now pass page-specific descriptions to `getOgImageUrl()` for richer social cards (about, blog, contact, products, services, work, research, privacy, for/*, homepage)

@@ -2,8 +2,8 @@
  * Dynamic OG image generation — Renders branded social cards at /api/og.
  *
  * Edge runtime. Accepts `title`, `description`, and `author` query params.
- * Renders a 1200×630 card with textured dark background, brand logo,
- * green accent elements, and page-specific title text.
+ * Renders a 1200×630 card optimized for mobile thumbnail legibility with
+ * large text, brand logo, and decorative green accent elements.
  *
  * Spec reference: §8.4 (Open Graph and Social Cards)
  */
@@ -30,6 +30,9 @@ export async function GET(request: NextRequest) {
     // Fallback: render without logo if fetch fails
   }
 
+  // Adaptive title sizing for mobile legibility
+  const titleSize = title.length > 40 ? 56 : title.length > 24 ? 68 : 80;
+
   return new ImageResponse(
     (
       <div
@@ -43,29 +46,43 @@ export async function GET(request: NextRequest) {
           fontFamily: "sans-serif",
         }}
       >
-        {/* Background gradient for depth */}
+        {/* ── Background layers ─────────────────────────────── */}
+
+        {/* Primary glow: bottom-left green */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             display: "flex",
             background:
-              "radial-gradient(ellipse 80% 70% at 20% 90%, rgba(43,204,115,0.07) 0%, transparent 70%), " +
-              "radial-gradient(ellipse 60% 50% at 80% 20%, rgba(0,171,33,0.04) 0%, transparent 60%)",
+              "radial-gradient(ellipse 90% 80% at 10% 100%, rgba(43,204,115,0.10) 0%, transparent 60%)",
           }}
         />
 
-        {/* Top accent bar */}
+        {/* Secondary glow: top-right green */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            background:
+              "radial-gradient(ellipse 70% 60% at 95% 10%, rgba(0,171,33,0.06) 0%, transparent 55%)",
+          }}
+        />
+
+        {/* ── Accent bars ───────────────────────────────────── */}
+
+        {/* Top accent bar: full-width, 5px for visibility at small sizes */}
         <div
           style={{
             position: "absolute",
             top: 0,
             left: 0,
             right: 0,
-            height: "4px",
+            height: "5px",
             display: "flex",
             background:
-              "linear-gradient(90deg, #2BCC73 0%, #00AB21 60%, rgba(43,204,115,0.3) 100%)",
+              "linear-gradient(90deg, #2BCC73 0%, #00AB21 50%, rgba(43,204,115,0.2) 100%)",
           }}
         />
 
@@ -76,125 +93,169 @@ export async function GET(request: NextRequest) {
             bottom: 0,
             left: 0,
             right: 0,
-            height: "4px",
+            height: "5px",
             display: "flex",
             background:
-              "linear-gradient(90deg, rgba(43,204,115,0.3) 0%, #00AB21 40%, #2BCC73 100%)",
+              "linear-gradient(90deg, rgba(43,204,115,0.2) 0%, #00AB21 50%, #2BCC73 100%)",
           }}
         />
 
-        {/* Right-side decorative vertical stripe */}
+        {/* Left accent bar: vertical, tall */}
+        <div
+          style={{
+            position: "absolute",
+            top: "5px",
+            left: 0,
+            bottom: "5px",
+            width: "5px",
+            display: "flex",
+            background:
+              "linear-gradient(180deg, #2BCC73 0%, rgba(43,204,115,0.15) 40%, rgba(43,204,115,0.15) 60%, #2BCC73 100%)",
+          }}
+        />
+
+        {/* ── Decorative geometric elements ─────────────────── */}
+
+        {/* Large corner bracket: top-right */}
+        <div
+          style={{
+            position: "absolute",
+            top: "40px",
+            right: "40px",
+            width: "80px",
+            height: "80px",
+            borderTop: "3px solid rgba(43,204,115,0.20)",
+            borderRight: "3px solid rgba(43,204,115,0.20)",
+            display: "flex",
+          }}
+        />
+
+        {/* Large corner bracket: bottom-right */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "40px",
+            right: "40px",
+            width: "80px",
+            height: "80px",
+            borderBottom: "3px solid rgba(43,204,115,0.20)",
+            borderRight: "3px solid rgba(43,204,115,0.20)",
+            display: "flex",
+          }}
+        />
+
+        {/* Dot cluster: top-right inside bracket */}
         <div
           style={{
             position: "absolute",
             top: "60px",
             right: "60px",
+            width: "8px",
+            height: "8px",
+            borderRadius: "50%",
+            backgroundColor: "#2BCC73",
+            opacity: 0.35,
+            display: "flex",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "60px",
+            right: "88px",
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: "#2BCC73",
+            opacity: 0.18,
+            display: "flex",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "88px",
+            right: "60px",
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: "#2BCC73",
+            opacity: 0.18,
+            display: "flex",
+          }}
+        />
+
+        {/* Dot cluster: bottom-right inside bracket */}
+        <div
+          style={{
+            position: "absolute",
             bottom: "60px",
-            width: "3px",
+            right: "60px",
+            width: "8px",
+            height: "8px",
+            borderRadius: "50%",
+            backgroundColor: "#2BCC73",
+            opacity: 0.35,
+            display: "flex",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "60px",
+            right: "88px",
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: "#2BCC73",
+            opacity: 0.18,
+            display: "flex",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "88px",
+            right: "60px",
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: "#2BCC73",
+            opacity: 0.18,
+            display: "flex",
+          }}
+        />
+
+        {/* Horizontal scaffold line across bottom third */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "160px",
+            left: "80px",
+            right: "140px",
+            height: "1px",
             display: "flex",
             background:
-              "linear-gradient(180deg, transparent 0%, rgba(43,204,115,0.15) 30%, rgba(43,204,115,0.15) 70%, transparent 100%)",
+              "linear-gradient(90deg, rgba(43,204,115,0.12) 0%, rgba(43,204,115,0.06) 60%, transparent 100%)",
           }}
         />
 
-        {/* Corner accent: top-right dot cluster */}
-        <div
-          style={{
-            position: "absolute",
-            top: "48px",
-            right: "48px",
-            width: "6px",
-            height: "6px",
-            borderRadius: "50%",
-            backgroundColor: "#2BCC73",
-            opacity: 0.3,
-            display: "flex",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            top: "48px",
-            right: "72px",
-            width: "5px",
-            height: "5px",
-            borderRadius: "50%",
-            backgroundColor: "#2BCC73",
-            opacity: 0.15,
-            display: "flex",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            top: "72px",
-            right: "48px",
-            width: "5px",
-            height: "5px",
-            borderRadius: "50%",
-            backgroundColor: "#2BCC73",
-            opacity: 0.15,
-            display: "flex",
-          }}
-        />
-
-        {/* Corner accent: bottom-left dot cluster */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "48px",
-            left: "80px",
-            width: "6px",
-            height: "6px",
-            borderRadius: "50%",
-            backgroundColor: "#2BCC73",
-            opacity: 0.3,
-            display: "flex",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: "48px",
-            left: "104px",
-            width: "5px",
-            height: "5px",
-            borderRadius: "50%",
-            backgroundColor: "#2BCC73",
-            opacity: 0.15,
-            display: "flex",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: "72px",
-            left: "80px",
-            width: "5px",
-            height: "5px",
-            borderRadius: "50%",
-            backgroundColor: "#2BCC73",
-            opacity: 0.15,
-            display: "flex",
-          }}
-        />
-
-        {/* Main content area */}
+        {/* ── Main content ──────────────────────────────────── */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            padding: "60px 100px 60px 80px",
+            padding: "56px 140px 56px 48px",
             position: "relative",
             width: "100%",
           }}
         >
-          {/* Logo */}
+          {/* Logo: large for mobile visibility */}
           {logoBase64 ? (
             <img
               src={logoBase64}
-              height={44}
+              height={56}
               style={{
                 objectFit: "contain",
                 objectPosition: "left",
@@ -203,88 +264,74 @@ export async function GET(request: NextRequest) {
           ) : (
             <div
               style={{
-                fontSize: 14,
+                fontSize: 20,
                 color: "#2BCC73",
-                letterSpacing: "0.1em",
+                letterSpacing: "0.12em",
                 textTransform: "uppercase" as const,
-                fontWeight: 500,
+                fontWeight: 700,
               }}
             >
               SHRUGGIETECH
             </div>
           )}
 
-          {/* Title */}
+          {/* Title: maximum size for mobile readability */}
           <div
             style={{
-              fontSize: title.length > 30 ? 42 : 54,
+              fontSize: titleSize,
               fontWeight: 700,
               color: "#FFFFFF",
-              marginTop: 28,
-              lineHeight: 1.15,
-              maxWidth: 900,
-              letterSpacing: "-0.02em",
+              marginTop: 32,
+              lineHeight: 1.1,
+              maxWidth: 960,
+              letterSpacing: "-0.025em",
             }}
           >
             {title}
           </div>
 
-          {/* Description (if provided) */}
+          {/* Description: large enough to read at thumbnail scale */}
           {description && (
             <div
               style={{
-                fontSize: 20,
+                fontSize: 36,
                 color: "#D1D3D4",
-                marginTop: 16,
-                lineHeight: 1.5,
-                maxWidth: 800,
+                marginTop: 24,
+                lineHeight: 1.35,
+                maxWidth: 960,
               }}
             >
-              {description.length > 120
-                ? description.slice(0, 117) + "..."
+              {description.length > 80
+                ? description.slice(0, 77) + "..."
                 : description}
             </div>
           )}
 
-          {/* Author (if provided, e.g. blog posts) */}
+          {/* Author line (blog posts without description) */}
           {author && !description && (
             <div
               style={{
-                fontSize: 18,
+                fontSize: 32,
                 color: "#D1D3D4",
-                marginTop: 16,
+                marginTop: 20,
               }}
             >
               {author}
             </div>
           )}
 
-          {/* Green divider */}
+          {/* Green divider: wider for visual weight */}
           <div
             style={{
-              width: "120px",
-              height: "2px",
-              backgroundColor: "#2BCC73",
-              marginTop: 28,
-              opacity: 0.6,
-              borderRadius: "1px",
+              width: "160px",
+              height: "4px",
+              background:
+                "linear-gradient(90deg, #2BCC73, rgba(43,204,115,0.3))",
+              marginTop: 32,
+              borderRadius: "2px",
               display: "flex",
             }}
           />
-
-          {/* Domain footer */}
-          <div
-            style={{
-              marginTop: "auto",
-              fontSize: 14,
-              color: "#D1D3D4",
-              opacity: 0.35,
-              fontFamily: "monospace",
-              letterSpacing: "0.04em",
-            }}
-          >
-            shruggie.tech
-          </div>
         </div>
       </div>
     ),
