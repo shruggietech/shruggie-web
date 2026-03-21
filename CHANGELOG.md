@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Contact page social links**: GitHub, Facebook, Instagram, and X (Twitter) icon buttons below the contact form with responsive labels (icons-only on mobile, icon + label on sm+), styled with border/hover transitions and `ScrollReveal` entrance animation
 - **Blog Table of Contents**: sticky desktop sidebar (xl+ breakpoints) and collapsible sticky mobile disclosure with IntersectionObserver-based active heading highlighting; `TableOfContents` rewritten as a client component with active-state border/color styling
 - `CopyCodeBlock` component: copy-to-clipboard button overlay on code blocks — appears on hover with `Copy`/`Check` icon feedback, replaces plain `<pre>` in MDX rendering
 - **MDX heading IDs**: `h2` and `h3` components now auto-generate slugified `id` attributes with `scroll-mt-24` for smooth anchor offset
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Contact form confirmation**: shortened follow-up copy from "We will get back to you within one business day." to "We will get back to you soon!"
 - **Blog post layout**: restructured article to a two-column layout on xl screens (1400px max-width) with 260px sidebar for ToC; content area resets shiki code block prose styles (`prose-pre:bg-transparent`, etc.)
 - **Homepage metadata**: changed em dash (—) to hyphen (-) in page title and OpenGraph title
 - **Global CSS**: changed `overflow-x: hidden` to `overflow-x: clip` on `html, body` to prevent scroll anchoring issues while still clipping overflow

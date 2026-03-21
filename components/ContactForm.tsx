@@ -72,7 +72,7 @@ export default function ContactForm() {
           Thanks for reaching out.
         </p>
         <p className="mt-2 text-body-md text-text-secondary">
-          We will get back to you within one business day.
+          We will get back to you soon!
         </p>
       </div>
     );
