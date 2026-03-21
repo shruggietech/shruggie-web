@@ -23,7 +23,7 @@ export default function CopyCodeBlock({
     <div className="relative group">
       <pre
         ref={ref}
-        className="my-6 overflow-x-auto rounded-lg border border-border p-4 text-body-sm [&>code]:bg-transparent [&>code]:p-0"
+        className="my-6 min-h-[3.5rem] overflow-x-auto rounded-lg border border-border p-4 pr-12 text-body-sm [&>code]:bg-transparent [&>code]:p-0"
         {...props}
       >
         {children}

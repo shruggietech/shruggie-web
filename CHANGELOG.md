@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Blog code blocks**: removed `prose-pre:p-0` override from blog post content wrapper so code block padding renders correctly
+- `CopyCodeBlock`: added `min-h-[3.5rem]` to prevent short code blocks from collapsing, added `pr-12` right padding so code text doesn't overlap the copy button
+
 ### Added
 
 - **Blog Table of Contents**: sticky desktop sidebar (xl+ breakpoints) and collapsible sticky mobile disclosure with IntersectionObserver-based active heading highlighting; `TableOfContents` rewritten as a client component with active-state border/color styling
