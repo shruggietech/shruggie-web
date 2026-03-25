@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Blog ToC last-heading activation**: added scroll listener that activates the final heading when the user reaches the bottom of the page, fixing cases where short trailing sections never triggered the IntersectionObserver
+
 ### Changed
+
+- **Blog CTA section**: wrapped CTA in `ScrollReveal`, promoted copy to `h2` with `display-md` styling, and added spacing (`mt-8`) for better visual hierarchy
+- **TeamCard back-face hover border**: added `transition-colors` with accent/green border highlight on group hover for the card back face
 
 - **OG card mobile optimisation**: redesigned `/api/og` card layout for mobile thumbnail legibility — adaptive title sizing (56/68/80px based on length), larger description (36px) and author text (32px), bigger logo (56px height), wider green divider with gradient fill; removed domain footer to reclaim vertical space
 - **OG card decorative elements**: replaced single vertical stripe and sparse dot clusters with corner brackets (top-right/bottom-right) containing symmetrical dot clusters, a left-side vertical accent bar, and a horizontal scaffold line across the lower third; separated background radial gradients into distinct top-right and bottom-left glow layers

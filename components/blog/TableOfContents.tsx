@@ -49,7 +49,24 @@ export default function TableOfContents({
     );
 
     elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+
+    // When the user scrolls to the bottom of the page, activate the last
+    // heading even if it never crossed the observer threshold (short section).
+    const lastId = headingsRef.current[headingsRef.current.length - 1]?.id;
+    const onScroll = () => {
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 30;
+      if (atBottom && lastId) {
+        setActiveId(lastId);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [headings]);
 
   if (headings.length === 0) return null;

@@ -119,7 +119,7 @@ export default function TeamCard({ member }: TeamCardProps) {
 
         {/* ── Back Face ────────────────────────────────────────────── */}
         <div
-          className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-xl border border-border dark:border-white/[0.06] bg-bg-elevated dark:bg-white/[0.03] dark:backdrop-blur-xl p-6 md:p-8 flex flex-col items-center justify-center text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] cursor-pointer"
+          className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-xl border border-border dark:border-white/[0.06] bg-bg-elevated dark:bg-white/[0.03] dark:backdrop-blur-xl p-6 md:p-8 flex flex-col items-center justify-center text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] cursor-pointer transition-colors duration-300 group-hover:border-accent/40 dark:group-hover:border-brand-green-bright/20"
           onClick={() => setFlipped(false)}
           role="button"
           tabIndex={0}

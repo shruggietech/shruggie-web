@@ -16,6 +16,7 @@ import PostCard from "@/components/blog/PostCard";
 import Pagination from "@/components/blog/Pagination";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import CTABackground from "@/components/shared/CTABackground";
+import ScrollReveal from "@/components/shared/ScrollReveal";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -87,10 +88,14 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       {/* CTA */}
       <CTABackground>
         <div className="container-content text-center">
-          <p className="mb-6 text-body-lg text-text-secondary">
-            Want to talk tech or explore a project idea?
-          </p>
-          <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+          <ScrollReveal>
+            <h2 className="font-display text-display-md font-bold text-text-primary">
+              Want to talk tech or explore a project idea?
+            </h2>
+            <div className="mt-8">
+              <ShruggieCTA href="/contact">Start a Conversation</ShruggieCTA>
+            </div>
+          </ScrollReveal>
         </div>
       </CTABackground>
     </div>
