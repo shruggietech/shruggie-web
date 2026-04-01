@@ -18,6 +18,9 @@ export const SERVICE_ANCHOR_MAP: Record<string, string> = {
   "Accessibility Compliance": "/services#development",
   "Stripe Integration": "/services#development",
   "Ongoing Maintenance": "/services#development",
+  "Blockchain": "/services#development",
+  "Smart Contracts": "/services#development",
+  "Blockchain Consulting": "/services#development",
 
   // Strategy & Brand pillar
   "Brand Identity": "/services#strategy-brand",

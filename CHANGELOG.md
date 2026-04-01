@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Development pillar**: added blockchain integration to the pillar description and "Blockchain architecture and smart contract development" to the capabilities list
+- **Service anchor map**: added `Blockchain`, `Smart Contracts`, and `Blockchain Consulting` entries linking to the Development & Integration pillar
+
+## [0.5.1] — 2026-03-31
+
 ### Fixed
 
 - **Blog ToC last-heading activation**: added scroll listener that activates the final heading when the user reaches the bottom of the page, fixing cases where short trailing sections never triggered the IntersectionObserver

@@ -83,11 +83,12 @@ const SERVICE_PILLARS: ServicePillar[] = [
     id: "development",
     title: "Development & Integration",
     lead: "We build, migrate, and integrate. From marketing sites to custom applications, we handle the full technical stack.",
-    body: "We work across whatever stack fits the project, not whatever stack we prefer. New build, migration, or a compatibility layer over systems you can't replace, the approach is shaped by your situation, not ours.",
+    body: "We work across whatever stack fits the project, not whatever stack we prefer. New build, migration, blockchain integration, or a compatibility layer over systems you can't replace, the approach is shaped by your situation, not ours.",
     capabilities: [
       "Custom website design and development",
       "Modern web applications",
       "CMS deployment, configuration, and migration",
+      "Blockchain architecture and smart contract development",
       "Third-party integrations",
       "DNS management and hosting configuration",
       "Vendor displacement and replatforming",
