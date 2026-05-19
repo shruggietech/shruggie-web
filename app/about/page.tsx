@@ -60,7 +60,7 @@ const TEAM_MEMBERS: TeamMemberData[] = [
     title: "Co-Founder & Chief Architect",
     description:
       "Software architect, systems designer, and the author of ShruggieTech's internal products and published research. Background in cryptography, electronic warfare, and high-performance computing. Writes specifications that AI agents can execute without asking questions.",
-    image: "/images/team/william.png",
+    image: "https://cdn.shruggie.tech/avatars/william-thompson-toon.jpg",
     socials: [
       { href: "https://www.linkedin.com/in/willthompsonpro/", label: "LinkedIn", icon: "Linkedin" },
       { href: "https://github.com/h8rt3rmin8r", label: "GitHub", icon: "Github" },
@@ -71,7 +71,7 @@ const TEAM_MEMBERS: TeamMemberData[] = [
     title: "Co-Founder & COO",
     description:
       "Self-taught full-stack developer, client relationship lead, and the person who makes everything actually happen. Pairs deep technical ability with the soft skills that keep complex projects moving forward. From branding to business development, she runs point on it all.",
-    image: "/images/team/natalie.png",
+    image: "https://cdn.shruggie.tech/avatars/natalie-thompson-toon.jpg",
     socials: [
       { href: "https://www.linkedin.com/in/cryptasian/", label: "LinkedIn", icon: "Linkedin" },
       { href: "https://www.facebook.com/cryptasian", label: "Facebook", icon: "Facebook" },
@@ -84,7 +84,7 @@ const TEAM_MEMBERS: TeamMemberData[] = [
     title: "Founders Assistant",
     description:
       "Josiah contributes to ShruggieTech's production work, assisting with social media content creation, blog article drafting, and website maintenance. His role is designed to build real professional skills early, equipping him with the technical fluency and operational discipline for a career in technology.",
-    image: "/images/team/josiah.png",
+    image: "https://cdn.shruggie.tech/avatars/josiah-thompson-toon.jpg",
     socials: [
       { href: "https://twitch.tv/notratmaster", label: "Twitch", icon: "Twitch" },
       { href: "https://www.youtube.com/@notratmaster", label: "YouTube", icon: "Youtube" },
