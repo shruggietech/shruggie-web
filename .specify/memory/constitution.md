@@ -73,7 +73,9 @@ that closes it out.
 
 ## Additional Constraints
 
-- **Stack**: Next.js 15 (App Router), TypeScript strict mode (no `any`),
+- **Stack**: Next.js (App Router; track the major version actually pinned in
+  `package.json`, currently 16.x — update this line when that major version
+  bumps rather than letting it drift), TypeScript strict mode (no `any`),
   Tailwind CSS. Blog content is MDX rendered via `next-mdx-remote/rsc`.
 - **TypeScript**: strict mode; use `satisfies` for type narrowing where it
   improves clarity over a plain annotation.
