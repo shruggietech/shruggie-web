@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **spec-kit**: adopted Spec-Driven Development via `.specify/` and `.claude/skills/speckit-*`, with a project-specific constitution at `.specify/memory/constitution.md` codifying specification precedence, design system discipline, accessibility, performance budget, and document integrity as gates for future feature work
+
+### Removed
+
+- **Stale planning docs**: deleted `docs/ShruggieTech-Site-Updates-Plan-v2.md` (30-item UX backlog; audited against current code — 32/33 items already shipped, the one real gap filed as [#4](https://github.com/shruggietech/shruggie-web/issues/4)) and `.handoff/` (original greenfield sprint plan and its empty reports directory; audited and confirmed fully implemented) — both had drifted into describing work already completed rather than tracking anything outstanding
+
 ### Changed
 
 - **Development pillar**: added blockchain integration to the pillar description and "Blockchain architecture and smart contract development" to the capabilities list
