@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **README**: replaced the placeholder single-line README with a real one covering the tech stack, getting-started steps, project structure, content authoring, the spec-kit contribution workflow, and auto-updating status badges (Vercel deployment, live site, Next.js version, license, last commit)
 - **spec-kit**: adopted Spec-Driven Development via `.specify/` and `.claude/skills/speckit-*`, with a project-specific constitution at `.specify/memory/constitution.md` codifying specification precedence, design system discipline, accessibility, performance budget, and document integrity as gates for future feature work
 
 ### Removed
