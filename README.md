@@ -29,7 +29,9 @@ content requirements lives in
 
 ## Getting Started
 
-**Prerequisites:** Node.js 20 LTS or newer, npm.
+**Prerequisites:** Node.js 22 LTS or newer, npm. (Next.js 16 requires Node
+&ge;20.9.0 at minimum per `package-lock.json`, but Node 20 has since reached
+end-of-life — use an actively maintained LTS release.)
 
 ```bash
 # Install dependencies
