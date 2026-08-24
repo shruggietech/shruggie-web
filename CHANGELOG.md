@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **README**: replaced the placeholder single-line README with a real one covering the tech stack, getting-started steps, project structure, content authoring, the spec-kit contribution workflow, and auto-updating status badges (Vercel deployment, live site, Next.js version, license, last commit)
 - **spec-kit**: adopted Spec-Driven Development via `.specify/` and `.claude/skills/speckit-*`, with a project-specific constitution at `.specify/memory/constitution.md` codifying specification precedence, design system discipline, accessibility, performance budget, and document integrity as gates for future feature work
+- **Service detail pages**: four canonical pages at `/services/[slug]` (strategy-brand, development, marketing, ai-data) with per-service copy, capabilities, 3–5 FAQs, and Service + FAQPage + BreadcrumbList JSON-LD; the `/services` hub links out to each and homepage service cards now link to detail pages instead of hub anchors; service data centralized in `lib/services.ts`. FAQ copy is drafted from existing positioning and pending founder review
+- **Canonical research papers**: on-site full-text hosting at `/research/[slug]` (Affective Dynamics Framework, rustif) rendered through a new plain-Markdown pipeline (`lib/markdown.ts`: remark-gfm/rehype-raw/rehype-slug/Shiki) with a sticky sidebar + collapsible table of contents; ScholarlyArticle/TechArticle JSON-LD points the canonical `url` on-site with the GitHub gist demoted to a `sameAs` mirror; adds `lib/research.ts` loader and `content/research/*.md`
+- **Blog author box**: end-of-post `AuthorBox` (photo, role, bio, social links) sourced from a new shared team registry `lib/team.ts`; BlogPosting JSON-LD author enriched with `jobTitle`, `image`, bio, and `sameAs`
+- **Blog post CTA**: reusable `PostCTA` (primary → `/contact`, secondary → `/services`) registered in the MDX component map and placed at the end of the AI Search post
+- **ShruggieGraph**: "Coming Soon" product card with an alpha waitlist CTA (`graph.shruggie.tech`) as the lead product on `/products`; footer product list updated to match
+- **Business NAP**: contact email (`info@shruggie.tech`), compliance email (`admin@shruggie.tech`), and city/state location single-sourced in `lib/constants.ts` and surfaced on the Contact page; Organization JSON-LD gains `email`
+- **Case study live-site links**: "Visit the live site" link on all three case studies via a new `liveUrl` frontmatter field
+- **Statistic citations**: all six figures in "Your Website Isn't a Brochure Anymore" now link to primary sources (SE Ranking, SparkToro, CNBC, Press Gazette, Reuters Institute, IAB Tech Lab)
+- **AI & Data service**: added AI governance / responsible-use policy and AI literacy training to the capabilities list and a new FAQ
+- `XIcon` component (current X logo) replacing the deprecated lucide Twitter bird
+- Schema generators `generateFAQSchema`, `generateBreadcrumbSchema`, and `generateResearchSchema`; `generateSoftwareSchema` `programmingLanguage` is now optional
 
 ### Removed
 
@@ -20,6 +31,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Development pillar**: added blockchain integration to the pillar description and "Blockchain architecture and smart contract development" to the capabilities list
 - **Service anchor map**: added `Blockchain`, `Smart Contracts`, and `Blockchain Consulting` entries linking to the Development & Integration pillar
+- **About "Where We Come From"**: extracted the duplicated heading and origin paragraph — which had drifted between the mobile and desktop layouts — into single `ORIGIN_HEADING`/`ORIGIN_STORY` constants
+- **Team data**: moved the About page team array into `lib/team.ts` as the single source shared by the team grid, blog author box, and JSON-LD
+- **AEO post byline**: changed from "ShruggieTech" to the human author "Natalie Thompson"
+- **Service/FAQ copy**: removed em dashes and clichéd phrasing across service descriptions and FAQs
+- **Products page**: wrapped the four product cards under a new `What We're Building` H2 (fixing an H1→H3 heading-level skip); neutralized the section label and softened the closing CTA
+- **Contact page**: reworded the social CTA to point at the follows (removing phantom-newsletter copy), made social buttons icon-only, and tightened section spacing
+- **Privacy policy**: data-subject-request and contact references now point to `admin@shruggie.tech` instead of a nonexistent "address on the Contact page"
+- **Organization JSON-LD**: dropped the registered-agent street address (kept city/state) so structured data matches the visible NAP
+- **Homepage research links**: point to on-site `/research/[slug]` instead of GitHub gists
+- **Social icons**: replaced the legacy Twitter bird with the X logo in the footer and on the Contact page
+- **Specification**: updated `ShruggieTech_Website_Specification.md` to match (confirmed contact email, NAP, and FAQ/schema examples)
+
+### Fixed
+
+- **Lenis smooth scroll**: reset scroll position on client-side route changes and route in-page anchor clicks through Lenis, fixing jumpy navigation between pages and a `SyntaxError` crash on numeric-leading heading IDs (e.g. research paper tables of contents)
+- **Blog index spacing**: added symmetric bottom padding to the post grid (the removed "Page 1 of 1" element had been the only bottom spacer)
+- **Blog pagination**: hidden entirely on single-page lists instead of rendering a "Page 1 of 1" label
+- **Product schema**: `SoftwareSourceCode` JSON-LD is emitted only for products with a public repository, so unreleased products (ShruggieGraph) don't get a fabricated repo
 
 ## [0.5.1] — 2026-03-31
 
