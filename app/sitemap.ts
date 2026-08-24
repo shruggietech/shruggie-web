@@ -11,14 +11,18 @@ import { MetadataRoute } from "next";
 
 import { getAllPostsMeta } from "@/lib/blog";
 import { getAllCaseStudiesMeta } from "@/lib/work";
+import { getAllResearchMeta } from "@/lib/research";
 import { SITE_URL } from "@/lib/constants";
+import { SERVICE_SLUGS } from "@/lib/services";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
     "",
     "/services",
+    ...SERVICE_SLUGS.map((slug) => `/services/${slug}`),
     "/work",
     "/research",
+    ...getAllResearchMeta().map((paper) => `/research/${paper.slug}`),
     "/products",
     "/about",
     "/blog",

@@ -10,14 +10,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Github, Facebook, Instagram, Twitter } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
+import { Github, Facebook, Instagram } from "lucide-react";
+import XIcon from "@/components/icons/XIcon";
 
-const SOCIAL_LINKS: { href: string; label: string; Icon: LucideIcon }[] = [
+type SocialIcon = ComponentType<{
+  size?: number;
+  className?: string;
+  "aria-hidden"?: boolean | "true" | "false";
+}>;
+
+const SOCIAL_LINKS: { href: string; label: string; Icon: SocialIcon }[] = [
   { href: "https://github.com/shruggietech", label: "GitHub", Icon: Github },
   { href: "https://www.facebook.com/shruggietech", label: "Facebook", Icon: Facebook },
   { href: "https://www.instagram.com/shruggietech", label: "Instagram", Icon: Instagram },
-  { href: "https://x.com/shruggietech", label: "X (Twitter)", Icon: Twitter },
+  { href: "https://x.com/shruggietech", label: "X", Icon: XIcon },
 ];
 
 const PAGE_LINKS = [
@@ -30,10 +37,11 @@ const PAGE_LINKS = [
 ] as const;
 
 const PRODUCT_LINKS = [
+  { href: "/products#shruggiegraph", label: "ShruggieGraph" },
   { href: "/products#shruggie-indexer", label: "shruggie-indexer" },
   { href: "/products#metadexer", label: "metadexer" },
-  { href: "/products#rustif", label: "rustif" },
   { href: "/products#shruggie-feedtools", label: "shruggie-feedtools" },
+  { href: "/products#rustif", label: "rustif" },
 ] as const;
 
 export default function Footer() {

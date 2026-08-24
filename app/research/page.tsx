@@ -10,10 +10,12 @@
 
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
-import { ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
-import { generateTechArticleSchema } from "@/lib/schema";
+import { getAllResearchMeta } from "@/lib/research";
+import { generateResearchSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
 import PageHero from "@/components/shared/PageHero";
 import ScrollReveal from "@/components/shared/ScrollReveal";
@@ -60,55 +62,37 @@ export const metadata: Metadata = {
 
 /* ── Publication Data (spec §6.4) ───────────────────────────────────────── */
 
-interface Publication {
-  id: string;
-  title: string;
-  author: string;
-  description: string;
-  datePublished: string;
-  href: string;
-  Visual: ComponentType;
-}
+/** Decorative visual per paper, keyed by slug. */
+const VISUAL_MAP: Record<string, ComponentType> = {
+  "affective-dynamics": ADFVisual,
+  rustif: RustifVisual,
+};
 
-const PUBLICATIONS: Publication[] = [
-  {
-    id: "adf",
-    title:
-      "Affective Dynamics Framework: A Systematic Approach to Simulating Human-Like Emotional States and Relational Bonding in AI Agents",
-    author: "William Thompson",
-    description:
-      "A mathematically grounded specification for producing emergent, non-linear emotional behavior and relational bonding in AI agents. Extends Brian Roemmele's Love Equation into a real-time personality engine for agentic architectures.",
-    datePublished: "2025-01-15",
-    href: "https://gist.github.com/h8rt3rmin8r/f4589f0afb6fcd10d4c499e4a29247ad",
-    Visual: ADFVisual,
-  },
-  {
-    id: "rustif-declaration",
-    title: "rustif: A Next-Generation Metadata Processing Engine",
-    author: "William Thompson",
-    description:
-      "The case for building a Rust-native metadata processing engine to succeed ExifTool. Ecosystem analysis, architectural specification, security threat model, and a call for contributors.",
-    datePublished: "2025-03-01",
-    href: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de",
-    Visual: RustifVisual,
-  },
-];
+const PUBLICATIONS = getAllResearchMeta().map((meta) => ({
+  ...meta,
+  href: `/research/${meta.slug}`,
+  Visual: VISUAL_MAP[meta.slug],
+}));
 
 /* ── Page ────────────────────────────────────────────────────────────────── */
 
 export default function ResearchPage() {
   return (
     <>
-      {/* JSON-LD for each publication */}
+      {/* JSON-LD for each publication — canonical on-site URL, gist as mirror */}
       {PUBLICATIONS.map((pub) => (
         <JsonLd
-          key={pub.id}
-          data={generateTechArticleSchema({
+          key={pub.slug}
+          data={generateResearchSchema({
+            type: pub.schemaType,
             title: pub.title,
             author: pub.author,
-            datePublished: pub.datePublished,
+            datePublished: pub.date,
+            dateModified: pub.dateModified,
             description: pub.description,
-            url: pub.href === "#" ? `${SITE_URL}/research` : pub.href,
+            url: `${SITE_URL}${pub.href}`,
+            sameAs: pub.gistUrl ? [pub.gistUrl] : undefined,
+            keywords: pub.keywords,
           })}
         />
       ))}
@@ -124,11 +108,9 @@ export default function ResearchPage() {
       <section className="section-bg-research pb-24 md:pb-32">
         <div className="container-content flex flex-col gap-8 md:gap-12">
           {PUBLICATIONS.map((pub, i) => (
-            <ScrollReveal key={pub.id} delay={i * 0.1}>
-              <a
+            <ScrollReveal key={pub.slug} delay={i * 0.1}>
+              <Link
                 href={pub.href}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="group/card block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[#111318] rounded-xl"
               >
                 <Card hover>
@@ -146,17 +128,20 @@ export default function ResearchPage() {
                       </p>
                       <span className="mt-6 inline-flex items-center gap-2 font-display text-body-md font-medium text-accent transition-colors group-hover/card:text-[#FF5300]">
                         Read paper
-                        <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                        <ArrowRight
+                          className="h-4 w-4 transition-transform group-hover/card:translate-x-1"
+                          aria-hidden="true"
+                        />
                       </span>
                     </div>
 
                     {/* Right column: abstract visual (desktop only) */}
                     <div className="hidden md:flex md:w-[40%] md:items-center md:justify-center">
-                      <pub.Visual />
+                      {pub.Visual && <pub.Visual />}
                     </div>
                   </div>
                 </Card>
-              </a>
+              </Link>
             </ScrollReveal>
           ))}
         </div>

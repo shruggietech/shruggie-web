@@ -12,8 +12,9 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { useInView, useReducedMotion } from "framer-motion";
-import { Palette, Code2, TrendingUp, Brain } from "lucide-react";
+import { Palette, Code2, TrendingUp, Brain, ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import ScrollReveal from "@/components/shared/ScrollReveal";
@@ -56,6 +57,8 @@ interface ServicePillarSectionProps {
   capabilities: string[];
   index: number;
   bgClass: string;
+  /** Optional link to the service's dedicated detail page. */
+  detailHref?: string;
 }
 
 export default function ServicePillarSection({
@@ -66,6 +69,7 @@ export default function ServicePillarSection({
   capabilities,
   index,
   bgClass,
+  detailHref,
 }: ServicePillarSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const illustrationRef = useRef<HTMLDivElement>(null);
@@ -136,6 +140,20 @@ export default function ServicePillarSection({
                   </li>
                 ))}
               </ul>
+
+              {detailHref && (
+                <Link
+                  href={detailHref}
+                  className="group mt-8 inline-flex items-center gap-2 font-display text-body-md font-medium text-accent hover:text-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+                >
+                  Explore {title}
+                  <ArrowRight
+                    size={18}
+                    aria-hidden="true"
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  />
+                </Link>
+              )}
             </div>
           </div>
         </ScrollReveal>

@@ -8,13 +8,16 @@
  */
 
 import type { Metadata } from "next";
+import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
   ExternalLink,
+  ArrowRight,
   Package,
   Database,
   FileText,
   Cpu,
+  Network,
 } from "lucide-react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
@@ -67,6 +70,8 @@ export const metadata: Metadata = {
 interface ProductLink {
   label: string;
   href: string;
+  /** Internal route — rendered as a same-tab Next link, not an external one. */
+  internal?: boolean;
 }
 
 interface Product {
@@ -75,13 +80,25 @@ interface Product {
   description: string;
   statusBadge: string;
   links: ProductLink[];
-  programmingLanguage: string;
-  codeRepository: string;
+  /** Optional: unreleased products (e.g. private alpha) have no public repo. */
+  programmingLanguage?: string;
+  codeRepository?: string;
   version?: string;
   icon: LucideIcon;
 }
 
 const PRODUCTS: Product[] = [
+  {
+    id: "shruggiegraph",
+    name: "ShruggieGraph",
+    description:
+      "A permission-scoped, source-backed memory graph for AI. ShruggieGraph captures durable knowledge from your conversations and lets any AI assistant recall it across sessions and providers, with every fact traceable to the source it came from.",
+    statusBadge: "Coming Soon",
+    links: [
+      { label: "Join the alpha waitlist", href: "https://graph.shruggie.tech/#waitlist" },
+    ],
+    icon: Network,
+  },
   {
     id: "shruggie-indexer",
     name: "shruggie-indexer",
@@ -130,10 +147,10 @@ const PRODUCTS: Product[] = [
       "A proposed Rust-native metadata processing engine. The next-generation successor to thirty years of metadata infrastructure.",
     statusBadge: "Declaration Phase",
     links: [
-      { label: "Read Declaration", href: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de" },
+      { label: "Read Declaration", href: "/research/rustif", internal: true },
     ],
     programmingLanguage: "Rust",
-    codeRepository: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de",
+    codeRepository: `${SITE_URL}/research/rustif`,
     icon: Cpu,
   },
 ];
@@ -143,15 +160,17 @@ const PRODUCTS: Product[] = [
 export default function ProductsPage() {
   return (
     <>
-      {/* JSON-LD for each product */}
-      {PRODUCTS.map((product) => (
+      {/* JSON-LD — only for products with a public code repository. Unreleased
+          products (e.g. ShruggieGraph in private alpha) get no SoftwareSourceCode
+          schema rather than a fabricated repo. */}
+      {PRODUCTS.filter((product) => product.codeRepository).map((product) => (
         <JsonLd
           key={product.id}
           data={generateSoftwareSchema({
             name: product.name,
             description: product.description,
             url: `${SITE_URL}/products`,
-            codeRepository: product.codeRepository,
+            codeRepository: product.codeRepository!,
             programmingLanguage: product.programmingLanguage,
             version: product.version,
           })}
@@ -168,7 +187,10 @@ export default function ProductsPage() {
       {/* Product Cards */}
       <section className="bg-bg-primary pb-16 md:pb-24">
         <div className="container-content pt-16 md:pt-24">
-          <div className="grid gap-8 md:grid-cols-2">
+          <ScrollReveal>
+            <SectionHeading title="What We're Building" />
+          </ScrollReveal>
+          <div className="mt-12 grid gap-8 md:grid-cols-2">
             {PRODUCTS.map((product, i) => {
               const Icon = product.icon;
               return (
@@ -185,18 +207,32 @@ export default function ProductsPage() {
                       {product.description}
                     </p>
                     <div className="mt-6 flex flex-wrap gap-4">
-                      {product.links.map((link) => (
-                        <a
-                          key={link.label}
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 font-display text-body-sm font-medium text-accent transition-colors hover:text-[#FF5300]"
-                        >
-                          {link.label}
-                          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                        </a>
-                      ))}
+                      {product.links.map((link) =>
+                        link.internal ? (
+                          <Link
+                            key={link.label}
+                            href={link.href}
+                            className="group/link inline-flex items-center gap-1.5 font-display text-body-sm font-medium text-accent transition-colors hover:text-[#FF5300]"
+                          >
+                            {link.label}
+                            <ArrowRight
+                              className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5"
+                              aria-hidden="true"
+                            />
+                          </Link>
+                        ) : (
+                          <a
+                            key={link.label}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 font-display text-body-sm font-medium text-accent transition-colors hover:text-[#FF5300]"
+                          >
+                            {link.label}
+                            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                          </a>
+                        ),
+                      )}
                     </div>
                   </Card>
                 </ScrollReveal>
@@ -235,7 +271,7 @@ export default function ProductsPage() {
         <div className="container-content text-center">
           <ScrollReveal>
             <h2 className="font-display text-display-md font-bold text-text-primary">
-              The code is open. Jump in.
+              Explore our open source work.
             </h2>
             <div className="mt-8">
               <ShruggieCTA href="https://github.com/shruggietech">View on GitHub</ShruggieCTA>

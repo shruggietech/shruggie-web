@@ -25,14 +25,14 @@ const publications: Publication[] = [
     description:
       "A framework for emotional state simulation in AI agents, enabling contextual affective responses in conversational systems.",
     author: "William Thompson",
-    href: "https://gist.github.com/h8rt3rmin8r/f4589f0afb6fcd10d4c499e4a29247ad",
+    href: "/research/affective-dynamics",
   },
   {
     title: "rustif Declaration",
     description:
       "A manifesto for building transparent, specification-first metadata systems in Rust.",
     author: "William Thompson",
-    href: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de",
+    href: "/research/rustif",
   },
 ];
 

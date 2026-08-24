@@ -23,12 +23,10 @@ export default function Pagination({
   currentPage,
   totalPages,
 }: PaginationProps) {
+  // Nothing to paginate — suppress the control entirely rather than showing
+  // a "Page 1 of 1" label, which reads as noise on a single-page list.
   if (totalPages <= 1) {
-    return (
-      <div className="mt-12 mb-16 flex justify-center">
-        <span className="text-body-sm text-text-muted">Page 1 of 1</span>
-      </div>
-    );
+    return null;
   }
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);

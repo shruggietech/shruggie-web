@@ -57,7 +57,7 @@ const services: ServiceItem[] = [
     description:
       "Brand identity, content architecture, visual systems, and marketing collateral. The strategic foundation everything else stands on.",
     icon: Palette,
-    href: "/services#strategy-brand",
+    href: "/services/strategy-brand",
     Illustration: StrategyBrandIllustration,
     IllustrationLarge: StrategyBrandIllustrationLarge,
   },
@@ -66,7 +66,7 @@ const services: ServiceItem[] = [
     description:
       "Custom websites, modern web applications, booking systems, payment integrations, and platform migrations. Built to last, built to perform.",
     icon: Code2,
-    href: "/services#development",
+    href: "/services/development",
     Illustration: DevelopmentIllustration,
     IllustrationLarge: DevelopmentIllustrationLarge,
   },
@@ -75,7 +75,7 @@ const services: ServiceItem[] = [
     description:
       "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Turning visibility into revenue.",
     icon: TrendingUp,
-    href: "/services#marketing",
+    href: "/services/marketing",
     Illustration: MarketingIllustration,
     IllustrationLarge: MarketingIllustrationLarge,
   },
@@ -84,7 +84,7 @@ const services: ServiceItem[] = [
     description:
       "Chatbots, RAG systems, workflow automation, and AI consulting. AI that solves real problems, not just demos well.",
     icon: Brain,
-    href: "/services#ai-data",
+    href: "/services/ai-data",
     Illustration: AIDataIllustration,
     IllustrationLarge: AIDataIllustrationLarge,
   },

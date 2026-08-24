@@ -11,7 +11,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getOgImageUrl } from "@/lib/constants";
+import { getOgImageUrl, PRIVACY_EMAIL } from "@/lib/constants";
 import PageHero from "@/components/shared/PageHero";
 
 export const metadata: Metadata = {
@@ -167,8 +167,14 @@ export default function PrivacyPolicyPage() {
           <h2>Your Rights</h2>
           <p>
             You may request access to, correction of, or deletion of your
-            personal data by contacting ShruggieTech at the address listed on
-            our{" "}
+            personal data by emailing ShruggieTech at{" "}
+            <a
+              href={`mailto:${PRIVACY_EMAIL}`}
+              className="text-accent hover:text-accent-hover"
+            >
+              {PRIVACY_EMAIL}
+            </a>{" "}
+            or using the form on our{" "}
             <Link href="/contact" className="text-accent hover:text-accent-hover">
               Contact page
             </Link>
@@ -185,8 +191,14 @@ export default function PrivacyPolicyPage() {
           {/* Contact */}
           <h2>Contact</h2>
           <p>
-            Questions about this policy can be directed to ShruggieTech at the
-            address listed on our{" "}
+            Questions about this policy can be directed to ShruggieTech at{" "}
+            <a
+              href={`mailto:${PRIVACY_EMAIL}`}
+              className="text-accent hover:text-accent-hover"
+            >
+              {PRIVACY_EMAIL}
+            </a>{" "}
+            or via our{" "}
             <Link href="/contact" className="text-accent hover:text-accent-hover">
               Contact page
             </Link>
