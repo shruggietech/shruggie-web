@@ -8,7 +8,7 @@
  */
 
 const FORCED_DARK_EXACT = ["/", "/services", "/about", "/contact", "/research", "/products"];
-const FORCED_DARK_PREFIXES = ["/work", "/for/"];
+const FORCED_DARK_PREFIXES = ["/work", "/for/", "/services/", "/research/"];
 
 /**
  * Returns true if the given pathname should force dark mode

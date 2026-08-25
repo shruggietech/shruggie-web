@@ -95,7 +95,7 @@ const PRODUCTS: Product[] = [
       "A permission-scoped, source-backed memory graph for AI. ShruggieGraph captures durable knowledge from your conversations and lets any AI assistant recall it across sessions and providers, with every fact traceable to the source it came from.",
     statusBadge: "Coming Soon",
     links: [
-      { label: "Join the alpha waitlist", href: "https://graph.shruggie.tech/#waitlist" },
+      { label: "Join the alpha waitlist", href: "https://graph.shruggie.tech" },
     ],
     icon: Network,
   },
