@@ -12,6 +12,7 @@ import type { ReactNode, HTMLAttributes } from "react";
 
 import { cn, slugify } from "@/lib/utils";
 import CopyCodeBlock from "@/components/blog/CopyCodeBlock";
+import PostCTA from "@/components/blog/PostCTA";
 
 /** Recursively extract text content from React children. */
 function getTextContent(node: ReactNode): string {
@@ -123,4 +124,5 @@ export const mdxComponents: MDXComponents = {
   ),
   pre: CopyCodeBlock,
   Callout: Callout as unknown as React.ComponentType,
+  PostCTA: PostCTA as unknown as React.ComponentType,
 };

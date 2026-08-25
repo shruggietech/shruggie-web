@@ -8,21 +8,33 @@
  */
 
 import type { Metadata } from "next";
-import { Github, Facebook, Instagram, Twitter } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
+import { Github, Facebook, Instagram, Mail, MapPin } from "lucide-react";
 
-import { SITE_URL, getOgImageUrl } from "@/lib/constants";
+import {
+  SITE_URL,
+  getOgImageUrl,
+  CONTACT_EMAIL,
+  BUSINESS_LOCATION,
+} from "@/lib/constants";
+import XIcon from "@/components/icons/XIcon";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import ContactForm from "@/components/ContactForm";
 import PageHero from "@/components/shared/PageHero";
 import Card from "@/components/ui/Card";
 import CTABackground from "@/components/shared/CTABackground";
 
-const SOCIAL_LINKS: { href: string; label: string; Icon: LucideIcon }[] = [
+type SocialIcon = ComponentType<{
+  size?: number;
+  className?: string;
+  "aria-hidden"?: boolean | "true" | "false";
+}>;
+
+const SOCIAL_LINKS: { href: string; label: string; Icon: SocialIcon }[] = [
   { href: "https://github.com/shruggietech", label: "GitHub", Icon: Github },
   { href: "https://www.facebook.com/shruggietech", label: "Facebook", Icon: Facebook },
   { href: "https://www.instagram.com/shruggietech", label: "Instagram", Icon: Instagram },
-  { href: "https://x.com/shruggietech", label: "X (Twitter)", Icon: Twitter },
+  { href: "https://x.com/shruggietech", label: "X", Icon: XIcon },
 ];
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
@@ -73,10 +85,26 @@ export default function ContactPage() {
       {/* ── Section 2: Social Media + Contact Form ────────────────────── */}
       <CTABackground className="pt-8 pb-52 md:pt-12 md:pb-96">
         <div className="container-content">
+          {/* Direct contact info — NAP (email + location) */}
+          <ScrollReveal>
+            <div className="flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:gap-8">
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="flex items-center gap-2 text-body text-text-secondary transition-colors duration-200 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+              >
+                <Mail size={20} aria-hidden="true" />
+                <span className="font-medium">{CONTACT_EMAIL}</span>
+              </a>
+              <p className="flex items-center gap-2 text-body text-text-secondary">
+                <MapPin size={20} aria-hidden="true" />
+                <span className="font-medium">{BUSINESS_LOCATION}</span>
+              </p>
+            </div>
+          </ScrollReveal>
           <ScrollReveal>
             <div className="mb-12 text-center">
               <p className="mx-auto mt-12 max-w-lg text-body text-text-secondary">
-                Stay up to date with our latest work, research, and insights.
+                Follow us for our latest work, research, and insights.
               </p>
               <div className="mt-8 flex items-center justify-center gap-6">
                 {SOCIAL_LINKS.map((link) => (
@@ -86,12 +114,9 @@ export default function ContactPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={link.label}
-                    className="flex items-center gap-2 rounded-lg border border-border bg-bg-secondary px-4 py-3 text-text-secondary transition-colors duration-200 hover:border-brand-green-bright hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+                    className="flex items-center justify-center rounded-lg border border-border bg-bg-secondary p-3 text-text-secondary transition-colors duration-200 hover:border-brand-green-bright hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
                   >
                     <link.Icon size={20} aria-hidden="true" />
-                    <span className="text-body-sm font-medium hidden sm:inline">
-                      {link.label}
-                    </span>
                   </a>
                 ))}
               </div>

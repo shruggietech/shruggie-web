@@ -13,6 +13,13 @@ import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import type { TocItem } from "@/lib/utils";
 
+/**
+ * Shared label for both render modes. The collapsible (mobile) and sidebar
+ * (desktop) variants below are two layouts of the same component driven by a
+ * single `headings` source — this keeps their heading text single-sourced too.
+ */
+const TOC_LABEL = "On this page";
+
 interface TableOfContentsProps {
   headings: TocItem[];
   className?: string;
@@ -114,7 +121,7 @@ export default function TableOfContents({
               d="m8.25 4.5 7.5 7.5-7.5 7.5"
             />
           </svg>
-          On this page
+          {TOC_LABEL}
         </summary>
         <div className="mt-3 max-h-[40vh] overflow-y-auto">{links}</div>
       </details>
@@ -124,7 +131,7 @@ export default function TableOfContents({
   return (
     <nav aria-label="Table of contents" className={className}>
       <p className="mb-3 font-display text-body-sm font-medium uppercase tracking-widest text-accent">
-        On this page
+        {TOC_LABEL}
       </p>
       {links}
     </nav>

@@ -10,6 +10,23 @@ export const SITE_DESCRIPTION =
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og/default.png`;
 
 /**
+ * Public business contact info (NAP). Single source of truth for the
+ * Contact page, Privacy policy, and JSON-LD structured data — keeping them
+ * consistent is what makes the NAP legible to Google Business Profile and AI
+ * agents. There is no public mailing address (the LLC's registered-agent
+ * address is not a place to send mail), so the location is city/state only.
+ *
+ * `CONTACT_EMAIL` is the general inbox (Contact page + Organization schema).
+ * `PRIVACY_EMAIL` is the GDPR/CCPA data-subject-request address on the
+ * Privacy policy.
+ */
+export const CONTACT_EMAIL = "info@shruggie.tech";
+export const PRIVACY_EMAIL = "admin@shruggie.tech";
+export const BUSINESS_LOCALITY = "Knoxville";
+export const BUSINESS_REGION = "TN";
+export const BUSINESS_LOCATION = "Knoxville, TN, USA";
+
+/**
  * Generate a dynamic OG image URL for a given page title.
  * Falls back to the static default if no title is provided.
  */

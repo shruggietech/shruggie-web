@@ -24,6 +24,7 @@ import { generateBlogPostSchema } from "@/lib/schema";
 import { mdxComponents } from "@/components/blog/MDXComponents";
 import PostHeader from "@/components/blog/PostHeader";
 import TableOfContents from "@/components/blog/TableOfContents";
+import AuthorBox from "@/components/blog/AuthorBox";
 import JsonLd from "@/components/shared/JsonLd";
 
 interface BlogPostPageProps {
@@ -168,6 +169,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 },
               }}
             />
+            <AuthorBox authorName={meta.author} />
           </div>
         </div>
       </article>

@@ -17,6 +17,7 @@ import fs from "fs";
 import path from "path";
 
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { SERVICE_ANCHOR_MAP } from "@/lib/service-links";
@@ -125,6 +126,22 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
             {meta.client}
           </span>
         </div>
+
+        {meta.liveUrl && (
+          <a
+            href={meta.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group mt-6 inline-flex items-center gap-2 rounded-lg border border-accent/30 px-4 py-2 font-display text-body-sm font-medium text-accent transition-colors hover:border-accent hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+          >
+            Visit the live site
+            <ExternalLink
+              size={16}
+              aria-hidden="true"
+              className="transition-transform group-hover:translate-x-0.5"
+            />
+          </a>
+        )}
       </PageHero>
 
       {/* Full-Width DeviceMockup Screenshot */}

@@ -68,7 +68,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       />
 
       {/* Post Grid */}
-      <section className="container-content pt-12 md:pt-16">
+      <section className="container-content pt-12 md:pt-16 pb-12 md:pb-16">
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {posts.map((post) => (

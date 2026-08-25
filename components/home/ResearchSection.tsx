@@ -11,6 +11,7 @@
 
 "use client";
 
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/shared/ScrollReveal";
@@ -34,7 +35,7 @@ const publications: Publication[] = [
     author: "William Thompson",
     date: "2026",
     visual: "adf",
-    href: "https://gist.github.com/h8rt3rmin8r/f4589f0afb6fcd10d4c499e4a29247ad",
+    href: "/research/affective-dynamics",
   },
   {
     title: "rustif Declaration",
@@ -43,7 +44,7 @@ const publications: Publication[] = [
     author: "William Thompson",
     date: "2026",
     visual: "rustif",
-    href: "https://gist.github.com/h8rt3rmin8r/b20a59e60f039b7a8bccbf67288226de",
+    href: "/research/rustif",
   },
 ];
 
@@ -131,10 +132,8 @@ export default function ResearchSection() {
             const Visual = visualComponents[pub.visual];
             return (
               <ScrollReveal key={pub.title} delay={index * 0.1}>
-                <a
+                <Link
                   href={pub.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="block cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary rounded-xl"
                 >
                   <Card className="relative z-[1]">
@@ -161,7 +160,7 @@ export default function ResearchSection() {
                       </div>
                     </div>
                   </Card>
-                </a>
+                </Link>
               </ScrollReveal>
             );
           })}

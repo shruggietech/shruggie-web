@@ -16,7 +16,7 @@ import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import Card from "@/components/ui/Card";
 import CTABackground from "@/components/shared/CTABackground";
 import TeamCard from "@/components/about/TeamCard";
-import type { TeamMemberData } from "@/components/about/TeamCard";
+import { TEAM_MEMBERS } from "@/lib/team";
 import OriginIllustration from "@/components/about/OriginIllustration";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
@@ -52,45 +52,18 @@ export const metadata: Metadata = {
   },
 };
 
-/* ── Team Data (spec §6.6, Section 3) ───────────────────────────────────── */
+/* ── Origin Story (spec §6.6, Section 2) ────────────────────────────────── */
 
-const TEAM_MEMBERS: TeamMemberData[] = [
-  {
-    name: "William Thompson",
-    title: "Co-Founder & Chief Architect",
-    description:
-      "Software architect, systems designer, and the author of ShruggieTech's internal products and published research. Background in cryptography, electronic warfare, and high-performance computing. Writes specifications that AI agents can execute without asking questions.",
-    image: "https://cdn.shruggie.tech/avatars/william-thompson-toon.jpg",
-    socials: [
-      { href: "https://www.linkedin.com/in/willthompsonpro/", label: "LinkedIn", icon: "Linkedin" },
-      { href: "https://github.com/h8rt3rmin8r", label: "GitHub", icon: "Github" },
-    ],
-  },
-  {
-    name: "Natalie Thompson",
-    title: "Co-Founder & COO",
-    description:
-      "Self-taught full-stack developer, client relationship lead, and the person who makes everything actually happen. Pairs deep technical ability with the soft skills that keep complex projects moving forward. From branding to business development, she runs point on it all.",
-    image: "https://cdn.shruggie.tech/avatars/natalie-thompson-toon.jpg",
-    socials: [
-      { href: "https://www.linkedin.com/in/cryptasian/", label: "LinkedIn", icon: "Linkedin" },
-      { href: "https://www.facebook.com/cryptasian", label: "Facebook", icon: "Facebook" },
-      { href: "https://www.instagram.com/cryptasian/", label: "Instagram", icon: "Instagram" },
-      { href: "https://github.com/cryptasian", label: "GitHub", icon: "Github" },
-    ],
-  },
-  {
-    name: "Josiah Thompson",
-    title: "Founders Assistant",
-    description:
-      "Josiah contributes to ShruggieTech's production work, assisting with social media content creation, blog article drafting, and website maintenance. His role is designed to build real professional skills early, equipping him with the technical fluency and operational discipline for a career in technology.",
-    image: "https://cdn.shruggie.tech/avatars/josiah-thompson-toon.jpg",
-    socials: [
-      { href: "https://twitch.tv/notratmaster", label: "Twitch", icon: "Twitch" },
-      { href: "https://www.youtube.com/@notratmaster", label: "YouTube", icon: "Youtube" },
-    ],
-  },
-];
+/**
+ * Single source of truth for the "Where We Come From" section. Both the
+ * mobile and desktop layouts below render from these constants — layout
+ * handles the breakpoint, the copy lives in one place so the two rendered
+ * copies can never drift apart.
+ */
+const ORIGIN_HEADING = "Where We Come From";
+
+const ORIGIN_STORY =
+  "Founded by William and Natalie Thompson, a husband-and-wife team who have been building technology together for nearly a decade. Before ShruggieTech, they ran an international consulting firm that delivered research to national governments and launch support for technology projects across multiple continents. That venture taught them how to deliver structured, high-stakes work under pressure. That same operational discipline now drives a broader mission: solving whatever technology problem stands between a business owner and their vision.";
 
 /* ── Values Data (spec §6.6, Section 4) ─────────────────────────────────── */
 
@@ -137,9 +110,9 @@ export default function AboutPage() {
             <div className="mb-8 flex justify-center">
               <OriginIllustration />
             </div>
-            <SectionHeading title="Where We Come From" />
+            <SectionHeading title={ORIGIN_HEADING} />
             <p className="mt-6 text-body-lg text-justify dark:text-[var(--text-body-light)] text-text-secondary">
-              Founded by William and Natalie Thompson, a husband-and-wife team who have been building technology together for nearly a decade. Before ShruggieTech, they ran an international consulting firm that delivered research to national governments and launch support for technology projects across multiple continents. That venture taught them how to deliver structured, high-stakes work under pressure. That same operational discipline now drives a broader mission: solving whatever technology problem stands between a business owner and their vision.
+              {ORIGIN_STORY}
             </p>
           </ScrollReveal>
         </div>
@@ -156,18 +129,9 @@ export default function AboutPage() {
                   marginLeft: 'max(var(--padding-x), calc((100% - var(--max-width-content)) / 2 + var(--padding-x)))',
                 }}
               >
-                <SectionHeading title="Where We Come From" />
+                <SectionHeading title={ORIGIN_HEADING} />
                 <p className="mt-6 text-body-lg dark:text-[var(--text-body-light)] text-text-secondary">
-                  ShruggieTech was founded by William and Natalie Thompson, a
-                  husband-and-wife team who have been building technology together
-                  for nearly a decade. Before ShruggieTech, they ran an
-                  international consulting firm that delivered research to national
-                  governments and launch support for technology projects across
-                  multiple continents. That venture taught them how to deliver
-                  structured, high-stakes work under pressure. ShruggieTech
-                  carries that same operational discipline into a broader mission:
-                  solving whatever technology problem stands between a business
-                  owner and their vision.
+                  {ORIGIN_STORY}
                 </p>
               </div>
 

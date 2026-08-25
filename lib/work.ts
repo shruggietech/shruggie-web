@@ -22,6 +22,9 @@ export interface CaseStudyMeta {
   summary: string;
   services: string[];
   heroImage: string; // Path to hero image (may not exist yet)
+  /** The client's live, shipped site. Renders a "Visit the live site" link
+   *  when present. Omit until the exact URL is confirmed — never guess it. */
+  liveUrl?: string;
   published: boolean;
 }
 
@@ -47,6 +50,7 @@ export function getAllCaseStudiesMeta(): CaseStudyMeta[] {
       summary: data.summary,
       services: data.services ?? [],
       heroImage: data.heroImage ?? "",
+      liveUrl: data.liveUrl || undefined,
       published: data.published !== false,
     } satisfies CaseStudyMeta;
   });
@@ -71,6 +75,7 @@ export function getCaseStudyBySlug(slug: string) {
       summary: data.summary,
       services: data.services ?? [],
       heroImage: data.heroImage ?? "",
+      liveUrl: data.liveUrl || undefined,
       published: data.published !== false,
     } satisfies CaseStudyMeta,
     content,

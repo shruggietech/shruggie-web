@@ -311,7 +311,7 @@ The following items require manual action by a ShruggieTech team member and cann
 | 4 | **Formspree Form ID** | Pre-launch | Create a new form at [formspree.io](https://formspree.io). Retrieve the form ID (e.g., `xpznqkdl`) and add to Vercel environment variables as `NEXT_PUBLIC_FORMSPREE_ID`. Configure the Formspree dashboard to forward submissions to the desired team email address. No backend API route is required. |
 | 5 | **Team photographs** | Content | Professional headshots for William, Natalie, and Josiah. Minimum resolution: 800x800px, square crop. Place in `public/images/team/`. Placeholder silhouettes will render in the interim. |
 | 6 | **Case study assets** | Content | Before/after screenshots and quantified outcome metrics for each case study. Client permission is already secured via original engagement contracts. The case study page template is built and ready to populate; see [§6.3](#63-work) for the example structure that demonstrates exactly what content is needed per study. Placeholder cards with "Coming Soon" badges will render until assets are provided. |
-| 7 | **Contact email address** | Pre-launch | Confirm the public-facing contact email address for the Contact page ([§6.8](#68-contact)). This address will appear on the website and receive direct inquiries. Add to the Contact page and footer once confirmed. |
+| 7 | **Contact email address** | ✅ Confirmed | Public-facing contact email is `info@shruggie.tech` (general inquiries, Contact page + Organization schema). A separate compliance inbox, `admin@shruggie.tech`, receives GDPR/CCPA data-subject requests via the Privacy policy ([§6.11](#611-privacy-policy)). Both are single-sourced as `CONTACT_EMAIL` / `PRIVACY_EMAIL` in `lib/constants.ts`. |
 | 8 | **Favicon source artwork** | Pre-development | Generate favicon assets from the kawaii shruggie logo at the following sizes: `favicon.ico` (32x32), `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png` (180x180), `android-chrome-192x192.png`, `android-chrome-512x512.png`. All PNG variants use a transparent background. Place in `public/`. See [§1.5](#15-favicon-and-web-app-manifest) for the manifest configuration. |
 
 <div style="text-align:justify">
@@ -1700,12 +1700,15 @@ export default function ContactForm() {
 }
 ```
 
-**Section 3: Direct Contact**
+**Section 3: Direct Contact (NAP)**
 
 | Element | Content |
 |---------|---------|
-| Address | 116 Agnes Rd, Ste 200, Knoxville, TN 37919 |
-| Note | "Prefer email? Reach us directly at `[contact email]`." The email address is pending confirmation; see [§1.4](#14-human-in-the-loop-requirements), item 7. A placeholder message ("Email address coming soon") renders until the address is provided. |
+| Email | `info@shruggie.tech` — rendered as a `mailto:` link (general inquiries). |
+| Location | Knoxville, TN, USA — city/state only. |
+| Phone | Intentionally omitted; no public phone number. |
+| Mailing address | **None published.** ShruggieTech has no public mailing location. The LLC's registered-agent address (116 Agnes Rd, Ste 200, Knoxville, TN 37919) is a legal-filing address only and must **not** appear as a business/NAP address on the site or in structured data ([§8.2](#82-json-ld-schema-markup)). |
+| Note | The email and location constitute the site's public NAP and must stay consistent across the Contact page, the Organization JSON-LD ([§8.2](#82-json-ld-schema-markup)), and any Google Business Profile. The Privacy policy ([§6.11](#611-privacy-policy)) uses a separate compliance inbox, `admin@shruggie.tech`, for data-subject requests. |
 
 <a name="69-audience-landing-pages" id="69-audience-landing-pages"></a>
 ### 6.9. Audience Landing Pages (`/for/...`)
@@ -1918,9 +1921,9 @@ The policy text must address the following topics at minimum. The exact legal la
 | Third-Party Services | The site uses Google Analytics 4 (privacy policy: policies.google.com/privacy), Google Tag Manager, and Formspree (privacy policy: formspree.io/legal/privacy-policy) to process form submissions. These services may set cookies or collect data as described in their respective privacy policies. |
 | Cookies | The site uses: (a) a theme preference cookie (`theme`) to persist the user's dark/light mode selection, and (b) cookies set by Google Analytics 4 for traffic measurement. Users can disable cookies via browser settings; doing so will not affect core site functionality but will reset the theme preference on each visit. |
 | Data Retention | Contact form submissions are retained in Formspree until manually deleted. Analytics data retention follows the configured GA4 property settings. |
-| Your Rights | Users may request access to, correction of, or deletion of their personal data by contacting ShruggieTech at the address listed on the Contact page. |
+| Your Rights | Users may request access to, correction of, or deletion of their personal data by emailing ShruggieTech at `admin@shruggie.tech` or using the form on the Contact page. This is a concrete data-subject-request destination — do not use a circular "address on the Contact page" reference, and do not point to a mailing address (none is published). |
 | Changes to This Policy | ShruggieTech may update this policy periodically. Changes will be reflected by updating the effective date at the top of the page. |
-| Contact | Questions about this policy can be directed to ShruggieTech at the address listed on the Contact page ([§6.8](#68-contact)). |
+| Contact | Questions about this policy can be directed to ShruggieTech at `admin@shruggie.tech` or via the Contact page ([§6.8](#68-contact)). |
 
 **Section 3: Cookie Consent Banner**
 
@@ -2271,14 +2274,17 @@ export function generateOrganizationSchema() {
     legalName: "Shruggie LLC",
     url: SITE_URL,
     logo: `${SITE_URL}/images/logo.svg`,
+    email: CONTACT_EMAIL, // info@shruggie.tech
     description:
       "A modern technical studio that builds digital systems, software, and AI-driven experiences.",
+    // City/state only. No street address is asserted: ShruggieTech has no
+    // public mailing location, and the LLC's registered-agent address is not a
+    // business location. Keeps structured data consistent with the visible NAP
+    // on /contact. Type stays Organization (not LocalBusiness) accordingly.
     address: {
       "@type": "PostalAddress",
-      streetAddress: "116 Agnes Rd, Ste 200",
       addressLocality: "Knoxville",
       addressRegion: "TN",
-      postalCode: "37919",
       addressCountry: "US",
     },
     sameAs: ["https://github.com/shruggietech"],

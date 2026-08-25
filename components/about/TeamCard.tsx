@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import type { TeamMemberData } from "@/lib/team";
+
 const ICON_MAP: Record<string, LucideIcon> = {
   Linkedin,
   Github,
@@ -29,20 +31,6 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Twitch,
   Youtube,
 };
-
-export interface SocialLink {
-  href: string;
-  label: string;
-  icon: string; // key into ICON_MAP
-}
-
-export interface TeamMemberData {
-  name: string;
-  title: string;
-  description: string;
-  image: string;
-  socials: SocialLink[];
-}
 
 interface TeamCardProps {
   member: TeamMemberData;
