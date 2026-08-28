@@ -4,8 +4,8 @@
 | Attribute | Value |
 |-----------|-------|
 | Subject | ShruggieTech Website Rebuild |
-| Version | 1.2.1 |
-| Date | 2026-08-27 |
+| Version | 1.2.2 |
+| Date | 2026-08-28 |
 | Status | APPROVED |
 | Audience | AI-first, Human-second |
 | Framework | Next.js (App Router) |
@@ -146,7 +146,7 @@ This specification covers the complete public-facing website for ShruggieTech at
 
 | Layer | Technology | Rationale |
 |-------|-----------|-----------|
-| Framework | Next.js 15 (App Router) | Server components, file-based routing, ISR for blog content |
+| Framework | Next.js (App Router) | Server components, file-based routing, ISR for blog content |
 | Language | TypeScript 5.x | Type safety across codebase |
 | Styling | Tailwind CSS 4.x | Utility-first CSS with design token integration |
 | Smooth Scroll | Lenis (by darkroom.engineering) | Tasteful, performant smooth scrolling with reduced-motion respect |
@@ -2639,3 +2639,4 @@ All environment variables are configured in the Vercel project dashboard under S
 | <span style="white-space: nowrap;">2026-03-10</span> | 1.1.0 | Added ShruggieCTA component specification (§2.4) with desktop hover and mobile scroll-triggered tagline reveal. Expanded contact form specification (§6.8) with Formspree integration pattern and Zod validation. Added cookie-based theme persistence to dark/light mode specification (§2.6). Minor content refinements across page specifications. |
 | <span style="white-space: nowrap;">2026-03-10</span> | 1.2.0 | Added Document Information preamble with purpose, scope, terminology table, and reference documents. Added §1.5 (Favicon and Web App Manifest) with required asset sizes and manifest configuration. Added human-in-the-loop items 7 (contact email) and 8 (favicon source artwork) to §1.4. Added case study MDX frontmatter templates for Scruggs Tire and I Heart PR Tours; documented Belle Toh Piano Studio exclusion rationale in §6.3. Added §6.10 (Error Pages) with 404 and global error boundary specifications. Added §6.11 (Privacy Policy) with policy content structure and cookie consent banner specification. Updated footer structure (§5.2) to include Privacy Policy link. Updated sitemap (§8.3) to include `/privacy` route. Resolved contact email placeholder in §6.8 with reference to §1.4 item 7. Updated project structure (§1.2) to include new routes, favicon assets, and web manifest. Added Document History table. |
 | <span style="white-space: nowrap;">2026-08-27</span> | 1.2.1 | Made the end-of-article `PostCTA` an automatic part of the shared blog post template so every current and future article receives the same contact and services paths without MDX author intervention. |
+| <span style="white-space: nowrap;">2026-08-28</span> | 1.2.2 | Removed the stale Next.js 15 pin from the technology stack table. The specification now names the App Router without duplicating the installed major version tracked in `package.json` and the project constitution. |
