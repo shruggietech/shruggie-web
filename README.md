@@ -1,3 +1,5 @@
+![ShruggieTech logo and wordmark on a black background](https://cdn.shruggie.tech/brand/logo/github-social-share.png)
+
 # shruggie-web
 
 The official [ShruggieTech](https://shruggie.tech) website — a Next.js
@@ -6,9 +8,9 @@ open-source products.
 
 [![Vercel Production Deployment](https://img.shields.io/github/deployments/shruggietech/shruggie-web/Production?logo=vercel&logoColor=white&label=vercel)](https://shruggie.tech)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fshruggie.tech)](https://shruggie.tech)
+[![Open Pull Requests](https://img.shields.io/github/issues-pr/shruggietech/shruggie-web?label=open%20PRs)](https://github.com/shruggietech/shruggie-web/pulls)
 [![Next.js](https://img.shields.io/github/package-json/dependency-version/shruggietech/shruggie-web/next)](https://nextjs.org)
 [![License: Apache-2.0](https://img.shields.io/github/license/shruggietech/shruggie-web)](LICENSE)
-[![Last Commit](https://img.shields.io/github/last-commit/shruggietech/shruggie-web)](https://github.com/shruggietech/shruggie-web/commits/main)
 
 ## Tech Stack
 
