@@ -25,6 +25,7 @@ import { mdxComponents } from "@/components/blog/MDXComponents";
 import PostHeader from "@/components/blog/PostHeader";
 import TableOfContents from "@/components/blog/TableOfContents";
 import AuthorBox from "@/components/blog/AuthorBox";
+import PostCTA from "@/components/blog/PostCTA";
 import JsonLd from "@/components/shared/JsonLd";
 
 interface BlogPostPageProps {
@@ -169,6 +170,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 },
               }}
             />
+            <PostCTA />
             <AuthorBox authorName={meta.author} />
           </div>
         </div>
