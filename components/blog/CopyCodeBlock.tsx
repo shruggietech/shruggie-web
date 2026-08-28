@@ -3,8 +3,11 @@
 import { useRef, useState, type HTMLAttributes } from "react";
 import { Copy, Check } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 export default function CopyCodeBlock({
   children,
+  className,
   ...props
 }: HTMLAttributes<HTMLPreElement>) {
   const ref = useRef<HTMLPreElement>(null);
@@ -23,8 +26,11 @@ export default function CopyCodeBlock({
     <div className="relative group">
       <pre
         ref={ref}
-        className="my-6 min-h-[3.5rem] overflow-x-auto rounded-lg border border-border p-4 pr-12 text-body-sm [&>code]:bg-transparent [&>code]:p-0"
         {...props}
+        className={cn(
+          "my-6 min-h-[3.5rem] overflow-x-auto rounded-lg border border-border p-4 pr-12 text-body-sm [&>code]:bg-transparent [&>code]:p-0",
+          className,
+        )}
       >
         {children}
       </pre>
