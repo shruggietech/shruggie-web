@@ -3,7 +3,8 @@
  *
  * Gives a high-intent reader who reached the bottom of a post a clear next
  * step instead of forcing manual navigation: a primary path to /contact and
- * a secondary path to /services. Usable inside MDX via the mdxComponents map.
+ * a secondary path to /services. The shared blog post template renders it
+ * automatically after the MDX body so authors never need to insert it.
  *
  * Wrapped in `not-prose` so the Tailwind Typography styles applied to post
  * bodies don't restyle the buttons.
