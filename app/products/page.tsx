@@ -17,7 +17,6 @@ import {
   Database,
   FileText,
   Cpu,
-  Network,
 } from "lucide-react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
@@ -80,7 +79,7 @@ interface Product {
   description: string;
   statusBadge: string;
   links: ProductLink[];
-  /** Optional: unreleased products (e.g. private alpha) have no public repo. */
+  /** Optional: products without a public repository omit code metadata. */
   programmingLanguage?: string;
   codeRepository?: string;
   version?: string;
@@ -88,17 +87,6 @@ interface Product {
 }
 
 const PRODUCTS: Product[] = [
-  {
-    id: "shruggiegraph",
-    name: "ShruggieGraph",
-    description:
-      "A permission-scoped, source-backed memory graph for AI. ShruggieGraph captures durable knowledge from your conversations and lets any AI assistant recall it across sessions and providers, with every fact traceable to the source it came from.",
-    statusBadge: "Coming Soon",
-    links: [
-      { label: "Join the alpha waitlist", href: "https://graph.shruggie.tech" },
-    ],
-    icon: Network,
-  },
   {
     id: "shruggie-indexer",
     name: "shruggie-indexer",
@@ -160,9 +148,7 @@ const PRODUCTS: Product[] = [
 export default function ProductsPage() {
   return (
     <>
-      {/* JSON-LD — only for products with a public code repository. Unreleased
-          products (e.g. ShruggieGraph in private alpha) get no SoftwareSourceCode
-          schema rather than a fabricated repo. */}
+      {/* JSON-LD is emitted only for products with a public code repository. */}
       {PRODUCTS.filter((product) => product.codeRepository).map((product) => (
         <JsonLd
           key={product.id}
