@@ -37,7 +37,6 @@ const PAGE_LINKS = [
 ] as const;
 
 const PRODUCT_LINKS = [
-  { href: "https://graph.shruggie.tech", label: "ShruggieGraph", external: true },
   { href: "/products#shruggie-indexer", label: "shruggie-indexer" },
   { href: "/products#metadexer", label: "metadexer" },
   { href: "/products#shruggie-feedtools", label: "shruggie-feedtools" },
@@ -101,28 +100,16 @@ export default function Footer() {
               Products
             </h3>
             <ul className="flex flex-col gap-3">
-              {PRODUCT_LINKS.map((link) => {
-                const linkClassName =
-                  "text-body-sm font-mono text-text-secondary transition-colors duration-200 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright";
-                return (
-                  <li key={link.href}>
-                    {"external" in link && link.external ? (
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={linkClassName}
-                      >
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link href={link.href} className={linkClassName}>
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                );
-              })}
+              {PRODUCT_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-body-sm font-mono text-text-secondary transition-colors duration-200 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

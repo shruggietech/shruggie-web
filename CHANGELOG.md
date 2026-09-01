@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **Product catalog**: removed the retired private-alpha product card, waitlist link, and site-wide footer entry
 - **Stale planning docs**: deleted `docs/ShruggieTech-Site-Updates-Plan-v2.md` (30-item UX backlog; audited against current code — 32/33 items already shipped, the one real gap filed as [#4](https://github.com/shruggietech/shruggie-web/issues/4)) and `.handoff/` (original greenfield sprint plan and its empty reports directory; audited and confirmed fully implemented) — both had drifted into describing work already completed rather than tracking anything outstanding
 
 ### Changed
