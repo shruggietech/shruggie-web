@@ -23,7 +23,7 @@ export default function CTABackground({
   return (
     <section
       className={cn(
-        "relative bg-[#060608] pt-32 pb-52 md:pt-48 md:pb-64 overflow-hidden",
+        "relative overflow-hidden bg-[#060608] pt-32 pb-52 text-[#F0F0F0] md:pt-48 md:pb-64 [&_h2]:text-[#F0F0F0]",
         className,
       )}
     >
@@ -34,7 +34,7 @@ export default function CTABackground({
       <div className="relative z-10">{children}</div>
 
       {/* Knoxville skyline — anchored to bottom */}
-      <KnoxvilleSkyline className="absolute bottom-0 left-0 w-full z-[1]" />
+      <KnoxvilleSkyline className="absolute bottom-0 left-0 z-[1] w-full" />
     </section>
   );
 }
