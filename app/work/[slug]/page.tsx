@@ -132,7 +132,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
             href={meta.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group mt-6 inline-flex items-center gap-2 rounded-lg border border-accent/30 px-4 py-2 font-display text-body-sm font-medium text-accent transition-colors hover:border-accent hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+            className="group mt-6 inline-flex items-center gap-2 rounded-lg border border-accent/30 px-4 py-2 font-display text-body-sm font-medium text-accent transition-colors hover:border-accent hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           >
             Visit the live site
             <ExternalLink

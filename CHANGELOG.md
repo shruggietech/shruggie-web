@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Light-theme green contrast**: added an accessible `#037B40` foreground/focus token for green text, links, and focus indicators on `#F8F8F6`, while preserving bright `#2BCC73` as the dark-surface identity accent; added automated contrast and semantic-token regression coverage
 - **Specification framework version**: removed the stale Next.js 15 reference from §1.1 and made the framework entry version-agnostic so `package.json` remains the canonical installed version
 - **Blog code blocks**: merge Shiki's generated class names with `CopyCodeBlock` container utilities so syntax highlighting keeps its theme while rounded corners, borders, padding, and overflow styling remain intact
 - **Lenis smooth scroll**: reset scroll position on client-side route changes and route in-page anchor clicks through Lenis, fixing jumpy navigation between pages and a `SyntaxError` crash on numeric-leading heading IDs (e.g. research paper tables of contents)

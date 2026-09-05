@@ -128,7 +128,7 @@ export default function Header() {
             href="/"
             className={cn(
               "flex items-center gap-2",
-              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
             )}
           >
             <Image
@@ -161,7 +161,7 @@ export default function Header() {
                 className={cn(
                   "group relative px-3 py-2 font-body text-body-sm font-medium uppercase tracking-wide text-text-secondary",
                   "transition-colors duration-200 hover:text-text-primary",
-                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
+                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
                 )}
               >
                 {link.label}
@@ -188,7 +188,7 @@ export default function Header() {
                 className={cn(
                   "rounded-lg p-2 text-text-secondary transition-colors",
                   "hover:text-text-primary",
-                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
+                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
                 )}
               >
                 {isDark ? (
@@ -215,7 +215,7 @@ export default function Header() {
               className={cn(
                 "rounded-lg p-2 text-text-secondary transition-colors nav:hidden",
                 "hover:text-text-primary",
-                "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
+                "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
               )}
             >
               <Menu size={24} aria-hidden="true" />

@@ -90,7 +90,7 @@ export default function ContactPage() {
             <div className="flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:gap-8">
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="flex items-center gap-2 text-body text-text-secondary transition-colors duration-200 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+                className="flex items-center gap-2 text-body text-text-secondary transition-colors duration-200 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
               >
                 <Mail size={20} aria-hidden="true" />
                 <span className="font-medium">{CONTACT_EMAIL}</span>
@@ -114,7 +114,7 @@ export default function ContactPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={link.label}
-                    className="flex items-center justify-center rounded-lg border border-border bg-bg-secondary p-3 text-text-secondary transition-colors duration-200 hover:border-brand-green-bright hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+                    className="flex items-center justify-center rounded-lg border border-border bg-bg-secondary p-3 text-text-secondary transition-colors duration-200 hover:border-accent hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                   >
                     <link.Icon size={20} aria-hidden="true" />
                   </a>

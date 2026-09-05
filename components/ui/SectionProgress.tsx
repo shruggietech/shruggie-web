@@ -43,7 +43,7 @@ export function SectionProgress({ total, current, className, labels, onSelect }:
               aria-label={labels?.[i] ?? `Section ${i + 1}`}
               onClick={() => onSelect?.(i)}
               className={cn(
-                "block cursor-pointer rounded-full border transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green-bright focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+                "block cursor-pointer rounded-full border transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-black",
                 i === current
                   ? "size-2.5 border-brand-green-bright bg-brand-green-bright"
                   : "size-2 border-white/20 bg-transparent hover:border-white/40",

@@ -4,7 +4,7 @@
  * Two variants (primary, secondary) and two sizes (default, sm).
  * Primary uses bg-cta with brightness hover effects.
  * Secondary uses bordered transparent treatment.
- * Both require visible focus rings using brand green (#2BCC73).
+ * Both require visible focus rings using the theme-aware focus token.
  *
  * Spec reference: §2.4 (Component Primitives), §3.2 (Accessibility)
  */
@@ -30,7 +30,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           // Base
           "inline-flex items-center justify-center font-display font-medium",
           "rounded-lg transition-all duration-200 ease-out",
-          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
           // Size
           size === "default" && "px-6 py-3 text-body-md",
           size === "sm" && "px-4 py-2 text-body-sm",
