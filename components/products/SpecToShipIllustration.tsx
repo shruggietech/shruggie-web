@@ -12,23 +12,18 @@
  * and gated behind the `.is-animating` CSS class.
  */
 
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import { useInView } from "framer-motion";
 import styles from "./SpecToShipIllustration.module.css";
 
 export default function SpecToShipIllustration() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(wrapperRef, { once: true, margin: "-80px" });
-  const [animating, setAnimating] = useState(false);
-
-  useEffect(() => {
-    if (isInView) setAnimating(true);
-  }, [isInView]);
 
   return (
     <div
       ref={wrapperRef}
-      className={`w-full max-w-[360px] mx-auto h-[280px] md:h-auto md:mx-0${animating ? " is-animating" : ""}`}
+      className={`w-full max-w-[360px] mx-auto h-[280px] md:h-auto md:mx-0${isInView ? " is-animating" : ""}`}
     >
       <svg
         viewBox="0 0 480 560"

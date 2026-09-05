@@ -247,6 +247,7 @@ interface ShruggieState {
 export default function HeroBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0);
+  const drawRef = useRef<() => void>(() => {});
   const mouseRef = useRef<{ x: number; y: number } | null>(null);
   const driftRef = useRef({ x: 0, y: 0, angle: 0 });
   const reducedMotionRef = useRef(false);
@@ -549,9 +550,13 @@ export default function HeroBackground() {
     ctx.restore();
 
     if (!reducedMotionRef.current) {
-      animationRef.current = requestAnimationFrame(draw);
+      animationRef.current = requestAnimationFrame(() => drawRef.current());
     }
   }, []);
+
+  useEffect(() => {
+    drawRef.current = draw;
+  }, [draw]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

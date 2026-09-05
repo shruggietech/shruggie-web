@@ -10,7 +10,12 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -30,24 +35,49 @@ const NAV_LINKS = [
   { href: "/blog", label: "Blog" },
 ] as const;
 
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeToReducedMotion(onStoreChange: () => void) {
+  const mediaQuery = window.matchMedia(REDUCED_MOTION_QUERY);
+  mediaQuery.addEventListener("change", onStoreChange);
+  return () => mediaQuery.removeEventListener("change", onStoreChange);
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia(REDUCED_MOTION_QUERY).matches;
+}
+
+function subscribeToTheme(onStoreChange: () => void) {
+  const observer = new MutationObserver(onStoreChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
+
+function getThemeSnapshot() {
+  return document.documentElement.classList.contains("dark");
+}
+
 export default function Header() {
   const pathname = usePathname();
   const forceDark = isDarkModeForced(pathname);
   const [scrollY, setScrollY] = useState(0);
-  const [isDark, setIsDark] = useState(true);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribeToReducedMotion,
+    getReducedMotionSnapshot,
+    () => false,
+  );
+  const isDark = useSyncExternalStore(
+    subscribeToTheme,
+    getThemeSnapshot,
+    () => true,
+  );
 
   // Track scroll position for progressive opacity
   useEffect(() => {
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(motionQuery.matches);
-
-    const handleMotionChange = (e: MediaQueryListEvent) => {
-      setPrefersReducedMotion(e.matches);
-    };
-    motionQuery.addEventListener("change", handleMotionChange);
-
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
@@ -57,30 +87,12 @@ export default function Header() {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      motionQuery.removeEventListener("change", handleMotionChange);
     };
-  }, []);
-
-  // Initialize theme state from DOM and watch for external class changes
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-
-    // MutationObserver keeps isDark in sync when other code (e.g. ThemeEnforcer)
-    // modifies the class list without going through toggleTheme.
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
   }, []);
 
   // Theme toggle: set cookie + toggle class (§2.6)
   const toggleTheme = useCallback(() => {
     const newIsDark = !isDark;
-    setIsDark(newIsDark);
     document.documentElement.classList.toggle("dark", newIsDark);
 
     const theme = newIsDark ? "dark" : "light";

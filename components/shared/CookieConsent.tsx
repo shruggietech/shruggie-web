@@ -12,10 +12,12 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 
 import Button from "@/components/ui/Button";
+
+const CONSENT_CHANGE_EVENT = "shruggie:consent-change";
 
 function getConsentCookie(): string | null {
   if (typeof document === "undefined") return null;
@@ -27,28 +29,31 @@ function setConsentCookie(value: "granted" | "denied") {
   const expires = new Date();
   expires.setFullYear(expires.getFullYear() + 1);
   document.cookie = `consent=${value}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+  window.dispatchEvent(new Event(CONSENT_CHANGE_EVENT));
+}
+
+function subscribeToConsent(onStoreChange: () => void) {
+  window.addEventListener(CONSENT_CHANGE_EVENT, onStoreChange);
+  return () => window.removeEventListener(CONSENT_CHANGE_EVENT, onStoreChange);
 }
 
 export default function CookieConsent() {
-  const [visible, setVisible] = useState(false);
+  const consent = useSyncExternalStore(
+    subscribeToConsent,
+    getConsentCookie,
+    () => undefined,
+  );
 
-  useEffect(() => {
-    // Only show if no consent cookie exists
-    if (!getConsentCookie()) {
-      setVisible(true);
-    }
-  }, []);
-
-  if (!visible) return null;
+  // The server snapshot stays hidden to avoid a hydration mismatch. On the
+  // client, a missing cookie is represented by null and shows the banner.
+  if (consent !== null) return null;
 
   const handleAccept = () => {
     setConsentCookie("granted");
-    setVisible(false);
   };
 
   const handleDecline = () => {
     setConsentCookie("denied");
-    setVisible(false);
   };
 
   return (

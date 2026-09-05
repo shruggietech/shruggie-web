@@ -9,7 +9,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import type { TocItem } from "@/lib/utils";
 
@@ -33,11 +33,9 @@ export default function TableOfContents({
   collapsible = false,
 }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
-  const headingsRef = useRef(headings);
-  headingsRef.current = headings;
 
   useEffect(() => {
-    const elements = headingsRef.current
+    const elements = headings
       .map(({ id }) => document.getElementById(id))
       .filter(Boolean) as HTMLElement[];
 
@@ -59,7 +57,7 @@ export default function TableOfContents({
 
     // When the user scrolls to the bottom of the page, activate the last
     // heading even if it never crossed the observer threshold (short section).
-    const lastId = headingsRef.current[headingsRef.current.length - 1]?.id;
+    const lastId = headings[headings.length - 1]?.id;
     const onScroll = () => {
       const atBottom =
         window.innerHeight + window.scrollY >=
