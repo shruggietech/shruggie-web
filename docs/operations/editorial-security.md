@@ -82,14 +82,16 @@ revision without producing a second audit event.
 ## Production activation checklist
 
 1. Configure `CMS_EDITOR_EMAILS` and `CMS_ADMIN_EMAILS` in Vercel production.
-2. Deploy the application and confirm the protected routes deny anonymous,
+2. Configure the keyless Vercel-to-Google workload identity values documented in
+   [`firebase-production.md`](firebase-production.md).
+3. Deploy the application and confirm the protected routes deny anonymous,
    unapproved, cross-origin, expired, and revoked requests.
-3. Confirm Firestore and Storage rules still deny all browser SDK access.
-4. Enable only the Google sign-in provider in Firebase Authentication and keep
+4. Confirm Firestore and Storage rules still deny all browser SDK access.
+5. Enable only the Google sign-in provider in Firebase Authentication and keep
    public registration absent from the application.
-5. Confirm Firebase authorized domains contain only the production and required
+6. Confirm Firebase authorized domains contain only the production and required
    Firebase authentication handler domains.
-6. Sign in with one editor and one administrator, verify role boundaries, then
+7. Sign in with one editor and one administrator, verify role boundaries, then
    revoke the test sessions.
 
 Do not enable the production sign-in provider until the allowlists are known
