@@ -13,6 +13,7 @@ export default defineConfig({
   test: {
     environment: "node",
     exclude: [
+      "tests/color-contrast.test.mjs",
       "tests/editorial/firebase-adapter.integration.test.ts",
       "node_modules/**",
     ],

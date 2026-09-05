@@ -62,7 +62,9 @@ npm run dev
 | `npm run build`            | Production build                                                |
 | `npm run start`            | Serve the production build                                      |
 | `npm run lint`             | Run ESLint                                                      |
-| `npm test`                 | Run schema, adapter, asset, export, and repository MDX tests    |
+| `npm test`                 | Run contrast and editorial contract tests                       |
+| `npm run test:contrast`    | Run light/dark accessibility contrast regression tests          |
+| `npm run test:editorial`   | Run schema, adapter, asset, export, and repository MDX tests    |
 | `npm run test:integration` | Run Firebase adapters against local Firestore/Storage emulators |
 | `npm run test:all`         | Run both test layers                                            |
 
