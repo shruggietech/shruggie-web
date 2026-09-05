@@ -14,6 +14,7 @@ import { z } from "zod";
 
 import { FirebaseAssetStore } from "./firebase-asset-store";
 import { FirestoreArticleRepository } from "./firestore-article-repository";
+import { createVercelGoogleCredential } from "./vercel-google-credential";
 
 const environmentSchema = z.object({
   FIREBASE_PROJECT_ID: z.string().min(1),
@@ -34,11 +35,16 @@ function firebaseAdminApp(): App {
     process.env.FIRESTORE_EMULATOR_HOST ||
     process.env.FIREBASE_STORAGE_EMULATOR_HOST,
   );
+  const credential = usesEmulator
+    ? undefined
+    : process.env.VERCEL === "1"
+      ? createVercelGoogleCredential()
+      : applicationDefault();
 
   return initializeApp({
     projectId: environment.FIREBASE_PROJECT_ID,
     storageBucket: environment.FIREBASE_STORAGE_BUCKET,
-    ...(usesEmulator ? {} : { credential: applicationDefault() }),
+    ...(credential ? { credential } : {}),
   });
 }
 

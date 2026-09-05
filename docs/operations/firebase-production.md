@@ -21,6 +21,16 @@ delete are enabled. The Firebase browser key is restricted to the production
 site and Firebase-hosted authentication handler domains. A USD 5 monthly budget
 alerts at USD 1, USD 2.50, and USD 5. Budget alerts do not stop service usage.
 
+Vercel production authenticates to Google Cloud through workload identity
+federation. It exchanges Vercel's short-lived OIDC token for the dedicated
+`shruggie-web-vercel-prod` service account; no service-account JSON key is
+stored in Vercel. The trust is restricted to the `shruggietech-site` Vercel
+project's production environment. The service account has Firestore data-user
+access, object-admin access on only the production Storage bucket, and the
+project-local `Shruggie Web Editorial Auth` role. That custom role contains only
+`firebaseauth.users.get`, `firebaseauth.users.createSession`, and
+`firebaseauth.users.update`.
+
 ## Local development
 
 Use emulators, never production data. Run the application as the emulator
@@ -57,14 +67,28 @@ Review the generated diff before deployment. The Firebase Admin SDK bypasses
 Security Rules, so least-privilege IAM and server-side authorization remain
 mandatory.
 
+## Vercel runtime
+
+Firebase Admin 14 currently loads an ESM-only transitive dependency through a
+CommonJS path on Vercel. Production must set the documented compatibility
+option below until the upstream dependency path is ESM-native:
+
+```text
+NODE_OPTIONS=--experimental-require-module
+```
+
+The production environment also provides `GCP_PROJECT_NUMBER`,
+`GCP_SERVICE_ACCOUNT_EMAIL`, `GCP_WORKLOAD_IDENTITY_POOL_ID`, and
+`GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID`. These values identify the workload
+identity trust and are configuration, not private keys.
+
 ## Authentication gate
 
-Firebase Authentication is initialized, but no sign-in provider is enabled.
+Firebase Authentication is initialized with Google as its only sign-in provider.
 The server boundary from issue #26 verifies revoked tokens and session cookies,
 enforces explicit editor and administrator allowlists, and rejects mutations
 outside the canonical origin. Configure the production allowlists and complete
-the activation checklist in
-[`editorial-security.md`](editorial-security.md) before enabling Google sign-in.
+the activation checklist in [`editorial-security.md`](editorial-security.md).
 The `/admin` experience must never expose public registration.
 
 ## Recovery checks
