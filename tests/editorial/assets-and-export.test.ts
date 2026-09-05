@@ -15,7 +15,7 @@ import {
   InMemoryArticleRepository,
   InMemoryAssetStore,
 } from "../../lib/editorial/memory-adapter";
-import { articleFixture } from "./fixtures";
+import { articleFixture, mutationContext } from "./fixtures";
 
 async function pngBytes(): Promise<Buffer> {
   return sharp({
@@ -97,6 +97,7 @@ describe("AssetStore contract", () => {
     await articles.create({
       article,
       idempotencyKey: "create-example-0001",
+      mutation: mutationContext(),
     });
 
     const snapshot = await createEditorialExport(

@@ -60,10 +60,12 @@ mandatory.
 ## Authentication gate
 
 Firebase Authentication is initialized, but no sign-in provider is enabled.
-Issue #26 must establish token verification, revocation checks, the explicit
-server-side editor allowlist, and canonical-origin enforcement before enabling
-a production provider. The `/admin` experience must never expose public
-registration.
+The server boundary from issue #26 verifies revoked tokens and session cookies,
+enforces explicit editor and administrator allowlists, and rejects mutations
+outside the canonical origin. Configure the production allowlists and complete
+the activation checklist in
+[`editorial-security.md`](editorial-security.md) before enabling Google sign-in.
+The `/admin` experience must never expose public registration.
 
 ## Recovery checks
 

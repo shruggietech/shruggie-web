@@ -1,6 +1,13 @@
 import "server-only";
 
+import { createHash } from "node:crypto";
+
 import { prepareAssetUpload } from "./assets";
+import {
+  createAuditEvent,
+  parseEditorialMutationContext,
+  type EditorialAuditEvent,
+} from "./audit";
 import {
   editorialIdSchema,
   parseArticle,
@@ -37,6 +44,7 @@ interface IdempotentResult {
 export class InMemoryArticleRepository implements ArticleRepository {
   private readonly articles = new Map<string, Article>();
   private readonly articleIdBySlug = new Map<string, string>();
+  private readonly auditEvents = new Map<string, EditorialAuditEvent>();
   private readonly idempotentResults = new Map<string, IdempotentResult>();
   private failureMode: FailureMode = "available";
 
@@ -61,8 +69,13 @@ export class InMemoryArticleRepository implements ArticleRepository {
   async create(command: CreateArticleCommand): Promise<Article> {
     this.assertAvailable("create an article");
     validateIdempotencyKey(command.idempotencyKey);
+    const mutation = parseEditorialMutationContext(command.mutation);
     const article = parseArticle(command.article);
-    const fingerprint = JSON.stringify(article);
+    const fingerprint = JSON.stringify({
+      actorId: mutation.actorId,
+      article,
+      role: mutation.role,
+    });
     const replay = this.getIdempotentReplay(
       command.idempotencyKey,
       fingerprint,
@@ -85,22 +98,28 @@ export class InMemoryArticleRepository implements ArticleRepository {
       throw new SlugCollisionError(article.slug, existingArticleId);
     }
 
+    const auditId = this.auditId(command.idempotencyKey);
+    const auditEvent = createAuditEvent(auditId, null, article, mutation);
     this.articles.set(article.id, structuredClone(article));
     this.articleIdBySlug.set(article.slug, article.id);
     this.idempotentResults.set(command.idempotencyKey, {
       articleId: article.id,
       fingerprint,
     });
+    this.auditEvents.set(auditId, auditEvent);
     return structuredClone(article);
   }
 
   async update(command: UpdateArticleCommand): Promise<Article> {
     this.assertAvailable("update an article");
     validateIdempotencyKey(command.idempotencyKey);
+    const mutation = parseEditorialMutationContext(command.mutation);
     const next = parseArticle(command.article);
     const fingerprint = JSON.stringify({
       article: next,
+      actorId: mutation.actorId,
       expectedRevision: command.expectedRevision,
+      role: mutation.role,
     });
     const replay = this.getIdempotentReplay(
       command.idempotencyKey,
@@ -111,6 +130,8 @@ export class InMemoryArticleRepository implements ArticleRepository {
     const current = this.articles.get(next.id);
     if (!current) throw new ArticleNotFoundError(next.id);
     assertArticleMutation(current, next, command.expectedRevision);
+    const auditId = this.auditId(command.idempotencyKey);
+    const auditEvent = createAuditEvent(auditId, current, next, mutation);
 
     if (current.slug !== next.slug) {
       const existingArticleId = this.articleIdBySlug.get(next.slug);
@@ -126,6 +147,7 @@ export class InMemoryArticleRepository implements ArticleRepository {
       articleId: next.id,
       fingerprint,
     });
+    this.auditEvents.set(auditId, auditEvent);
     return structuredClone(next);
   }
 
@@ -175,6 +197,21 @@ export class InMemoryArticleRepository implements ArticleRepository {
     return [...this.articles.values()].map((article) =>
       structuredClone(article),
     );
+  }
+
+  async exportAudit(): Promise<EditorialAuditEvent[]> {
+    this.assertAvailable("export editorial audit records");
+    return [...this.auditEvents.values()]
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .map((event) => structuredClone(event));
+  }
+
+  private auditId(idempotencyKey: string): string {
+    const digest = createHash("sha256")
+      .update(idempotencyKey)
+      .digest("hex")
+      .slice(0, 40);
+    return `audit:${digest}`;
   }
 
   private getIdempotentReplay(
