@@ -11,6 +11,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import Button from "@/components/ui/Button";
 
@@ -21,16 +22,18 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const router = useRouter();
+
   useEffect(() => {
     console.error("Unhandled error:", error);
   }, [error]);
 
   return (
     <div className="section-bg-cta flex min-h-[60vh] flex-col items-center justify-center text-center">
-      <h1 className="font-display text-display-sm font-bold text-text-primary">
+      <h1 className="font-display text-display-sm text-text-primary font-bold">
         Something went wrong.
       </h1>
-      <p className="mt-4 max-w-md text-body-md text-text-secondary">
+      <p className="text-body-md text-text-secondary mt-4 max-w-md">
         An unexpected error occurred. Please try again, or return to the
         homepage if the problem persists.
       </p>
@@ -38,10 +41,7 @@ export default function GlobalError({
         <Button variant="primary" onClick={() => reset()}>
           Try Again
         </Button>
-        <Button
-          variant="secondary"
-          onClick={() => (window.location.href = "/")}
-        >
+        <Button variant="secondary" onClick={() => router.push("/")}>
           Go Home
         </Button>
       </div>
