@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **ESLint baseline**: replaced render-time ref mutation and synchronous effect state updates with behavior-preserving derived state and browser subscriptions across navigation, responsive hooks, cookie consent, blog table-of-contents tracking, and product/homepage animation components; documented the required native image exception for edge-rendered Open Graph cards
 - **Development pillar**: added blockchain integration to the pillar description and "Blockchain architecture and smart contract development" to the capabilities list
 - **Service anchor map**: added `Blockchain`, `Smart Contracts`, and `Blockchain Consulting` entries linking to the Development & Integration pillar
 - **About "Where We Come From"**: extracted the duplicated heading and origin paragraph — which had drifted between the mobile and desktop layouts — into single `ORIGIN_HEADING`/`ORIGIN_STORY` constants

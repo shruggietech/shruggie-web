@@ -253,8 +253,11 @@ export async function GET(request: NextRequest) {
         >
           {/* Logo: large for mobile visibility */}
           {logoBase64 ? (
+            // next/image cannot render inside a next/og ImageResponse.
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={logoBase64}
+              alt="ShruggieTech"
               height={56}
               style={{
                 objectFit: "contain",
