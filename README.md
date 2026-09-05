@@ -35,6 +35,9 @@ with production procedures in
 [`docs/operations/firebase-production.md`](docs/operations/firebase-production.md).
 The versioned article, Markdown, asset, error, and export contracts are in
 [`docs/editorial/content-contract.md`](docs/editorial/content-contract.md).
+Production dependency audit policy and the temporary Firebase advisory record
+are in
+[`docs/operations/dependency-security.md`](docs/operations/dependency-security.md).
 
 ## Getting Started
 
