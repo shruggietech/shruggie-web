@@ -9,8 +9,6 @@
  * Spec references: §7.2 (MDX Pipeline), §7.3 (Blog Post Template), §8.2 (JSON-LD)
  */
 
-import fs from "fs";
-import path from "path";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -33,7 +31,7 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  const posts = getAllPostsMeta();
+  const posts = await getAllPostsMeta();
   return posts.map((post) => ({ slug: post.slug }));
 }
 
@@ -43,11 +41,13 @@ export async function generateMetadata({
   const resolvedParams = await params;
 
   try {
-    const { meta } = getPostBySlug(resolvedParams.slug);
+    const { meta } = await getPostBySlug(resolvedParams.slug);
 
     // Priority chain: ogImage → featuredImage → dynamic /api/og card
     const ogImageUrl = meta.ogImage
-      ? meta.ogImage.startsWith("http") ? meta.ogImage : `${SITE_URL}${meta.ogImage}`
+      ? meta.ogImage.startsWith("http")
+        ? meta.ogImage
+        : `${SITE_URL}${meta.ogImage}`
       : meta.featuredImage
         ? `${SITE_URL}${meta.featuredImage}`
         : getOgImageUrl(meta.title, { author: meta.author });
@@ -93,7 +93,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   let post;
   try {
-    post = getPostBySlug(resolvedParams.slug);
+    post = await getPostBySlug(resolvedParams.slug);
   } catch {
     notFound();
   }
@@ -104,11 +104,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (process.env.NODE_ENV === "production" && !meta.published) {
     notFound();
   }
-
-  // Check if featured image exists
-  const hasFeaturedImage =
-    meta.featuredImage &&
-    fs.existsSync(path.join(process.cwd(), "public", meta.featuredImage));
 
   const headings = extractHeadings(content);
 
@@ -122,15 +117,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         {/* Featured image — full container width */}
-        {hasFeaturedImage && (
+        {meta.featuredImage && (
           <div className="mx-auto mt-12 max-w-[var(--max-width-content)] px-[var(--padding-x)]">
-            <div className="overflow-hidden rounded-lg border border-border bg-bg-secondary">
+            <div className="border-border bg-bg-secondary overflow-hidden rounded-lg border">
               <Image
                 src={meta.featuredImage!}
-                alt={meta.title}
+                alt={meta.featuredImageAlt ?? meta.title}
                 width={1400}
                 height={788}
-                className="w-full h-auto"
+                className="h-auto w-full"
                 priority
               />
             </div>
@@ -138,12 +133,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         )}
 
         <div className="mx-auto max-w-[900px] px-[var(--padding-x)]">
-          <div className="border-t border-accent/10 mt-12" />
+          <div className="border-accent/10 mt-12 border-t" />
         </div>
 
         {/* Collapsible ToC for screens below xl — sticky below header */}
         {headings.length > 0 && (
-          <div className="sticky top-16 z-10 mt-8 bg-bg-primary py-3 xl:hidden">
+          <div className="bg-bg-primary sticky top-16 z-10 mt-8 py-3 xl:hidden">
             <div className="mx-auto max-w-[900px] px-[var(--padding-x)]">
               <TableOfContents headings={headings} collapsible />
             </div>
@@ -154,13 +149,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="mx-auto mt-12 max-w-[900px] px-[var(--padding-x)] xl:flex xl:max-w-[1400px] xl:gap-16">
           {headings.length > 0 && (
             <aside className="hidden w-[260px] shrink-0 xl:block">
-              <TableOfContents
-                headings={headings}
-                className="sticky top-24"
-              />
+              <TableOfContents headings={headings} className="sticky top-24" />
             </aside>
           )}
-          <div className="prose prose-lg dark:prose-invert mx-auto min-w-0 max-w-[900px] flex-1 xl:mx-0 prose-pre:bg-transparent prose-pre:m-0 prose-pre:border-0 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_span]:!bg-transparent">
+          <div className="prose prose-lg dark:prose-invert prose-pre:bg-transparent prose-pre:m-0 prose-pre:border-0 mx-auto max-w-[900px] min-w-0 flex-1 xl:mx-0 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_span]:!bg-transparent">
             <MDXRemote
               source={content}
               components={mdxComponents}

@@ -14,16 +14,16 @@ open-source products.
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | [Next.js](https://nextjs.org) (App Router, React Server Components) |
-| Language | TypeScript (strict mode) |
-| Styling | [Tailwind CSS](https://tailwindcss.com) 4.x |
-| Motion | [Framer Motion](https://motion.dev), [GSAP](https://gsap.com), [Lenis](https://lenis.darkroom.engineering) smooth scroll |
-| Blog content | MDX via `next-mdx-remote/rsc`, syntax highlighting via [Shiki](https://shiki.style) |
-| Contact form | [Formspree](https://formspree.io) + React Hook Form + [Zod](https://zod.dev) validation |
-| Analytics | Google Analytics 4 + Google Tag Manager (consent-gated) |
-| Deployment | [Vercel](https://vercel.com) |
+| Layer        | Technology                                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| Framework    | [Next.js](https://nextjs.org) (App Router, React Server Components)                                                      |
+| Language     | TypeScript (strict mode)                                                                                                 |
+| Styling      | [Tailwind CSS](https://tailwindcss.com) 4.x                                                                              |
+| Motion       | [Framer Motion](https://motion.dev), [GSAP](https://gsap.com), [Lenis](https://lenis.darkroom.engineering) smooth scroll |
+| Blog content | MDX via `next-mdx-remote/rsc`, syntax highlighting via [Shiki](https://shiki.style)                                      |
+| Contact form | [Formspree](https://formspree.io) + React Hook Form + [Zod](https://zod.dev) validation                                  |
+| Analytics    | Google Analytics 4 + Google Tag Manager (consent-gated)                                                                  |
+| Deployment   | [Vercel](https://vercel.com)                                                                                             |
 
 The full, authoritative specification for page structure, design tokens, and
 content requirements lives in
@@ -33,6 +33,8 @@ The accepted but not-yet-shipped editorial backend architecture is documented
 in [`docs/architecture/adr-001-firebase-editorial-backend.md`](docs/architecture/adr-001-firebase-editorial-backend.md),
 with production procedures in
 [`docs/operations/firebase-production.md`](docs/operations/firebase-production.md).
+The versioned article, Markdown, asset, error, and export contracts are in
+[`docs/editorial/content-contract.md`](docs/editorial/content-contract.md).
 
 ## Getting Started
 
@@ -54,12 +56,15 @@ npm run dev
 
 ### Available Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start the local development server |
-| `npm run build` | Production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | Run ESLint |
+| Command                    | Description                                                     |
+| -------------------------- | --------------------------------------------------------------- |
+| `npm run dev`              | Start the local development server                              |
+| `npm run build`            | Production build                                                |
+| `npm run start`            | Serve the production build                                      |
+| `npm run lint`             | Run ESLint                                                      |
+| `npm test`                 | Run schema, adapter, asset, export, and repository MDX tests    |
+| `npm run test:integration` | Run Firebase adapters against local Firestore/Storage emulators |
+| `npm run test:all`         | Run both test layers                                            |
 
 Before opening a PR, also confirm the build type-checks cleanly:
 

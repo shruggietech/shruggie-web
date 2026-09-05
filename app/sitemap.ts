@@ -15,7 +15,7 @@ import { getAllResearchMeta } from "@/lib/research";
 import { SITE_URL } from "@/lib/constants";
 import { SERVICE_SLUGS } from "@/lib/services";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
     "",
     "/services",
@@ -39,7 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1.0 : 0.8,
   }));
 
-  const blogPosts = getAllPostsMeta().map((post) => ({
+  const blogPosts = (await getAllPostsMeta()).map((post) => ({
     url: `${SITE_URL}/blog/${post.slug}`,
     lastModified: post.date,
     changeFrequency: "yearly" as const,
