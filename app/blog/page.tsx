@@ -33,7 +33,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Blog", { description: "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business." }),
+        url: getOgImageUrl("Blog", {
+          description:
+            "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business.",
+        }),
         width: 1200,
         height: 630,
         alt: "Blog | ShruggieTech",
@@ -45,7 +48,12 @@ export const metadata: Metadata = {
     title: "Blog | ShruggieTech",
     description:
       "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business.",
-    images: [getOgImageUrl("Blog", { description: "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business." })],
+    images: [
+      getOgImageUrl("Blog", {
+        description:
+          "We write about what we know and show you how to do it yourself. Tutorials, deep-dives, and honest takes on technology, AI, and business.",
+      }),
+    ],
   },
 };
 
@@ -56,7 +64,7 @@ interface BlogPageProps {
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const resolvedParams = await searchParams;
   const page = Math.max(1, parseInt(resolvedParams.page ?? "1", 10) || 1);
-  const { posts, totalPages, currentPage } = getPaginatedPosts(page);
+  const { posts, totalPages, currentPage } = await getPaginatedPosts(page);
 
   return (
     <div>
@@ -68,15 +76,15 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       />
 
       {/* Post Grid */}
-      <section className="container-content pt-12 md:pt-16 pb-12 md:pb-16">
+      <section className="container-content pt-12 pb-12 md:pt-16 md:pb-16">
         {posts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {posts.map((post) => (
               <PostCard key={post.slug} post={post} />
             ))}
           </div>
         ) : (
-          <p className="text-center text-body-lg text-text-muted">
+          <p className="text-body-lg text-text-muted text-center">
             No posts yet. Check back soon!
           </p>
         )}
@@ -89,7 +97,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       <CTABackground>
         <div className="container-content text-center">
           <ScrollReveal>
-            <h2 className="font-display text-display-md font-bold text-text-primary">
+            <h2 className="font-display text-display-md text-text-primary font-bold">
               Want to talk tech or explore a project idea?
             </h2>
             <div className="mt-8">

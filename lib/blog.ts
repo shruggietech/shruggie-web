@@ -1,86 +1,71 @@
 /**
- * Blog content loading library.
+ * Project-owned blog adapter.
  *
- * Reads .mdx files from content/blog/, parses frontmatter with gray-matter,
- * computes reading time, filters drafts in production, and sorts by date.
- *
- * Spec references: §7.2 (MDX Pipeline), §7.3 (Blog Post Template)
+ * Route and presentation code consume this module rather than repository or
+ * Firebase SDK objects. During migration it reads validated repository MDX;
+ * the backing reader can change without changing the public view model.
  */
 
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
+import "server-only";
+
 import readingTime from "reading-time";
 
-const POSTS_DIR = path.join(process.cwd(), "content", "blog");
+import type { Article } from "./editorial/domain";
+import { ArticleNotFoundError } from "./editorial/errors";
+import { MdxArticleReader } from "./editorial/mdx-article-reader";
+
+const articleReader = new MdxArticleReader();
 
 export interface PostMeta {
   slug: string;
   title: string;
-  date: string; // ISO 8601 (YYYY-MM-DD)
+  date: string;
   author: string;
   category: string;
   excerpt: string;
-  readingTime: string; // e.g., "6 min read"
-  published: boolean; // false = draft, excluded from production builds
-  ogImage?: string; // Optional custom OG image path
-  featuredImage?: string; // Optional hero/feature image path
+  readingTime: string;
+  published: boolean;
+  ogImage?: string;
+  featuredImage?: string;
+  featuredImageAlt?: string;
 }
 
-export function getAllPostsMeta(): PostMeta[] {
-  const files = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".mdx"));
-
-  const posts = files.map((filename) => {
-    const slug = filename.replace(/\.mdx$/, "");
-    const filePath = path.join(POSTS_DIR, filename);
-    const fileContent = fs.readFileSync(filePath, "utf-8");
-    const { data, content } = matter(fileContent);
-    const stats = readingTime(content);
-
-    return {
-      slug,
-      title: data.title,
-      date: data.date,
-      author: data.author ?? "ShruggieTech",
-      category: data.category ?? "Announcements",
-      excerpt: data.excerpt ?? "",
-      readingTime: stats.text,
-      published: data.published !== false,
-      ogImage: data.ogImage,
-      featuredImage: data.featuredImage,
-    } satisfies PostMeta;
-  });
-
-  return posts
-    .filter((p) => process.env.NODE_ENV === "development" || p.published)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-}
-
-export function getPostBySlug(slug: string) {
-  const filePath = path.join(POSTS_DIR, `${slug}.mdx`);
-  const fileContent = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(fileContent);
-  const stats = readingTime(content);
-
+function toPostMeta(article: Article): PostMeta {
   return {
-    meta: {
-      slug,
-      title: data.title,
-      date: data.date,
-      author: data.author ?? "ShruggieTech",
-      category: data.category ?? "Announcements",
-      excerpt: data.excerpt ?? "",
-      readingTime: stats.text,
-      published: data.published !== false,
-      ogImage: data.ogImage,
-      featuredImage: data.featuredImage,
-    } satisfies PostMeta,
-    content,
+    slug: article.slug,
+    title: article.title,
+    date: (article.publishedAt ?? article.modifiedAt).slice(0, 10),
+    author: article.author.name,
+    category: article.category,
+    excerpt: article.excerpt,
+    readingTime: readingTime(article.body.source).text,
+    published: article.state === "published",
+    ogImage: article.ogImage?.deliveryUrl,
+    featuredImage: article.featuredImage?.deliveryUrl,
+    featuredImageAlt: article.featuredImage?.altText,
   };
 }
 
-export function getPaginatedPosts(page: number, perPage: number = 10) {
-  const all = getAllPostsMeta();
+export async function getAllPostsMeta(): Promise<PostMeta[]> {
+  const visibility =
+    process.env.NODE_ENV === "development" ? "all" : "published";
+  const articles = await articleReader.list({ visibility });
+  return articles.map(toPostMeta);
+}
+
+export async function getPostBySlug(slug: string): Promise<{
+  content: string;
+  meta: PostMeta;
+}> {
+  const visibility =
+    process.env.NODE_ENV === "development" ? "all" : "published";
+  const article = await articleReader.getBySlug(slug, visibility);
+  if (!article) throw new ArticleNotFoundError(slug);
+  return { meta: toPostMeta(article), content: article.body.source };
+}
+
+export async function getPaginatedPosts(page: number, perPage = 10) {
+  const all = await getAllPostsMeta();
   const totalPages = Math.max(1, Math.ceil(all.length / perPage));
   const start = (page - 1) * perPage;
   const posts = all.slice(start, start + perPage);
