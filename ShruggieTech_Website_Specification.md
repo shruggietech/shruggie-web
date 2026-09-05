@@ -407,7 +407,7 @@ The palette is drawn directly from the brand identity established in KB §10.1. 
 | Token | Hex | Usage |
 |-------|-----|-------|
 | `--color-black` | `#000000` | Primary background (dark mode), text (light mode) |
-| `--color-green-bright` | `#2BCC73` | Primary accent, interactive elements, links, highlights |
+| `--color-green-bright` | `#2BCC73` | Bright identity accent on dark surfaces, decorative elements, highlights |
 | `--color-green-deep` | `#00AB21` | Logo mark, secondary accent, hover states |
 | `--color-orange` | `#FF5300` | CTA emphasis, alerts, energy accents |
 | `--color-gray-light` | `#D1D3D4` | Borders, secondary text, dividers |
@@ -424,6 +424,7 @@ The palette is drawn directly from the brand identity established in KB §10.1. 
 | `--color-gray-400` | `#9A9A9A` | Muted text (light mode) |
 | `--color-gray-200` | `#E5E5E5` | Borders (light mode) |
 | `--color-gray-100` | `#F5F5F5` | Surface (light mode cards) |
+| `--color-green-foreground` | `#037B40` | Accessible green text, links, and focus indicators on light surfaces |
 | `--color-green-bright-10` | `rgba(43, 204, 115, 0.10)` | Subtle accent backgrounds |
 | `--color-green-bright-20` | `rgba(43, 204, 115, 0.20)` | Badge backgrounds, active states |
 | `--color-orange-10` | `rgba(255, 83, 0, 0.10)` | Subtle CTA highlight backgrounds |
@@ -441,6 +442,7 @@ The palette is drawn directly from the brand identity established in KB §10.1. 
     --color-black: 0 0 0;
     --color-white: 255 255 255;
     --color-green-bright: 43 204 115;
+    --color-green-foreground: 3 123 64;
     --color-green-deep: 0 171 33;
     --color-orange: 255 83 0;
     --color-gray-light: 209 211 212;
@@ -453,8 +455,9 @@ The palette is drawn directly from the brand identity established in KB §10.1. 
     --color-text-secondary: 107 107 107;
     --color-text-muted: 154 154 154;
     --color-border: 229 229 229;
-    --color-accent: var(--color-green-bright);
-    --color-accent-hover: var(--color-green-deep);
+    --color-accent: var(--color-green-foreground);
+    --color-accent-hover: 2 94 49;
+    --color-focus: var(--color-green-foreground);
     --color-cta: var(--color-orange);
   }
 
@@ -468,6 +471,7 @@ The palette is drawn directly from the brand identity established in KB §10.1. 
     --color-border: 38 38 38;
     --color-accent: var(--color-green-bright);
     --color-accent-hover: var(--color-green-deep);
+    --color-focus: var(--color-green-bright);
     --color-cta: var(--color-orange);
   }
 }
@@ -649,7 +653,7 @@ For multi-column layouts (services grid, team cards, product cards), use CSS Gri
 
 <div style="text-align:justify">
 
-Two visual variants (primary and secondary) and two sizes (default and small). Primary uses the brand orange for maximum CTA energy. Secondary uses a bordered, transparent treatment. Both have subtle hover transitions. All buttons must be keyboard-focusable with a visible focus ring that uses the bright green accent.
+Two visual variants (primary and secondary) and two sizes (default and small). Primary uses the brand orange for maximum CTA energy. Secondary uses a bordered, transparent treatment. Both have subtle hover transitions. All buttons must be keyboard-focusable with a visible focus ring that uses the theme-aware focus token: accessible foreground green on light surfaces and bright green on dark surfaces.
 
 </div>
 
@@ -954,9 +958,9 @@ Section 508 of the Rehabilitation Act requires that electronic and information t
 <a name="32-implementation-patterns" id="32-implementation-patterns"></a>
 ### 3.2. Implementation Patterns
 
-**Color contrast:** All text-on-background combinations must meet WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text). The brand green `#2BCC73` on black `#000000` achieves a contrast ratio of approximately 8.9:1 (passes). The brand green on white `#FFFFFF` achieves approximately 2.4:1 (fails for body text). Therefore, in light mode, green accent text must be darkened to `#00AB21` (deep green, approximately 3.6:1) or used only for large text, icons, and decorative elements. Body text in light mode uses `#0A0A0A` on `#FFFFFF` (passes at approximately 19.5:1).
+**Color contrast:** All text-on-background combinations must meet WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text). The bright brand green `#2BCC73` remains the identity accent on dark surfaces, where it passes. It measures approximately 1.98:1 on the light reading surface `#F8F8F6`, so it must not be used for normal-size foreground text or focus indicators there. Light-mode green foreground roles use `#037B40`, which measures approximately 5.05:1 on `#F8F8F6`. Body text in light mode uses `#0A0A0A` on the light surface and remains comfortably above AA.
 
-**Keyboard navigation:** Every interactive element must be reachable via Tab key. Focus order must follow visual reading order. Focus indicators use a 2px solid outline in `#2BCC73` with a 2px offset, providing clear visibility on both dark and light backgrounds. The site must include a "Skip to main content" link as the first focusable element on every page.
+**Keyboard navigation:** Every interactive element must be reachable via Tab key. Focus order must follow visual reading order. Focus indicators use a 2px solid outline with a 2px offset. The semantic focus token resolves to `#037B40` on light surfaces and `#2BCC73` on dark surfaces. The site must include a "Skip to main content" link as the first focusable element on every page.
 
 **Skip link implementation (`components/ui/SkipLink.tsx`):**
 

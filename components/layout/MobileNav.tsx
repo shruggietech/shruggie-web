@@ -118,7 +118,7 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
           className={cn(
             "rounded-lg p-2 text-text-primary transition-colors",
             "hover:text-accent",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
           )}
         >
           <X size={28} aria-hidden="true" />
@@ -137,7 +137,7 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   "block font-display text-[28px] font-medium text-text-primary",
                   "transition-colors duration-200",
                   "hover:text-accent",
-                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
+                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
                 )}
               >
                 {link.label}

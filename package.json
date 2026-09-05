@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "npm run test:contrast",
+    "test:contrast": "node --test tests/color-contrast.test.mjs"
   },
   "dependencies": {
     "@formspree/react": "^3.0.0",

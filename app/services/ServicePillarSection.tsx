@@ -144,7 +144,7 @@ export default function ServicePillarSection({
               {detailHref && (
                 <Link
                   href={detailHref}
-                  className="group mt-8 inline-flex items-center gap-2 font-display text-body-md font-medium text-accent hover:text-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright"
+                  className="group mt-8 inline-flex items-center gap-2 font-display text-body-md font-medium text-accent hover:text-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 >
                   Explore {title}
                   <ArrowRight
