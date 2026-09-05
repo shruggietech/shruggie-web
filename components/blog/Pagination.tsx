@@ -39,14 +39,14 @@ export default function Pagination({
           {currentPage > 1 ? (
             <Link
               href={getPageHref(currentPage - 1)}
-              className="rounded-lg border border-border px-3 py-2 text-body-sm text-text-secondary transition-colors hover:border-accent hover:text-accent"
+              className="border-border text-body-sm text-text-secondary hover:border-accent hover:text-accent rounded-lg border px-3 py-2 transition-colors"
               aria-label="Previous page"
             >
               &larr; Prev
             </Link>
           ) : (
             <span
-              className="cursor-not-allowed rounded-lg border border-border/50 px-3 py-2 text-body-sm text-text-muted"
+              className="border-border/50 text-body-sm text-text-muted cursor-not-allowed rounded-lg border px-3 py-2"
               aria-disabled="true"
             >
               &larr; Prev
@@ -59,7 +59,7 @@ export default function Pagination({
           <li key={page}>
             {page === currentPage ? (
               <span
-                className="rounded-lg bg-accent px-3 py-2 text-body-sm font-medium text-black"
+                className="bg-accent text-body-sm rounded-lg px-3 py-2 font-medium text-white dark:text-black"
                 aria-current="page"
               >
                 {page}
@@ -68,8 +68,8 @@ export default function Pagination({
               <Link
                 href={getPageHref(page)}
                 className={cn(
-                  "rounded-lg border border-border px-3 py-2 text-body-sm text-text-secondary",
-                  "transition-colors hover:border-accent hover:text-accent",
+                  "border-border text-body-sm text-text-secondary rounded-lg border px-3 py-2",
+                  "hover:border-accent hover:text-accent transition-colors",
                 )}
               >
                 {page}
@@ -83,14 +83,14 @@ export default function Pagination({
           {currentPage < totalPages ? (
             <Link
               href={getPageHref(currentPage + 1)}
-              className="rounded-lg border border-border px-3 py-2 text-body-sm text-text-secondary transition-colors hover:border-accent hover:text-accent"
+              className="border-border text-body-sm text-text-secondary hover:border-accent hover:text-accent rounded-lg border px-3 py-2 transition-colors"
               aria-label="Next page"
             >
               Next &rarr;
             </Link>
           ) : (
             <span
-              className="cursor-not-allowed rounded-lg border border-border/50 px-3 py-2 text-body-sm text-text-muted"
+              className="border-border/50 text-body-sm text-text-muted cursor-not-allowed rounded-lg border px-3 py-2"
               aria-disabled="true"
             >
               Next &rarr;

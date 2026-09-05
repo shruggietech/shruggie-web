@@ -28,7 +28,7 @@ export default function BackToTop() {
         "rounded-full bg-cta text-white shadow-lg",
         "transition-all duration-300 ease-out",
         "hover:brightness-110 active:brightness-95",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green-bright",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-4 opacity-0",
