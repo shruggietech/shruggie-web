@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Article media is uploaded and served through authenticated server routes.
+    // Keeping the bucket private also prevents unpublished assets from leaking.
+    match /{object=**} {
+      allow read, write: if false;
+    }
+  }
+}

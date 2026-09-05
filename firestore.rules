@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // The CMS uses Firebase Admin from authenticated Next.js route handlers.
+    // Browser clients must never read drafts or write editorial data directly.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
