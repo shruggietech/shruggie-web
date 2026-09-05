@@ -29,6 +29,11 @@ The full, authoritative specification for page structure, design tokens, and
 content requirements lives in
 [`ShruggieTech_Website_Specification.md`](ShruggieTech_Website_Specification.md).
 
+The accepted but not-yet-shipped editorial backend architecture is documented
+in [`docs/architecture/adr-001-firebase-editorial-backend.md`](docs/architecture/adr-001-firebase-editorial-backend.md),
+with production procedures in
+[`docs/operations/firebase-production.md`](docs/operations/firebase-production.md).
+
 ## Getting Started
 
 **Prerequisites:** Node.js 22 LTS or newer, npm. (Next.js 16 requires Node
