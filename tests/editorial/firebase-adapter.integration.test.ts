@@ -4,6 +4,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { deleteApp, initializeApp, type App } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
+import { getAuth } from "firebase-admin/auth";
 
 import { FirebaseAssetStore } from "../../lib/editorial/firebase-asset-store";
 import { FirestoreArticleRepository } from "../../lib/editorial/firestore-article-repository";
@@ -11,7 +12,14 @@ import {
   RevisionConflictError,
   SlugCollisionError,
 } from "../../lib/editorial/errors";
-import { articleFixture, nextRevision } from "./fixtures";
+import {
+  createEditorSessionCookie,
+  EDITOR_SESSION_COOKIE,
+  verifyEditorIdToken,
+  verifyEditorSession,
+  type EditorialSecurityConfig,
+} from "../../lib/editorial/security";
+import { articleFixture, mutationContext, nextRevision } from "./fixtures";
 
 const projectId = "demo-shruggie-web";
 const bucketName = `${projectId}.firebasestorage.app`;
@@ -22,6 +30,9 @@ let db: Firestore;
 beforeAll(() => {
   if (!process.env.FIRESTORE_EMULATOR_HOST) {
     throw new Error("Run this test through npm run test:integration.");
+  }
+  if (!process.env.FIREBASE_AUTH_EMULATOR_HOST) {
+    throw new Error("The Firebase Auth emulator is required.");
   }
   app = initializeApp(
     { projectId, storageBucket: bucketName },
@@ -46,18 +57,78 @@ afterAll(async () => {
 });
 
 describe("Firebase editorial adapters", () => {
+  it("creates, verifies, and revokes an allowlisted staff session", async () => {
+    const auth = getAuth(app);
+    const uid = "editorial-security-test";
+    const email = "editor@shruggie.tech";
+    await auth.createUser({ email, emailVerified: true, uid });
+    try {
+      const customToken = await auth.createCustomToken(uid);
+      const response = await fetch(
+        `http://${process.env.FIREBASE_AUTH_EMULATOR_HOST}/identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=demo-key`,
+        {
+          body: JSON.stringify({
+            returnSecureToken: true,
+            token: customToken,
+          }),
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+        },
+      );
+      expect(response.ok).toBe(true);
+      const tokenResponse = (await response.json()) as { idToken: string };
+      const securityConfig: EditorialSecurityConfig = {
+        adminEmails: new Set(),
+        canonicalOrigin: "http://localhost:3000",
+        editorEmails: new Set([email]),
+      };
+      const principal = await verifyEditorIdToken(
+        tokenResponse.idToken,
+        auth,
+        securityConfig,
+      );
+      expect(principal).toMatchObject({ role: "editor", uid });
+
+      const sessionCookie = await createEditorSessionCookie(
+        tokenResponse.idToken,
+        auth,
+      );
+      await expect(
+        verifyEditorSession(
+          `${EDITOR_SESSION_COOKIE}=${encodeURIComponent(sessionCookie)}`,
+          auth,
+          securityConfig,
+        ),
+      ).resolves.toEqual(principal);
+
+      await new Promise((resolve) => setTimeout(resolve, 1_100));
+      await auth.revokeRefreshTokens(uid);
+      await expect(
+        verifyEditorSession(
+          `${EDITOR_SESSION_COOKIE}=${encodeURIComponent(sessionCookie)}`,
+          auth,
+          securityConfig,
+        ),
+      ).rejects.toMatchObject({ code: "INVALID_SESSION", status: 401 });
+    } finally {
+      await auth.deleteUser(uid);
+    }
+  });
+
   it("enforces slug reservations, optimistic revisions, and visibility", async () => {
     const repository = new FirestoreArticleRepository(db);
     const draft = articleFixture();
     await repository.create({
       article: draft,
       idempotencyKey: "firebase-create-0001",
+      mutation: mutationContext("request:firebase-create-0001"),
     });
 
     await expect(
       repository.create({
         article: articleFixture({ id: "article:collision" }),
         idempotencyKey: "firebase-create-0002",
+        mutation: mutationContext("request:firebase-create-0002"),
       }),
     ).rejects.toBeInstanceOf(SlugCollisionError);
     await expect(
@@ -73,18 +144,29 @@ describe("Firebase editorial adapters", () => {
         article: published,
         expectedRevision: 0,
         idempotencyKey: "firebase-update-0001",
+        mutation: mutationContext("request:firebase-update-0001"),
       }),
     ).rejects.toBeInstanceOf(RevisionConflictError);
     await repository.update({
       article: published,
       expectedRevision: 1,
       idempotencyKey: "firebase-update-0002",
+      mutation: mutationContext("request:firebase-update-0002"),
     });
 
     await expect(
       repository.getBySlug(draft.slug, "published"),
     ).resolves.toEqual(published);
     await expect(repository.exportAll()).resolves.toEqual([published]);
+    const audit = await repository.exportAudit();
+    expect(audit).toHaveLength(2);
+    expect(audit.map((event) => event.action).sort()).toEqual([
+      "create",
+      "publish",
+    ]);
+    expect(audit.every((event) => event.actorId === "editor:natalie")).toBe(
+      true,
+    );
   });
 
   it("stores validated image bytes privately and exports their records", async () => {

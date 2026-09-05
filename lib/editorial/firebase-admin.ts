@@ -9,6 +9,7 @@ import {
 } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
+import { getAuth } from "firebase-admin/auth";
 import { z } from "zod";
 
 import { FirebaseAssetStore } from "./firebase-asset-store";
@@ -60,4 +61,8 @@ export function createFirebaseEditorialBackend() {
       environment.NEXT_PUBLIC_SITE_URL,
     ),
   };
+}
+
+export function getFirebaseEditorialAuth() {
+  return getAuth(firebaseAdminApp());
 }

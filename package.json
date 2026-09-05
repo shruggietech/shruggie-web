@@ -10,7 +10,7 @@
     "test": "npm run test:contrast && npm run test:editorial",
     "test:contrast": "node --test tests/color-contrast.test.mjs",
     "test:editorial": "vitest run",
-    "test:integration": "firebase emulators:exec --project demo-shruggie-web --only firestore,storage \"vitest run --config vitest.integration.config.mts\"",
+    "test:integration": "firebase emulators:exec --project demo-shruggie-web --only auth,firestore,storage \"vitest run --config vitest.integration.config.mts\"",
     "test:all": "npm test && npm run test:integration"
   },
   "dependencies": {

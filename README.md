@@ -38,6 +38,8 @@ The versioned article, Markdown, asset, error, and export contracts are in
 Production dependency audit policy and the temporary Firebase advisory record
 are in
 [`docs/operations/dependency-security.md`](docs/operations/dependency-security.md).
+Staff identity, session, authorization, mutation, and audit controls are in
+[`docs/operations/editorial-security.md`](docs/operations/editorial-security.md).
 
 ## Getting Started
 

@@ -73,10 +73,13 @@ uses `MdxArticleReader`, which validates repository frontmatter and Markdown
 through article schema v1. Firebase SDK objects never cross this boundary.
 
 `FirestoreArticleRepository` implements transactional creates and updates over
-the `articles`, `articleSlugs`, `articleRevisions`, and `idempotencyKeys`
-collections. `FirebaseAssetStore` validates bytes before writing private objects
-and records. Both modules are marked server-only and translate provider failures
-into project errors.
+the `articles`, `articleSlugs`, `articleRevisions`, `idempotencyKeys`, and
+`editorialAudit` collections. Every create or update command carries the
+verified pseudonymous actor, bounded role, and request ID; the repository
+rejects a revision that attributes the write to a different actor.
+`FirebaseAssetStore` validates bytes before writing private objects and records.
+Both modules are marked server-only and translate provider failures into
+project errors.
 
 | Error code                 | Meaning                                           | Retryable |
 | -------------------------- | ------------------------------------------------- | --------- |

@@ -11,6 +11,12 @@ import type {
 import { Timestamp } from "firebase-admin/firestore";
 
 import {
+  createAuditEvent,
+  parseEditorialAuditEvent,
+  parseEditorialMutationContext,
+  type EditorialAuditEvent,
+} from "./audit";
+import {
   articleSlugSchema,
   editorialIdSchema,
   parseArticle,
@@ -35,6 +41,7 @@ import { assertArticleMutation } from "./transitions";
 const ARTICLES = "articles";
 const ARTICLE_SLUGS = "articleSlugs";
 const ARTICLE_REVISIONS = "articleRevisions";
+const EDITORIAL_AUDIT = "editorialAudit";
 const IDEMPOTENCY_KEYS = "idempotencyKeys";
 const IDEMPOTENCY_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -53,6 +60,10 @@ function revisionDocumentId(article: Article): string {
   return `${article.id}:${article.revision.number.toString().padStart(10, "0")}`;
 }
 
+function auditDocumentId(idempotencyKey: string): string {
+  return `audit:${fingerprint(idempotencyKey).slice(0, 40)}`;
+}
+
 export class FirestoreArticleRepository implements ArticleRepository {
   constructor(
     private readonly db: Firestore,
@@ -67,7 +78,12 @@ export class FirestoreArticleRepository implements ArticleRepository {
       );
     }
     const idempotencyKey = validateIdempotencyKey(command.idempotencyKey);
-    const commandFingerprint = fingerprint(article);
+    const mutation = parseEditorialMutationContext(command.mutation);
+    const commandFingerprint = fingerprint({
+      actorId: mutation.actorId,
+      article,
+      role: mutation.role,
+    });
 
     return withEditorialTimeout("create an article", this.timeoutMs, () =>
       this.db.runTransaction(async (transaction) => {
@@ -114,6 +130,17 @@ export class FirestoreArticleRepository implements ArticleRepository {
           commandFingerprint,
           article,
         );
+        transaction.create(
+          this.db
+            .collection(EDITORIAL_AUDIT)
+            .doc(auditDocumentId(idempotencyKey)),
+          createAuditEvent(
+            auditDocumentId(idempotencyKey),
+            null,
+            article,
+            mutation,
+          ),
+        );
         return article;
       }),
     );
@@ -122,9 +149,12 @@ export class FirestoreArticleRepository implements ArticleRepository {
   async update(command: UpdateArticleCommand): Promise<Article> {
     const next = parseArticle(command.article);
     const idempotencyKey = validateIdempotencyKey(command.idempotencyKey);
+    const mutation = parseEditorialMutationContext(command.mutation);
     const commandFingerprint = fingerprint({
       article: next,
+      actorId: mutation.actorId,
       expectedRevision: command.expectedRevision,
+      role: mutation.role,
     });
 
     return withEditorialTimeout("update an article", this.timeoutMs, () =>
@@ -171,6 +201,17 @@ export class FirestoreArticleRepository implements ArticleRepository {
           idempotencyKey,
           commandFingerprint,
           next,
+        );
+        transaction.create(
+          this.db
+            .collection(EDITORIAL_AUDIT)
+            .doc(auditDocumentId(idempotencyKey)),
+          createAuditEvent(
+            auditDocumentId(idempotencyKey),
+            current,
+            next,
+            mutation,
+          ),
         );
         return next;
       }),
@@ -259,6 +300,22 @@ export class FirestoreArticleRepository implements ArticleRepository {
         .get();
       return snapshot.docs.map((document) => parseArticle(document.data()));
     });
+  }
+
+  async exportAudit(): Promise<EditorialAuditEvent[]> {
+    return withEditorialTimeout(
+      "export editorial audit records",
+      this.timeoutMs,
+      async () => {
+        const snapshot = await this.db
+          .collection(EDITORIAL_AUDIT)
+          .orderBy("__name__")
+          .get();
+        return snapshot.docs.map((document) =>
+          parseEditorialAuditEvent(document.data()),
+        );
+      },
+    );
   }
 
   private async readIdempotentReplay(

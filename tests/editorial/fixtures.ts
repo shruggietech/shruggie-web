@@ -2,6 +2,17 @@ import {
   ARTICLE_SCHEMA_VERSION,
   type Article,
 } from "../../lib/editorial/domain";
+import type { EditorialMutationContext } from "../../lib/editorial/audit";
+
+export function mutationContext(
+  requestId = "request:editorial-test-0001",
+): EditorialMutationContext {
+  return {
+    actorId: "editor:natalie",
+    requestId,
+    role: "editor",
+  };
+}
 
 export function articleFixture(overrides: Partial<Article> = {}): Article {
   const base: Article = {

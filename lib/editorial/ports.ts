@@ -1,4 +1,5 @@
 import type { Article, AssetUploadInput, EditorialAsset } from "./domain";
+import type { EditorialAuditEvent, EditorialMutationContext } from "./audit";
 import { EditorialValidationError } from "./errors";
 
 export type ArticleVisibility = "all" | "published";
@@ -11,12 +12,14 @@ export interface ArticleListOptions {
 export interface CreateArticleCommand {
   article: Article;
   idempotencyKey: string;
+  mutation: EditorialMutationContext;
 }
 
 export interface UpdateArticleCommand {
   article: Article;
   expectedRevision: number;
   idempotencyKey: string;
+  mutation: EditorialMutationContext;
 }
 
 export interface ArticleReader {
@@ -30,6 +33,7 @@ export interface ArticleReader {
 
 export interface ArticleRepository extends ArticleReader {
   create(command: CreateArticleCommand): Promise<Article>;
+  exportAudit(): Promise<EditorialAuditEvent[]>;
   exportAll(): Promise<Article[]>;
   update(command: UpdateArticleCommand): Promise<Article>;
 }
