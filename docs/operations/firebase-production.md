@@ -23,11 +23,17 @@ alerts at USD 1, USD 2.50, and USD 5. Budget alerts do not stop service usage.
 
 ## Local development
 
-Use emulators, never production data:
+Use emulators, never production data. Run the application as the emulator
+command's child process so it inherits every Firebase emulator host variable:
 
 ```bash
-npx firebase-tools emulators:start --project demo-shruggie-web
+npx firebase-tools emulators:exec --project demo-shruggie-web "npm run dev"
 ```
+
+This starts the configured Auth, Firestore, and Storage emulators, launches the
+Next.js development server with their host variables, and stops the emulators
+when the application exits. The `demo-shruggie-web` identifier is reserved for
+local emulation; it is not a deployed development or beta environment.
 
 The application must fail startup outside Vercel production if a local process
 has production Firebase credentials without the expected emulator host
