@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
   },
+  rewrites: async () => [
+    {
+      source: "/__/auth/:path*",
+      destination: "https://shruggie-web.firebaseapp.com/__/auth/:path*",
+    },
+  ],
   headers: async () => [
     {
       source: "/fonts/(.*)",
