@@ -72,6 +72,13 @@ export function editorialErrorResponse(error: unknown): NextResponse {
     );
   }
   if (error instanceof EditorialError) {
+    if (error.retryable) {
+      console.error("Retryable editorial route error", {
+        cause: error.cause,
+        code: error.code,
+        details: error.details,
+      });
+    }
     const status =
       error.code === "CONTENT_TIMEOUT"
         ? 504
