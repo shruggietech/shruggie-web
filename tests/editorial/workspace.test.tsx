@@ -164,6 +164,10 @@ describe("EditorialWorkspace", () => {
       "## A useful heading{Enter}{Enter}A safe article body.",
     );
 
+    const preview = screen.getByRole("button", { name: "Preview" });
+    expect(preview).toBeDisabled();
+    expect(screen.getByText("Save the draft to preview.")).toBeInTheDocument();
+
     const save = screen.getByRole("button", { name: "Save draft" });
     save.focus();
     await user.keyboard("{Enter}");
@@ -176,8 +180,18 @@ describe("EditorialWorkspace", () => {
         String(input) === "/api/admin/articles" && init?.method === "POST",
     );
     expect(post).toBeTruthy();
+    expect(preview).toBeEnabled();
+    expect(
+      screen.getByText("Preview opens the saved draft without publishing."),
+    ).toBeInTheDocument();
+    const open = vi.spyOn(window, "open").mockReturnValue(null);
+    await user.click(preview);
+    expect(open).toHaveBeenCalledWith(
+      "/api/admin/preview?slug=a-keyboard-authored-article",
+      "_blank",
+      "noopener,noreferrer",
+    );
     expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
-    expect(screen.getByText("Publishing requires review.")).toBeInTheDocument();
     expect(screen.queryByText(/#28/)).not.toBeInTheDocument();
 
     const accessibility = await axe.run(container, {
