@@ -137,6 +137,12 @@ describe("EditorialWorkspace", () => {
     const newArticle = await screen.findByRole("button", {
       name: "New article",
     });
+    expect(
+      screen.getByRole("heading", { name: "No articles yet" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Create a draft" }),
+    ).not.toBeInTheDocument();
     newArticle.focus();
     await user.keyboard("{Enter}");
 

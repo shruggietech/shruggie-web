@@ -395,13 +395,6 @@ function ArticleDashboard({
       {articles.length === 0 ? (
         <Card hover={false} className="border-dashed text-center">
           <h3 className="font-display text-xl font-bold">No articles yet</h3>
-          <p className="text-text-secondary mx-auto mt-2 max-w-md">
-            Create the first draft. Nothing becomes public until a separate
-            publish step is completed.
-          </p>
-          <Button type="button" onClick={onCreate} className="mt-6">
-            Create a draft
-          </Button>
         </Card>
       ) : (
         <ul className="grid gap-4" aria-label="Editorial articles">
