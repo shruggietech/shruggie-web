@@ -50,7 +50,7 @@ const isAuthorizedDraftPreview = cache(async () => {
   }
 });
 
-async function getPostForRequest(slug: string) {
+const getPostForRequest = cache(async (slug: string) => {
   const preview = await isAuthorizedDraftPreview();
   return {
     post: preview
@@ -58,7 +58,7 @@ async function getPostForRequest(slug: string) {
       : await getPostBySlug(slug),
     preview,
   };
-}
+});
 
 export async function generateStaticParams() {
   const posts = await getAllPostsMeta();
