@@ -43,6 +43,7 @@ interface IdempotentResult {
 
 export class InMemoryArticleRepository implements ArticleRepository {
   private readonly articles = new Map<string, Article>();
+  private readonly revisions = new Map<string, Map<number, Article>>();
   private readonly articleIdBySlug = new Map<string, string>();
   private readonly auditEvents = new Map<string, EditorialAuditEvent>();
   private readonly idempotentResults = new Map<string, IdempotentResult>();
@@ -58,6 +59,7 @@ export class InMemoryArticleRepository implements ArticleRepository {
         );
       }
       this.articles.set(validated.id, structuredClone(validated));
+      this.storeRevision(validated);
       this.articleIdBySlug.set(validated.slug, validated.id);
     }
   }
@@ -101,6 +103,7 @@ export class InMemoryArticleRepository implements ArticleRepository {
     const auditId = this.auditId(command.idempotencyKey);
     const auditEvent = createAuditEvent(auditId, null, article, mutation);
     this.articles.set(article.id, structuredClone(article));
+    this.storeRevision(article);
     this.articleIdBySlug.set(article.slug, article.id);
     this.idempotentResults.set(command.idempotencyKey, {
       articleId: article.id,
@@ -143,6 +146,7 @@ export class InMemoryArticleRepository implements ArticleRepository {
     }
 
     this.articles.set(next.id, structuredClone(next));
+    this.storeRevision(next);
     this.idempotentResults.set(command.idempotencyKey, {
       articleId: next.id,
       fingerprint,
@@ -192,6 +196,19 @@ export class InMemoryArticleRepository implements ArticleRepository {
     return limited.map((article) => structuredClone(article));
   }
 
+  async listRevisions(id: string): Promise<Article[]> {
+    this.assertAvailable("list article revisions");
+    const parsedId = editorialIdSchema.safeParse(id);
+    if (!parsedId.success) {
+      throw new EditorialValidationError("Article ID is invalid.", {
+        issues: parsedId.error.issues,
+      });
+    }
+    return [...(this.revisions.get(parsedId.data)?.values() ?? [])]
+      .sort((a, b) => b.revision.number - a.revision.number)
+      .map((article) => structuredClone(article));
+  }
+
   async exportAll(): Promise<Article[]> {
     this.assertAvailable("export articles");
     return [...this.articles.values()].map((article) =>
@@ -212,6 +229,13 @@ export class InMemoryArticleRepository implements ArticleRepository {
       .digest("hex")
       .slice(0, 40);
     return `audit:${digest}`;
+  }
+
+  private storeRevision(article: Article): void {
+    const revisions =
+      this.revisions.get(article.id) ?? new Map<number, Article>();
+    revisions.set(article.revision.number, structuredClone(article));
+    this.revisions.set(article.id, revisions);
   }
 
   private getIdempotentReplay(

@@ -158,6 +158,10 @@ describe("Firebase editorial adapters", () => {
       repository.getBySlug(draft.slug, "published"),
     ).resolves.toEqual(published);
     await expect(repository.exportAll()).resolves.toEqual([published]);
+    await expect(repository.listRevisions(draft.id)).resolves.toEqual([
+      published,
+      draft,
+    ]);
     const audit = await repository.exportAudit();
     expect(audit).toHaveLength(2);
     expect(audit.map((event) => event.action).sort()).toEqual([

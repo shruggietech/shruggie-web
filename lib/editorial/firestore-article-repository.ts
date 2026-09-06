@@ -292,6 +292,28 @@ export class FirestoreArticleRepository implements ArticleRepository {
     });
   }
 
+  async listRevisions(id: string): Promise<Article[]> {
+    const parsedId = editorialIdSchema.safeParse(id);
+    if (!parsedId.success) {
+      throw new EditorialValidationError("Article ID is invalid.", {
+        issues: parsedId.error.issues,
+      });
+    }
+    return withEditorialTimeout(
+      "list article revisions",
+      this.timeoutMs,
+      async () => {
+        const snapshot = await this.db
+          .collection(ARTICLE_REVISIONS)
+          .where("id", "==", parsedId.data)
+          .get();
+        return snapshot.docs
+          .map((document) => parseArticle(document.data()))
+          .sort((a, b) => b.revision.number - a.revision.number);
+      },
+    );
+  }
+
   async exportAll(): Promise<Article[]> {
     return withEditorialTimeout("export articles", this.timeoutMs, async () => {
       const snapshot = await this.db

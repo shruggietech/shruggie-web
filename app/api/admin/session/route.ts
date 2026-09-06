@@ -4,6 +4,7 @@ import {
   editorialErrorResponse,
   editorialJson,
   readStrictJson,
+  requireEditor,
 } from "@/lib/editorial/http";
 import { getFirebaseEditorialAuth } from "@/lib/editorial/firebase-admin";
 import {
@@ -27,11 +28,7 @@ const sessionRequestSchema = z
 
 export async function GET(request: Request) {
   try {
-    const principal = await verifyEditorSession(
-      request.headers.get("cookie"),
-      getFirebaseEditorialAuth(),
-      loadEditorialSecurityConfig(),
-    );
+    const principal = await requireEditor(request);
     return editorialJson({
       editor: { id: principal.id, role: principal.role },
     });

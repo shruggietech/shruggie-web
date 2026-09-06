@@ -259,19 +259,25 @@ function readCookie(cookieHeader: string | null, name: string): string | null {
   return null;
 }
 
-export async function verifyEditorSession(
+export function assertEditorSessionCookiePresent(
   cookieHeader: string | null,
-  verifier: EditorialAuthVerifier,
-  config: EditorialSecurityConfig,
-): Promise<EditorPrincipal> {
-  const sessionCookie = readCookie(cookieHeader, EDITOR_SESSION_COOKIE);
-  if (!sessionCookie) {
+): void {
+  if (!readCookie(cookieHeader, EDITOR_SESSION_COOKIE)) {
     throw new EditorialSecurityError(
       "UNAUTHENTICATED",
       "An editorial session is required.",
       401,
     );
   }
+}
+
+export async function verifyEditorSession(
+  cookieHeader: string | null,
+  verifier: EditorialAuthVerifier,
+  config: EditorialSecurityConfig,
+): Promise<EditorPrincipal> {
+  assertEditorSessionCookiePresent(cookieHeader);
+  const sessionCookie = readCookie(cookieHeader, EDITOR_SESSION_COOKIE)!;
   try {
     const identity = await verifier.verifySessionCookie(sessionCookie, true);
     return authorizeEditorIdentity(identity, config);
