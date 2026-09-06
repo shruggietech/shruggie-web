@@ -199,6 +199,35 @@ describe("EditorialWorkspace", () => {
     expect(screen.getByLabelText("Excerpt")).not.toHaveAttribute(
       "data-lenis-prevent",
     );
+
+    Object.defineProperties(articleBody, {
+      clientHeight: { configurable: true, value: 200 },
+      scrollHeight: { configurable: true, value: 1_000 },
+    });
+    const pageWheel = vi.fn();
+    document.addEventListener("wheel", pageWheel);
+
+    const scrollInside = new WheelEvent("wheel", {
+      bubbles: true,
+      cancelable: true,
+      deltaY: 120,
+    });
+    articleBody.dispatchEvent(scrollInside);
+    expect(articleBody.scrollTop).toBe(120);
+    expect(scrollInside.defaultPrevented).toBe(true);
+    expect(pageWheel).not.toHaveBeenCalled();
+
+    articleBody.scrollTop = 800;
+    articleBody.dispatchEvent(
+      new WheelEvent("wheel", {
+        bubbles: true,
+        cancelable: true,
+        deltaY: 120,
+      }),
+    );
+    expect(articleBody.scrollTop).toBe(800);
+    expect(pageWheel).not.toHaveBeenCalled();
+    document.removeEventListener("wheel", pageWheel);
   });
 
   it("identifies invalid fields and preserves unsaved work", async () => {
