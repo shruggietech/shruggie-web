@@ -8,6 +8,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // Firestore's REST transport relies on protobuf Long constructor metadata.
+  // Keep the package out of Next's minified server bundle so integer fields
+  // serialize correctly in Vercel functions.
+  serverExternalPackages: ["@google-cloud/firestore"],
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
