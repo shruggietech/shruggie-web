@@ -664,8 +664,6 @@ function ArticleEditor({
           className="mb-6 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4"
         >
           This {draft.state} article is read-only in the draft workspace.
-          Publishing, unpublishing, and restoring lifecycle states arrive in
-          #28.
         </div>
       )}
       {conflict && (
@@ -867,7 +865,7 @@ function ArticleEditor({
               Publish
             </Button>
             <p id="publish-note" className="text-body-xs text-text-secondary">
-              Publishing is a separate reviewed action delivered in #28.
+              Publishing requires review.
             </p>
           </div>
         </form>
