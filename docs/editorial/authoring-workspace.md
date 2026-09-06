@@ -8,7 +8,9 @@ contracts from #25 and the server session boundary from #26.
 
 1. Open `/admin` and sign in with an approved `shruggie.tech` Google account.
    Authentication uses a same-tab Firebase redirect so browsers that suppress
-   popup windows cannot leave the workspace waiting indefinitely.
+   popup windows cannot leave the workspace waiting indefinitely. Production
+   serves Firebase's auth helper through `/__/auth/*` on `shruggie.tech`, which
+   keeps redirect state first-party in storage-partitioned browsers.
 2. Create a draft or open an existing draft from the article list.
 3. Complete the article details and Markdown body. Leaving the title field
    proposes a canonical slug when the slug is still empty.
