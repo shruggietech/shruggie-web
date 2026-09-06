@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@formspree/react": "^3.0.0",
+    "@google-cloud/firestore": "^9.0.1",
     "@google-cloud/storage": "^7.22.0",
     "@hookform/resolvers": "^5.2.2",
     "@shikijs/rehype": "^4.0.2",
