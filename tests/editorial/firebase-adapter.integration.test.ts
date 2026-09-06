@@ -1,6 +1,7 @@
 import sharp from "sharp";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 
+import { Firestore as DirectFirestore } from "@google-cloud/firestore";
 import { deleteApp, initializeApp, type App } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
@@ -26,6 +27,7 @@ const bucketName = `${projectId}.firebasestorage.app`;
 
 let app: App;
 let db: Firestore;
+let directDb: DirectFirestore;
 
 beforeAll(() => {
   if (!process.env.FIRESTORE_EMULATOR_HOST) {
@@ -39,6 +41,7 @@ beforeAll(() => {
     "editorial-test",
   );
   db = getFirestore(app);
+  directDb = new DirectFirestore({ projectId });
 });
 
 afterEach(async () => {
@@ -53,6 +56,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
+  await directDb.terminate();
   await deleteApp(app);
 });
 
@@ -171,6 +175,28 @@ describe("Firebase editorial adapters", () => {
     expect(audit.every((event) => event.actorId === "editor:natalie")).toBe(
       true,
     );
+  });
+
+  it("creates idempotency records through the direct Vercel Firestore client", async () => {
+    const repository = new FirestoreArticleRepository(directDb);
+    const draft = articleFixture({
+      id: "article:direct-client",
+      slug: "direct-client",
+    });
+
+    await expect(
+      repository.create({
+        article: draft,
+        idempotencyKey: "firebase-direct-create-0001",
+        mutation: mutationContext("request:firebase-direct-create-0001"),
+      }),
+    ).resolves.toEqual(draft);
+
+    const record = await directDb
+      .collection("idempotencyKeys")
+      .doc("firebase-direct-create-0001")
+      .get();
+    expect(record.get("expiresAt")?.toDate()).toBeInstanceOf(Date);
   });
 
   it("stores validated image bytes privately and exports their records", async () => {
