@@ -7,6 +7,8 @@ contracts from #25 and the server session boundary from #26.
 ## Staff workflow
 
 1. Open `/admin` and sign in with an approved `shruggie.tech` Google account.
+   Authentication uses a same-tab Firebase redirect so browsers that suppress
+   popup windows cannot leave the workspace waiting indefinitely.
 2. Create a draft or open an existing draft from the article list.
 3. Complete the article details and Markdown body. Leaving the title field
    proposes a canonical slug when the slug is still empty.
@@ -25,8 +27,9 @@ preview, rollback, and cache-convergence workflow in #28 is complete.
 ## Failure behavior
 
 - A stale save returns a visible conflict and keeps the local form intact.
-- A session-expiry dialog covers the workspace without unmounting the form;
-  reauthentication resumes the current browser state.
+- Unsaved forms are recoverable from same-tab session storage across the Google
+  redirect. The recovery record is cleared after saving, discarding, or
+  signing out.
 - Article-list and revision-history failures provide bounded retry actions.
 - Dependency failures are described without claiming that a write succeeded.
 - Published and archived records are read-only until #28 supplies the complete

@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LogIn } from "lucide-react";
 
 import {
   createEditorialSession,
   type EditorialEditor,
 } from "@/lib/editorial/client-api";
-import { getFreshGoogleIdToken } from "@/lib/editorial/firebase-browser";
+import {
+  completeGoogleSignIn,
+  startGoogleSignIn,
+} from "@/lib/editorial/firebase-browser";
 import { Button } from "@/components/ui/Button";
 
 interface SignInPanelProps {
@@ -22,21 +25,37 @@ export default function SignInPanel({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    let active = true;
+    completeGoogleSignIn()
+      .then(async (idToken) => {
+        if (!active || !idToken) return;
+        setBusy(true);
+        onSignedIn(await createEditorialSession(idToken));
+      })
+      .catch((caught) => {
+        if (!active) return;
+        setError(
+          caught instanceof Error
+            ? caught.message
+            : "Google sign-in could not be completed.",
+        );
+        setBusy(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [onSignedIn]);
+
   async function signIn() {
     setBusy(true);
     setError(null);
     try {
-      const idToken = await getFreshGoogleIdToken();
-      onSignedIn(await createEditorialSession(idToken));
+      await startGoogleSignIn();
     } catch (caught) {
       const message =
         caught instanceof Error ? caught.message : "Sign-in failed.";
-      setError(
-        message.includes("popup-closed")
-          ? "The sign-in window was closed before authentication finished."
-          : message,
-      );
-    } finally {
+      setError(message);
       setBusy(false);
     }
   }
@@ -77,7 +96,7 @@ export default function SignInPanel({
         disabled={busy}
         className="mt-7 w-full sm:w-auto"
       >
-        {busy ? "Opening Google sign-in…" : "Continue with Google"}
+        {busy ? "Redirecting to Google…" : "Continue with Google"}
       </Button>
     </section>
   );
