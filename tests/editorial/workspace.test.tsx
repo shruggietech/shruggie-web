@@ -110,8 +110,16 @@ describe("EditorialWorkspace", () => {
     const user = userEvent.setup();
     render(<EditorialWorkspace />);
 
+    expect(
+      await screen.findByText(/This workspace is for pre-authorized use only/),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Contact us." })).toHaveAttribute(
+      "href",
+      "/contact",
+    );
+
     await user.click(
-      await screen.findByRole("button", { name: "Continue with Google" }),
+      screen.getByRole("button", { name: "Continue with Google" }),
     );
 
     expect(firebaseBrowserMocks.startGoogleSignIn).toHaveBeenCalledOnce();

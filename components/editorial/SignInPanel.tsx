@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { LogIn } from "lucide-react";
+import Link from "next/link";
 
 import {
   createEditorialSession,
@@ -78,9 +79,20 @@ export default function SignInPanel({
         {expired ? "Your session expired" : "Write for ShruggieTech"}
       </h1>
       <p className="text-body-md text-text-secondary mt-3">
-        {expired
-          ? "Sign in again to continue. Your unsaved changes are still here."
-          : "Use an approved shruggie.tech Google account. Public registration is not available."}
+        {expired ? (
+          "Sign in again to continue. Your unsaved changes are still here."
+        ) : (
+          <>
+            This workspace is for pre-authorized use only. Interested in
+            publishing to our blog?{" "}
+            <Link
+              href="/contact"
+              className="text-accent underline decoration-current/40 underline-offset-4 hover:decoration-current"
+            >
+              Contact us.
+            </Link>
+          </>
+        )}
       </p>
       {error && (
         <div
