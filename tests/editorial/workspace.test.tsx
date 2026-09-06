@@ -186,6 +186,21 @@ describe("EditorialWorkspace", () => {
     expect(accessibility.violations).toEqual([]);
   });
 
+  it("keeps article-body scrolling inside the editor", async () => {
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: "New article" }),
+    );
+
+    const articleBody = screen.getByLabelText("Article body in Markdown");
+    expect(articleBody).toHaveAttribute("data-lenis-prevent");
+    expect(articleBody).toHaveClass("overscroll-contain");
+    expect(screen.getByLabelText("Excerpt")).not.toHaveAttribute(
+      "data-lenis-prevent",
+    );
+  });
+
   it("identifies invalid fields and preserves unsaved work", async () => {
     const user = userEvent.setup();
     render(<EditorialWorkspace />);
