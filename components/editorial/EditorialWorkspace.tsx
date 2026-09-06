@@ -805,6 +805,7 @@ function ArticleEditor({
             <textarea
               id="body.source"
               aria-label="Article body in Markdown"
+              data-lenis-prevent
               rows={22}
               value={draft.body.source}
               disabled={readOnly}
@@ -813,7 +814,7 @@ function ArticleEditor({
                 errors["body.source"] ? "body.source-error" : "body-hint"
               }
               onChange={(event) => field("body.source", event.target.value)}
-              className={`${inputClass} text-body-sm resize-y font-mono leading-6`}
+              className={`${inputClass} text-body-sm resize-y overscroll-contain font-mono leading-6`}
             />
             {errors["body.source"] && (
               <p
