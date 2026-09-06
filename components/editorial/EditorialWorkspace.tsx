@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   Clock3,
   FilePlus2,
+  Eye,
   ImagePlus,
   LoaderCircle,
   LogOut,
@@ -883,13 +884,31 @@ function ArticleEditor({
             <Button
               type="button"
               variant="secondary"
-              disabled
-              aria-describedby="publish-note"
+              disabled={!persisted || dirty}
+              aria-describedby="preview-note"
+              onClick={() => {
+                if (!persisted || dirty) return;
+                window.open(
+                  `/api/admin/preview?slug=${encodeURIComponent(persisted.slug)}`,
+                  "_blank",
+                  "noopener,noreferrer",
+                );
+              }}
             >
+              <Eye aria-hidden="true" className="mr-2" size={18} /> Preview
+            </Button>
+            <Button type="button" variant="secondary" disabled>
               Publish
             </Button>
-            <p id="publish-note" className="text-body-xs text-text-secondary">
-              Publishing requires review.
+            <p
+              id="preview-note"
+              className="text-body-xs text-text-secondary sm:ml-auto"
+            >
+              {!persisted
+                ? "Save the draft to preview."
+                : dirty
+                  ? "Save changes to refresh the preview."
+                  : "Preview opens the saved draft without publishing."}
             </p>
           </div>
         </form>

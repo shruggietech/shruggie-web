@@ -10,13 +10,20 @@
  */
 
 import type { Metadata } from "next";
+import { draftMode, headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import rehypeShiki from "@shikijs/rehype";
+import { cache } from "react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
-import { getAllPostsMeta, getPostBySlug } from "@/lib/blog";
+import {
+  getAllPostsMeta,
+  getPostBySlug,
+  getPreviewPostBySlug,
+} from "@/lib/blog";
+import { requireEditor } from "@/lib/editorial/http";
 import { extractHeadings } from "@/lib/utils";
 import { generateBlogPostSchema } from "@/lib/schema";
 import { mdxComponents } from "@/components/blog/MDXComponents";
@@ -30,6 +37,29 @@ interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
 
+const isAuthorizedDraftPreview = cache(async () => {
+  const mode = await draftMode();
+  if (!mode.isEnabled) return false;
+
+  try {
+    const requestHeaders = new Headers(await headers());
+    await requireEditor(new Request(SITE_URL, { headers: requestHeaders }));
+    return true;
+  } catch {
+    return false;
+  }
+});
+
+async function getPostForRequest(slug: string) {
+  const preview = await isAuthorizedDraftPreview();
+  return {
+    post: preview
+      ? await getPreviewPostBySlug(slug)
+      : await getPostBySlug(slug),
+    preview,
+  };
+}
+
 export async function generateStaticParams() {
   const posts = await getAllPostsMeta();
   return posts.map((post) => ({ slug: post.slug }));
@@ -41,7 +71,8 @@ export async function generateMetadata({
   const resolvedParams = await params;
 
   try {
-    const { meta } = await getPostBySlug(resolvedParams.slug);
+    const { post, preview } = await getPostForRequest(resolvedParams.slug);
+    const { meta } = post;
 
     // Priority chain: ogImage → featuredImage → dynamic /api/og card
     const ogImageUrl = meta.ogImage
@@ -55,6 +86,9 @@ export async function generateMetadata({
     return {
       title: meta.title,
       description: meta.excerpt,
+      robots: preview
+        ? { index: false, follow: false, noarchive: true }
+        : undefined,
       alternates: {
         canonical: `${SITE_URL}/blog/${meta.slug}`,
       },
@@ -92,8 +126,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const resolvedParams = await params;
 
   let post;
+  let preview = false;
   try {
-    post = await getPostBySlug(resolvedParams.slug);
+    const result = await getPostForRequest(resolvedParams.slug);
+    post = result.post;
+    preview = result.preview;
   } catch {
     notFound();
   }
@@ -101,7 +138,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { meta, content } = post;
 
   // In production, don't render unpublished posts
-  if (process.env.NODE_ENV === "production" && !meta.published) {
+  if (process.env.NODE_ENV === "production" && !meta.published && !preview) {
     notFound();
   }
 
@@ -109,7 +146,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <>
-      <JsonLd data={generateBlogPostSchema(meta)} />
+      {!preview && <JsonLd data={generateBlogPostSchema(meta)} />}
+      {preview && (
+        <div className="border-accent/30 bg-accent/10 border-b">
+          <div className="mx-auto flex max-w-[var(--max-width-content)] flex-wrap items-center justify-between gap-3 px-[var(--padding-x)] py-3">
+            <p className="text-body-sm font-medium">
+              Draft preview — this saved revision has not been published.
+            </p>
+            <a
+              href="/api/admin/preview/exit"
+              className="focus-visible:outline-focus border-border hover:border-accent hover:text-accent rounded-lg border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              Exit preview
+            </a>
+          </div>
+        </div>
+      )}
       <article className="py-20">
         {/* Header — always centered */}
         <div className="mx-auto max-w-[900px] px-[var(--padding-x)]">

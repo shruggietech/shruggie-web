@@ -12,6 +12,7 @@ import readingTime from "reading-time";
 
 import type { Article } from "./editorial/domain";
 import { ArticleNotFoundError } from "./editorial/errors";
+import { createFirebaseEditorialBackend } from "./editorial/firebase-admin";
 import { MdxArticleReader } from "./editorial/mdx-article-reader";
 
 const articleReader = new MdxArticleReader();
@@ -60,6 +61,22 @@ export async function getPostBySlug(slug: string): Promise<{
   const visibility =
     process.env.NODE_ENV === "development" ? "all" : "published";
   const article = await articleReader.getBySlug(slug, visibility);
+  if (!article) throw new ArticleNotFoundError(slug);
+  return { meta: toPostMeta(article), content: article.body.source };
+}
+
+/**
+ * Read the saved editorial copy for an authorized Draft Mode request.
+ * Public blog reads remain repository-backed until the publishing cutover.
+ */
+export async function getPreviewPostBySlug(slug: string): Promise<{
+  content: string;
+  meta: PostMeta;
+}> {
+  const article = await createFirebaseEditorialBackend().articles.getBySlug(
+    slug,
+    "all",
+  );
   if (!article) throw new ArticleNotFoundError(slug);
   return { meta: toPostMeta(article), content: article.body.source };
 }
