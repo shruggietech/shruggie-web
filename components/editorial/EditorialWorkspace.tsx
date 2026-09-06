@@ -470,10 +470,39 @@ function ArticleEditor({
   );
   const [selectedRevision, setSelectedRevision] = useState<number | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
   const readOnly = draft.state !== "draft";
 
   useEffect(() => {
     titleRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    const textarea = bodyRef.current;
+    if (!textarea) return;
+
+    const containWheel = (event: WheelEvent) => {
+      if (event.deltaY === 0) return;
+      const multiplier =
+        event.deltaMode === 1
+          ? 16
+          : event.deltaMode === 2
+            ? textarea.clientHeight
+            : 1;
+      const maximum = Math.max(
+        0,
+        textarea.scrollHeight - textarea.clientHeight,
+      );
+      textarea.scrollTop = Math.min(
+        maximum,
+        Math.max(0, textarea.scrollTop + event.deltaY * multiplier),
+      );
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    textarea.addEventListener("wheel", containWheel, { passive: false });
+    return () => textarea.removeEventListener("wheel", containWheel);
   }, []);
 
   const loadRevisions = useCallback(async () => {
@@ -803,6 +832,7 @@ function ArticleEditor({
               are rejected.
             </p>
             <textarea
+              ref={bodyRef}
               id="body.source"
               aria-label="Article body in Markdown"
               data-lenis-prevent
