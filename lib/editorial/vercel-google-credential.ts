@@ -79,6 +79,14 @@ export class VercelGoogleCredential implements Credential {
 export function createVercelGoogleCredential(
   environment: Record<string, string | undefined> = process.env,
 ): Credential {
+  return new VercelGoogleCredential(
+    createVercelExternalAccountClient(environment),
+  );
+}
+
+export function createVercelExternalAccountClient(
+  environment: Record<string, string | undefined> = process.env,
+): BaseExternalAccountClient {
   const options = externalAccountOptions(
     loadVercelGoogleCredentialConfig(environment),
   );
@@ -87,5 +95,5 @@ export function createVercelGoogleCredential(
     throw new Error("Unable to initialize Vercel workload identity.");
   }
 
-  return new VercelGoogleCredential(client);
+  return client;
 }

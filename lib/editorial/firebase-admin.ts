@@ -1,5 +1,7 @@
 import "server-only";
 
+import { Firestore } from "@google-cloud/firestore";
+import { Storage, type Bucket } from "@google-cloud/storage";
 import {
   applicationDefault,
   getApp,
@@ -14,7 +16,10 @@ import { z } from "zod";
 
 import { FirebaseAssetStore } from "./firebase-asset-store";
 import { FirestoreArticleRepository } from "./firestore-article-repository";
-import { createVercelGoogleCredential } from "./vercel-google-credential";
+import {
+  createVercelExternalAccountClient,
+  createVercelGoogleCredential,
+} from "./vercel-google-credential";
 
 const environmentSchema = z.object({
   FIREBASE_PROJECT_ID: z.string().min(1),
@@ -55,9 +60,25 @@ export function createFirebaseEditorialBackend() {
     FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   });
-  const app = firebaseAdminApp();
-  const db = getFirestore(app);
-  const bucket = getStorage(app).bucket(environment.FIREBASE_STORAGE_BUCKET);
+  let db: Firestore;
+  let bucket: Bucket;
+
+  if (process.env.VERCEL === "1") {
+    const authClient = createVercelExternalAccountClient();
+    db = new Firestore({
+      authClient,
+      preferRest: true,
+      projectId: environment.FIREBASE_PROJECT_ID,
+    });
+    bucket = new Storage({
+      authClient: authClient as never,
+      projectId: environment.FIREBASE_PROJECT_ID,
+    }).bucket(environment.FIREBASE_STORAGE_BUCKET);
+  } else {
+    const app = firebaseAdminApp();
+    db = getFirestore(app);
+    bucket = getStorage(app).bucket(environment.FIREBASE_STORAGE_BUCKET);
+  }
 
   return {
     articles: new FirestoreArticleRepository(db),
