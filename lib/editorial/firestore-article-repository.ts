@@ -8,7 +8,6 @@ import type {
   Firestore,
   Transaction,
 } from "firebase-admin/firestore";
-import { Timestamp } from "firebase-admin/firestore";
 
 import {
   createAuditEvent,
@@ -47,7 +46,7 @@ const IDEMPOTENCY_TTL_MS = 24 * 60 * 60 * 1000;
 
 interface IdempotencyRecord {
   articleId: string;
-  expiresAt: Timestamp;
+  expiresAt: Date;
   fingerprint: string;
   revisionNumber: number;
 }
@@ -384,7 +383,9 @@ export class FirestoreArticleRepository implements ArticleRepository {
       articleId: article.id,
       revisionNumber: article.revision.number,
       fingerprint: commandFingerprint,
-      expiresAt: Timestamp.fromMillis(Date.now() + IDEMPOTENCY_TTL_MS),
+      // Native dates serialize across both Firestore client versions used by
+      // Firebase Admin locally and the direct Google Cloud client on Vercel.
+      expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS),
     } satisfies IdempotencyRecord);
   }
 }
