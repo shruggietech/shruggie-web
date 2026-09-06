@@ -171,6 +171,8 @@ describe("EditorialWorkspace", () => {
     );
     expect(post).toBeTruthy();
     expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
+    expect(screen.getByText("Publishing requires review.")).toBeInTheDocument();
+    expect(screen.queryByText(/#28/)).not.toBeInTheDocument();
 
     const accessibility = await axe.run(container, {
       rules: { "color-contrast": { enabled: false } },
