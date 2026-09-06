@@ -195,6 +195,28 @@ describe("ArticleRepository contract", () => {
     ]);
   });
 
+  it("returns immutable article revisions newest first", async () => {
+    const first = articleFixture();
+    const repository = new InMemoryArticleRepository([first]);
+    const second = nextRevision(first, { title: "The second revision" });
+    await repository.update({
+      article: second,
+      expectedRevision: 1,
+      idempotencyKey: "revision-history-0001",
+      mutation: mutationContext("request:revision-history-0001"),
+    });
+
+    const revisions = await repository.listRevisions(first.id);
+    expect(revisions.map((article) => article.revision.number)).toEqual([2, 1]);
+    expect(revisions[1].title).toBe(first.title);
+
+    revisions[1].title = "Mutated outside the repository";
+    await expect(repository.listRevisions(first.id)).resolves.toEqual([
+      second,
+      first,
+    ]);
+  });
+
   it("rejects malformed idempotency keys and unsafe list limits", async () => {
     const repository = new InMemoryArticleRepository();
     await expect(

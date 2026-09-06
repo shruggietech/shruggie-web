@@ -35,6 +35,7 @@ export interface ArticleRepository extends ArticleReader {
   create(command: CreateArticleCommand): Promise<Article>;
   exportAudit(): Promise<EditorialAuditEvent[]>;
   exportAll(): Promise<Article[]>;
+  listRevisions(id: string): Promise<Article[]>;
   update(command: UpdateArticleCommand): Promise<Article>;
 }
 

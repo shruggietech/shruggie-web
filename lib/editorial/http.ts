@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import { EditorialError, EditorialValidationError } from "./errors";
 import { getFirebaseEditorialAuth } from "./firebase-admin";
 import {
+  assertEditorSessionCookiePresent,
   EditorialSecurityError,
   loadEditorialSecurityConfig,
   verifyEditorSession,
@@ -20,6 +21,7 @@ const noStoreHeaders = {
 export async function requireEditor(
   request: Request,
 ): Promise<EditorPrincipal> {
+  assertEditorSessionCookiePresent(request.headers.get("cookie"));
   return verifyEditorSession(
     request.headers.get("cookie"),
     getFirebaseEditorialAuth(),
