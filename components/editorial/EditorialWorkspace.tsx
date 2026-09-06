@@ -48,6 +48,34 @@ type AssetSlot = "featuredImage" | "ogImage";
 const inputClass =
   "mt-2 w-full rounded-lg border border-border bg-bg-primary px-3 py-2.5 text-text-primary shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25 disabled:cursor-not-allowed disabled:opacity-60";
 const labelClass = "block font-medium text-text-primary";
+const DRAFT_RECOVERY_KEY = "shruggie:editorial-draft-recovery";
+
+interface DraftRecovery {
+  draft: Article;
+  persisted: Article | null;
+}
+
+function readDraftRecovery(): DraftRecovery | null {
+  try {
+    const value = JSON.parse(
+      sessionStorage.getItem(DRAFT_RECOVERY_KEY) ?? "null",
+    ) as DraftRecovery | null;
+    if (
+      !value?.draft ||
+      typeof value.draft.id !== "string" ||
+      typeof value.draft.body?.source !== "string"
+    ) {
+      return null;
+    }
+    return value;
+  } catch {
+    return null;
+  }
+}
+
+function clearDraftRecovery(): void {
+  sessionStorage.removeItem(DRAFT_RECOVERY_KEY);
+}
 
 function isSessionError(error: unknown): boolean {
   return (
@@ -87,6 +115,19 @@ export default function EditorialWorkspace() {
   const [dirty, setDirty] = useState(false);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
 
+  const signedIn = useCallback((nextEditor: EditorialEditor) => {
+    const recovery = readDraftRecovery();
+    setEditor(nextEditor);
+    setSessionExpired(false);
+    setSessionState("ready");
+    setListState("idle");
+    if (recovery) {
+      setPersisted(recovery.persisted);
+      setDraft(recovery.draft);
+      setDirty(true);
+    }
+  }, []);
+
   const handleSessionFailure = useCallback((error: unknown) => {
     if (isSessionError(error)) {
       setSessionExpired(true);
@@ -120,8 +161,7 @@ export default function EditorialWorkspace() {
     getEditorialSession()
       .then((nextEditor) => {
         if (!active) return;
-        setEditor(nextEditor);
-        setSessionState("ready");
+        signedIn(nextEditor);
       })
       .catch((error) => {
         if (!active) return;
@@ -130,7 +170,7 @@ export default function EditorialWorkspace() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [signedIn]);
 
   useEffect(() => {
     if (editor && sessionState === "ready" && listState === "idle") {
@@ -138,17 +178,20 @@ export default function EditorialWorkspace() {
     }
   }, [editor, listState, loadWorkspace, sessionState]);
 
-  function signedIn(nextEditor: EditorialEditor) {
-    setEditor(nextEditor);
-    setSessionExpired(false);
-    setSessionState("ready");
-    setListState("idle");
-  }
+  useEffect(() => {
+    if (draft && dirty) {
+      sessionStorage.setItem(
+        DRAFT_RECOVERY_KEY,
+        JSON.stringify({ draft, persisted } satisfies DraftRecovery),
+      );
+    }
+  }, [dirty, draft, persisted]);
 
   async function signOut() {
     try {
       await deleteEditorialSession();
     } finally {
+      clearDraftRecovery();
       setEditor(null);
       setSessionState("idle");
       setArticles([]);
@@ -162,6 +205,7 @@ export default function EditorialWorkspace() {
 
   function beginNewArticle() {
     if (!editor) return;
+    clearDraftRecovery();
     setPersisted(null);
     setDraft(createBlankArticle(editor.id));
     setDirty(false);
@@ -169,6 +213,7 @@ export default function EditorialWorkspace() {
   }
 
   function editArticle(article: Article) {
+    clearDraftRecovery();
     setPersisted(article);
     setDraft(structuredClone(article));
     setDirty(false);
@@ -184,6 +229,7 @@ export default function EditorialWorkspace() {
     setDraft(null);
     setDirty(false);
     setConfirmDiscard(false);
+    clearDraftRecovery();
   }
 
   if (sessionState === "loading") {
@@ -258,6 +304,7 @@ export default function EditorialWorkspace() {
           }}
           onClose={closeEditor}
           onSaved={(saved) => {
+            clearDraftRecovery();
             setPersisted(saved);
             setDraft(structuredClone(saved));
             setDirty(false);

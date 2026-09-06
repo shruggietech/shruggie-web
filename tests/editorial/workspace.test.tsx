@@ -10,8 +10,14 @@ import EditorialWorkspace from "../../components/editorial/EditorialWorkspace";
 import type { Article } from "../../lib/editorial/domain";
 import { articleFixture, nextRevision } from "./fixtures";
 
+const firebaseBrowserMocks = vi.hoisted(() => ({
+  completeGoogleSignIn: vi.fn(),
+  startGoogleSignIn: vi.fn(),
+}));
+
 vi.mock("../../lib/editorial/firebase-browser", () => ({
-  getFreshGoogleIdToken: vi.fn(),
+  completeGoogleSignIn: firebaseBrowserMocks.completeGoogleSignIn,
+  startGoogleSignIn: firebaseBrowserMocks.startGoogleSignIn,
 }));
 
 function json(body: unknown, status = 200): Response {
@@ -70,6 +76,9 @@ function sessionAndWorkspaceFetch(
 }
 
 beforeEach(() => {
+  sessionStorage.clear();
+  firebaseBrowserMocks.completeGoogleSignIn.mockResolvedValue(null);
+  firebaseBrowserMocks.startGoogleSignIn.mockResolvedValue(undefined);
   Object.defineProperty(globalThis, "fetch", {
     configurable: true,
     value: sessionAndWorkspaceFetch(),
@@ -86,6 +95,31 @@ afterEach(() => {
 });
 
 describe("EditorialWorkspace", () => {
+  it("uses a same-tab Google redirect instead of a popup", async () => {
+    globalThis.fetch = vi.fn(async () =>
+      json(
+        {
+          error: {
+            code: "UNAUTHENTICATED",
+            message: "An editorial session is required.",
+          },
+        },
+        401,
+      ),
+    );
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+
+    await user.click(
+      await screen.findByRole("button", { name: "Continue with Google" }),
+    );
+
+    expect(firebaseBrowserMocks.startGoogleSignIn).toHaveBeenCalledOnce();
+    expect(
+      screen.getByRole("button", { name: "Redirecting to Google…" }),
+    ).toBeDisabled();
+  });
+
   it("supports the complete keyboard draft-authoring journey", async () => {
     const user = userEvent.setup();
     const fetchMock = sessionAndWorkspaceFetch();
@@ -290,5 +324,25 @@ describe("EditorialWorkspace", () => {
       await screen.findByRole("dialog", { name: "Session expired" }),
     ).toBeInTheDocument();
     expect(title).toHaveValue("Still here after reauthentication");
+  });
+
+  it("recovers an unsaved draft after same-tab authentication navigation", async () => {
+    const user = userEvent.setup();
+    const firstRender = render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: "New article" }),
+    );
+    await user.type(
+      screen.getByLabelText("Title"),
+      "Recovered after Google redirect",
+    );
+
+    await screen.findByText("Unsaved changes");
+    firstRender.unmount();
+    render(<EditorialWorkspace />);
+
+    expect(await screen.findByLabelText("Title")).toHaveValue(
+      "Recovered after Google redirect",
+    );
   });
 });

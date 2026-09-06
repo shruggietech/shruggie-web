@@ -3,8 +3,9 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import {
   getAuth,
+  getRedirectResult,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
   signOut,
 } from "firebase/auth";
 
@@ -29,14 +30,24 @@ function browserAuth() {
   return getAuth(app);
 }
 
-export async function getFreshGoogleIdToken(): Promise<string> {
-  const auth = browserAuth();
+function googleProvider(): GoogleAuthProvider {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({
     hd: "shruggie.tech",
     prompt: "select_account",
   });
-  const credential = await signInWithPopup(auth, provider);
+  return provider;
+}
+
+export async function startGoogleSignIn(): Promise<void> {
+  const auth = browserAuth();
+  await signInWithRedirect(auth, googleProvider());
+}
+
+export async function completeGoogleSignIn(): Promise<string | null> {
+  const auth = browserAuth();
+  const credential = await getRedirectResult(auth);
+  if (!credential) return null;
   const idToken = await credential.user.getIdToken(true);
   await signOut(auth);
   return idToken;
