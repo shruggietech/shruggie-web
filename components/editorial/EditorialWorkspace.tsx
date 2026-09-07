@@ -827,7 +827,7 @@ function ArticleEditor({
                   className={inputClass}
                 >
                   <option value="" disabled>
-                    {draft.author.name
+                    {!getAuthorByReference(draft.author) && draft.author.name
                       ? `Select an author — “${draft.author.name}” has no profile`
                       : "Select an author"}
                   </option>
