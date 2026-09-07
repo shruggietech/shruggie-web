@@ -162,6 +162,12 @@ describe("EditorialWorkspace", () => {
     await user.type(screen.getByLabelText("Category"), "Engineering");
     const author = screen.getByLabelText("Author");
     expect(author).toHaveValue("team:natalie");
+    expect(
+      screen.getByRole("option", { name: "Select an author" }),
+    ).toBeDisabled();
+    expect(
+      screen.queryByRole("option", { name: /Natalie Thompson.*no profile/ }),
+    ).not.toBeInTheDocument();
     await user.selectOptions(author, "team:william");
     await user.type(
       screen.getByLabelText("Excerpt"),
