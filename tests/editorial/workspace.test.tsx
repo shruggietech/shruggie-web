@@ -83,6 +83,26 @@ function sessionAndWorkspaceFetch(
 
 beforeEach(() => {
   sessionStorage.clear();
+  Object.defineProperties(Range.prototype, {
+    getBoundingClientRect: {
+      configurable: true,
+      value: () => ({
+        bottom: 0,
+        height: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }),
+    },
+    getClientRects: {
+      configurable: true,
+      value: () => [],
+    },
+  });
   firebaseBrowserMocks.completeGoogleSignIn.mockResolvedValue(null);
   firebaseBrowserMocks.startGoogleSignIn.mockResolvedValue(undefined);
   Object.defineProperty(globalThis, "fetch", {
@@ -173,10 +193,9 @@ describe("EditorialWorkspace", () => {
       screen.getByLabelText("Excerpt"),
       "A complete excerpt written entirely with accessible browser controls.",
     );
-    await user.type(
-      screen.getByLabelText("Article body in Markdown"),
-      "## A useful heading{Enter}{Enter}A safe article body.",
-    );
+    const articleBody = screen.getByLabelText("Article body in Markdown");
+    await user.click(articleBody);
+    await user.paste("## A useful heading\n\nA safe article body.");
 
     const preview = screen.getByRole("button", { name: "Preview" });
     expect(preview).toBeDisabled();
@@ -227,40 +246,39 @@ describe("EditorialWorkspace", () => {
     );
 
     const articleBody = screen.getByLabelText("Article body in Markdown");
-    expect(articleBody).toHaveAttribute("data-lenis-prevent");
-    expect(articleBody).toHaveClass("overscroll-contain");
+    const editorShell = articleBody.closest("[data-markdown-editor]");
+    const editorScroller = editorShell?.querySelector(".cm-scroller");
+
+    expect(articleBody).toHaveAttribute("contenteditable", "true");
+    expect(editorShell).toHaveAttribute("data-lenis-prevent");
+    expect(editorShell).toHaveClass("overscroll-contain");
+    expect(editorScroller).toHaveStyle({ overscrollBehavior: "contain" });
     expect(screen.getByLabelText("Excerpt")).not.toHaveAttribute(
       "data-lenis-prevent",
     );
+  });
 
-    Object.defineProperties(articleBody, {
-      clientHeight: { configurable: true, value: 200 },
-      scrollHeight: { configurable: true, value: 1_000 },
-    });
-    const pageWheel = vi.fn();
-    document.addEventListener("wheel", pageWheel);
-
-    const scrollInside = new WheelEvent("wheel", {
-      bubbles: true,
-      cancelable: true,
-      deltaY: 120,
-    });
-    articleBody.dispatchEvent(scrollInside);
-    expect(articleBody.scrollTop).toBe(120);
-    expect(scrollInside.defaultPrevented).toBe(true);
-    expect(pageWheel).not.toHaveBeenCalled();
-
-    articleBody.scrollTop = 800;
-    articleBody.dispatchEvent(
-      new WheelEvent("wheel", {
-        bubbles: true,
-        cancelable: true,
-        deltaY: 120,
-      }),
+  it("highlights Markdown and reports live line-specific policy issues", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: "New article" }),
     );
-    expect(articleBody.scrollTop).toBe(800);
-    expect(pageWheel).not.toHaveBeenCalled();
-    document.removeEventListener("wheel", pageWheel);
+
+    const articleBody = screen.getByLabelText("Article body in Markdown");
+    await user.click(articleBody);
+    await user.paste("# Highlighted heading\n\n[unsafe](javascript:alert(1))");
+    expect(articleBody).toHaveTextContent("javascript:alert(1)");
+
+    expect(container.querySelector(".cm-gutters")).toBeInTheDocument();
+    expect(container.querySelector(".cm-gutter-lint")).toBeInTheDocument();
+    expect(articleBody.closest("[data-markdown-editor]")).toHaveAttribute(
+      "data-syntax-highlighting",
+      "markdown",
+    );
+    expect(await screen.findByText("1 Markdown issue found")).toBeVisible();
+    expect(screen.getByText(/Line 3: The link URL.*is unsafe/)).toBeVisible();
+    expect(articleBody).toHaveAttribute("aria-invalid", "true");
   });
 
   it("keeps the writing canvas full width with compact actions and history below", async () => {

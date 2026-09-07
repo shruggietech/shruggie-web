@@ -40,8 +40,10 @@ import type {
   EditorialAsset,
 } from "@/lib/editorial/domain";
 import { TEAM_AUTHORS, getAuthorByReference } from "@/lib/team";
+import { inspectMarkdown } from "@/lib/editorial/markdown-policy";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import MarkdownEditor from "./MarkdownEditor";
 import SignInPanel from "./SignInPanel";
 
 type LoadState = "idle" | "loading" | "ready" | "error";
@@ -472,39 +474,14 @@ function ArticleEditor({
   );
   const [selectedRevision, setSelectedRevision] = useState<number | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
-  const bodyRef = useRef<HTMLTextAreaElement>(null);
   const readOnly = draft.state !== "draft";
+  const markdownIssues = useMemo(
+    () => inspectMarkdown(draft.body.source),
+    [draft.body.source],
+  );
 
   useEffect(() => {
     titleRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    const textarea = bodyRef.current;
-    if (!textarea) return;
-
-    const containWheel = (event: WheelEvent) => {
-      if (event.deltaY === 0) return;
-      const multiplier =
-        event.deltaMode === 1
-          ? 16
-          : event.deltaMode === 2
-            ? textarea.clientHeight
-            : 1;
-      const maximum = Math.max(
-        0,
-        textarea.scrollHeight - textarea.clientHeight,
-      );
-      textarea.scrollTop = Math.min(
-        maximum,
-        Math.max(0, textarea.scrollTop + event.deltaY * multiplier),
-      );
-      event.preventDefault();
-      event.stopPropagation();
-    };
-
-    textarea.addEventListener("wheel", containWheel, { passive: false });
-    return () => textarea.removeEventListener("wheel", containWheel);
   }, []);
 
   const loadRevisions = useCallback(async () => {
@@ -865,23 +842,22 @@ function ArticleEditor({
           <Card hover={false}>
             <h2 className="font-display text-xl font-bold">Article body</h2>
             <p id="body-hint" className="text-body-sm text-text-secondary mt-2">
-              Markdown is supported. Raw HTML, JSX, scripts, and unsafe links
-              are rejected.
+              Markdown is highlighted as you write. Live checks flag raw HTML,
+              JSX, MDX, unsafe links, and invalid images before save.
             </p>
-            <textarea
-              ref={bodyRef}
+            <MarkdownEditor
               id="body.source"
-              aria-label="Article body in Markdown"
-              data-lenis-prevent
-              rows={22}
               value={draft.body.source}
               disabled={readOnly}
-              aria-invalid={Boolean(errors["body.source"])}
-              aria-describedby={
-                errors["body.source"] ? "body.source-error" : "body-hint"
+              invalid={
+                Boolean(errors["body.source"]) || markdownIssues.length > 0
               }
-              onChange={(event) => field("body.source", event.target.value)}
-              className={`${inputClass} text-body-sm resize-y overscroll-contain font-mono leading-6`}
+              describedBy={
+                errors["body.source"]
+                  ? "body-hint body.source-error"
+                  : "body-hint body-live-status"
+              }
+              onChange={(value) => field("body.source", value)}
             />
             {errors["body.source"] && (
               <p
@@ -890,6 +866,38 @@ function ArticleEditor({
               >
                 {errors["body.source"]}
               </p>
+            )}
+            {!errors["body.source"] && (
+              <div
+                id="body-live-status"
+                aria-live="polite"
+                className={`text-body-sm mt-3 ${
+                  markdownIssues.length
+                    ? "text-red-600 dark:text-red-400"
+                    : "text-text-secondary"
+                }`}
+              >
+                {markdownIssues.length ? (
+                  <>
+                    <p className="font-medium">
+                      {markdownIssues.length} Markdown{" "}
+                      {markdownIssues.length === 1 ? "issue" : "issues"} found
+                    </p>
+                    <ul className="mt-2 list-disc space-y-1 pl-5">
+                      {markdownIssues.map((issue, index) => (
+                        <li
+                          key={`${issue.line ?? 0}-${issue.message}-${index}`}
+                        >
+                          {issue.line ? `Line ${issue.line}: ` : ""}
+                          {issue.message}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <p>No Markdown policy issues found.</p>
+                )}
+              </div>
             )}
           </Card>
 
