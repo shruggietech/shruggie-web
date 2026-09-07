@@ -68,6 +68,9 @@ describe("editorial draft preview routes", () => {
     expect(response.headers.get("location")).toBe(
       "https://shruggie.tech/blog/example-article?preview=1",
     );
+    expect(response.headers.get("set-cookie")).toContain(
+      "__Host-shruggie_preview=example-article",
+    );
     expect(response.headers.get("cache-control")).toContain("no-store");
   });
 
@@ -112,5 +115,9 @@ describe("editorial draft preview routes", () => {
     expect(response.headers.get("location")).toBe(
       "https://shruggie.tech/admin",
     );
+    expect(response.headers.get("set-cookie")).toContain(
+      "__Host-shruggie_preview=",
+    );
+    expect(response.headers.get("set-cookie")).toContain("Max-Age=0");
   });
 });

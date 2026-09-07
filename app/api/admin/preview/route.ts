@@ -5,6 +5,10 @@ import { articleSlugSchema } from "@/lib/editorial/domain";
 import { ArticleNotFoundError } from "@/lib/editorial/errors";
 import { createFirebaseEditorialBackend } from "@/lib/editorial/firebase-admin";
 import { editorialErrorResponse, requireEditor } from "@/lib/editorial/http";
+import {
+  EDITOR_PREVIEW_COOKIE,
+  EDITOR_PREVIEW_MAX_AGE_SECONDS,
+} from "@/lib/editorial/preview-session";
 import { loadEditorialSecurityConfig } from "@/lib/editorial/security";
 
 export async function GET(request: Request) {
@@ -27,6 +31,13 @@ export async function GET(request: Request) {
     const response = NextResponse.redirect(
       new URL(`/blog/${article.slug}?preview=1`, canonicalOrigin),
     );
+    response.cookies.set(EDITOR_PREVIEW_COOKIE, article.slug, {
+      httpOnly: true,
+      maxAge: EDITOR_PREVIEW_MAX_AGE_SECONDS,
+      path: "/",
+      sameSite: "strict",
+      secure: true,
+    });
     response.headers.set("Cache-Control", "private, no-store, max-age=0");
     response.headers.set("Vary", "Cookie");
     return response;
