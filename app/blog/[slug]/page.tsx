@@ -148,7 +148,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <>
       {!preview && <JsonLd data={generateBlogPostSchema(meta)} />}
       {preview && (
-        <div className="border-accent/30 bg-accent/10 border-b">
+        <div className="border-accent/30 bg-accent/10 border-b pt-16">
           <div className="mx-auto flex max-w-[var(--max-width-content)] flex-wrap items-center justify-between gap-3 px-[var(--padding-x)] py-3">
             <p className="text-body-sm font-medium">
               Draft preview — this saved revision has not been published.
