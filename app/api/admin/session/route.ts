@@ -30,7 +30,11 @@ export async function GET(request: Request) {
   try {
     const principal = await requireEditor(request);
     return editorialJson({
-      editor: { id: principal.id, role: principal.role },
+      editor: {
+        author: principal.author,
+        id: principal.id,
+        role: principal.role,
+      },
     });
   } catch (error) {
     return editorialErrorResponse(error);
@@ -49,7 +53,13 @@ export async function POST(request: Request) {
     const principal = await verifyEditorIdToken(body.idToken, auth, config);
     const sessionCookie = await createEditorSessionCookie(body.idToken, auth);
     return editorialJson(
-      { editor: { id: principal.id, role: principal.role } },
+      {
+        editor: {
+          author: principal.author,
+          id: principal.id,
+          role: principal.role,
+        },
+      },
       {
         headers: {
           "Set-Cookie": serializeEditorSessionCookie(

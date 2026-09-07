@@ -17,6 +17,7 @@ export interface SocialLink {
 }
 
 export interface TeamMemberData {
+  id: string;
   name: string;
   title: string;
   description: string;
@@ -26,43 +27,106 @@ export interface TeamMemberData {
 
 export const TEAM_MEMBERS: TeamMemberData[] = [
   {
+    id: "william",
     name: "William Thompson",
     title: "Co-Founder & Chief Architect",
     description:
       "Software architect, systems designer, and the author of ShruggieTech's internal products and published research. Background in cryptography, electronic warfare, and high-performance computing. Writes specifications that AI agents can execute without asking questions.",
     image: "https://cdn.shruggie.tech/avatars/william-thompson-toon.jpg",
     socials: [
-      { href: "https://www.linkedin.com/in/willthompsonpro/", label: "LinkedIn", icon: "Linkedin" },
-      { href: "https://github.com/h8rt3rmin8r", label: "GitHub", icon: "Github" },
+      {
+        href: "https://www.linkedin.com/in/willthompsonpro/",
+        label: "LinkedIn",
+        icon: "Linkedin",
+      },
+      {
+        href: "https://github.com/h8rt3rmin8r",
+        label: "GitHub",
+        icon: "Github",
+      },
     ],
   },
   {
+    id: "natalie",
     name: "Natalie Thompson",
     title: "Co-Founder & COO",
     description:
       "Self-taught full-stack developer, client relationship lead, and the person who makes everything actually happen. Pairs deep technical ability with the soft skills that keep complex projects moving forward. From branding to business development, she runs point on it all.",
     image: "https://cdn.shruggie.tech/avatars/natalie-thompson-toon.jpg",
     socials: [
-      { href: "https://www.linkedin.com/in/cryptasian/", label: "LinkedIn", icon: "Linkedin" },
-      { href: "https://www.facebook.com/cryptasian", label: "Facebook", icon: "Facebook" },
-      { href: "https://www.instagram.com/cryptasian/", label: "Instagram", icon: "Instagram" },
-      { href: "https://github.com/cryptasian", label: "GitHub", icon: "Github" },
+      {
+        href: "https://www.linkedin.com/in/cryptasian/",
+        label: "LinkedIn",
+        icon: "Linkedin",
+      },
+      {
+        href: "https://www.facebook.com/cryptasian",
+        label: "Facebook",
+        icon: "Facebook",
+      },
+      {
+        href: "https://www.instagram.com/cryptasian/",
+        label: "Instagram",
+        icon: "Instagram",
+      },
+      {
+        href: "https://github.com/cryptasian",
+        label: "GitHub",
+        icon: "Github",
+      },
     ],
   },
   {
+    id: "josiah",
     name: "Josiah Thompson",
     title: "Founders Assistant",
     description:
       "Josiah contributes to ShruggieTech's production work, assisting with social media content creation, blog article drafting, and website maintenance. His role is designed to build real professional skills early, equipping him with the technical fluency and operational discipline for a career in technology.",
     image: "https://cdn.shruggie.tech/avatars/josiah-thompson-toon.jpg",
     socials: [
-      { href: "https://twitch.tv/notratmaster", label: "Twitch", icon: "Twitch" },
-      { href: "https://www.youtube.com/@notratmaster", label: "YouTube", icon: "Youtube" },
+      {
+        href: "https://twitch.tv/notratmaster",
+        label: "Twitch",
+        icon: "Twitch",
+      },
+      {
+        href: "https://www.youtube.com/@notratmaster",
+        label: "YouTube",
+        icon: "Youtube",
+      },
     ],
   },
 ];
 
+export interface TeamAuthorReference {
+  id: string;
+  name: string;
+}
+
+export const TEAM_AUTHORS: TeamAuthorReference[] = TEAM_MEMBERS.map(
+  ({ id, name }) => ({ id: `team:${id}`, name }),
+);
+
 /** Look up a team member by exact display name (e.g. a blog post's author). */
 export function getAuthorByName(name: string): TeamMemberData | undefined {
   return TEAM_MEMBERS.find((member) => member.name === name);
+}
+
+/** Resolve a canonical article author only when both its stable ID and name match. */
+export function getAuthorByReference(
+  reference: TeamAuthorReference,
+): TeamMemberData | undefined {
+  return TEAM_MEMBERS.find(
+    (member) =>
+      `team:${member.id}` === reference.id && member.name === reference.name,
+  );
+}
+
+/** Map an approved staff identity to its public author profile without exposing email. */
+export function getAuthorReferenceByEmail(
+  email: string,
+): TeamAuthorReference | null {
+  const [handle, domain, ...rest] = email.trim().toLowerCase().split("@");
+  if (domain !== "shruggie.tech" || rest.length > 0) return null;
+  return TEAM_AUTHORS.find(({ id }) => id === `team:${handle}`) ?? null;
 }

@@ -21,7 +21,7 @@ export function articleFixture(overrides: Partial<Article> = {}): Article {
     slug: "example-article",
     title: "An example article",
     excerpt: "A sufficiently descriptive excerpt for an example article.",
-    author: { id: "editor:natalie", name: "Natalie Thompson" },
+    author: { id: "team:natalie", name: "Natalie Thompson" },
     category: "Engineering",
     body: {
       format: "markdown",

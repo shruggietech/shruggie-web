@@ -97,6 +97,22 @@ describe("editorial security boundary", () => {
     ).toThrowError(/verified/);
   });
 
+  it("maps a signed-in staff account to its public author profile", () => {
+    const natalie = authorizeEditorIdentity(
+      identity({ email: "natalie@shruggie.tech" }),
+      {
+        ...config(),
+        adminEmails: new Set(["natalie@shruggie.tech"]),
+      },
+    );
+
+    expect(natalie.author).toEqual({
+      id: "team:natalie",
+      name: "Natalie Thompson",
+    });
+    expect(JSON.stringify(natalie)).not.toContain("natalie@shruggie.tech");
+  });
+
   it("checks revocation and recent authentication before issuing a session", async () => {
     const auth = verifier();
     await expect(

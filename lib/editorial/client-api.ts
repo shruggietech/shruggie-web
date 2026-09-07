@@ -1,7 +1,9 @@
 import type { Article, EditorialAsset } from "./domain";
 import type { EditorialRole } from "./audit";
+import type { TeamAuthorReference } from "../team";
 
 export interface EditorialEditor {
+  author: TeamAuthorReference | null;
   id: string;
   role: EditorialRole;
 }
