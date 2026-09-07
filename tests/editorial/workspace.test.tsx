@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, within } from "@testing-library/react";
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import userEvent from "@testing-library/user-event";
 import axe from "axe-core";
@@ -411,7 +417,7 @@ describe("EditorialWorkspace", () => {
     expect(within(featured).getByLabelText("Contextual alt text")).toHaveValue(
       reusableAsset.altText,
     );
-    expect(choose).toHaveFocus();
+    await waitFor(() => expect(choose).toHaveFocus());
 
     await user.click(
       within(featured).getByRole("button", { name: "Replace image" }),
