@@ -24,6 +24,7 @@ import {
   getPreviewPostBySlug,
 } from "@/lib/blog";
 import { requireEditor } from "@/lib/editorial/http";
+import { readEditorialPreviewSlug } from "@/lib/editorial/preview-session";
 import { extractHeadings } from "@/lib/utils";
 import { generateBlogPostSchema } from "@/lib/schema";
 import { mdxComponents } from "@/components/blog/MDXComponents";
@@ -37,21 +38,21 @@ interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
 
-const isAuthorizedDraftPreview = cache(async () => {
+const getAuthorizedDraftPreviewSlug = cache(async () => {
   const mode = await draftMode();
-  if (!mode.isEnabled) return false;
+  if (!mode.isEnabled) return null;
 
   try {
     const requestHeaders = new Headers(await headers());
     await requireEditor(new Request(SITE_URL, { headers: requestHeaders }));
-    return true;
+    return readEditorialPreviewSlug(requestHeaders.get("cookie"));
   } catch {
-    return false;
+    return null;
   }
 });
 
 const getPostForRequest = cache(async (slug: string) => {
-  const preview = await isAuthorizedDraftPreview();
+  const preview = (await getAuthorizedDraftPreviewSlug()) === slug;
   return {
     post: preview
       ? await getPreviewPostBySlug(slug)

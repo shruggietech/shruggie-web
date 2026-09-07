@@ -16,6 +16,7 @@ import {
   type EditorialSecurityConfig,
   type VerifiedFirebaseIdentity,
 } from "../../lib/editorial/security";
+import { readEditorialPreviewSlug } from "../../lib/editorial/preview-session";
 
 const nowSeconds = 1_788_607_200;
 
@@ -191,5 +192,19 @@ describe("editorial security boundary", () => {
       "HttpOnly; Secure; SameSite=Strict",
     );
     expect(clearEditorSessionCookie()).toContain("Max-Age=0");
+  });
+
+  it("accepts only a valid exact preview slug cookie", () => {
+    expect(
+      readEditorialPreviewSlug(
+        "theme=dark; __Host-shruggie_preview=saved-draft; other=value",
+      ),
+    ).toBe("saved-draft");
+    expect(
+      readEditorialPreviewSlug(
+        "__Host-shruggie_preview=https%3A%2F%2Fevil.example",
+      ),
+    ).toBeNull();
+    expect(readEditorialPreviewSlug(null)).toBeNull();
   });
 });
