@@ -1,13 +1,13 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import userEvent from "@testing-library/user-event";
 import axe from "axe-core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import EditorialWorkspace from "../../components/editorial/EditorialWorkspace";
-import type { Article } from "../../lib/editorial/domain";
+import type { Article, EditorialAsset } from "../../lib/editorial/domain";
 import { articleFixture, nextRevision } from "./fixtures";
 
 const firebaseBrowserMocks = vi.hoisted(() => ({
@@ -30,6 +30,7 @@ function json(body: unknown, status = 200): Response {
 function sessionAndWorkspaceFetch(
   initialArticles: Article[] = [],
   revisions: Article[] = initialArticles,
+  initialAssets: EditorialAsset[] = [],
 ) {
   return vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
@@ -47,7 +48,7 @@ function sessionAndWorkspaceFetch(
       return json({ articles: initialArticles });
     }
     if (url === "/api/admin/assets" && method === "GET")
-      return json({ assets: [] });
+      return json({ assets: initialAssets });
     if (url === "/api/admin/assets" && method === "POST") {
       const form = init?.body as FormData;
       return json(
@@ -266,6 +267,12 @@ describe("EditorialWorkspace", () => {
     );
 
     const articleBody = screen.getByLabelText("Article body in Markdown");
+    expect(
+      screen.getByText("Write the article body in Markdown."),
+    ).toBeVisible();
+    expect(
+      screen.queryByText(/Live checks flag raw HTML/),
+    ).not.toBeInTheDocument();
     await user.click(articleBody);
     await user.paste("# Highlighted heading\n\n[unsafe](javascript:alert(1))");
     expect(articleBody).toHaveTextContent("javascript:alert(1)");
@@ -352,14 +359,66 @@ describe("EditorialWorkspace", () => {
     ).toBeInTheDocument();
   });
 
-  it("enforces upload fields and selects the uploaded asset", async () => {
+  it("reuses library images and only reveals upload fields on request", async () => {
+    const reusableAsset: EditorialAsset = {
+      schemaVersion: 1,
+      id: "asset:previously-uploaded",
+      articleId: "article:another-post",
+      originalFileName: "shared-feature.png",
+      contentType: "image/png",
+      sizeBytes: 128,
+      width: 1200,
+      height: 630,
+      altText: "A shared green abstract illustration",
+      checksumSha256: "b".repeat(64),
+      storagePath:
+        "articles/article:another-post/asset:previously-uploaded.png",
+      deliveryUrl: "https://shruggie.tech/media/asset:previously-uploaded.png",
+      createdAt: "2026-09-04T12:00:00.000Z",
+      createdBy: "editor:natalie",
+    };
+    globalThis.fetch = sessionAndWorkspaceFetch([], [], [reusableAsset]);
     const user = userEvent.setup();
     render(<EditorialWorkspace />);
     await user.click(
       await screen.findByRole("button", { name: "New article" }),
     );
 
-    await user.click(screen.getByRole("button", { name: "Upload image" }));
+    const featured = screen.getByRole("group", { name: "Featured image" });
+    expect(within(featured).getByText("No image selected")).toBeVisible();
+    expect(screen.queryByLabelText("Image file")).not.toBeInTheDocument();
+
+    const choose = within(featured).getByRole("button", {
+      name: "Choose image",
+    });
+    await user.click(choose);
+
+    const dialog = await screen.findByRole("dialog", {
+      name: "Choose featured image",
+    });
+    expect(within(dialog).getByText("shared-feature.png")).toBeVisible();
+    expect(
+      within(dialog).queryByLabelText("Image file"),
+    ).not.toBeInTheDocument();
+    await user.click(
+      within(dialog).getByRole("button", { name: "Choose shared-feature.png" }),
+    );
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "shared-feature.png selected as the featured image",
+    );
+    expect(within(featured).getByText("shared-feature.png")).toBeVisible();
+    expect(within(featured).getByLabelText("Contextual alt text")).toHaveValue(
+      reusableAsset.altText,
+    );
+    expect(choose).toHaveFocus();
+
+    await user.click(
+      within(featured).getByRole("button", { name: "Replace image" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Upload new" }));
+    expect(screen.getByLabelText("Image file")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Upload and use" }));
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Choose an image",
     );
@@ -372,14 +431,18 @@ describe("EditorialWorkspace", () => {
       screen.getByLabelText("Descriptive alt text"),
       "A green terminal window showing a successful build",
     );
-    await user.click(screen.getByRole("button", { name: "Upload image" }));
+    await user.click(screen.getByRole("button", { name: "Upload and use" }));
 
     expect(await screen.findByRole("status")).toHaveTextContent(
-      "Image uploaded and selected",
+      "feature.png uploaded and selected as the featured image",
     );
-    expect(screen.getByLabelText("Select featured image")).toHaveValue(
-      "asset:00000000-0000-4000-8000-000000000027",
+    expect(within(featured).getByText("feature.png")).toBeVisible();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    await user.click(
+      within(featured).getByRole("button", { name: "Remove image" }),
     );
+    expect(within(featured).getByText("No image selected")).toBeVisible();
   });
 
   it("loads a selected prior revision into the unsaved restore draft", async () => {
