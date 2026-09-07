@@ -1,9 +1,11 @@
 import { articleSchemaV1, type Article } from "./domain";
+import { getAuthorByReference, type TeamAuthorReference } from "../team";
 
 export type ArticleFieldErrors = Record<string, string>;
 
 export function createBlankArticle(
   editorId: string,
+  author: TeamAuthorReference | null = null,
   now = new Date(),
 ): Article {
   const timestamp = now.toISOString();
@@ -13,7 +15,7 @@ export function createBlankArticle(
     slug: "",
     title: "",
     excerpt: "",
-    author: { id: editorId, name: "" },
+    author: author ?? { id: editorId, name: "" },
     category: "",
     body: { format: "markdown", source: "" },
     state: "draft",
@@ -69,11 +71,15 @@ export function articleForSave(
 
 export function validateArticleForSave(article: Article): ArticleFieldErrors {
   const result = articleSchemaV1.safeParse(article);
-  if (result.success) return {};
   const errors: ArticleFieldErrors = {};
-  for (const issue of result.error.issues) {
-    const field = issue.path.join(".") || "form";
-    errors[field] ??= issue.message;
+  if (!result.success) {
+    for (const issue of result.error.issues) {
+      const field = issue.path.join(".") || "form";
+      errors[field] ??= issue.message;
+    }
+  }
+  if (!getAuthorByReference(article.author)) {
+    errors["author.name"] ??= "Select a registered ShruggieTech author.";
   }
   return errors;
 }

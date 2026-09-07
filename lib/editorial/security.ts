@@ -4,6 +4,8 @@ import { createHash, randomUUID } from "node:crypto";
 
 import { z } from "zod";
 
+import { getAuthorReferenceByEmail, type TeamAuthorReference } from "../team";
+
 import {
   editorialMutationContextSchema,
   type EditorialMutationContext,
@@ -67,6 +69,7 @@ export interface EditorialSecurityConfig {
 }
 
 export interface EditorPrincipal {
+  author: TeamAuthorReference | null;
   id: string;
   role: EditorialRole;
   uid: string;
@@ -211,7 +214,12 @@ export function authorizeEditorIdentity(
       403,
     );
   }
-  return { id: principalId(identity.uid), role, uid: identity.uid };
+  return {
+    author: getAuthorReferenceByEmail(email),
+    id: principalId(identity.uid),
+    role,
+    uid: identity.uid,
+  };
 }
 
 export async function verifyEditorIdToken(

@@ -39,6 +39,7 @@ import type {
   AssetReference,
   EditorialAsset,
 } from "@/lib/editorial/domain";
+import { TEAM_AUTHORS, getAuthorByReference } from "@/lib/team";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import SignInPanel from "./SignInPanel";
@@ -208,7 +209,7 @@ export default function EditorialWorkspace() {
     if (!editor) return;
     clearDraftRecovery();
     setPersisted(null);
-    setDraft(createBlankArticle(editor.id));
+    setDraft(createBlankArticle(editor.id, editor.author));
     setDirty(false);
     setConfirmDiscard(false);
   }
@@ -544,13 +545,26 @@ function ArticleEditor({
     if (path === "title") next.title = value;
     if (path === "slug") next.slug = value;
     if (path === "excerpt") next.excerpt = value;
-    if (path === "author.name") next.author.name = value;
     if (path === "category") next.category = value;
     if (path === "body.source") next.body.source = value;
     onChange(next);
     setErrors((current) => {
       const updated = { ...current };
       delete updated[path];
+      return updated;
+    });
+    setMessage(null);
+  }
+
+  function selectAuthor(authorId: string) {
+    const author = TEAM_AUTHORS.find((candidate) => candidate.id === authorId);
+    if (!author) return;
+    const next = structuredClone(draft);
+    next.author = { ...author };
+    onChange(next);
+    setErrors((current) => {
+      const updated = { ...current };
+      delete updated["author.name"];
       return updated;
     });
     setMessage(null);
@@ -786,21 +800,43 @@ function ArticleEditor({
                 />
               </Field>
               <Field
-                label="Author name"
+                label="Author"
                 path="author.name"
                 error={errors["author.name"]}
+                hint={
+                  getAuthorByReference(draft.author)
+                    ? "Controls the byline, Written by card, and article metadata."
+                    : draft.author.name
+                      ? `“${draft.author.name}” has no registered author profile. Select an author to add the Written by card.`
+                      : "Controls the byline, Written by card, and article metadata."
+                }
               >
-                <input
+                <select
                   id="author.name"
-                  value={draft.author.name}
+                  value={
+                    getAuthorByReference(draft.author) ? draft.author.id : ""
+                  }
                   disabled={readOnly}
                   aria-invalid={Boolean(errors["author.name"])}
                   aria-describedby={
-                    errors["author.name"] ? "author.name-error" : undefined
+                    errors["author.name"]
+                      ? "author.name-error"
+                      : "author.name-hint"
                   }
-                  onChange={(event) => field("author.name", event.target.value)}
+                  onChange={(event) => selectAuthor(event.target.value)}
                   className={inputClass}
-                />
+                >
+                  <option value="" disabled>
+                    {draft.author.name
+                      ? `Select an author — “${draft.author.name}” has no profile`
+                      : "Select an author"}
+                  </option>
+                  {TEAM_AUTHORS.map((author) => (
+                    <option key={author.id} value={author.id}>
+                      {author.name}
+                    </option>
+                  ))}
+                </select>
               </Field>
               <Field
                 label="Excerpt"

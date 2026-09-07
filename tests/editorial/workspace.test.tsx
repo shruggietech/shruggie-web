@@ -35,7 +35,13 @@ function sessionAndWorkspaceFetch(
     const url = String(input);
     const method = init?.method ?? "GET";
     if (url === "/api/admin/session" && method === "GET") {
-      return json({ editor: { id: "editor:natalie", role: "admin" } });
+      return json({
+        editor: {
+          author: { id: "team:natalie", name: "Natalie Thompson" },
+          id: "editor:natalie",
+          role: "admin",
+        },
+      });
     }
     if (url === "/api/admin/articles?limit=100") {
       return json({ articles: initialArticles });
@@ -154,7 +160,9 @@ describe("EditorialWorkspace", () => {
       "a-keyboard-authored-article",
     );
     await user.type(screen.getByLabelText("Category"), "Engineering");
-    await user.type(screen.getByLabelText("Author name"), "Natalie Thompson");
+    const author = screen.getByLabelText("Author");
+    expect(author).toHaveValue("team:natalie");
+    await user.selectOptions(author, "team:william");
     await user.type(
       screen.getByLabelText("Excerpt"),
       "A complete excerpt written entirely with accessible browser controls.",
@@ -180,6 +188,11 @@ describe("EditorialWorkspace", () => {
         String(input) === "/api/admin/articles" && init?.method === "POST",
     );
     expect(post).toBeTruthy();
+    const saved = JSON.parse(String(post?.[1]?.body)) as { article: Article };
+    expect(saved.article.author).toEqual({
+      id: "team:william",
+      name: "William Thompson",
+    });
     expect(preview).toBeEnabled();
     expect(
       screen.getByText("Preview opens the saved draft without publishing."),
@@ -264,6 +277,31 @@ describe("EditorialWorkspace", () => {
     expect(screen.getByLabelText("Excerpt")).toHaveFocus();
   });
 
+  it("flags a legacy free-text author until a registered profile is selected", async () => {
+    const legacy = articleFixture({
+      author: { id: "editor:legacy", name: "ShruggieTech" },
+    });
+    globalThis.fetch = sessionAndWorkspaceFetch([legacy]);
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+
+    await user.click(
+      await screen.findByRole("button", { name: /Edit An example article/ }),
+    );
+
+    const author = screen.getByLabelText("Author");
+    expect(author).toHaveValue("");
+    expect(
+      screen.getByText(/“ShruggieTech” has no registered author profile/),
+    ).toBeInTheDocument();
+
+    await user.selectOptions(author, "team:josiah");
+    expect(author).toHaveValue("team:josiah");
+    expect(
+      screen.getByText(/Controls the byline, Written by card/),
+    ).toBeInTheDocument();
+  });
+
   it("enforces upload fields and selects the uploaded asset", async () => {
     const user = userEvent.setup();
     render(<EditorialWorkspace />);
@@ -323,7 +361,13 @@ describe("EditorialWorkspace", () => {
         const url = String(input);
         const method = init?.method ?? "GET";
         if (url === "/api/admin/session")
-          return json({ editor: { id: "editor:natalie", role: "editor" } });
+          return json({
+            editor: {
+              author: { id: "team:natalie", name: "Natalie Thompson" },
+              id: "editor:natalie",
+              role: "editor",
+            },
+          });
         if (url === "/api/admin/articles?limit=100")
           return json({ articles: [current] });
         if (url === "/api/admin/assets") return json({ assets: [] });
@@ -368,7 +412,13 @@ describe("EditorialWorkspace", () => {
         const url = String(input);
         const method = init?.method ?? "GET";
         if (url === "/api/admin/session")
-          return json({ editor: { id: "editor:natalie", role: "editor" } });
+          return json({
+            editor: {
+              author: { id: "team:natalie", name: "Natalie Thompson" },
+              id: "editor:natalie",
+              role: "editor",
+            },
+          });
         if (url === "/api/admin/articles?limit=100")
           return json({ articles: [current] });
         if (url === "/api/admin/assets") return json({ assets: [] });
