@@ -4,14 +4,19 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
   ArrowLeft,
+  Check,
   Clock3,
   FilePlus2,
   Eye,
   ImagePlus,
+  Images,
   LoaderCircle,
   LogOut,
   RefreshCw,
   Save,
+  Trash2,
+  Upload,
+  X,
 } from "lucide-react";
 
 import {
@@ -512,11 +517,6 @@ function ArticleEditor({
     };
   }, [onSessionFailure, persisted]);
 
-  const articleAssets = useMemo(
-    () => assets.filter((asset) => asset.articleId === draft.id),
-    [assets, draft.id],
-  );
-
   function field(path: string, value: string) {
     const next = structuredClone(draft);
     if (path === "title") next.title = value;
@@ -549,7 +549,7 @@ function ArticleEditor({
 
   function setAsset(slot: AssetSlot, assetId: string) {
     const next = structuredClone(draft);
-    const asset = articleAssets.find((item) => item.id === assetId);
+    const asset = assets.find((item) => item.id === assetId);
     next[slot] = asset ? articleAssetReference(asset) : null;
     onChange(next);
   }
@@ -842,8 +842,7 @@ function ArticleEditor({
           <Card hover={false}>
             <h2 className="font-display text-xl font-bold">Article body</h2>
             <p id="body-hint" className="text-body-sm text-text-secondary mt-2">
-              Markdown is highlighted as you write. Live checks flag raw HTML,
-              JSX, MDX, unsafe links, and invalid images before save.
+              Write the article body in Markdown.
             </p>
             <MarkdownEditor
               id="body.source"
@@ -903,7 +902,7 @@ function ArticleEditor({
 
           <AssetEditor
             article={draft}
-            assets={articleAssets}
+            assets={assets}
             errors={errors}
             readOnly={readOnly}
             onAssetChange={setAsset}
@@ -1040,14 +1039,91 @@ function AssetEditor({
   onUploaded: (slot: AssetSlot, asset: EditorialAsset) => void;
   onSessionFailure: (error: unknown) => boolean;
 }) {
-  const [slot, setSlot] = useState<AssetSlot>("featuredImage");
+  const [pickerSlot, setPickerSlot] = useState<AssetSlot | null>(null);
+  const [pickerView, setPickerView] = useState<"library" | "upload">("library");
   const [file, setFile] = useState<File | null>(null);
   const [alt, setAlt] = useState("");
   const [state, setState] = useState<LoadState>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLButtonElement | null>(null);
+
+  const sortedAssets = useMemo(
+    () =>
+      [...assets].sort((left, right) =>
+        right.createdAt.localeCompare(left.createdAt),
+      ),
+    [assets],
+  );
+
+  useEffect(() => {
+    if (!pickerSlot) return;
+    closeButtonRef.current?.focus();
+    const handleDialogKeyboard = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setPickerSlot(null);
+        window.requestAnimationFrame(() => openerRef.current?.focus());
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+      const first = focusable.at(0);
+      const last = focusable.at(-1);
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleDialogKeyboard);
+    return () => document.removeEventListener("keydown", handleDialogKeyboard);
+  }, [pickerSlot]);
+
+  function slotLabel(imageSlot: AssetSlot): string {
+    return imageSlot === "featuredImage" ? "Featured image" : "Social image";
+  }
+
+  function openPicker(imageSlot: AssetSlot, trigger: HTMLButtonElement): void {
+    openerRef.current = trigger;
+    setPickerSlot(imageSlot);
+    setPickerView("library");
+    setFile(null);
+    setAlt("");
+    setState("idle");
+    setError(null);
+    setNotice(null);
+  }
+
+  function closePicker(): void {
+    setPickerSlot(null);
+    window.requestAnimationFrame(() => openerRef.current?.focus());
+  }
+
+  function chooseAsset(asset: EditorialAsset): void {
+    if (!pickerSlot) return;
+    const label = slotLabel(pickerSlot).toLowerCase();
+    onAssetChange(pickerSlot, asset.id);
+    setNotice(`${asset.originalFileName} selected as the ${label}.`);
+    closePicker();
+  }
+
+  function removeAsset(imageSlot: AssetSlot): void {
+    onAssetChange(imageSlot, "");
+    setNotice(`${slotLabel(imageSlot)} removed.`);
+  }
 
   async function upload() {
-    if (!file || alt.trim().length < 5) {
+    if (!pickerSlot || !file || alt.trim().length < 5) {
       setError(
         "Choose an image and provide at least five characters of descriptive alt text.",
       );
@@ -1061,10 +1137,15 @@ function AssetEditor({
         articleId: article.id,
         file,
       });
-      onUploaded(slot, asset);
+      const label = slotLabel(pickerSlot).toLowerCase();
+      onUploaded(pickerSlot, asset);
       setFile(null);
       setAlt("");
       setState("ready");
+      setNotice(
+        `${asset.originalFileName} uploaded and selected as the ${label}.`,
+      );
+      closePicker();
     } catch (caught) {
       if (!onSessionFailure(caught)) setError(friendlyError(caught));
       setState("error");
@@ -1081,33 +1162,73 @@ function AssetEditor({
       <div className="mt-6 grid gap-5 md:grid-cols-2">
         {(["featuredImage", "ogImage"] as const).map((imageSlot) => {
           const value = article[imageSlot];
-          const label =
-            imageSlot === "featuredImage" ? "Featured image" : "Social image";
+          const label = slotLabel(imageSlot);
+          const asset = assets.find((item) => item.id === value?.assetId);
           return (
             <fieldset
               key={imageSlot}
-              className="border-border rounded-lg border p-4"
+              className="border-border rounded-xl border p-4"
             >
-              <legend className="px-1 font-medium">{label}</legend>
-              <label htmlFor={`${imageSlot}-asset`} className="text-body-sm">
-                Select {label.toLowerCase()}
-              </label>
-              <select
-                id={`${imageSlot}-asset`}
-                value={value?.assetId ?? ""}
-                disabled={readOnly}
-                onChange={(event) =>
-                  onAssetChange(imageSlot, event.target.value)
-                }
-                className={inputClass}
-              >
-                <option value="">No image</option>
-                {assets.map((asset) => (
-                  <option key={asset.id} value={asset.id}>
-                    {asset.originalFileName}
-                  </option>
-                ))}
-              </select>
+              <legend className="font-display px-1 font-bold">{label}</legend>
+              <div className="bg-bg-secondary border-border mt-2 overflow-hidden rounded-lg border">
+                {value ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={value.deliveryUrl}
+                      alt=""
+                      className="aspect-[16/9] w-full object-cover"
+                    />
+                    <div className="p-3">
+                      <p className="text-body-sm truncate font-medium">
+                        {asset?.originalFileName ?? "Selected image"}
+                      </p>
+                      {asset && (
+                        <p className="text-body-xs text-text-secondary mt-1">
+                          {asset.width} × {asset.height} px
+                        </p>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex aspect-[16/9] flex-col items-center justify-center gap-2 p-6 text-center">
+                    <Images
+                      aria-hidden="true"
+                      className="text-text-muted"
+                      size={30}
+                    />
+                    <p className="text-body-sm text-text-secondary">
+                      No image selected
+                    </p>
+                  </div>
+                )}
+              </div>
+              {!readOnly && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={(event) =>
+                      openPicker(imageSlot, event.currentTarget)
+                    }
+                  >
+                    <ImagePlus aria-hidden="true" className="mr-2" size={16} />
+                    {value ? "Replace image" : "Choose image"}
+                  </Button>
+                  {value && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => removeAsset(imageSlot)}
+                    >
+                      <Trash2 aria-hidden="true" className="mr-2" size={16} />
+                      Remove image
+                    </Button>
+                  )}
+                </div>
+              )}
               {value && (
                 <div className="mt-4">
                   <label
@@ -1147,67 +1268,214 @@ function AssetEditor({
           );
         })}
       </div>
-      {!readOnly && (
-        <div className="bg-bg-secondary mt-6 rounded-lg p-4">
-          <h3 className="font-display font-bold">
-            <ImagePlus aria-hidden="true" className="mr-2 inline" size={18} />
-            Upload an image
-          </h3>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <label className="text-body-sm">
-              Use as
-              <select
-                value={slot}
-                onChange={(event) => setSlot(event.target.value as AssetSlot)}
-                className={inputClass}
-              >
-                <option value="featuredImage">Featured image</option>
-                <option value="ogImage">Social image</option>
-              </select>
-            </label>
-            <label className="text-body-sm">
-              Image file
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/avif"
-                onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-                className={`${inputClass} file:bg-accent file:mr-3 file:rounded file:border-0 file:px-3 file:py-1 file:text-white`}
-              />
-            </label>
-            <label className="text-body-sm md:col-span-2">
-              Descriptive alt text
-              <input
-                value={alt}
-                minLength={5}
-                maxLength={300}
-                onChange={(event) => setAlt(event.target.value)}
-                className={inputClass}
-              />
-            </label>
-          </div>
-          {error && (
-            <p
-              role="alert"
-              className="text-body-sm mt-3 text-red-600 dark:text-red-400"
-            >
-              {error}
-            </p>
-          )}
-          {state === "ready" && (
-            <p role="status" className="text-body-sm text-accent mt-3">
-              Image uploaded and selected.
-            </p>
-          )}
-          <Button
-            type="button"
-            onClick={upload}
-            variant="secondary"
-            size="sm"
-            disabled={state === "loading"}
-            className="mt-4"
+      {notice && (
+        <p role="status" className="text-body-sm text-accent mt-4">
+          {notice}
+        </p>
+      )}
+      {pickerSlot && !readOnly && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="media-picker-title"
+            className="border-border bg-bg-elevated max-h-[min(48rem,calc(100vh-2rem))] w-full max-w-4xl overflow-y-auto rounded-xl border shadow-2xl"
           >
-            {state === "loading" ? "Uploading…" : "Upload image"}
-          </Button>
+            <div className="border-border flex items-center justify-between gap-4 border-b p-4 sm:p-6">
+              <div>
+                <p className="text-body-xs text-accent font-mono tracking-[0.18em] uppercase">
+                  Media library
+                </p>
+                <h3
+                  id="media-picker-title"
+                  className="font-display mt-1 text-xl font-bold"
+                >
+                  Choose {slotLabel(pickerSlot).toLowerCase()}
+                </h3>
+              </div>
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={closePicker}
+                aria-label="Close media library"
+                className="border-border hover:border-accent focus-visible:outline-focus rounded-lg border p-2 transition focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                <X aria-hidden="true" size={20} />
+              </button>
+            </div>
+
+            <div className="border-border flex flex-wrap gap-2 border-b px-4 py-3 sm:px-6">
+              <Button
+                type="button"
+                size="sm"
+                variant={pickerView === "library" ? "primary" : "secondary"}
+                aria-pressed={pickerView === "library"}
+                onClick={() => {
+                  setPickerView("library");
+                  setError(null);
+                }}
+              >
+                <Images aria-hidden="true" className="mr-2" size={16} />
+                Media library
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={pickerView === "upload" ? "primary" : "secondary"}
+                aria-pressed={pickerView === "upload"}
+                onClick={() => {
+                  setPickerView("upload");
+                  setError(null);
+                }}
+              >
+                <Upload aria-hidden="true" className="mr-2" size={16} />
+                Upload new
+              </Button>
+            </div>
+
+            <div className="p-4 sm:p-6">
+              {pickerView === "library" ? (
+                sortedAssets.length ? (
+                  <ul
+                    aria-label="Previously uploaded images"
+                    className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+                  >
+                    {sortedAssets.map((asset) => {
+                      const selected =
+                        article[pickerSlot]?.assetId === asset.id;
+                      return (
+                        <li key={asset.id}>
+                          <button
+                            type="button"
+                            onClick={() => chooseAsset(asset)}
+                            aria-label={`Choose ${asset.originalFileName}`}
+                            aria-pressed={selected}
+                            className={`focus-visible:outline-focus h-full w-full overflow-hidden rounded-lg border text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                              selected
+                                ? "border-accent ring-accent/30 ring-2"
+                                : "border-border hover:border-accent"
+                            }`}
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={asset.deliveryUrl}
+                              alt=""
+                              className="aspect-[16/9] w-full object-cover"
+                            />
+                            <span className="block p-3">
+                              <span className="flex items-start justify-between gap-2">
+                                <span className="text-body-sm min-w-0 truncate font-medium">
+                                  {asset.originalFileName}
+                                </span>
+                                {selected && (
+                                  <Check
+                                    aria-hidden="true"
+                                    className="text-accent shrink-0"
+                                    size={18}
+                                  />
+                                )}
+                              </span>
+                              <span className="text-body-xs text-text-secondary mt-1 block">
+                                {asset.width} × {asset.height} px
+                              </span>
+                              <span className="text-body-xs text-text-secondary mt-2 line-clamp-2 block">
+                                {asset.altText}
+                              </span>
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <div className="border-border rounded-lg border border-dashed p-8 text-center">
+                    <Images
+                      aria-hidden="true"
+                      className="text-text-muted mx-auto"
+                      size={36}
+                    />
+                    <p className="font-display mt-3 font-bold">
+                      No uploaded images yet
+                    </p>
+                    <p className="text-body-sm text-text-secondary mt-1">
+                      Upload the first image to add it to the shared library.
+                    </p>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="mt-4"
+                      onClick={() => setPickerView("upload")}
+                    >
+                      <Upload aria-hidden="true" className="mr-2" size={16} />
+                      Upload new
+                    </Button>
+                  </div>
+                )
+              ) : (
+                <div className="max-w-2xl">
+                  <h4 className="font-display font-bold">Upload new image</h4>
+                  <p className="text-body-sm text-text-secondary mt-1">
+                    The image will be available in the media library for future
+                    articles.
+                  </p>
+                  <div className="mt-5 grid gap-4">
+                    <label className="text-body-sm">
+                      Image file
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/avif"
+                        onChange={(event) =>
+                          setFile(event.target.files?.[0] ?? null)
+                        }
+                        className={`${inputClass} file:bg-accent file:mr-3 file:rounded file:border-0 file:px-3 file:py-1 file:text-white`}
+                      />
+                    </label>
+                    <label className="text-body-sm">
+                      Descriptive alt text
+                      <input
+                        value={alt}
+                        minLength={5}
+                        maxLength={300}
+                        onChange={(event) => setAlt(event.target.value)}
+                        className={inputClass}
+                      />
+                    </label>
+                  </div>
+                  {error && (
+                    <p
+                      role="alert"
+                      className="text-body-sm mt-3 text-red-600 dark:text-red-400"
+                    >
+                      {error}
+                    </p>
+                  )}
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      onClick={upload}
+                      size="sm"
+                      disabled={state === "loading"}
+                    >
+                      <Upload aria-hidden="true" className="mr-2" size={16} />
+                      {state === "loading" ? "Uploading…" : "Upload and use"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => {
+                        setPickerView("library");
+                        setError(null);
+                      }}
+                    >
+                      Back to library
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </Card>
