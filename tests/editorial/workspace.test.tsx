@@ -263,6 +263,32 @@ describe("EditorialWorkspace", () => {
     document.removeEventListener("wheel", pageWheel);
   });
 
+  it("keeps the writing canvas full width with compact actions and history below", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: "New article" }),
+    );
+
+    const form = container.querySelector("form");
+    const history = screen.getByRole("complementary", {
+      name: "Revision history",
+    });
+    const save = screen.getByRole("button", { name: "Save draft" });
+
+    expect(form).not.toBeNull();
+    expect(form?.parentElement).toHaveClass("space-y-8");
+    expect(form?.parentElement).not.toHaveClass(
+      "xl:grid-cols-[minmax(0,1fr)_22rem]",
+    );
+    expect(form?.compareDocumentPosition(history) ?? 0).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(history).not.toHaveClass("xl:sticky");
+    expect(save).toHaveClass("shrink-0", "whitespace-nowrap", "px-4", "py-2");
+    expect(save.parentElement).toHaveClass("flex-wrap", "items-center");
+  });
+
   it("identifies invalid fields and preserves unsaved work", async () => {
     const user = userEvent.setup();
     render(<EditorialWorkspace />);

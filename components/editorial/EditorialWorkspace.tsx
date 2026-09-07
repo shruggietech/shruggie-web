@@ -732,7 +732,7 @@ function ArticleEditor({
         </div>
       )}
 
-      <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="space-y-8">
         <form onSubmit={saveDraft} noValidate className="space-y-8">
           <Card hover={false}>
             <p className="text-body-xs text-accent font-mono tracking-[0.16em] uppercase">
@@ -909,10 +909,12 @@ function ArticleEditor({
             onSessionFailure={onSessionFailure}
           />
 
-          <div className="border-border bg-bg-elevated/95 sticky bottom-4 z-10 flex flex-col gap-3 rounded-xl border p-4 shadow-xl backdrop-blur sm:flex-row sm:items-center">
+          <div className="border-border bg-bg-elevated/95 sticky bottom-4 z-10 flex flex-wrap items-center gap-3 rounded-xl border p-4 shadow-xl backdrop-blur">
             <Button
               type="submit"
+              size="sm"
               disabled={readOnly || saveState === "loading"}
+              className="shrink-0 whitespace-nowrap"
             >
               <Save aria-hidden="true" className="mr-2" size={18} />{" "}
               {saveState === "loading" ? "Saving…" : "Save draft"}
@@ -920,8 +922,10 @@ function ArticleEditor({
             <Button
               type="button"
               variant="secondary"
+              size="sm"
               disabled={!persisted || dirty}
               aria-describedby="preview-note"
+              className="shrink-0 whitespace-nowrap"
               onClick={() => {
                 if (!persisted || dirty) return;
                 window.open(
@@ -933,12 +937,18 @@ function ArticleEditor({
             >
               <Eye aria-hidden="true" className="mr-2" size={18} /> Preview
             </Button>
-            <Button type="button" variant="secondary" disabled>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              disabled
+              className="shrink-0 whitespace-nowrap"
+            >
               Publish
             </Button>
             <p
               id="preview-note"
-              className="text-body-xs text-text-secondary sm:ml-auto"
+              className="text-body-xs text-text-secondary min-w-0 flex-1 sm:text-right"
             >
               {!persisted
                 ? "Save the draft to preview."
@@ -1217,10 +1227,7 @@ function RevisionHistory({
     (item) => item.revision.number === selected,
   );
   return (
-    <aside
-      aria-labelledby="revision-history-heading"
-      className="xl:sticky xl:top-24 xl:self-start"
-    >
+    <aside aria-labelledby="revision-history-heading">
       <Card hover={false}>
         <h2
           id="revision-history-heading"
@@ -1253,7 +1260,7 @@ function RevisionHistory({
         ) : (
           <fieldset className="mt-4">
             <legend className="sr-only">Select an article revision</legend>
-            <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
+            <div className="grid max-h-72 gap-2 overflow-y-auto pr-1 md:grid-cols-2 xl:grid-cols-3">
               {revisions.map((revision) => (
                 <label
                   key={revision.revision.number}
