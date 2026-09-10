@@ -96,6 +96,7 @@ export function createAuditEvent(
   previous: Article | null,
   next: Article,
   context: EditorialMutationContext,
+  actionOverride?: EditorialAuditAction,
 ): EditorialAuditEvent {
   const parsedContext = parseEditorialMutationContext(context);
   if (next.revision.updatedBy !== parsedContext.actorId) {
@@ -110,7 +111,7 @@ export function createAuditEvent(
   return editorialAuditEventSchema.parse({
     schemaVersion: 1,
     id,
-    action: deriveAuditAction(previous, next),
+    action: actionOverride ?? deriveAuditAction(previous, next),
     actorId: parsedContext.actorId,
     actorRole: parsedContext.role,
     articleId: next.id,

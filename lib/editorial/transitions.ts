@@ -63,3 +63,36 @@ export function assertArticleMutation(
     throw new EditorialValidationError("modifiedAt cannot move backwards.");
   }
 }
+
+export function assertArticleRestoresRevision(
+  source: Article,
+  current: Article,
+  next: Article,
+): void {
+  if (
+    source.id !== current.id ||
+    source.revision.number >= current.revision.number
+  ) {
+    throw new EditorialValidationError(
+      "A restore source must be an earlier revision of the same article.",
+    );
+  }
+
+  const restorable = (article: Article) => ({
+    author: article.author,
+    body: article.body,
+    category: article.category,
+    excerpt: article.excerpt,
+    featuredImage: article.featuredImage,
+    ogImage: article.ogImage,
+    slug: article.slug,
+    title: article.title,
+  });
+
+  if (JSON.stringify(restorable(source)) !== JSON.stringify(restorable(next))) {
+    throw new EditorialValidationError(
+      "A restored article must match the selected immutable revision.",
+      { restoreFromRevision: source.revision.number },
+    );
+  }
+}

@@ -18,13 +18,43 @@ contracts from #25 and the server session boundary from #26.
    contextual alternative text and is revalidated by the server.
 5. Choose **Save draft**. Validation moves focus to the first invalid field and
    does not clear any unsaved values.
-6. Use revision history to inspect an earlier snapshot or load it into the
-   unsaved form. Saving that form creates a new monotonic revision; it never
-   overwrites the selected historical record.
+6. Choose **Preview** to open the latest saved revision through the public
+   article template. Unsaved changes are never included in preview.
+7. Choose **Publish** from a clean saved draft. The server commits the
+   publication revision and audit event before invalidating the article, blog
+   index, pagination, sitemap, metadata, and referenced media surfaces.
+8. Open a published article to make corrections, then choose **Publish update**
+   to save a new public revision without changing its original publication
+   date. Choose **Unpublish** only after saving or discarding local changes.
+9. Use revision history to inspect an earlier immutable snapshot. Loading and
+   saving that snapshot creates a new revision with an explicit `restore` audit
+   event; it never overwrites history. Archived articles can be restored to a
+   draft before editing.
 
-Draft saving and public publishing are deliberately separate. The workspace
-does not expose a working publish button until the reviewed publication,
-preview, rollback, and cache-convergence workflow in #28 is complete.
+Draft saving, preview, and public publishing remain separate actions. New
+published slugs are resolved from Firestore at request time and do not require
+a repository commit or application deployment.
+
+## Public delivery during migration
+
+Until the migration in #29 is complete, `lib/blog.ts` merges published
+Firestore articles with the repository-backed corpus. A Firestore record owns
+its slug even while unpublished, preventing an older repository copy from
+reappearing after unpublication. Published Firestore records override matching
+repository slugs.
+
+Published database reads use the Next.js data cache. Published edits can serve
+the last successful representation while background revalidation runs;
+publication-state and slug changes expire the exact article and shared index
+data immediately. Index, pagination, and sitemap surfaces then converge through
+their collection tag and path invalidation. If no cached or repository-backed
+representation exists during an outage, the blog displays an explicit
+temporary-unavailability state.
+
+Uploaded media remains private until its owning article is published. The
+same-origin `/media/[id]` route authorizes draft media with the editor session
+and serves published media with bounded cache headers, an immutable checksum
+ETag, and `nosniff` protection.
 
 ## Failure behavior
 
@@ -34,8 +64,12 @@ preview, rollback, and cache-convergence workflow in #28 is complete.
   signing out.
 - Article-list and revision-history failures provide bounded retry actions.
 - Dependency failures are described without claiming that a write succeeded.
-- Published and archived records are read-only until #28 supplies the complete
-  lifecycle workflow.
+- If the database commit succeeds but cache invalidation fails, the API returns
+  a retryable failure. The browser retains the exact article payload and
+  idempotency key so retrying completes convergence without creating a second
+  revision.
+- Published records remain editable through **Publish update**. Archived
+  records remain read-only until explicitly restored to a draft.
 
 ## Accessibility
 

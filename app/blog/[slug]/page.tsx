@@ -24,6 +24,7 @@ import {
   getPreviewPostBySlug,
 } from "@/lib/blog";
 import { requireEditor } from "@/lib/editorial/http";
+import { ArticleNotFoundError } from "@/lib/editorial/errors";
 import { readEditorialPreviewSlug } from "@/lib/editorial/preview-session";
 import { extractHeadings } from "@/lib/utils";
 import { generateBlogPostSchema } from "@/lib/schema";
@@ -81,7 +82,9 @@ export async function generateMetadata({
         ? meta.ogImage
         : `${SITE_URL}${meta.ogImage}`
       : meta.featuredImage
-        ? `${SITE_URL}${meta.featuredImage}`
+        ? meta.featuredImage.startsWith("http")
+          ? meta.featuredImage
+          : `${SITE_URL}${meta.featuredImage}`
         : getOgImageUrl(meta.title, { author: meta.author });
 
     return {
@@ -116,10 +119,11 @@ export async function generateMetadata({
         images: [ogImageUrl],
       },
     };
-  } catch {
-    return {
-      title: "Post Not Found",
-    };
+  } catch (error) {
+    if (error instanceof ArticleNotFoundError) {
+      return { title: "Post Not Found" };
+    }
+    throw error;
   }
 }
 
@@ -132,8 +136,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const result = await getPostForRequest(resolvedParams.slug);
     post = result.post;
     preview = result.preview;
-  } catch {
-    notFound();
+  } catch (error) {
+    if (error instanceof ArticleNotFoundError) notFound();
+    throw error;
   }
 
   const { meta, content } = post;

@@ -38,13 +38,16 @@ export function articleForSave(
   editorId: string,
   persisted: Article | null,
   now = new Date(),
+  targetState: Article["state"] = "draft",
 ): Article {
   const timestamp = now.toISOString();
+  const publishedAt =
+    targetState === "published" ? (persisted?.publishedAt ?? timestamp) : null;
   if (!persisted) {
     return {
       ...draft,
-      state: "draft",
-      publishedAt: null,
+      state: targetState,
+      publishedAt,
       modifiedAt: timestamp,
       revision: {
         number: 1,
@@ -56,8 +59,8 @@ export function articleForSave(
   }
   return {
     ...draft,
-    state: "draft",
-    publishedAt: null,
+    state: targetState,
+    publishedAt,
     createdAt: persisted.createdAt,
     modifiedAt: timestamp,
     revision: {

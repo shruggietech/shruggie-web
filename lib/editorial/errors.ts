@@ -5,6 +5,7 @@ export type EditorialErrorCode =
   | "CONTENT_UNAVAILABLE"
   | "INVALID_STATE_TRANSITION"
   | "NOT_FOUND"
+  | "PUBLICATION_CONVERGENCE_FAILED"
   | "REVISION_CONFLICT"
   | "SLUG_COLLISION"
   | "VALIDATION_FAILED";
@@ -105,6 +106,16 @@ export class ContentTimeoutError extends EditorialError {
       "CONTENT_TIMEOUT",
       `Editorial storage timed out after ${timeoutMs}ms while attempting to ${operation}.`,
       { cause, details: { operation, timeoutMs }, retryable: true },
+    );
+  }
+}
+
+export class PublicationConvergenceError extends EditorialError {
+  constructor(articleId: string, cause?: unknown) {
+    super(
+      "PUBLICATION_CONVERGENCE_FAILED",
+      "The article change was saved, but public caches could not be refreshed. Retry the same action to finish publication.",
+      { cause, details: { articleId }, retryable: true },
     );
   }
 }

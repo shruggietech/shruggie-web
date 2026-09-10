@@ -84,6 +84,10 @@ function sessionAndWorkspaceFetch(
       const payload = JSON.parse(String(init?.body)) as { article: Article };
       return json({ article: payload.article }, 201);
     }
+    if (url.includes("/api/admin/articles/") && method === "PUT") {
+      const payload = JSON.parse(String(init?.body)) as { article: Article };
+      return json({ article: payload.article, publicationConverged: true });
+    }
     throw new Error(`Unexpected request: ${method} ${url}`);
   });
 }
@@ -236,7 +240,26 @@ describe("EditorialWorkspace", () => {
       "_blank",
       "noopener,noreferrer",
     );
-    expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
+    const publish = screen.getByRole("button", { name: "Publish" });
+    expect(publish).toBeEnabled();
+    await user.click(publish);
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Published revision 2. Public caches were refreshed.",
+    );
+    const update = fetchMock.mock.calls.find(
+      ([input, init]) =>
+        String(input).includes("/api/admin/articles/") &&
+        init?.method === "PUT",
+    );
+    const published = JSON.parse(String(update?.[1]?.body)) as {
+      article: Article;
+      idempotencyKey: string;
+    };
+    expect(published.article).toMatchObject({
+      publishedAt: expect.any(String),
+      state: "published",
+    });
+    expect(published.idempotencyKey).toMatch(/^publish:/);
     expect(screen.queryByText(/#28/)).not.toBeInTheDocument();
 
     const accessibility = await axe.run(container, {
@@ -470,6 +493,135 @@ describe("EditorialWorkspace", () => {
     expect(screen.getByRole("status")).toHaveTextContent(
       "Revision 1 was loaded into the unsaved draft",
     );
+    await user.click(screen.getByRole("button", { name: "Restore revision" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Revision 1 restored as revision 3.",
+    );
+    const restoreCall = vi
+      .mocked(globalThis.fetch)
+      .mock.calls.find(
+        ([input, init]) =>
+          String(input).includes("/api/admin/articles/") &&
+          init?.method === "PUT",
+      );
+    const restore = JSON.parse(String(restoreCall?.[1]?.body)) as {
+      article: Article;
+      restoreFromRevision: number;
+    };
+    expect(restore.restoreFromRevision).toBe(1);
+    expect(restore.article.title).toBe(first.title);
+  });
+
+  it("publishes updates and can unpublish without changing the original publication date", async () => {
+    const publishedAt = "2026-09-06T12:00:00.000Z";
+    const published = articleFixture({ state: "published", publishedAt });
+    globalThis.fetch = sessionAndWorkspaceFetch([published], [published]);
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+
+    await user.click(
+      await screen.findByRole("button", { name: /Edit An example article/ }),
+    );
+    const title = screen.getByLabelText("Title");
+    await user.clear(title);
+    await user.type(title, "A corrected published article");
+    await user.click(screen.getByRole("button", { name: "Publish update" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Published update saved as revision 2.",
+    );
+    const updateCalls = vi
+      .mocked(globalThis.fetch)
+      .mock.calls.filter(
+        ([input, init]) =>
+          String(input).includes("/api/admin/articles/") &&
+          init?.method === "PUT",
+      );
+    const update = JSON.parse(String(updateCalls[0]?.[1]?.body)) as {
+      article: Article;
+    };
+    expect(update.article).toMatchObject({
+      publishedAt,
+      state: "published",
+      title: "A corrected published article",
+    });
+
+    await user.click(screen.getByRole("button", { name: "Unpublish" }));
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Unpublished as revision 3. Public caches were refreshed.",
+    );
+    const unpublish = JSON.parse(
+      String(
+        vi
+          .mocked(globalThis.fetch)
+          .mock.calls.filter(
+            ([input, init]) =>
+              String(input).includes("/api/admin/articles/") &&
+              init?.method === "PUT",
+          )[1]?.[1]?.body,
+      ),
+    ) as { article: Article };
+    expect(unpublish.article).toMatchObject({
+      publishedAt: null,
+      state: "draft",
+    });
+  });
+
+  it("reuses the exact mutation after an ambiguous publication failure", async () => {
+    const draft = articleFixture();
+    let attempts = 0;
+    const fetchMock = sessionAndWorkspaceFetch([draft], [draft]);
+    globalThis.fetch = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (
+          String(input).includes("/api/admin/articles/") &&
+          init?.method === "PUT"
+        ) {
+          attempts += 1;
+          if (attempts === 1) {
+            return json(
+              {
+                error: {
+                  code: "PUBLICATION_CONVERGENCE_FAILED",
+                  message:
+                    "The article was saved, but public caches need a retry.",
+                  retryable: true,
+                },
+              },
+              503,
+            );
+          }
+        }
+        return fetchMock(input, init);
+      },
+    );
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+
+    await user.click(
+      await screen.findByRole("button", { name: /Edit An example article/ }),
+    );
+    const publish = screen.getByRole("button", { name: "Publish" });
+    await user.click(publish);
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "public caches need a retry",
+    );
+    await user.click(publish);
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Published revision 2",
+    );
+
+    const requests = vi
+      .mocked(globalThis.fetch)
+      .mock.calls.filter(
+        ([input, init]) =>
+          String(input).includes("/api/admin/articles/") &&
+          init?.method === "PUT",
+      )
+      .map(([, init]) => String(init?.body));
+    expect(requests).toHaveLength(2);
+    expect(requests[1]).toBe(requests[0]);
   });
 
   it("surfaces stale conflicts without overwriting local content", async () => {

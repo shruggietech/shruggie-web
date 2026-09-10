@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Browser article publication**: authorized staff can publish saved drafts,
+  update published articles, unpublish them, and restore immutable revisions;
+  lifecycle mutations retain idempotency keys across ambiguous failures and
+  report success only after targeted public-cache invalidation completes
+- **Editorial media delivery**: added `/media/[id]` with editor authorization
+  for draft assets, bounded public caching for published assets, checksum
+  ETags, and content-type hardening
 - **README**: replaced the placeholder single-line README with a branded repository overview covering the tech stack, getting-started steps, project structure, content authoring, the spec-kit contribution workflow, and useful auto-updating status badges (Vercel deployment, live site, open pull requests, Next.js version, and license). The banner uses plain Markdown without a raw-HTML carve-out, and open pull requests are the trunk-based proxy for work not yet in production instead of the ephemeral Preview deployment
 - **spec-kit**: adopted Spec-Driven Development via `.specify/` and `.claude/skills/speckit-*`, with a project-specific constitution at `.specify/memory/constitution.md` codifying specification precedence, design system discipline, accessibility, performance budget, and document integrity as gates for future feature work
 - **Service detail pages**: four canonical pages at `/services/[slug]` (strategy-brand, development, marketing, ai-data) with per-service copy, capabilities, 3–5 FAQs, and Service + FAQPage + BreadcrumbList JSON-LD; the `/services` hub links out to each and homepage service cards now link to detail pages instead of hub anchors; service data centralized in `lib/services.ts`. FAQ copy is drafted from existing positioning and pending founder review
@@ -30,6 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Blog publication source**: public blog routes now merge cached, published
+  Firestore records with repository articles during the migration window;
+  editorial slugs shadow repository copies, and newly published slugs resolve
+  dynamically without a deployment
 - **ESLint baseline**: replaced render-time ref mutation and synchronous effect state updates with behavior-preserving derived state and browser subscriptions across navigation, responsive hooks, cookie consent, blog table-of-contents tracking, and product/homepage animation components; documented the required native image exception for edge-rendered Open Graph cards
 - **Development pillar**: added blockchain integration to the pillar description and "Blockchain architecture and smart contract development" to the capabilities list
 - **Service anchor map**: added `Blockchain`, `Smart Contracts`, and `Blockchain Consulting` entries linking to the Development & Integration pillar

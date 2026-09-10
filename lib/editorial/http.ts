@@ -82,7 +82,9 @@ export function editorialErrorResponse(error: unknown): NextResponse {
     const status =
       error.code === "CONTENT_TIMEOUT"
         ? 504
-        : error.code === "CONTENT_UNAVAILABLE"
+        : ["CONTENT_UNAVAILABLE", "PUBLICATION_CONVERGENCE_FAILED"].includes(
+              error.code,
+            )
           ? 503
           : error.code === "NOT_FOUND"
             ? 404
@@ -95,7 +97,13 @@ export function editorialErrorResponse(error: unknown): NextResponse {
               ? 409
               : 400;
     return editorialJson(
-      { error: { code: error.code, message: error.message } },
+      {
+        error: {
+          code: error.code,
+          message: error.message,
+          retryable: error.retryable,
+        },
+      },
       { status },
     );
   }

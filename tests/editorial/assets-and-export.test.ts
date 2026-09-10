@@ -46,7 +46,8 @@ function uploadInput(bytes: Uint8Array, contentType = "image/png") {
 describe("AssetStore contract", () => {
   it("inspects image bytes and creates a stable private delivery record", async () => {
     const store = new InMemoryAssetStore();
-    const asset = await store.put(uploadInput(await pngBytes()));
+    const bytes = await pngBytes();
+    const asset = await store.put(uploadInput(bytes));
 
     expect(asset).toMatchObject({
       contentType: "image/png",
@@ -56,6 +57,10 @@ describe("AssetStore contract", () => {
       deliveryUrl: "https://shruggie.tech/media/asset:hero",
     });
     expect(asset.checksumSha256).toMatch(/^[a-f0-9]{64}$/);
+    await expect(store.read(asset.id)).resolves.toEqual({
+      asset,
+      bytes: new Uint8Array(bytes),
+    });
   });
 
   it("rejects mismatched types and inadequate alternatives", async () => {

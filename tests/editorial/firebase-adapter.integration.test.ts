@@ -142,6 +142,7 @@ describe("Firebase editorial adapters", () => {
     const published = nextRevision(draft, {
       state: "published",
       publishedAt: "2026-09-05T13:00:00.000Z",
+      title: "Published Firebase article",
     });
     await expect(
       repository.update({
@@ -161,16 +162,48 @@ describe("Firebase editorial adapters", () => {
     await expect(
       repository.getBySlug(draft.slug, "published"),
     ).resolves.toEqual(published);
-    await expect(repository.exportAll()).resolves.toEqual([published]);
+    const unpublished = nextRevision(published, {
+      modifiedAt: "2026-09-05T14:00:00.000Z",
+      publishedAt: null,
+      state: "draft",
+    });
+    await repository.update({
+      article: unpublished,
+      expectedRevision: 2,
+      idempotencyKey: "firebase-unpublish-0001",
+      mutation: mutationContext("request:firebase-unpublish-0001"),
+    });
+    const restored = nextRevision(unpublished, {
+      body: draft.body,
+      category: draft.category,
+      excerpt: draft.excerpt,
+      modifiedAt: "2026-09-05T15:00:00.000Z",
+      slug: draft.slug,
+      title: draft.title,
+    });
+    await repository.update({
+      article: restored,
+      expectedRevision: 3,
+      idempotencyKey: "firebase-restore-0001",
+      mutation: mutationContext("request:firebase-restore-0001"),
+      restoreFromRevision: 1,
+    });
+
+    await expect(repository.exportAll()).resolves.toEqual([restored]);
+    await expect(repository.getRevision(draft.id, 1)).resolves.toEqual(draft);
     await expect(repository.listRevisions(draft.id)).resolves.toEqual([
+      restored,
+      unpublished,
       published,
       draft,
     ]);
     const audit = await repository.exportAudit();
-    expect(audit).toHaveLength(2);
+    expect(audit).toHaveLength(4);
     expect(audit.map((event) => event.action).sort()).toEqual([
       "create",
       "publish",
+      "restore",
+      "unpublish",
     ]);
     expect(audit.every((event) => event.actorId === "editor:natalie")).toBe(
       true,
@@ -227,6 +260,10 @@ describe("Firebase editorial adapters", () => {
     });
 
     await expect(store.getById(asset.id)).resolves.toEqual(asset);
+    await expect(store.read(asset.id)).resolves.toEqual({
+      asset,
+      bytes: new Uint8Array(bytes),
+    });
     await expect(store.exportAll()).resolves.toEqual([asset]);
     const [exists] = await getStorage(app)
       .bucket(bucketName)

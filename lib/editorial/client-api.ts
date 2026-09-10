@@ -19,6 +19,7 @@ export class EditorialApiError extends Error {
     message: string,
     readonly status: number,
     readonly issues: ApiIssue[] = [],
+    readonly retryable = false,
   ) {
     super(message);
     this.name = "EditorialApiError";
@@ -46,7 +47,12 @@ async function apiRequest<T>(input: string, init?: RequestInit): Promise<T> {
   }
 
   const payload = (await response.json().catch(() => ({}))) as {
-    error?: { code?: string; message?: string; issues?: ApiIssue[] };
+    error?: {
+      code?: string;
+      message?: string;
+      issues?: ApiIssue[];
+      retryable?: boolean;
+    };
   };
   if (!response.ok) {
     throw new EditorialApiError(
@@ -54,6 +60,7 @@ async function apiRequest<T>(input: string, init?: RequestInit): Promise<T> {
       payload.error?.message ?? "The editorial request failed.",
       response.status,
       payload.error?.issues ?? [],
+      payload.error?.retryable ?? response.status >= 500,
     );
   }
   return payload as T;
@@ -112,10 +119,11 @@ export async function listArticleRevisions(id: string): Promise<Article[]> {
 
 export async function createEditorialArticle(
   article: Article,
+  idempotencyKey = editorialMutationKey("create"),
 ): Promise<Article> {
   const result = await apiRequest<{ article: Article }>("/api/admin/articles", {
     method: "POST",
-    body: JSON.stringify({ article, idempotencyKey: mutationKey("create") }),
+    body: JSON.stringify({ article, idempotencyKey }),
   });
   return result.article;
 }
@@ -123,6 +131,10 @@ export async function createEditorialArticle(
 export async function updateEditorialArticle(
   article: Article,
   expectedRevision: number,
+  options: {
+    idempotencyKey?: string;
+    restoreFromRevision?: number;
+  } = {},
 ): Promise<Article> {
   const result = await apiRequest<{ article: Article }>(
     `/api/admin/articles/${encodeURIComponent(article.id)}`,
@@ -131,7 +143,9 @@ export async function updateEditorialArticle(
       body: JSON.stringify({
         article,
         expectedRevision,
-        idempotencyKey: mutationKey("update"),
+        idempotencyKey:
+          options.idempotencyKey ?? editorialMutationKey("update"),
+        restoreFromRevision: options.restoreFromRevision,
       }),
     },
   );
@@ -155,6 +169,6 @@ export async function uploadEditorialAsset(input: {
   return result.asset;
 }
 
-function mutationKey(action: string): string {
+export function editorialMutationKey(action: string): string {
   return `${action}:${crypto.randomUUID()}`;
 }

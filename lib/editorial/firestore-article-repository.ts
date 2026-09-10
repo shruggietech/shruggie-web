@@ -35,7 +35,10 @@ import type {
   UpdateArticleCommand,
 } from "./ports";
 import { validateArticleListLimit, validateIdempotencyKey } from "./ports";
-import { assertArticleMutation } from "./transitions";
+import {
+  assertArticleMutation,
+  assertArticleRestoresRevision,
+} from "./transitions";
 
 const ARTICLES = "articles";
 const ARTICLE_SLUGS = "articleSlugs";
@@ -153,6 +156,7 @@ export class FirestoreArticleRepository implements ArticleRepository {
       article: next,
       actorId: mutation.actorId,
       expectedRevision: command.expectedRevision,
+      restoreFromRevision: command.restoreFromRevision,
       role: mutation.role,
     });
 
@@ -171,6 +175,32 @@ export class FirestoreArticleRepository implements ArticleRepository {
 
         const current = parseArticle(articleSnapshot.data());
         assertArticleMutation(current, next, command.expectedRevision);
+
+        let restoreSource: Article | null = null;
+        if (command.restoreFromRevision !== undefined) {
+          if (
+            !Number.isInteger(command.restoreFromRevision) ||
+            command.restoreFromRevision < 1
+          ) {
+            throw new EditorialValidationError(
+              "The restore revision must be a positive integer.",
+            );
+          }
+          const restoreSnapshot = await transaction.get(
+            this.db
+              .collection(ARTICLE_REVISIONS)
+              .doc(
+                `${next.id}:${command.restoreFromRevision.toString().padStart(10, "0")}`,
+              ),
+          );
+          if (!restoreSnapshot.exists) {
+            throw new ArticleNotFoundError(
+              `${next.id} revision ${command.restoreFromRevision}`,
+            );
+          }
+          restoreSource = parseArticle(restoreSnapshot.data());
+          assertArticleRestoresRevision(restoreSource, current, next);
+        }
 
         if (current.slug !== next.slug) {
           const nextSlugRef = this.db.collection(ARTICLE_SLUGS).doc(next.slug);
@@ -210,6 +240,7 @@ export class FirestoreArticleRepository implements ArticleRepository {
             current,
             next,
             mutation,
+            restoreSource ? "restore" : undefined,
           ),
         );
         return next;
@@ -309,6 +340,24 @@ export class FirestoreArticleRepository implements ArticleRepository {
         return snapshot.docs
           .map((document) => parseArticle(document.data()))
           .sort((a, b) => b.revision.number - a.revision.number);
+      },
+    );
+  }
+
+  async getRevision(id: string, revision: number): Promise<Article | null> {
+    const parsedId = editorialIdSchema.safeParse(id);
+    if (!parsedId.success || !Number.isInteger(revision) || revision < 1) {
+      throw new EditorialValidationError("Article revision is invalid.");
+    }
+    return withEditorialTimeout(
+      "read an article revision",
+      this.timeoutMs,
+      async () => {
+        const snapshot = await this.db
+          .collection(ARTICLE_REVISIONS)
+          .doc(`${parsedId.data}:${revision.toString().padStart(10, "0")}`)
+          .get();
+        return snapshot.exists ? parseArticle(snapshot.data()) : null;
       },
     );
   }

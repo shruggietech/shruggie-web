@@ -105,6 +105,22 @@ export class FirebaseAssetStore implements AssetStore {
     );
   }
 
+  async read(id: string): Promise<{
+    asset: EditorialAsset;
+    bytes: Uint8Array;
+  } | null> {
+    const asset = await this.getById(id);
+    if (!asset) return null;
+    return withEditorialTimeout(
+      "read an article image",
+      this.timeoutMs,
+      async () => {
+        const [bytes] = await this.bucket.file(asset.storagePath).download();
+        return { asset, bytes: new Uint8Array(bytes) };
+      },
+    );
+  }
+
   async exportAll(): Promise<EditorialAsset[]> {
     return withEditorialTimeout(
       "export article images",

@@ -16,6 +16,7 @@ export default defineConfig({
     exclude: [
       "tests/color-contrast.test.mjs",
       "tests/editorial/firebase-adapter.integration.test.ts",
+      "tests/editorial/production-publication.production.test.ts",
       "node_modules/**",
     ],
   },

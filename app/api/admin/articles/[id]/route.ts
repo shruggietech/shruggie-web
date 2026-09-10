@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 import { articleSchemaV1, editorialIdSchema } from "@/lib/editorial/domain";
-import { EditorialValidationError } from "@/lib/editorial/errors";
+import {
+  EditorialValidationError,
+  PublicationConvergenceError,
+} from "@/lib/editorial/errors";
 import { createFirebaseEditorialBackend } from "@/lib/editorial/firebase-admin";
 import {
   editorialErrorResponse,
@@ -14,6 +17,10 @@ import {
   loadEditorialSecurityConfig,
   mutationContextFor,
 } from "@/lib/editorial/security";
+import {
+  publicationAffectsPublicRoutes,
+  revalidateArticlePublication,
+} from "@/lib/editorial/publication-cache";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,6 +30,7 @@ const updateRequestSchema = z
     article: articleSchemaV1,
     expectedRevision: z.number().int().positive(),
     idempotencyKey: z.string(),
+    restoreFromRevision: z.number().int().positive().optional(),
   })
   .strict();
 
@@ -63,14 +71,25 @@ export async function PUT(request: Request, context: RouteContext) {
         "The route and article IDs must match.",
       );
     }
-    const article = await createFirebaseEditorialBackend().articles.update({
+    const repository = createFirebaseEditorialBackend().articles;
+    const previous =
+      (await repository.getRevision(id, body.expectedRevision)) ??
+      (await repository.getById(id, "all"));
+    const article = await repository.update({
       ...body,
       mutation: mutationContextFor(
         principal,
         request.headers.get("x-request-id"),
       ),
     });
-    return editorialJson({ article });
+    if (previous && publicationAffectsPublicRoutes(previous, article)) {
+      try {
+        revalidateArticlePublication(previous, article);
+      } catch (error) {
+        throw new PublicationConvergenceError(article.id, error);
+      }
+    }
+    return editorialJson({ article, publicationConverged: true });
   } catch (error) {
     return editorialErrorResponse(error);
   }

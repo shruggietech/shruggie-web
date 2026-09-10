@@ -20,6 +20,7 @@ export interface UpdateArticleCommand {
   expectedRevision: number;
   idempotencyKey: string;
   mutation: EditorialMutationContext;
+  restoreFromRevision?: number;
 }
 
 export interface ArticleReader {
@@ -35,6 +36,7 @@ export interface ArticleRepository extends ArticleReader {
   create(command: CreateArticleCommand): Promise<Article>;
   exportAudit(): Promise<EditorialAuditEvent[]>;
   exportAll(): Promise<Article[]>;
+  getRevision(id: string, revision: number): Promise<Article | null>;
   listRevisions(id: string): Promise<Article[]>;
   update(command: UpdateArticleCommand): Promise<Article>;
 }
@@ -42,6 +44,10 @@ export interface ArticleRepository extends ArticleReader {
 export interface AssetStore {
   exportAll(): Promise<EditorialAsset[]>;
   getById(id: string): Promise<EditorialAsset | null>;
+  read(id: string): Promise<{
+    asset: EditorialAsset;
+    bytes: Uint8Array;
+  } | null>;
   put(input: AssetUploadInput): Promise<EditorialAsset>;
 }
 

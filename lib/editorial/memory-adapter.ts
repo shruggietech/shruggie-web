@@ -32,7 +32,10 @@ import type {
   UpdateArticleCommand,
 } from "./ports";
 import { validateArticleListLimit, validateIdempotencyKey } from "./ports";
-import { assertArticleMutation } from "./transitions";
+import {
+  assertArticleMutation,
+  assertArticleRestoresRevision,
+} from "./transitions";
 
 type FailureMode = "available" | "timeout" | "unavailable";
 
@@ -122,6 +125,7 @@ export class InMemoryArticleRepository implements ArticleRepository {
       article: next,
       actorId: mutation.actorId,
       expectedRevision: command.expectedRevision,
+      restoreFromRevision: command.restoreFromRevision,
       role: mutation.role,
     });
     const replay = this.getIdempotentReplay(
@@ -133,8 +137,25 @@ export class InMemoryArticleRepository implements ArticleRepository {
     const current = this.articles.get(next.id);
     if (!current) throw new ArticleNotFoundError(next.id);
     assertArticleMutation(current, next, command.expectedRevision);
+    if (command.restoreFromRevision !== undefined) {
+      const source = this.revisions
+        .get(next.id)
+        ?.get(command.restoreFromRevision);
+      if (!source) {
+        throw new ArticleNotFoundError(
+          `${next.id} revision ${command.restoreFromRevision}`,
+        );
+      }
+      assertArticleRestoresRevision(source, current, next);
+    }
     const auditId = this.auditId(command.idempotencyKey);
-    const auditEvent = createAuditEvent(auditId, current, next, mutation);
+    const auditEvent = createAuditEvent(
+      auditId,
+      current,
+      next,
+      mutation,
+      command.restoreFromRevision === undefined ? undefined : "restore",
+    );
 
     if (current.slug !== next.slug) {
       const existingArticleId = this.articleIdBySlug.get(next.slug);
@@ -209,6 +230,16 @@ export class InMemoryArticleRepository implements ArticleRepository {
       .map((article) => structuredClone(article));
   }
 
+  async getRevision(id: string, revision: number): Promise<Article | null> {
+    this.assertAvailable("read an article revision");
+    const parsedId = editorialIdSchema.safeParse(id);
+    if (!parsedId.success || !Number.isInteger(revision) || revision < 1) {
+      throw new EditorialValidationError("Article revision is invalid.");
+    }
+    const article = this.revisions.get(parsedId.data)?.get(revision);
+    return article ? structuredClone(article) : null;
+  }
+
   async exportAll(): Promise<Article[]> {
     this.assertAvailable("export articles");
     return [...this.articles.values()].map((article) =>
@@ -266,14 +297,20 @@ export class InMemoryArticleRepository implements ArticleRepository {
 }
 
 export class InMemoryAssetStore implements AssetStore {
-  private readonly assets = new Map<string, EditorialAsset>();
+  private readonly assets = new Map<
+    string,
+    { asset: EditorialAsset; bytes: Uint8Array }
+  >();
 
   constructor(private readonly deliveryOrigin = "https://shruggie.tech") {}
 
   async put(input: AssetUploadInput): Promise<EditorialAsset> {
     if (this.assets.has(input.id)) throw new AssetCollisionError(input.id);
     const prepared = await prepareAssetUpload(input, this.deliveryOrigin);
-    this.assets.set(prepared.asset.id, structuredClone(prepared.asset));
+    this.assets.set(prepared.asset.id, {
+      asset: structuredClone(prepared.asset),
+      bytes: new Uint8Array(prepared.bytes),
+    });
     return structuredClone(prepared.asset);
   }
 
@@ -284,11 +321,24 @@ export class InMemoryAssetStore implements AssetStore {
         issues: parsedId.error.issues,
       });
     }
-    const asset = this.assets.get(parsedId.data);
-    return asset ? structuredClone(asset) : null;
+    const stored = this.assets.get(parsedId.data);
+    return stored ? structuredClone(stored.asset) : null;
+  }
+
+  async read(id: string): Promise<{
+    asset: EditorialAsset;
+    bytes: Uint8Array;
+  } | null> {
+    const stored = this.assets.get(id);
+    return stored
+      ? {
+          asset: structuredClone(stored.asset),
+          bytes: new Uint8Array(stored.bytes),
+        }
+      : null;
   }
 
   async exportAll(): Promise<EditorialAsset[]> {
-    return [...this.assets.values()].map((asset) => structuredClone(asset));
+    return [...this.assets.values()].map(({ asset }) => structuredClone(asset));
   }
 }

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { articleSchemaV1 } from "@/lib/editorial/domain";
+import { EditorialValidationError } from "@/lib/editorial/errors";
 import { createFirebaseEditorialBackend } from "@/lib/editorial/firebase-admin";
 import {
   editorialErrorResponse,
@@ -49,6 +50,11 @@ export async function POST(request: Request) {
     );
     const principal = await requireEditor(request);
     const body = createRequestSchema.parse(await readStrictJson(request));
+    if (body.article.state !== "draft") {
+      throw new EditorialValidationError(
+        "Create the article as a draft before publishing it.",
+      );
+    }
     const article = await createFirebaseEditorialBackend().articles.create({
       ...body,
       mutation: mutationContextFor(

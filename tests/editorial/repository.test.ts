@@ -217,6 +217,54 @@ describe("ArticleRepository contract", () => {
     ]);
   });
 
+  it("restores an exact historical snapshot as a new audited revision", async () => {
+    const first = articleFixture();
+    const repository = new InMemoryArticleRepository([first]);
+    const second = nextRevision(first, { title: "The second revision" });
+    await repository.update({
+      article: second,
+      expectedRevision: 1,
+      idempotencyKey: "revision-update-example-0001",
+      mutation: mutationContext("request:revision-update-example-0001"),
+    });
+    const restored = nextRevision(second, {
+      body: first.body,
+      title: first.title,
+    });
+
+    await expect(
+      repository.update({
+        article: restored,
+        expectedRevision: 2,
+        idempotencyKey: "revision-restore-example-0001",
+        mutation: mutationContext("request:revision-restore-example-0001"),
+        restoreFromRevision: 1,
+      }),
+    ).resolves.toEqual(restored);
+    await expect(repository.getRevision(first.id, 1)).resolves.toEqual(first);
+    await expect(repository.exportAudit()).resolves.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          action: "restore",
+          articleRevision: 3,
+        }),
+      ]),
+    );
+
+    await expect(
+      repository.update({
+        article: nextRevision(restored, {
+          body: first.body,
+          title: "Not the selected historical revision",
+        }),
+        expectedRevision: 3,
+        idempotencyKey: "revision-restore-invalid-0001",
+        mutation: mutationContext("request:revision-restore-invalid-0001"),
+        restoreFromRevision: 1,
+      }),
+    ).rejects.toBeInstanceOf(EditorialValidationError);
+  });
+
   it("rejects malformed idempotency keys and unsafe list limits", async () => {
     const repository = new InMemoryArticleRepository();
     await expect(
