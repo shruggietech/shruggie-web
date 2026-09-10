@@ -190,7 +190,9 @@ describe("production publication lifecycle", () => {
   it("publishes, retries, updates, restores, and unpublishes a post-build slug", async () => {
     const repository = new FirestoreArticleRepository(getFirestore(app));
     const draft = articleFixture({
+      createdAt: "2026-09-10T12:00:00.000Z",
       id: "article:post-build-publication",
+      modifiedAt: "2026-09-10T12:00:00.000Z",
       slug: "post-build-publication",
       title: "Published after the production build",
       revision: {
