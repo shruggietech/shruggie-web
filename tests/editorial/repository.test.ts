@@ -12,6 +12,35 @@ import { InMemoryArticleRepository } from "../../lib/editorial/memory-adapter";
 import { articleFixture, mutationContext, nextRevision } from "./fixtures";
 
 describe("ArticleRepository contract", () => {
+  it("persists normalized blank and descriptive image alternatives", async () => {
+    const repository = new InMemoryArticleRepository();
+    const article = articleFixture({
+      featuredImage: {
+        altText: "   ",
+        assetId: "asset:decorative",
+        deliveryUrl: "https://shruggie.tech/media/asset:decorative",
+      },
+      ogImage: {
+        altText: "  A descriptive social image  ",
+        assetId: "asset:social",
+        deliveryUrl: "https://shruggie.tech/media/asset:social",
+      },
+    });
+
+    const stored = await repository.create({
+      article,
+      idempotencyKey: "create-alt-example-0001",
+      mutation: mutationContext("request:create-alt-example-0001"),
+    });
+
+    expect(stored.featuredImage?.altText).toBe("");
+    expect(stored.ogImage?.altText).toBe("A descriptive social image");
+    await expect(repository.getById(article.id, "all")).resolves.toMatchObject({
+      featuredImage: { altText: "" },
+      ogImage: { altText: "A descriptive social image" },
+    });
+  });
+
   it("reserves slugs and returns actionable collisions", async () => {
     const repository = new InMemoryArticleRepository();
     await repository.create({

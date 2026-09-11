@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
+import { Storage } from "@google-cloud/storage";
 
 import {
+  createVercelExternalAccountOptions,
   externalAccountOptions,
   loadVercelGoogleCredentialConfig,
   VercelGoogleCredential,
@@ -30,8 +32,31 @@ describe("Vercel Google workload identity credential", () => {
     });
 
     await expect(
-      options.subject_token_supplier?.getSubjectToken({} as never),
+      options.subject_token_supplier.getSubjectToken(),
     ).resolves.toBe("vercel-token");
+  });
+
+  it("lets Storage create a compatible auth client that adds Authorization", async () => {
+    const storage = new Storage({
+      credentials: createVercelExternalAccountOptions(configuration),
+      projectId: "shruggie-web",
+    });
+    const client = await storage.authClient.getClient();
+    Object.assign(client, {
+      cachedAccessToken: {
+        access_token: "storage-token",
+        expiry_date: Date.now() + 3_600_000,
+        res: null,
+      },
+    });
+
+    const request = await storage.authClient.authorizeRequest({
+      url: "https://storage.googleapis.com/upload/storage/v1/b/example/o",
+    });
+
+    expect(request.headers).toMatchObject({
+      Authorization: "Bearer storage-token",
+    });
   });
 
   it("rejects incomplete or malformed production configuration", () => {

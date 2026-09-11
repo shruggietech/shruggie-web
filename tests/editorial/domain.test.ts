@@ -17,6 +17,26 @@ describe("articleSchemaV1", () => {
     ).toBe("published");
   });
 
+  it("normalizes blank image alternatives and preserves descriptive ones", () => {
+    const article = parseArticle(
+      articleFixture({
+        featuredImage: {
+          altText: " \t ",
+          assetId: "asset:decorative",
+          deliveryUrl: "https://shruggie.tech/media/asset:decorative",
+        },
+        ogImage: {
+          altText: "  A descriptive social card  ",
+          assetId: "asset:social",
+          deliveryUrl: "https://shruggie.tech/media/asset:social",
+        },
+      }),
+    );
+
+    expect(article.featuredImage?.altText).toBe("");
+    expect(article.ogImage?.altText).toBe("A descriptive social card");
+  });
+
   it.each([
     ["raw script", "<script>alert('no')</script>"],
     ["JSX", "<Callout>unsafe</Callout>"],

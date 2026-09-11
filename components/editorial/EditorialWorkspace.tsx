@@ -1254,9 +1254,14 @@ function AssetEditor({
   }
 
   async function upload() {
-    if (!pickerSlot || !file || alt.trim().length < 5) {
+    const normalizedAlt = alt.trim();
+    if (
+      !pickerSlot ||
+      !file ||
+      (normalizedAlt.length > 0 && normalizedAlt.length < 5)
+    ) {
       setError(
-        "Choose an image and provide at least five characters of descriptive alt text.",
+        "Choose an image and provide at least five characters of descriptive alt text, or leave alt text blank when the image is decorative.",
       );
       return;
     }
@@ -1264,7 +1269,7 @@ function AssetEditor({
     setError(null);
     try {
       const asset = await uploadEditorialAsset({
-        altText: alt,
+        altText: normalizedAlt,
         articleId: article.id,
         file,
       });
@@ -1288,7 +1293,8 @@ function AssetEditor({
       <h2 className="font-display text-xl font-bold">Images</h2>
       <p className="text-body-sm text-text-secondary mt-2">
         JPEG, PNG, WebP, or AVIF. Maximum 5 MiB and 6000 pixels per side. Alt
-        text is required.
+        text should describe informative images; leave it blank for decorative
+        images.
       </p>
       <div className="mt-6 grid gap-5 md:grid-cols-2">
         {(["featuredImage", "ogImage"] as const).map((imageSlot) => {
@@ -1371,7 +1377,6 @@ function AssetEditor({
                   <input
                     id={`${imageSlot}-alt`}
                     value={value.altText}
-                    minLength={5}
                     maxLength={300}
                     disabled={readOnly}
                     aria-invalid={Boolean(errors[`${imageSlot}.altText`])}
@@ -1563,10 +1568,9 @@ function AssetEditor({
                       />
                     </label>
                     <label className="text-body-sm">
-                      Descriptive alt text
+                      Alt text (leave blank if decorative)
                       <input
                         value={alt}
-                        minLength={5}
                         maxLength={300}
                         onChange={(event) => setAlt(event.target.value)}
                         className={inputClass}

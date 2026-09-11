@@ -55,11 +55,29 @@ describe("hybrid public blog publication", () => {
       content: published.body.source,
       meta: {
         featuredImage: "/media/asset:published",
+        featuredImageAlt: "A published editorial image",
         published: true,
         slug: published.slug,
       },
     });
     expect(mocks.repositoryBySlug).not.toHaveBeenCalled();
+  });
+
+  it("preserves an empty decorative alternative in the public view model", async () => {
+    const published = articleFixture({
+      featuredImage: {
+        altText: "",
+        assetId: "asset:decorative",
+        deliveryUrl: "https://shruggie.tech/media/asset:decorative",
+      },
+      publishedAt: "2026-09-10T12:00:00.000Z",
+      state: "published",
+    });
+    mocks.editorialBySlug.mockResolvedValue(published);
+
+    await expect(getPostBySlug(published.slug)).resolves.toMatchObject({
+      meta: { featuredImageAlt: "" },
+    });
   });
 
   it("merges published editorial articles and shadows repository copies", async () => {

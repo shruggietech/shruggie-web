@@ -1,3 +1,4 @@
+import { isValidElement, type ReactElement, type ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
@@ -23,7 +24,30 @@ vi.mock("@/lib/editorial/http", () => ({
   requireEditor: mocks.requireEditor,
 }));
 
-import { generateMetadata } from "../../app/blog/[slug]/page";
+import BlogPostPage, { generateMetadata } from "../../app/blog/[slug]/page";
+
+function findImageBySource(
+  node: ReactNode,
+  source: string,
+): ReactElement<{ alt: string; src: string }> | null {
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      const found = findImageBySource(child, source);
+      if (found) return found;
+    }
+    return null;
+  }
+  if (!isValidElement(node)) return null;
+  const props = node.props as {
+    alt?: string;
+    children?: ReactNode;
+    src?: string;
+  };
+  if (props.src === source) {
+    return node as ReactElement<{ alt: string; src: string }>;
+  }
+  return findImageBySource(props.children, source);
+}
 
 function post(slug: string, title: string, published: boolean) {
   return {
@@ -92,4 +116,33 @@ describe("blog preview routing", () => {
     expect(mocks.getPostBySlug).not.toHaveBeenCalled();
     expect(mocks.requireEditor).toHaveBeenCalledOnce();
   });
+
+  it.each([
+    ["decorative", "", ""],
+    [
+      "informative",
+      "A green abstract editorial image",
+      "A green abstract editorial image",
+    ],
+  ])(
+    "renders %s featured-image alt text without a fallback",
+    async (_label, alt, expected) => {
+      const slug = `render-${_label}`;
+      const source = "/media/asset:render-test";
+      mocks.getPostBySlug.mockResolvedValue({
+        ...post(slug, "Rendered article", true),
+        meta: {
+          ...post(slug, "Rendered article", true).meta,
+          featuredImage: source,
+          featuredImageAlt: alt,
+        },
+      });
+
+      const page = await BlogPostPage({ params: Promise.resolve({ slug }) });
+      const image = findImageBySource(page, source);
+
+      expect(image).not.toBeNull();
+      expect(image?.props.alt).toBe(expected);
+    },
+  );
 });

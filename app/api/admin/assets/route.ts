@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { editorialIdSchema, MAX_ASSET_BYTES } from "@/lib/editorial/domain";
+import {
+  editorialIdSchema,
+  imageAltTextSchema,
+  MAX_ASSET_BYTES,
+} from "@/lib/editorial/domain";
 import { EditorialValidationError } from "@/lib/editorial/errors";
 import { createFirebaseEditorialBackend } from "@/lib/editorial/firebase-admin";
 import {
@@ -18,7 +22,7 @@ export const dynamic = "force-dynamic";
 
 const assetFieldsSchema = z
   .object({
-    altText: z.string().trim().min(5).max(300),
+    altText: imageAltTextSchema,
     articleId: editorialIdSchema,
     id: editorialIdSchema,
   })

@@ -40,6 +40,15 @@ const isoDateTimeSchema = z.string().datetime({ offset: true });
 
 export const articleStateSchema = z.enum(["draft", "published", "archived"]);
 
+export const imageAltTextSchema = z
+  .string()
+  .trim()
+  .max(300)
+  .refine(
+    (value) => value.length === 0 || value.length >= 5,
+    "Describe the image with at least five characters, or leave alt text blank when the image is decorative.",
+  );
+
 export const assetReferenceSchema = z
   .object({
     assetId: editorialIdSchema,
@@ -59,7 +68,7 @@ export const assetReferenceSchema = z
           })(),
         "Use a root-relative path or HTTPS delivery URL.",
       ),
-    altText: z.string().trim().min(5).max(300),
+    altText: imageAltTextSchema,
   })
   .strict();
 
@@ -194,7 +203,7 @@ export const editorialAssetSchemaV1 = z
     sizeBytes: z.number().int().positive().max(MAX_ASSET_BYTES),
     width: z.number().int().positive().max(MAX_ASSET_DIMENSION),
     height: z.number().int().positive().max(MAX_ASSET_DIMENSION),
-    altText: z.string().trim().min(5).max(300),
+    altText: imageAltTextSchema,
     checksumSha256: z.string().regex(/^[a-f0-9]{64}$/),
     storagePath: z
       .string()

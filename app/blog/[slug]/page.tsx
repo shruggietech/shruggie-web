@@ -34,9 +34,16 @@ import TableOfContents from "@/components/blog/TableOfContents";
 import AuthorBox from "@/components/blog/AuthorBox";
 import PostCTA from "@/components/blog/PostCTA";
 import JsonLd from "@/components/shared/JsonLd";
+import type { PostMeta } from "@/lib/blog";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export function featuredImageAlt(
+  meta: Pick<PostMeta, "featuredImageAlt" | "title">,
+): string {
+  return meta.featuredImageAlt ?? meta.title;
 }
 
 const getAuthorizedDraftPreviewSlug = cache(async () => {
@@ -180,7 +187,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="border-border bg-bg-secondary overflow-hidden rounded-lg border">
               <Image
                 src={meta.featuredImage!}
-                alt={meta.featuredImageAlt ?? meta.title}
+                alt={featuredImageAlt(meta)}
                 width={1400}
                 height={788}
                 className="h-auto w-full"

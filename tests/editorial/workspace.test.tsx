@@ -457,7 +457,7 @@ describe("EditorialWorkspace", () => {
     });
     await user.upload(screen.getByLabelText("Image file"), file);
     await user.type(
-      screen.getByLabelText("Descriptive alt text"),
+      screen.getByLabelText("Alt text (leave blank if decorative)"),
       "A green terminal window showing a successful build",
     );
     await user.click(screen.getByRole("button", { name: "Upload and use" }));
@@ -472,6 +472,81 @@ describe("EditorialWorkspace", () => {
       within(featured).getByRole("button", { name: "Remove image" }),
     );
     expect(within(featured).getByText("No image selected")).toBeVisible();
+  });
+
+  it("uploads decorative and informative images to either slot without losing draft data", async () => {
+    const user = userEvent.setup();
+    const fetchMock = sessionAndWorkspaceFetch();
+    globalThis.fetch = fetchMock;
+    render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: "New article" }),
+    );
+    await user.type(screen.getByLabelText("Title"), "Preserved draft title");
+
+    const featured = screen.getByRole("group", { name: "Featured image" });
+    await user.click(
+      within(featured).getByRole("button", { name: "Choose image" }),
+    );
+    let dialog = screen.getByRole("dialog", {
+      name: "Choose featured image",
+    });
+    await user.click(
+      within(dialog).getAllByRole("button", { name: "Upload new" })[0],
+    );
+    await user.upload(
+      screen.getByLabelText("Image file"),
+      new File([new Uint8Array([137, 80, 78, 71])], "decorative.png", {
+        type: "image/png",
+      }),
+    );
+    await user.type(
+      screen.getByLabelText("Alt text (leave blank if decorative)"),
+      "   ",
+    );
+    await user.click(screen.getByRole("button", { name: "Upload and use" }));
+
+    expect(within(featured).getByText("decorative.png")).toBeVisible();
+    expect(within(featured).getByLabelText("Contextual alt text")).toHaveValue(
+      "",
+    );
+    expect(screen.getByLabelText("Title")).toHaveValue("Preserved draft title");
+
+    const social = screen.getByRole("group", { name: "Social image" });
+    await user.click(
+      within(social).getByRole("button", { name: "Choose image" }),
+    );
+    dialog = screen.getByRole("dialog", { name: "Choose social image" });
+    await user.click(
+      within(dialog).getByRole("button", { name: "Upload new" }),
+    );
+    await user.upload(
+      screen.getByLabelText("Image file"),
+      new File([new Uint8Array([137, 80, 78, 71])], "social.png", {
+        type: "image/png",
+      }),
+    );
+    await user.type(
+      screen.getByLabelText("Alt text (leave blank if decorative)"),
+      "A green social preview card",
+    );
+    await user.click(screen.getByRole("button", { name: "Upload and use" }));
+
+    expect(within(social).getByText("social.png")).toBeVisible();
+    expect(within(social).getByLabelText("Contextual alt text")).toHaveValue(
+      "A green social preview card",
+    );
+    expect(screen.getByLabelText("Title")).toHaveValue("Preserved draft title");
+
+    const uploads = fetchMock.mock.calls.filter(
+      ([input, init]) =>
+        String(input) === "/api/admin/assets" && init?.method === "POST",
+    );
+    expect(uploads).toHaveLength(2);
+    expect((uploads[0]?.[1]?.body as FormData).get("altText")).toBe("");
+    expect((uploads[1]?.[1]?.body as FormData).get("altText")).toBe(
+      "A green social preview card",
+    );
   });
 
   it("loads a selected prior revision into the unsaved restore draft", async () => {

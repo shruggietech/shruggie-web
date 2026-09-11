@@ -17,6 +17,7 @@ import { z } from "zod";
 import { FirebaseAssetStore } from "./firebase-asset-store";
 import { FirestoreArticleRepository } from "./firestore-article-repository";
 import {
+  createVercelExternalAccountOptions,
   createVercelExternalAccountClient,
   createVercelGoogleCredential,
 } from "./vercel-google-credential";
@@ -71,7 +72,10 @@ export function createFirebaseEditorialBackend() {
       projectId: environment.FIREBASE_PROJECT_ID,
     });
     bucket = new Storage({
-      authClient: authClient as never,
+      // Storage 7 uses google-auth-library 9 internally, while Firestore uses
+      // v11. Supplying the plain external-account configuration lets Storage
+      // construct a version-compatible client that reliably adds Authorization.
+      credentials: createVercelExternalAccountOptions(),
       projectId: environment.FIREBASE_PROJECT_ID,
     }).bucket(environment.FIREBASE_STORAGE_BUCKET);
   } else {

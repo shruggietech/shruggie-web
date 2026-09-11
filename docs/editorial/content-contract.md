@@ -64,7 +64,9 @@ The public contract stores a stable project URL at
 `https://shruggie.tech/media/{assetId}` rather than a provider URL. Asset records
 also preserve the original filename, detected type, byte size, dimensions,
 contextual default alt text, SHA-256 checksum, creation metadata, and private
-storage path.
+storage path. Alt text is trimmed when stored. An intentionally blank value is
+preserved as `""` for decorative images; non-empty values remain descriptive
+and at least five characters long.
 
 ## Adapter boundary
 
