@@ -5,7 +5,6 @@ import type { Credential, GoogleOAuthAccessToken } from "firebase-admin/app";
 import {
   ExternalAccountClient,
   type BaseExternalAccountClient,
-  type IdentityPoolClientOptions,
 } from "google-auth-library";
 import { z } from "zod";
 
@@ -18,6 +17,17 @@ const configurationSchema = z.object({
 
 export type VercelGoogleCredentialConfig = z.infer<typeof configurationSchema>;
 
+export interface VercelExternalAccountOptions {
+  audience: string;
+  service_account_impersonation_url: string;
+  subject_token_supplier: {
+    getSubjectToken: () => Promise<string>;
+  };
+  subject_token_type: "urn:ietf:params:oauth:token-type:jwt";
+  token_url: "https://sts.googleapis.com/v1/token";
+  type: "external_account";
+}
+
 export function loadVercelGoogleCredentialConfig(
   environment: Record<string, string | undefined> = process.env,
 ): VercelGoogleCredentialConfig {
@@ -27,7 +37,7 @@ export function loadVercelGoogleCredentialConfig(
 export function externalAccountOptions(
   configuration: VercelGoogleCredentialConfig,
   subjectTokenSupplier = getVercelOidcToken,
-): IdentityPoolClientOptions {
+): VercelExternalAccountOptions {
   const {
     GCP_PROJECT_NUMBER: projectNumber,
     GCP_SERVICE_ACCOUNT_EMAIL: serviceAccountEmail,
@@ -84,12 +94,16 @@ export function createVercelGoogleCredential(
   );
 }
 
+export function createVercelExternalAccountOptions(
+  environment: Record<string, string | undefined> = process.env,
+): VercelExternalAccountOptions {
+  return externalAccountOptions(loadVercelGoogleCredentialConfig(environment));
+}
+
 export function createVercelExternalAccountClient(
   environment: Record<string, string | undefined> = process.env,
 ): BaseExternalAccountClient {
-  const options = externalAccountOptions(
-    loadVercelGoogleCredentialConfig(environment),
-  );
+  const options = createVercelExternalAccountOptions(environment);
   const client = ExternalAccountClient.fromJSON(options);
   if (!client) {
     throw new Error("Unable to initialize Vercel workload identity.");

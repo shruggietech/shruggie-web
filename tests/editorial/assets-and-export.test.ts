@@ -63,7 +63,20 @@ describe("AssetStore contract", () => {
     });
   });
 
-  it("rejects mismatched types and inadequate alternatives", async () => {
+  it("normalizes and stores an intentionally blank decorative alternative", async () => {
+    const store = new InMemoryAssetStore();
+    const asset = await store.put({
+      ...uploadInput(await pngBytes()),
+      altText: " \t ",
+    });
+
+    expect(asset.altText).toBe("");
+    await expect(store.getById(asset.id)).resolves.toMatchObject({
+      altText: "",
+    });
+  });
+
+  it("rejects mismatched types and inadequate non-empty alternatives", async () => {
     const store = new InMemoryAssetStore();
     const bytes = await pngBytes();
     await expect(

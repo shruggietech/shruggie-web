@@ -9,6 +9,7 @@ import { z } from "zod";
 import {
   ARTICLE_SCHEMA_VERSION,
   articleSlugSchema,
+  imageAltTextSchema,
   parseArticle,
   type Article,
   type AssetReference,
@@ -31,9 +32,9 @@ const frontmatterSchema = z
     excerpt: z.string().trim().min(10).max(400),
     published: z.boolean().default(true),
     ogImage: z.string().trim().min(1).optional(),
-    ogImageAlt: z.string().trim().min(5).max(300).optional(),
+    ogImageAlt: imageAltTextSchema.optional(),
     featuredImage: z.string().trim().min(1).optional(),
-    featuredImageAlt: z.string().trim().min(5).max(300).optional(),
+    featuredImageAlt: imageAltTextSchema.optional(),
   })
   .strict();
 

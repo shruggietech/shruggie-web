@@ -82,6 +82,13 @@ The production environment also provides `GCP_PROJECT_NUMBER`,
 `GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID`. These values identify the workload
 identity trust and are configuration, not private keys.
 
+Cloud Storage must receive the validated external-account configuration rather
+than the already constructed Firestore auth client. The installed clients use
+different major versions of `google-auth-library`; passing the newer client
+object into Storage can silently omit the Authorization header and make writes
+appear anonymous. Provider failures remain logged by the editorial route while
+the browser receives only the project-owned, non-sensitive error response.
+
 ## Authentication gate
 
 Firebase Authentication is initialized with Google as its only sign-in provider.

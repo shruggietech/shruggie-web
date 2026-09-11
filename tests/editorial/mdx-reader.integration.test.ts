@@ -53,4 +53,17 @@ describe("MdxArticleReader integration", () => {
       EditorialValidationError,
     );
   });
+
+  it("preserves explicitly blank decorative frontmatter alt text", async () => {
+    const directory = await temporaryPostsDirectory();
+    await writeFile(
+      path.join(directory, "decorative-image.mdx"),
+      '---\ntitle: "Decorative image"\ndate: "2026-09-05"\nauthor: "Natalie Thompson"\ncategory: "Engineering"\nexcerpt: "An article with an intentionally decorative featured image."\npublished: true\nfeaturedImage: "/images/decorative.png"\nfeaturedImageAlt: "   "\n---\n\n## Decorative\n\nSafe content.\n',
+    );
+    const reader = new MdxArticleReader(directory);
+
+    await expect(
+      reader.getBySlug("decorative-image", "published"),
+    ).resolves.toMatchObject({ featuredImage: { altText: "" } });
+  });
 });
