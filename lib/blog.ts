@@ -100,6 +100,17 @@ export async function getAllPostsMeta(): Promise<PostMeta[]> {
   }
 }
 
+/**
+ * Keep build-time route enumeration independent of the remote editorial store.
+ * CMS-only slugs are served on demand because dynamicParams defaults to true.
+ */
+export async function getRepositoryPostSlugs(): Promise<string[]> {
+  const repositoryArticles = await articleReader.list({
+    visibility: "published",
+  });
+  return repositoryArticles.map((article) => article.slug);
+}
+
 export async function getPostBySlug(slug: string): Promise<{
   content: string;
   meta: PostMeta;

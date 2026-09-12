@@ -4,7 +4,8 @@
  * Renders a full blog post with PostHeader, MDX body (via next-mdx-remote/rsc),
  * Shiki syntax highlighting, and BlogPosting JSON-LD schema.
  *
- * Uses generateStaticParams to pre-render all published posts at build time.
+ * Uses generateStaticParams to pre-render repository posts at build time.
+ * Editorial-only slugs render on demand so builds do not depend on Firestore.
  *
  * Spec references: §7.2 (MDX Pipeline), §7.3 (Blog Post Template), §8.2 (JSON-LD)
  */
@@ -19,9 +20,9 @@ import { cache } from "react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import {
-  getAllPostsMeta,
   getPostBySlug,
   getPreviewPostBySlug,
+  getRepositoryPostSlugs,
 } from "@/lib/blog";
 import { requireEditor } from "@/lib/editorial/http";
 import { ArticleNotFoundError } from "@/lib/editorial/errors";
@@ -70,8 +71,8 @@ const getPostForRequest = cache(async (slug: string) => {
 });
 
 export async function generateStaticParams() {
-  const posts = await getAllPostsMeta();
-  return posts.map((post) => ({ slug: post.slug }));
+  const slugs = await getRepositoryPostSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

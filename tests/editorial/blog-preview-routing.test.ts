@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   draftMode: vi.fn(),
   getPostBySlug: vi.fn(),
   getPreviewPostBySlug: vi.fn(),
+  getRepositoryPostSlugs: vi.fn(),
   headers: vi.fn(),
   requireEditor: vi.fn(),
 }));
@@ -18,13 +19,17 @@ vi.mock("@/lib/blog", () => ({
   getAllPostsMeta: vi.fn(async () => []),
   getPostBySlug: mocks.getPostBySlug,
   getPreviewPostBySlug: mocks.getPreviewPostBySlug,
+  getRepositoryPostSlugs: mocks.getRepositoryPostSlugs,
 }));
 
 vi.mock("@/lib/editorial/http", () => ({
   requireEditor: mocks.requireEditor,
 }));
 
-import BlogPostPage, { generateMetadata } from "../../app/blog/[slug]/page";
+import BlogPostPage, {
+  generateMetadata,
+  generateStaticParams,
+} from "../../app/blog/[slug]/page";
 
 function findImageBySource(
   node: ReactNode,
@@ -76,9 +81,23 @@ beforeEach(() => {
     role: "admin",
     uid: "firebase-user",
   });
+  mocks.getRepositoryPostSlugs.mockResolvedValue([]);
 });
 
 describe("blog preview routing", () => {
+  it("generates build-time params from repository slugs only", async () => {
+    mocks.getRepositoryPostSlugs.mockResolvedValue([
+      "repository-one",
+      "repository-two",
+    ]);
+
+    await expect(generateStaticParams()).resolves.toEqual([
+      { slug: "repository-one" },
+      { slug: "repository-two" },
+    ]);
+    expect(mocks.getRepositoryPostSlugs).toHaveBeenCalledOnce();
+  });
+
   it("uses published content when Draft Mode remains enabled without an exact preview slug", async () => {
     mocks.getPostBySlug.mockResolvedValue(
       post("published-article", "Published article", true),
