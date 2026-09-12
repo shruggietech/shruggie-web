@@ -58,6 +58,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Muted foreground contrast**: replaced the light and dark muted-text roles
+  with values that meet WCAG AA on every supported semantic surface while
+  retaining hierarchy through existing type size, weight, and spacing
+- **Orange text contrast**: added a theme-aware semantic orange foreground,
+  replaced raw bright-orange and CTA text utilities, and retained `#FF5300`
+  for compliant dark-surface text and non-text identity accents
 - **Editorial image uploads and decorative alt text**: restored authenticated
   Cloud Storage writes from the shared article media picker, retained
   actionable server diagnostics for provider failures, and allowed trimmed

@@ -126,7 +126,7 @@ export default function ResearchPage() {
                       <p className="mt-4 text-body-md text-text-secondary dark:text-[var(--text-body-light)]">
                         {pub.description}
                       </p>
-                      <span className="mt-6 inline-flex items-center gap-2 font-display text-body-md font-medium text-accent transition-colors group-hover/card:text-[#FF5300]">
+                      <span className="mt-6 inline-flex items-center gap-2 font-display text-body-md font-medium text-accent transition-colors group-hover/card:text-orange-foreground">
                         Read paper
                         <ArrowRight
                           className="h-4 w-4 transition-transform group-hover/card:translate-x-1"

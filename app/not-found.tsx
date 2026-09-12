@@ -23,13 +23,13 @@ export default function NotFound() {
         Here are some places to start instead.
       </p>
       <nav className="mt-8 flex gap-6" aria-label="Suggested pages">
-        <Link href="/" className="text-accent hover:text-[#FF5300]">
+        <Link href="/" className="text-accent hover:text-orange-foreground">
           Homepage
         </Link>
-        <Link href="/services" className="text-accent hover:text-[#FF5300]">
+        <Link href="/services" className="text-accent hover:text-orange-foreground">
           Services
         </Link>
-        <Link href="/contact" className="text-accent hover:text-[#FF5300]">
+        <Link href="/contact" className="text-accent hover:text-orange-foreground">
           Contact
         </Link>
       </nav>

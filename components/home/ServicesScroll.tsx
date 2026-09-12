@@ -352,7 +352,7 @@ export default function ServicesScroll() {
 
                   <Link
                     href={service.href}
-                    className="mt-6 inline-flex items-center gap-1.5 text-body-md font-medium text-accent transition-colors hover:text-brand-orange"
+                    className="mt-6 inline-flex items-center gap-1.5 text-body-md font-medium text-accent transition-colors hover:text-orange-foreground"
                   >
                     Learn more
                     <span aria-hidden="true">→</span>

@@ -39,12 +39,13 @@
     --bg-elevated: #FFFFFF;
     --text-primary: #0A0A0A;
     --text-secondary: #6B6B6B;
-    --text-muted: #9A9A9A;
+    --text-muted: #6A6A6A;
     --border-color: #E5E5E5;
     --accent-color: var(--brand-green-foreground);
     --accent-hover-color: #025E31;
     --focus-color: var(--brand-green-foreground);
     --cta-color: #C24000; /* Darkened from #FF5300 for WCAG AA (4.6:1 vs white) */
+    --orange-foreground: #C24000;
 
     /* Layout constants (spec §2.3) — mobile defaults */
     --max-width-content: 1200px;
@@ -61,12 +62,13 @@
     --bg-elevated: #0A0A0A;
     --text-primary: #FFFFFF;
     --text-secondary: #D1D3D4;
-    --text-muted: #6B6B6B;
+    --text-muted: #7F7F7F;
     --border-color: #262626;
     --accent-color: var(--brand-green-bright);
     --accent-hover-color: var(--brand-green-deep);
     --focus-color: var(--brand-green-bright);
     --cta-color: #C24000; /* Darkened from #FF5300 for WCAG AA (4.6:1 vs white) */
+    --orange-foreground: var(--brand-orange);
 
     /* Section surface colors (redesign §1.1–1.2) */
     --surface-dark-warm: #0D0F12;
@@ -147,6 +149,7 @@
   --color-accent-hover: var(--accent-hover-color);
   --color-focus: var(--focus-color);
   --color-cta: var(--cta-color);
+  --color-orange-foreground: var(--orange-foreground);
 
   /* Font families (spec §2.2)
    * CSS variables --font-display-var, --font-body-var, --font-mono-var
