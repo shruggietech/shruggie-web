@@ -92,6 +92,37 @@ function sessionAndWorkspaceFetch(
   });
 }
 
+function previewTabStub() {
+  const close = vi.fn();
+  const replace = vi.fn();
+  return {
+    close,
+    replace,
+    tab: {
+      close,
+      closed: false,
+      location: { replace },
+      opener: window,
+    } as unknown as Window,
+  };
+}
+
+async function completeNewArticle(
+  user: ReturnType<typeof userEvent.setup>,
+  title: string,
+) {
+  const titleField = screen.getByLabelText("Title");
+  await user.type(titleField, title);
+  await user.tab();
+  await user.type(screen.getByLabelText("Category"), "Engineering");
+  await user.type(
+    screen.getByLabelText("Excerpt"),
+    "A complete excerpt for testing the one-click editorial workflow.",
+  );
+  await user.click(screen.getByLabelText("Article body in Markdown"));
+  await user.paste("## A useful heading\n\nA safe article body.");
+}
+
 beforeEach(() => {
   sessionStorage.clear();
   Object.defineProperties(Range.prototype, {
@@ -209,15 +240,17 @@ describe("EditorialWorkspace", () => {
     await user.paste("## A useful heading\n\nA safe article body.");
 
     const preview = screen.getByRole("button", { name: "Preview" });
-    expect(preview).toBeDisabled();
-    expect(screen.getByText("Save the draft to preview.")).toBeInTheDocument();
-
-    const save = screen.getByRole("button", { name: "Save draft" });
-    save.focus();
+    expect(preview).toBeEnabled();
+    expect(
+      screen.getByText(/Preview saves this draft automatically/),
+    ).toBeInTheDocument();
+    const previewTab = previewTabStub();
+    const open = vi.spyOn(window, "open").mockReturnValue(previewTab.tab);
+    preview.focus();
     await user.keyboard("{Enter}");
 
     expect(await screen.findByRole("status")).toHaveTextContent(
-      "Draft saved as revision 1.",
+      "Preview opened for revision 1.",
     );
     const post = fetchMock.mock.calls.find(
       ([input, init]) =>
@@ -230,15 +263,9 @@ describe("EditorialWorkspace", () => {
       name: "William Thompson",
     });
     expect(preview).toBeEnabled();
-    expect(
-      screen.getByText("Preview opens the saved draft without publishing."),
-    ).toBeInTheDocument();
-    const open = vi.spyOn(window, "open").mockReturnValue(null);
-    await user.click(preview);
-    expect(open).toHaveBeenCalledWith(
+    expect(open).toHaveBeenCalledWith("about:blank", "_blank");
+    expect(previewTab.replace).toHaveBeenCalledWith(
       "/api/admin/preview?slug=a-keyboard-authored-article",
-      "_blank",
-      "noopener,noreferrer",
     );
     const publish = screen.getByRole("button", { name: "Publish" });
     expect(publish).toBeEnabled();
@@ -266,6 +293,248 @@ describe("EditorialWorkspace", () => {
       rules: { "color-contrast": { enabled: false } },
     });
     expect(accessibility.violations).toEqual([]);
+  });
+
+  it("publishes a valid new article without a separate draft-save click", async () => {
+    const fetchMock = sessionAndWorkspaceFetch();
+    globalThis.fetch = fetchMock;
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: "New article" }),
+    );
+    await completeNewArticle(user, "One-click publication");
+
+    const publish = screen.getByRole("button", { name: "Publish" });
+    expect(publish).toBeEnabled();
+    await user.click(publish);
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Published revision 2",
+    );
+    const writes = fetchMock.mock.calls.filter(([, init]) =>
+      ["POST", "PUT"].includes(init?.method ?? ""),
+    );
+    expect(writes).toHaveLength(2);
+    expect(String(writes[0]?.[0])).toBe("/api/admin/articles");
+    expect(String(writes[1]?.[0])).toContain("/api/admin/articles/");
+    const created = JSON.parse(String(writes[0]?.[1]?.body)) as {
+      article: Article;
+    };
+    const published = JSON.parse(String(writes[1]?.[1]?.body)) as {
+      article: Article;
+    };
+    expect(created.article).toMatchObject({ state: "draft" });
+    expect(published.article).toMatchObject({
+      state: "published",
+      title: "One-click publication",
+    });
+  });
+
+  it("saves a dirty draft and opens its resulting preview in one click", async () => {
+    const current = articleFixture();
+    const fetchMock = sessionAndWorkspaceFetch([current], [current]);
+    globalThis.fetch = fetchMock;
+    const previewTab = previewTabStub();
+    vi.spyOn(window, "open").mockReturnValue(previewTab.tab);
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: /Edit An example article/ }),
+    );
+    const title = screen.getByLabelText("Title");
+    await user.clear(title);
+    await user.type(title, "Preview the current changes");
+
+    await user.click(screen.getByRole("button", { name: "Preview" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Preview opened for revision 2",
+    );
+    const updateCalls = fetchMock.mock.calls.filter(
+      ([input, init]) =>
+        String(input).includes("/api/admin/articles/") &&
+        init?.method === "PUT",
+    );
+    expect(updateCalls).toHaveLength(1);
+    const saved = JSON.parse(String(updateCalls[0]?.[1]?.body)) as {
+      article: Article;
+    };
+    expect(saved.article).toMatchObject({
+      state: "draft",
+      title: "Preview the current changes",
+    });
+    expect(previewTab.replace).toHaveBeenCalledWith(
+      `/api/admin/preview?slug=${current.slug}`,
+    );
+  });
+
+  it("publishes pending edits before previewing a published article", async () => {
+    const publishedAt = "2026-09-06T12:00:00.000Z";
+    const current = articleFixture({ state: "published", publishedAt });
+    const fetchMock = sessionAndWorkspaceFetch([current], [current]);
+    globalThis.fetch = fetchMock;
+    const previewTab = previewTabStub();
+    vi.spyOn(window, "open").mockReturnValue(previewTab.tab);
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: /Edit An example article/ }),
+    );
+    const title = screen.getByLabelText("Title");
+    await user.clear(title);
+    await user.type(title, "Published update preview");
+    expect(
+      screen.getByText(
+        "Preview publishes the current update before opening it.",
+      ),
+    ).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: "Preview" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Preview opened for revision 2",
+    );
+    const update = fetchMock.mock.calls.find(
+      ([input, init]) =>
+        String(input).includes("/api/admin/articles/") &&
+        init?.method === "PUT",
+    );
+    const saved = JSON.parse(String(update?.[1]?.body)) as {
+      article: Article;
+    };
+    expect(saved.article).toMatchObject({
+      publishedAt,
+      state: "published",
+      title: "Published update preview",
+    });
+    expect(previewTab.replace).toHaveBeenCalledWith(
+      `/api/admin/preview?slug=${current.slug}`,
+    );
+  });
+
+  it("publishes dirty draft changes in one update", async () => {
+    const current = articleFixture();
+    const fetchMock = sessionAndWorkspaceFetch([current], [current]);
+    globalThis.fetch = fetchMock;
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: /Edit An example article/ }),
+    );
+    const title = screen.getByLabelText("Title");
+    await user.clear(title);
+    await user.type(title, "Publish the current changes");
+
+    await user.click(screen.getByRole("button", { name: "Publish" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Published revision 2",
+    );
+    const writes = fetchMock.mock.calls.filter(([, init]) =>
+      ["POST", "PUT"].includes(init?.method ?? ""),
+    );
+    expect(writes).toHaveLength(1);
+    const published = JSON.parse(String(writes[0]?.[1]?.body)) as {
+      article: Article;
+    };
+    expect(published.article).toMatchObject({
+      state: "published",
+      title: "Publish the current changes",
+    });
+  });
+
+  it("prevents duplicate publication while the automatic save is pending", async () => {
+    let releaseCreate: (() => void) | undefined;
+    const createPending = new Promise<void>((resolve) => {
+      releaseCreate = resolve;
+    });
+    const baseFetch = sessionAndWorkspaceFetch();
+    const fetchMock = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (
+          String(input) === "/api/admin/articles" &&
+          init?.method === "POST"
+        ) {
+          await createPending;
+        }
+        return baseFetch(input, init);
+      },
+    );
+    globalThis.fetch = fetchMock;
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: "New article" }),
+    );
+    await completeNewArticle(user, "No duplicate publication");
+
+    const publish = screen.getByRole("button", { name: "Publish" });
+    const firstClick = user.click(publish);
+    await screen.findByRole("button", { name: "Saving and publishing…" });
+    expect(publish).toBeDisabled();
+    publish.click();
+    expect(
+      fetchMock.mock.calls.filter(
+        ([input, init]) =>
+          String(input) === "/api/admin/articles" && init?.method === "POST",
+      ),
+    ).toHaveLength(1);
+
+    releaseCreate?.();
+    await firstClick;
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Published revision 2",
+    );
+  });
+
+  it("closes a reserved preview tab when automatic saving fails validation", async () => {
+    const previewTab = previewTabStub();
+    vi.spyOn(window, "open").mockReturnValue(previewTab.tab);
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: "New article" }),
+    );
+    await user.type(screen.getByLabelText("Title"), "Incomplete article");
+
+    await user.click(screen.getByRole("button", { name: "Preview" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Review the highlighted fields",
+    );
+    expect(previewTab.close).toHaveBeenCalledOnce();
+    expect(
+      vi
+        .mocked(globalThis.fetch)
+        .mock.calls.some(([, init]) => init?.method === "POST"),
+    ).toBe(false);
+  });
+
+  it("falls back to same-tab preview navigation when a popup is blocked", async () => {
+    const current = articleFixture();
+    const fetchMock = sessionAndWorkspaceFetch([current], [current]);
+    globalThis.fetch = fetchMock;
+    const open = vi.spyOn(window, "open").mockReturnValue(null);
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+    await user.click(
+      await screen.findByRole("button", { name: /Edit An example article/ }),
+    );
+
+    await user.click(screen.getByRole("button", { name: "Preview" }));
+
+    expect(open).toHaveBeenNthCalledWith(1, "about:blank", "_blank");
+    expect(open).toHaveBeenNthCalledWith(
+      2,
+      `/api/admin/preview?slug=${current.slug}`,
+      "_self",
+    );
+    expect(
+      fetchMock.mock.calls.some(([, init]) =>
+        ["POST", "PUT"].includes(init?.method ?? ""),
+      ),
+    ).toBe(false);
   });
 
   it("keeps article-body scrolling inside the editor", async () => {
