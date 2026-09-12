@@ -27,7 +27,11 @@ vi.mock("../../lib/editorial/firebase-admin", () => ({
   createFirebaseEditorialBackend: vi.fn(),
 }));
 
-import { getAllPostsMeta, getPostBySlug } from "../../lib/blog";
+import {
+  getAllPostsMeta,
+  getPostBySlug,
+  getRepositoryPostSlugs,
+} from "../../lib/blog";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -104,6 +108,24 @@ describe("hybrid public blog publication", () => {
         title: "Editorial version",
       }),
     ]);
+  });
+
+  it("enumerates repository slugs at build time without reading the editorial backend", async () => {
+    const repositoryArticle = articleFixture({
+      id: "article:repository",
+      slug: "repository-build-slug",
+      state: "published",
+      publishedAt: "2026-09-01T12:00:00.000Z",
+    });
+    mocks.repositoryList.mockResolvedValue([repositoryArticle]);
+
+    await expect(getRepositoryPostSlugs()).resolves.toEqual([
+      "repository-build-slug",
+    ]);
+    expect(mocks.repositoryList).toHaveBeenCalledWith({
+      visibility: "published",
+    });
+    expect(mocks.editorialList).not.toHaveBeenCalled();
   });
 
   it("keeps an unpublished editorial slug from falling through to repository content", async () => {

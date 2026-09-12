@@ -44,6 +44,11 @@ unpublishing, and prevents duplicate activation while an action is in flight.
 New published slugs are resolved from Firestore at request time and do not
 require a repository commit or application deployment.
 
+Build-time route enumeration reads repository-backed slugs only. CMS-only
+slugs use the dynamic route fallback on first request, so a slow or unavailable
+editorial store cannot abort an otherwise valid application build after its
+article index was read successfully.
+
 ## Public delivery during migration
 
 Until the migration in #29 is complete, `lib/blog.ts` merges published
