@@ -16,24 +16,33 @@ contracts from #25 and the server session boundary from #26.
    proposes a canonical slug when the slug is still empty.
 4. Upload or select featured and social images. Every upload requires
    contextual alternative text and is revalidated by the server.
-5. Choose **Save draft**. Validation moves focus to the first invalid field and
-   does not clear any unsaved values.
-6. Choose **Preview** to open the latest saved revision through the public
-   article template. Unsaved changes are never included in preview.
-7. Choose **Publish** from a clean saved draft. The server commits the
-   publication revision and audit event before invalidating the article, blog
-   index, pagination, sitemap, metadata, and referenced media surfaces.
+5. Choose **Save draft** whenever you want a private revision checkpoint. This
+   remains optional before Preview or Publish. Validation moves focus to the
+   first invalid field and does not clear any unsaved values.
+6. Choose **Preview** to save a new or changed draft automatically and open that
+   exact revision through the public article template. If a browser blocks the
+   reserved preview tab, the workspace falls back to same-tab navigation.
+7. Choose **Publish** once from a new, changed, or clean draft. The workspace
+   performs any required draft creation automatically, then the server commits
+   the publication revision and audit event before invalidating the article,
+   blog index, pagination, sitemap, metadata, and referenced media surfaces.
 8. Open a published article to make corrections, then choose **Publish update**
    to save a new public revision without changing its original publication
-   date. Choose **Unpublish** only after saving or discarding local changes.
+   date. Because published articles do not have a separate private working
+   copy, choosing **Preview** with pending published edits clearly publishes the
+   update before opening it. Choose **Unpublish** only after saving or
+   discarding local changes.
 9. Use revision history to inspect an earlier immutable snapshot. Loading and
    saving that snapshot creates a new revision with an explicit `restore` audit
    event; it never overwrites history. Archived articles can be restored to a
    draft before editing.
 
-Draft saving, preview, and public publishing remain separate actions. New
-published slugs are resolved from Firestore at request time and do not require
-a repository commit or application deployment.
+Draft saving, preview, and public publishing remain distinct outcomes, but
+Preview and Publish perform their save prerequisites automatically. The action
+bar reports whether it is saving, opening a preview, publishing, restoring, or
+unpublishing, and prevents duplicate activation while an action is in flight.
+New published slugs are resolved from Firestore at request time and do not
+require a repository commit or application deployment.
 
 ## Public delivery during migration
 

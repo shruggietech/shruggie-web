@@ -55,6 +55,7 @@ import SignInPanel from "./SignInPanel";
 type LoadState = "idle" | "loading" | "ready" | "error";
 type AssetSlot = "featuredImage" | "ogImage";
 type MutationAction = "publish" | "restore" | "save" | "unpublish";
+type EditorAction = MutationAction | "preview";
 
 interface PendingArticleMutation {
   action: MutationAction;
@@ -119,6 +120,20 @@ function articleAssetReference(asset: EditorialAsset): AssetReference {
 
 function stateLabel(state: Article["state"]): string {
   return state.charAt(0).toUpperCase() + state.slice(1);
+}
+
+function reservePreviewTab(): Window | null {
+  const previewTab = window.open("about:blank", "_blank");
+  if (previewTab) previewTab.opener = null;
+  return previewTab;
+}
+
+function navigatePreviewTab(previewTab: Window | null, url: string): void {
+  if (previewTab && !previewTab.closed) {
+    previewTab.location.replace(url);
+    return;
+  }
+  window.open(url, "_self");
 }
 
 export default function EditorialWorkspace() {
@@ -480,7 +495,7 @@ function ArticleEditor({
   onSessionFailure: (error: unknown) => boolean;
 }) {
   const [errors, setErrors] = useState<ArticleFieldErrors>({});
-  const [saveState, setSaveState] = useState<LoadState>("idle");
+  const [activeAction, setActiveAction] = useState<EditorAction | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [conflict, setConflict] = useState<string | null>(null);
   const [revisions, setRevisions] = useState<Article[]>([]);
@@ -493,6 +508,7 @@ function ArticleEditor({
   );
   const [pendingMutation, setPendingMutation] =
     useState<PendingArticleMutation | null>(null);
+  const actionLockRef = useRef(false);
   const titleRef = useRef<HTMLInputElement>(null);
   const readOnly = draft.state === "archived";
   const markdownIssues = useMemo(
@@ -581,32 +597,34 @@ function ArticleEditor({
     applyChange(next);
   }
 
-  async function persistArticle(action: MutationAction) {
-    if (action !== "save" && !persisted) {
-      setMessage("Save the article as a draft before publishing it.");
-      return;
-    }
-    if (["publish", "unpublish"].includes(action) && dirty) {
-      setMessage("Save the current changes before changing publication state.");
-      return;
-    }
-
+  async function persistArticle(
+    action: MutationAction,
+    sourceDraft = draft,
+    basePersisted = persisted,
+    progressMessage?: string,
+    failureLabel = "Save",
+  ): Promise<Article | null> {
     const targetState =
       action === "publish"
         ? "published"
         : action === "unpublish" || action === "restore"
           ? "draft"
-          : persisted?.state === "published"
+          : basePersisted?.state === "published"
             ? "published"
             : "draft";
     const reusable =
       pendingMutation?.action === action ? pendingMutation : null;
     const candidate =
       reusable?.article ??
-      articleForSave(draft, editor.id, persisted, new Date(), targetState);
+      articleForSave(
+        sourceDraft,
+        editor.id,
+        basePersisted,
+        new Date(),
+        targetState,
+      );
     const nextErrors = validateArticleForSave(candidate);
     setErrors(nextErrors);
-    setMessage(null);
     setConflict(null);
     if (Object.keys(nextErrors).length) {
       setMessage(
@@ -616,17 +634,17 @@ function ArticleEditor({
         (path) => path !== "form",
       );
       if (firstField) document.getElementById(firstField)?.focus();
-      return;
+      return null;
     }
+    setMessage(progressMessage ?? "Saving…");
     const mutation: PendingArticleMutation = reusable ?? {
       action,
       article: candidate,
-      expectedRevision: persisted?.revision.number ?? null,
+      expectedRevision: basePersisted?.revision.number ?? null,
       idempotencyKey: editorialMutationKey(action),
       ...(restoreFromRevision === null ? {} : { restoreFromRevision }),
     };
     setPendingMutation(mutation);
-    setSaveState("loading");
     try {
       const saved =
         mutation.expectedRevision === null
@@ -656,7 +674,6 @@ function ArticleEditor({
                   ? `Published update saved as revision ${saved.revision.number}.`
                   : `Draft saved as revision ${saved.revision.number}.`,
       );
-      setSaveState("ready");
       setPendingMutation(null);
       setRestoreFromRevision(null);
       setSelectedRevision(null);
@@ -666,10 +683,10 @@ function ArticleEditor({
           (item) => item.revision.number !== saved.revision.number,
         ),
       ]);
+      return saved;
     } catch (error) {
       if (onSessionFailure(error)) {
-        setSaveState("error");
-        return;
+        return null;
       }
       if (
         error instanceof EditorialApiError &&
@@ -677,19 +694,113 @@ function ArticleEditor({
       ) {
         setConflict(error.message);
       } else {
-        setMessage(friendlyError(error));
+        setMessage(`${failureLabel} failed: ${friendlyError(error)}`);
       }
       if (!(error instanceof EditorialApiError) || !error.retryable) {
         setPendingMutation(null);
       }
-      setSaveState("error");
+      return null;
     }
   }
 
   async function saveDraft(event: React.FormEvent) {
     event.preventDefault();
-    if (readOnly) return;
-    await persistArticle("save");
+    if (readOnly || actionLockRef.current) return;
+    actionLockRef.current = true;
+    setActiveAction("save");
+    try {
+      await persistArticle("save", draft, persisted, "Saving draft…", "Save");
+    } finally {
+      actionLockRef.current = false;
+      setActiveAction(null);
+    }
+  }
+
+  async function previewArticle() {
+    if (readOnly || actionLockRef.current) return;
+    actionLockRef.current = true;
+    const previewTab = reservePreviewTab();
+    setActiveAction("preview");
+    try {
+      let previewSource = persisted;
+      if (!previewSource || dirty) {
+        const publishingUpdate = draft.state === "published";
+        previewSource = await persistArticle(
+          "save",
+          draft,
+          persisted,
+          publishingUpdate
+            ? "Publishing the current update before opening preview…"
+            : "Saving the current draft before opening preview…",
+          "Preview",
+        );
+      }
+      if (!previewSource) {
+        previewTab?.close();
+        return;
+      }
+      setMessage("Opening preview…");
+      navigatePreviewTab(
+        previewTab,
+        `/api/admin/preview?slug=${encodeURIComponent(previewSource.slug)}`,
+      );
+      setMessage(
+        `Preview opened for revision ${previewSource.revision.number}.`,
+      );
+    } finally {
+      actionLockRef.current = false;
+      setActiveAction(null);
+    }
+  }
+
+  async function publishArticle() {
+    if (readOnly || actionLockRef.current || draft.state !== "draft") return;
+    actionLockRef.current = true;
+    setActiveAction("publish");
+    try {
+      let basePersisted = persisted;
+      let sourceDraft = draft;
+      if (!basePersisted) {
+        const savedDraft = await persistArticle(
+          "save",
+          draft,
+          null,
+          "Saving the new draft before publishing…",
+          "Publish",
+        );
+        if (!savedDraft) return;
+        basePersisted = savedDraft;
+        sourceDraft = savedDraft;
+      }
+      await persistArticle(
+        "publish",
+        sourceDraft,
+        basePersisted,
+        "Publishing…",
+        "Publish",
+      );
+    } finally {
+      actionLockRef.current = false;
+      setActiveAction(null);
+    }
+  }
+
+  async function runMutation(action: "restore" | "unpublish") {
+    if (actionLockRef.current) return;
+    actionLockRef.current = true;
+    setActiveAction(action);
+    try {
+      await persistArticle(
+        action,
+        draft,
+        persisted,
+        action === "restore" ? "Restoring draft…" : "Unpublishing…",
+        action === "restore" ? "Restore" : "Unpublish",
+      );
+    } finally {
+      actionLockRef.current = false;
+      setActiveAction(null);
+    }
   }
 
   async function reloadLatest() {
@@ -1011,11 +1122,11 @@ function ArticleEditor({
             <Button
               type="submit"
               size="sm"
-              disabled={readOnly || saveState === "loading"}
+              disabled={readOnly || activeAction !== null}
               className="shrink-0 whitespace-nowrap"
             >
               <Save aria-hidden="true" className="mr-2" size={18} />{" "}
-              {saveState === "loading"
+              {activeAction === "save"
                 ? "Saving…"
                 : restoreFromRevision !== null
                   ? "Restore revision"
@@ -1027,43 +1138,36 @@ function ArticleEditor({
               type="button"
               variant="secondary"
               size="sm"
-              disabled={!persisted || dirty || draft.state === "archived"}
+              disabled={draft.state === "archived" || activeAction !== null}
               aria-describedby="preview-note"
               className="shrink-0 whitespace-nowrap"
-              onClick={() => {
-                if (!persisted || dirty) return;
-                window.open(
-                  `/api/admin/preview?slug=${encodeURIComponent(persisted.slug)}`,
-                  "_blank",
-                  "noopener,noreferrer",
-                );
-              }}
+              onClick={() => void previewArticle()}
             >
-              <Eye aria-hidden="true" className="mr-2" size={18} /> Preview
+              <Eye aria-hidden="true" className="mr-2" size={18} />{" "}
+              {activeAction === "preview" ? "Preparing preview…" : "Preview"}
             </Button>
             <Button
               type="button"
               variant="secondary"
               size="sm"
-              disabled={
-                !persisted ||
-                dirty ||
-                persisted.state !== "draft" ||
-                saveState === "loading"
-              }
+              disabled={draft.state !== "draft" || activeAction !== null}
               className="shrink-0 whitespace-nowrap"
-              onClick={() => void persistArticle("publish")}
+              onClick={() => void publishArticle()}
             >
-              Publish
+              {activeAction === "publish"
+                ? persisted
+                  ? "Publishing…"
+                  : "Saving and publishing…"
+                : "Publish"}
             </Button>
             {persisted?.state === "published" && (
               <Button
                 type="button"
                 variant="secondary"
                 size="sm"
-                disabled={dirty || saveState === "loading"}
+                disabled={dirty || activeAction !== null}
                 className="shrink-0 whitespace-nowrap"
-                onClick={() => void persistArticle("unpublish")}
+                onClick={() => void runMutation("unpublish")}
               >
                 Unpublish
               </Button>
@@ -1073,9 +1177,9 @@ function ArticleEditor({
                 type="button"
                 variant="secondary"
                 size="sm"
-                disabled={saveState === "loading"}
+                disabled={activeAction !== null}
                 className="shrink-0 whitespace-nowrap"
-                onClick={() => void persistArticle("restore")}
+                onClick={() => void runMutation("restore")}
               >
                 Restore to draft
               </Button>
@@ -1085,14 +1189,16 @@ function ArticleEditor({
               className="text-body-xs text-text-secondary min-w-0 flex-1 sm:text-right"
             >
               {!persisted
-                ? "Save the draft to preview."
-                : dirty
-                  ? "Save changes to refresh the preview."
-                  : persisted.state === "published"
-                    ? "Changes remain private until you publish the update."
-                    : persisted.state === "archived"
-                      ? "Restore this article before editing or previewing it."
-                      : "Preview opens the saved draft without publishing."}
+                ? "Preview saves this draft automatically. Publish saves and publishes it in one action."
+                : dirty && persisted.state === "published"
+                  ? "Preview publishes the current update before opening it."
+                  : dirty
+                    ? "Preview and Publish save the current changes automatically."
+                    : persisted.state === "published"
+                      ? "Preview opens the current published revision."
+                      : persisted.state === "archived"
+                        ? "Restore this article before editing or previewing it."
+                        : "Preview opens the saved draft without publishing."}
             </p>
           </div>
         </form>
