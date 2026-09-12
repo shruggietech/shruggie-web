@@ -157,6 +157,7 @@ async function assertSourceHash(
   repositoryRoot: string,
   sourcePath: string,
   expected: string,
+  canonicalText = false,
 ): Promise<Buffer> {
   const absolutePath = path.resolve(repositoryRoot, sourcePath);
   const relative = path.relative(repositoryRoot, absolutePath);
@@ -166,7 +167,10 @@ async function assertSourceHash(
     );
   }
   const bytes = await readFile(absolutePath);
-  const actual = sha256(bytes);
+  const hashedSource = canonicalText
+    ? bytes.toString("utf8").replace(/\r\n?/g, "\n")
+    : bytes;
+  const actual = sha256(hashedSource);
   if (actual !== expected) {
     throw new EditorialValidationError(
       `Migration source hash changed for ${sourcePath}.`,
@@ -387,6 +391,7 @@ export async function migrateRepositoryBlog(
       repositoryRoot,
       entry.sourcePath,
       entry.sourceSha256,
+      true,
     );
     const source = sourceBySlug.get(entry.slug)!;
     const references = new Map<string, AssetReference>();

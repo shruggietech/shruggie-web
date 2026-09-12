@@ -27,6 +27,8 @@ silently presenting an obsolete repository copy.
 inventory of every repository blog article and local image it references. It
 records source SHA-256 checksums, lifecycle state, registered author, stable
 target article and asset IDs, content type, and image alternative text.
+Article checksums use UTF-8 text with line endings normalized to LF so Git
+checkout settings do not change identity; media checksums remain byte-exact.
 
 At the 2026-09-12 inventory point, the repository contains two published
 articles, no repository drafts, and two referenced local featured images. The
