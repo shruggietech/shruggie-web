@@ -2,8 +2,8 @@
  * Project-owned blog adapter.
  *
  * Route and presentation code consume this module rather than repository or
- * Firebase SDK objects. During migration it reads validated repository MDX;
- * the backing reader can change without changing the public view model.
+ * Firebase SDK objects. The authority switch selects either validated recovery
+ * MDX or Firestore without changing the public view model.
  */
 
 import "server-only";
@@ -11,8 +11,12 @@ import "server-only";
 import readingTime from "reading-time";
 
 import { SITE_URL } from "./constants";
+import { getContentAuthority } from "./editorial/content-authority";
 import type { Article } from "./editorial/domain";
-import { ArticleNotFoundError, EditorialError } from "./editorial/errors";
+import {
+  ArticleNotFoundError,
+  EditorialValidationError,
+} from "./editorial/errors";
 import { createFirebaseEditorialBackend } from "./editorial/firebase-admin";
 import { MdxArticleReader } from "./editorial/mdx-article-reader";
 import {
@@ -68,43 +72,31 @@ function toPostMeta(article: Article): PostMeta {
 export async function getAllPostsMeta(): Promise<PostMeta[]> {
   const visibility =
     process.env.NODE_ENV === "development" ? "all" : "published";
-  const repositoryArticles = await articleReader.list({ visibility });
+  if (getContentAuthority() === "repository") {
+    return (await articleReader.list({ visibility })).map(toPostMeta);
+  }
   if (!hasEditorialBackendConfiguration()) {
-    return repositoryArticles.map(toPostMeta);
+    throw new EditorialValidationError(
+      "Firestore is the configured content authority, but its server configuration is incomplete.",
+    );
   }
 
-  try {
-    const editorialArticles = await getEditorialArticlesForPublicRoutes();
-    const editorialSlugs = new Set(
-      editorialArticles.map((article) => article.slug),
-    );
-    return [
-      ...editorialArticles.filter((article) => article.state === "published"),
-      ...repositoryArticles.filter(
-        (article) => !editorialSlugs.has(article.slug),
-      ),
-    ]
-      .sort((a, b) => {
-        const aDate = a.publishedAt ?? a.modifiedAt;
-        const bDate = b.publishedAt ?? b.modifiedAt;
-        return bDate.localeCompare(aDate) || a.id.localeCompare(b.id);
-      })
-      .map(toPostMeta);
-  } catch (error) {
-    if (!(error instanceof EditorialError) || !error.retryable) throw error;
-    console.error(
-      "Published editorial index is unavailable; serving repository-backed articles.",
-      error,
-    );
-    return repositoryArticles.map(toPostMeta);
-  }
+  return (await getEditorialArticlesForPublicRoutes())
+    .filter((article) => article.state === "published")
+    .sort((a, b) => {
+      const aDate = a.publishedAt ?? a.modifiedAt;
+      const bDate = b.publishedAt ?? b.modifiedAt;
+      return bDate.localeCompare(aDate) || a.id.localeCompare(b.id);
+    })
+    .map(toPostMeta);
 }
 
 /**
  * Keep build-time route enumeration independent of the remote editorial store.
  * CMS-only slugs are served on demand because dynamicParams defaults to true.
  */
-export async function getRepositoryPostSlugs(): Promise<string[]> {
+export async function getPrerenderedPostSlugs(): Promise<string[]> {
+  if (getContentAuthority() === "firestore") return [];
   const repositoryArticles = await articleReader.list({
     visibility: "published",
   });
@@ -117,30 +109,19 @@ export async function getPostBySlug(slug: string): Promise<{
 }> {
   const visibility =
     process.env.NODE_ENV === "development" ? "all" : "published";
-  let editorialFailure: unknown;
-
-  if (hasEditorialBackendConfiguration()) {
-    try {
-      const editorialArticle = await getEditorialArticleForPublicRoute(slug);
-      if (editorialArticle) {
-        if (editorialArticle.state !== "published") {
-          throw new ArticleNotFoundError(slug);
-        }
-        return {
-          meta: toPostMeta(editorialArticle),
-          content: editorialArticle.body.source,
-        };
-      }
-    } catch (error) {
-      if (error instanceof ArticleNotFoundError) throw error;
-      if (!(error instanceof EditorialError) || !error.retryable) throw error;
-      editorialFailure = error;
-    }
+  if (getContentAuthority() === "repository") {
+    const article = await articleReader.getBySlug(slug, visibility);
+    if (!article) throw new ArticleNotFoundError(slug);
+    return { meta: toPostMeta(article), content: article.body.source };
+  }
+  if (!hasEditorialBackendConfiguration()) {
+    throw new EditorialValidationError(
+      "Firestore is the configured content authority, but its server configuration is incomplete.",
+    );
   }
 
-  const article = await articleReader.getBySlug(slug, visibility);
-  if (!article) {
-    if (editorialFailure) throw editorialFailure;
+  const article = await getEditorialArticleForPublicRoute(slug);
+  if (!article || article.state !== "published") {
     throw new ArticleNotFoundError(slug);
   }
   return { meta: toPostMeta(article), content: article.body.source };
@@ -148,8 +129,8 @@ export async function getPostBySlug(slug: string): Promise<{
 
 /**
  * Read the saved editorial copy for an authorized Draft Mode request.
- * Repository-backed public reads remain available during the migration window,
- * while the exact authorized preview slug reads the saved editorial revision.
+ * The exact authorized preview slug always reads the saved editorial revision,
+ * independently of the public content authority.
  */
 export async function getPreviewPostBySlug(slug: string): Promise<{
   content: string;

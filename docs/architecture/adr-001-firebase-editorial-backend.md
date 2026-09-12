@@ -142,10 +142,10 @@ accidental deletion; a periodic manifest and object export provides the vendor
 exit path. Recovery tests must verify documents, assets, revision ordering, and
 slug uniqueness.
 
-The exit format is newline-delimited JSON for documents and their revision
-metadata, plus original media objects and a checksum manifest. The adapter
-boundary allows a later provider to replace Firebase without changing page
-components or editorial contracts.
+The exit format is a versioned JSON snapshot for documents and revision
+metadata, plus original media objects and a checksum-to-file manifest. The
+adapter boundary allows a later provider to replace Firebase without changing
+page components or editorial contracts.
 
 ## Knox.Dance patterns
 
@@ -173,10 +173,11 @@ The existing child order remains valid:
    authentication, authorization, preview, and the server mutation boundary.
 3. [#27](https://github.com/shruggietech/shruggie-web/issues/27) builds the
    editor workspace, article lifecycle, revisions, and asset workflow.
-4. [#28](https://github.com/shruggietech/shruggie-web/issues/28) migrates MDX
-   content and verifies backups, restore, and vendor exit.
-5. [#29](https://github.com/shruggietech/shruggie-web/issues/29) performs the
-   final security, accessibility, performance, and production release gates.
+4. [#28](https://github.com/shruggietech/shruggie-web/issues/28) delivers the
+   preview, publication, rollback, and cache-convergence lifecycle.
+5. [#29](https://github.com/shruggietech/shruggie-web/issues/29) migrates the
+   repository corpus, verifies parity and recovery, and performs the final
+   production source cutover.
 
 ## Consequences
 

@@ -44,26 +44,27 @@ unpublishing, and prevents duplicate activation while an action is in flight.
 New published slugs are resolved from Firestore at request time and do not
 require a repository commit or application deployment.
 
-Build-time route enumeration reads repository-backed slugs only. CMS-only
-slugs use the dynamic route fallback on first request, so a slow or unavailable
-editorial store cannot abort an otherwise valid application build after its
-article index was read successfully.
+Firestore-authoritative production does not enumerate blog slugs during the
+application build. Every published slug uses the dynamic route fallback, so a
+slow or unavailable editorial store cannot abort a build.
 
-## Public delivery during migration
+## Public delivery after cutover
 
-Until the migration in #29 is complete, `lib/blog.ts` merges published
-Firestore articles with the repository-backed corpus. A Firestore record owns
-its slug even while unpublished, preventing an older repository copy from
-reappearing after unpublication. Published Firestore records override matching
-repository slugs.
+`CMS_CONTENT_AUTHORITY=firestore` makes Firestore the sole production article
+authority. The repository corpus is a frozen migration and disaster-recovery
+input; it is available only through an explicit local or emergency recovery
+configuration and cannot shadow or replace a Firestore record.
 
 Published database reads use the Next.js data cache. Published edits can serve
 the last successful representation while background revalidation runs;
 publication-state and slug changes expire the exact article and shared index
 data immediately. Index, pagination, and sitemap surfaces then converge through
-their collection tag and path invalidation. If no cached or repository-backed
-representation exists during an outage, the blog displays an explicit
-temporary-unavailability state.
+their collection tag and path invalidation. If no cached representation exists
+during an outage, the blog displays an explicit temporary-unavailability state
+instead of serving an obsolete repository article.
+
+Migration, parity, export, cutover, and recovery operations are documented in
+[`migration-and-cutover.md`](migration-and-cutover.md).
 
 Uploaded media remains private until its owning article is published. The
 same-origin `/media/[id]` route authorizes draft media with the editor session

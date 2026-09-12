@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   createEditorialExport,
+  createEditorialExportBundle,
   parseEditorialExport,
   serializeEditorialExport,
 } from "../../lib/editorial/export";
@@ -127,5 +128,40 @@ describe("AssetStore contract", () => {
     expect(restored).toEqual(snapshot);
     expect(restored.articles[0]).toEqual(article);
     expect(restored.assets[0]).toEqual(asset);
+  });
+
+  it("exports independently verifiable asset bytes for recovery", async () => {
+    const articles = new InMemoryArticleRepository();
+    const assets = new InMemoryAssetStore();
+    const bytes = await pngBytes();
+    const asset = await assets.put(uploadInput(bytes));
+    const article = articleFixture({
+      featuredImage: {
+        assetId: asset.id,
+        deliveryUrl: asset.deliveryUrl,
+        altText: asset.altText,
+      },
+    });
+    await articles.create({
+      article,
+      idempotencyKey: "create-export-bundle-0001",
+      mutation: mutationContext("request:export-bundle-0001"),
+    });
+
+    const bundle = await createEditorialExportBundle(
+      articles,
+      assets,
+      "2026-09-12T20:00:00.000Z",
+    );
+
+    expect(bundle.snapshot.articles).toEqual([article]);
+    expect(bundle.assetFiles).toEqual([
+      expect.objectContaining({
+        assetId: asset.id,
+        bytes: new Uint8Array(bytes),
+        checksumSha256: asset.checksumSha256,
+        relativePath: `assets/${asset.checksumSha256}.png`,
+      }),
+    ]);
   });
 });

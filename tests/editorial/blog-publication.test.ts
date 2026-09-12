@@ -30,7 +30,7 @@ vi.mock("../../lib/editorial/firebase-admin", () => ({
 import {
   getAllPostsMeta,
   getPostBySlug,
-  getRepositoryPostSlugs,
+  getPrerenderedPostSlugs,
 } from "../../lib/blog";
 
 beforeEach(() => {
@@ -39,9 +39,10 @@ beforeEach(() => {
   mocks.repositoryBySlug.mockResolvedValue(null);
   mocks.editorialList.mockResolvedValue([]);
   mocks.editorialBySlug.mockResolvedValue(null);
+  process.env.CMS_CONTENT_AUTHORITY = "firestore";
 });
 
-describe("hybrid public blog publication", () => {
+describe("authoritative public blog publication", () => {
   it("serves a newly published editorial slug without a deployment", async () => {
     const published = articleFixture({
       featuredImage: {
@@ -84,7 +85,7 @@ describe("hybrid public blog publication", () => {
     });
   });
 
-  it("merges published editorial articles and shadows repository copies", async () => {
+  it("lists only published editorial articles after cutover", async () => {
     const repositoryArticle = articleFixture({
       id: "article:repository",
       slug: "shared-slug",
@@ -108,9 +109,10 @@ describe("hybrid public blog publication", () => {
         title: "Editorial version",
       }),
     ]);
+    expect(mocks.repositoryList).not.toHaveBeenCalled();
   });
 
-  it("enumerates repository slugs at build time without reading the editorial backend", async () => {
+  it("does not enumerate Firestore slugs during production builds", async () => {
     const repositoryArticle = articleFixture({
       id: "article:repository",
       slug: "repository-build-slug",
@@ -119,12 +121,8 @@ describe("hybrid public blog publication", () => {
     });
     mocks.repositoryList.mockResolvedValue([repositoryArticle]);
 
-    await expect(getRepositoryPostSlugs()).resolves.toEqual([
-      "repository-build-slug",
-    ]);
-    expect(mocks.repositoryList).toHaveBeenCalledWith({
-      visibility: "published",
-    });
+    await expect(getPrerenderedPostSlugs()).resolves.toEqual([]);
+    expect(mocks.repositoryList).not.toHaveBeenCalled();
     expect(mocks.editorialList).not.toHaveBeenCalled();
   });
 
@@ -138,20 +136,34 @@ describe("hybrid public blog publication", () => {
     expect(mocks.repositoryBySlug).not.toHaveBeenCalled();
   });
 
-  it("uses repository content during an editorial outage and surfaces cold misses", async () => {
+  it("does not fall through to repository content during an editorial outage", async () => {
     const repositoryArticle = articleFixture({
       publishedAt: "2026-09-01T12:00:00.000Z",
       state: "published",
     });
     const outage = new ContentUnavailableError("read public articles");
     mocks.editorialBySlug.mockRejectedValue(outage);
-    mocks.repositoryBySlug.mockResolvedValueOnce(repositoryArticle);
+    mocks.repositoryBySlug.mockResolvedValue(repositoryArticle);
+
+    await expect(getPostBySlug(repositoryArticle.slug)).rejects.toBe(outage);
+    expect(mocks.repositoryBySlug).not.toHaveBeenCalled();
+  });
+
+  it("keeps repository mode available only as an explicit local recovery source", async () => {
+    process.env.CMS_CONTENT_AUTHORITY = "repository";
+    const repositoryArticle = articleFixture({
+      publishedAt: "2026-09-01T12:00:00.000Z",
+      state: "published",
+    });
+    mocks.repositoryBySlug.mockResolvedValue(repositoryArticle);
+    mocks.repositoryList.mockResolvedValue([repositoryArticle]);
 
     await expect(getPostBySlug(repositoryArticle.slug)).resolves.toMatchObject({
       meta: { slug: repositoryArticle.slug },
     });
-
-    mocks.repositoryBySlug.mockResolvedValueOnce(null);
-    await expect(getPostBySlug("editorial-only-slug")).rejects.toBe(outage);
+    await expect(getPrerenderedPostSlugs()).resolves.toEqual([
+      repositoryArticle.slug,
+    ]);
+    expect(mocks.editorialBySlug).not.toHaveBeenCalled();
   });
 });

@@ -1,4 +1,5 @@
 import sharp from "sharp";
+import path from "node:path";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 
 import { Firestore as DirectFirestore } from "@google-cloud/firestore";
@@ -9,6 +10,11 @@ import { getAuth } from "firebase-admin/auth";
 
 import { FirebaseAssetStore } from "../../lib/editorial/firebase-asset-store";
 import { FirestoreArticleRepository } from "../../lib/editorial/firestore-article-repository";
+import {
+  loadRepositoryMigrationManifest,
+  migrateRepositoryBlog,
+  repositoryMigrationSummary,
+} from "../../lib/editorial/repository-migration";
 import {
   RevisionConflictError,
   SlugCollisionError,
@@ -270,5 +276,51 @@ describe("Firebase editorial adapters", () => {
       .file(asset.storagePath)
       .exists();
     expect(exists).toBe(true);
+  });
+
+  it("migrates and verifies the repository corpus idempotently in Firebase", async () => {
+    const articles = new FirestoreArticleRepository(db);
+    const assets = new FirebaseAssetStore(
+      db,
+      getStorage(app).bucket(bucketName),
+      "https://shruggie.tech",
+    );
+    const manifest = await loadRepositoryMigrationManifest(
+      path.join(
+        process.cwd(),
+        "docs",
+        "editorial",
+        "blog-migration-manifest.json",
+      ),
+    );
+
+    const first = await migrateRepositoryBlog({
+      apply: true,
+      articleRepository: articles,
+      assetStore: assets,
+      manifest,
+      siteOrigin: "https://shruggie.tech",
+    });
+    expect(repositoryMigrationSummary(first)).toMatchObject({
+      articleCount: 2,
+      articlesToCreate: 2,
+      assetsToCreate: 2,
+      verifiedArticles: 2,
+    });
+
+    const second = await migrateRepositoryBlog({
+      apply: true,
+      articleRepository: articles,
+      assetStore: assets,
+      manifest,
+      siteOrigin: "https://shruggie.tech",
+    });
+    expect(repositoryMigrationSummary(second)).toMatchObject({
+      articlesToCreate: 0,
+      assetsToCreate: 0,
+      verifiedArticles: 2,
+    });
+    await expect(articles.exportAudit()).resolves.toHaveLength(2);
+    await expect(assets.exportAll()).resolves.toHaveLength(2);
   });
 });

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-09-12",
+  "articles": [
+    {
+      "slug": "multi-agent-coding-workflows",
+      "sourcePath": "content/blog/multi-agent-coding-workflows.mdx",
+      "sourceSha256": "d4dc764e36db409812b39c56df6e1ab7c88fca97f66fbcd737cf0ea239f68263",
+      "state": "published",
+      "targetArticleId": "article:multi-agent-coding-workflows",
+      "targetAuthor": {
+        "id": "team:william",
+        "name": "William Thompson"
+      },
+      "assets": [
+        {
+          "role": "featured",
+          "sourcePath": "public/images/blog/multi-agent-feature.png",
+          "sourceSha256": "460b5244022e76c4718e7cdaf9bf57528ab49106b9957f5d9d0c78a922ae19ff",
+          "sourceUrl": "/images/blog/multi-agent-feature.png",
+          "targetAssetId": "asset:repository:multi-agent-coding-workflows:featured",
+          "contentType": "image/png",
+          "altText": "Multi-Agent Coding Workflows for Solo Developers and Small Teams"
+        }
+      ]
+    },
+    {
+      "slug": "your-website-is-not-a-brochure-anymore",
+      "sourcePath": "content/blog/your-website-is-not-a-brochure-anymore.mdx",
+      "sourceSha256": "3a212dc9c95cad0af51d0cadfc5b54a3fc277c479e0314395c520955aec1d363",
+      "state": "published",
+      "targetArticleId": "article:your-website-is-not-a-brochure-anymore",
+      "targetAuthor": {
+        "id": "team:natalie",
+        "name": "Natalie Thompson"
+      },
+      "assets": [
+        {
+          "role": "featured",
+          "sourcePath": "public/images/blog/website-training-data-ai-search.png",
+          "sourceSha256": "c5def2a462df291a4e0ec4e58cc6f9c5f6add5ba62d2e840dae5658c83d75b00",
+          "sourceUrl": "/images/blog/website-training-data-ai-search.png",
+          "targetAssetId": "asset:repository:your-website-is-not-a-brochure-anymore:featured",
+          "contentType": "image/png",
+          "altText": "Your Website Isn't a Brochure Anymore. It's Source Material for AI Search."
+        }
+      ]
+    }
+  ]
+}

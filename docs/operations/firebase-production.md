@@ -110,3 +110,9 @@ Before migrated content becomes authoritative:
 
 Backups and restores are metered. Storage soft delete and Firestore backup
 retention are both seven days, so investigate accidental deletion immediately.
+
+The full repository-to-Firestore migration, source switch, parity checklist,
+provider-neutral export, and recovery sequence is maintained in
+[`../editorial/migration-and-cutover.md`](../editorial/migration-and-cutover.md).
+Vercel Production must set `CMS_CONTENT_AUTHORITY=firestore`; repository mode
+is a manual recovery path and is not an alternative production authoring source.
