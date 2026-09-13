@@ -15,6 +15,12 @@ import { getAllResearchMeta } from "@/lib/research";
 import { SITE_URL } from "@/lib/constants";
 import { SERVICE_SLUGS } from "@/lib/services";
 
+// Metadata routes are otherwise cached as static route handlers. Render the
+// sitemap per request so publication-state changes cannot remain trapped in
+// the deployment's full-route cache; the tagged article list below still
+// provides the bounded data cache and is expired by the publication mutation.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
     "",
