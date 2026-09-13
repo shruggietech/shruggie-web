@@ -9,6 +9,7 @@ import {
   SlugCollisionError,
 } from "../../lib/editorial/errors";
 import { InMemoryArticleRepository } from "../../lib/editorial/memory-adapter";
+import type { Article } from "../../lib/editorial/domain";
 import { articleFixture, mutationContext, nextRevision } from "./fixtures";
 
 describe("ArticleRepository contract", () => {
@@ -222,6 +223,64 @@ describe("ArticleRepository contract", () => {
     expect(published.map((article) => article.id)).toEqual([
       "article:published",
     ]);
+  });
+
+  it("counts publication states and traverses deterministic bounded pages", async () => {
+    const drafts = Array.from({ length: 105 }, (_, index) => {
+      const suffix = String(index).padStart(3, "0");
+      const modifiedAt = new Date(Date.UTC(2026, 8, 6, 0, index)).toISOString();
+      return articleFixture({
+        id: `article:page-${suffix}`,
+        modifiedAt,
+        revision: {
+          number: 1,
+          previousNumber: null,
+          updatedAt: modifiedAt,
+          updatedBy: "editor:natalie",
+        },
+        slug: `page-${suffix}`,
+        title: `Page article ${suffix}`,
+      });
+    });
+    const repository = new InMemoryArticleRepository([
+      ...drafts,
+      articleFixture({
+        id: "article:page-published",
+        publishedAt: "2026-09-05T12:00:00.000Z",
+        slug: "page-published",
+        state: "published",
+      }),
+      articleFixture({
+        id: "article:page-archived",
+        slug: "page-archived",
+        state: "archived",
+      }),
+    ]);
+
+    await expect(repository.countByState()).resolves.toEqual({
+      archived: 1,
+      draft: 105,
+      published: 1,
+    });
+
+    const seen: Article[] = [];
+    let after: { id: string; modifiedAt: string } | undefined;
+    do {
+      const page = await repository.listByState({
+        after,
+        limit: 20,
+        state: "draft",
+      });
+      expect(page.articles.length).toBeLessThanOrEqual(20);
+      seen.push(...page.articles);
+      after = page.nextCursor ?? undefined;
+    } while (after);
+
+    expect(seen).toHaveLength(105);
+    expect(new Set(seen.map((article) => article.id))).toHaveLength(105);
+    expect(seen.at(0)?.id).toBe("article:page-104");
+    expect(seen.at(-1)?.id).toBe("article:page-000");
+    expect(seen.every((article) => article.state === "draft")).toBe(true);
   });
 
   it("returns immutable article revisions newest first", async () => {

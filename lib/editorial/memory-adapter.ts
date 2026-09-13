@@ -25,6 +25,9 @@ import {
 } from "./errors";
 import type {
   ArticleListOptions,
+  ArticleStateCounts,
+  ArticleStatePage,
+  ArticleStatePageOptions,
   ArticleRepository,
   ArticleVisibility,
   AssetStore,
@@ -215,6 +218,52 @@ export class InMemoryArticleRepository implements ArticleRepository {
       });
     const limited = limit === undefined ? articles : articles.slice(0, limit);
     return limited.map((article) => structuredClone(article));
+  }
+
+  async countByState(): Promise<ArticleStateCounts> {
+    this.assertAvailable("count articles by state");
+    const counts: ArticleStateCounts = {
+      archived: 0,
+      draft: 0,
+      published: 0,
+    };
+    for (const article of this.articles.values()) counts[article.state] += 1;
+    return counts;
+  }
+
+  async listByState(
+    options: ArticleStatePageOptions,
+  ): Promise<ArticleStatePage> {
+    this.assertAvailable(`list ${options.state} articles`);
+    const limit = validateArticleListLimit(options.limit);
+    if (limit === undefined) {
+      throw new EditorialValidationError("A state page requires a limit.");
+    }
+
+    const articles = [...this.articles.values()]
+      .filter((article) => article.state === options.state)
+      .sort(
+        (a, b) =>
+          b.modifiedAt.localeCompare(a.modifiedAt) || b.id.localeCompare(a.id),
+      );
+    const start = options.after
+      ? articles.findIndex(
+          (article) =>
+            article.modifiedAt < options.after!.modifiedAt ||
+            (article.modifiedAt === options.after!.modifiedAt &&
+              article.id < options.after!.id),
+        )
+      : 0;
+    const pageStart = start < 0 ? articles.length : start;
+    const page = articles.slice(pageStart, pageStart + limit);
+    const hasMore = pageStart + page.length < articles.length;
+    const last = page.at(-1);
+
+    return {
+      articles: page.map((article) => structuredClone(article)),
+      nextCursor:
+        hasMore && last ? { id: last.id, modifiedAt: last.modifiedAt } : null,
+    };
   }
 
   async listRevisions(id: string): Promise<Article[]> {

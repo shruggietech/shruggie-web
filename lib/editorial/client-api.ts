@@ -1,6 +1,7 @@
-import type { Article, EditorialAsset } from "./domain";
+import type { Article, ArticleState, EditorialAsset } from "./domain";
 import type { EditorialRole } from "./audit";
 import type { TeamAuthorReference } from "../team";
+import type { ArticleListCursor, ArticleStateCounts } from "./ports";
 
 export interface EditorialEditor {
   author: TeamAuthorReference | null;
@@ -89,11 +90,28 @@ export async function deleteEditorialSession(): Promise<void> {
   });
 }
 
-export async function listEditorialArticles(): Promise<Article[]> {
-  const result = await apiRequest<{ articles: Article[] }>(
-    "/api/admin/articles?limit=100",
+export interface EditorialArticlePage {
+  articles: Article[];
+  counts: ArticleStateCounts;
+  nextCursor: ArticleListCursor | null;
+}
+
+export async function listEditorialArticles(options: {
+  after?: ArticleListCursor;
+  limit?: number;
+  state: ArticleState;
+}): Promise<EditorialArticlePage> {
+  const parameters = new URLSearchParams({
+    limit: String(options.limit ?? 20),
+    state: options.state,
+  });
+  if (options.after) {
+    parameters.set("afterId", options.after.id);
+    parameters.set("afterModifiedAt", options.after.modifiedAt);
+  }
+  return apiRequest<EditorialArticlePage>(
+    `/api/admin/articles?${parameters.toString()}`,
   );
-  return result.articles;
 }
 
 export async function getEditorialArticle(id: string): Promise<Article> {

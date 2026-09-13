@@ -1,4 +1,9 @@
-import type { Article, AssetUploadInput, EditorialAsset } from "./domain";
+import type {
+  Article,
+  ArticleState,
+  AssetUploadInput,
+  EditorialAsset,
+} from "./domain";
 import type { EditorialAuditEvent, EditorialMutationContext } from "./audit";
 import { EditorialValidationError } from "./errors";
 
@@ -8,6 +13,24 @@ export interface ArticleListOptions {
   limit?: number;
   visibility: ArticleVisibility;
 }
+
+export interface ArticleListCursor {
+  id: string;
+  modifiedAt: string;
+}
+
+export interface ArticleStatePageOptions {
+  after?: ArticleListCursor;
+  limit: number;
+  state: ArticleState;
+}
+
+export interface ArticleStatePage {
+  articles: Article[];
+  nextCursor: ArticleListCursor | null;
+}
+
+export type ArticleStateCounts = Record<ArticleState, number>;
 
 export interface CreateArticleCommand {
   article: Article;
@@ -33,10 +56,12 @@ export interface ArticleReader {
 }
 
 export interface ArticleRepository extends ArticleReader {
+  countByState(): Promise<ArticleStateCounts>;
   create(command: CreateArticleCommand): Promise<Article>;
   exportAudit(): Promise<EditorialAuditEvent[]>;
   exportAll(): Promise<Article[]>;
   getRevision(id: string, revision: number): Promise<Article | null>;
+  listByState(options: ArticleStatePageOptions): Promise<ArticleStatePage>;
   listRevisions(id: string): Promise<Article[]>;
   update(command: UpdateArticleCommand): Promise<Article>;
 }

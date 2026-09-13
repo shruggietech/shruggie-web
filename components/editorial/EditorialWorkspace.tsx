@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
+  Archive,
   ArrowLeft,
   Check,
   Clock3,
@@ -42,19 +43,26 @@ import {
 } from "@/lib/editorial/client-api";
 import type {
   Article,
+  ArticleState,
   AssetReference,
   EditorialAsset,
 } from "@/lib/editorial/domain";
+import type {
+  ArticleListCursor,
+  ArticleStateCounts,
+} from "@/lib/editorial/ports";
 import { TEAM_AUTHORS, getAuthorByReference } from "@/lib/team";
 import { inspectMarkdown } from "@/lib/editorial/markdown-policy";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import MarkdownEditor from "./MarkdownEditor";
 import SignInPanel from "./SignInPanel";
 
 type LoadState = "idle" | "loading" | "ready" | "error";
 type AssetSlot = "featuredImage" | "ogImage";
-type MutationAction = "publish" | "restore" | "save" | "unpublish";
+type MutationAction = "archive" | "publish" | "restore" | "save" | "unpublish";
 type EditorAction = MutationAction | "preview";
 
 interface PendingArticleMutation {
@@ -69,6 +77,12 @@ const inputClass =
   "mt-2 w-full rounded-lg border border-border bg-bg-primary px-3 py-2.5 text-text-primary shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25 disabled:cursor-not-allowed disabled:opacity-60";
 const labelClass = "block font-medium text-text-primary";
 const DRAFT_RECOVERY_KEY = "shruggie:editorial-draft-recovery";
+const ARTICLE_PAGE_SIZE = 20;
+const ARTICLE_VIEWS = [
+  { label: "Drafts", state: "draft" },
+  { label: "Published", state: "published" },
+  { label: "Archived", state: "archived" },
+] as const satisfies ReadonlyArray<{ label: string; state: ArticleState }>;
 
 interface DraftRecovery {
   draft: Article;
@@ -141,6 +155,13 @@ export default function EditorialWorkspace() {
   const [sessionState, setSessionState] = useState<LoadState>("loading");
   const [sessionExpired, setSessionExpired] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
+  const [articleView, setArticleView] = useState<ArticleState>("draft");
+  const [articleCounts, setArticleCounts] = useState<ArticleStateCounts | null>(
+    null,
+  );
+  const [nextArticleCursor, setNextArticleCursor] =
+    useState<ArticleListCursor | null>(null);
+  const [loadingMoreArticles, setLoadingMoreArticles] = useState(false);
   const [assets, setAssets] = useState<EditorialAsset[]>([]);
   const [listState, setListState] = useState<LoadState>("idle");
   const [listError, setListError] = useState<string | null>(null);
@@ -148,6 +169,7 @@ export default function EditorialWorkspace() {
   const [draft, setDraft] = useState<Article | null>(null);
   const [dirty, setDirty] = useState(false);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
+  const articleRequestRef = useRef(0);
 
   const signedIn = useCallback((nextEditor: EditorialEditor) => {
     const recovery = readDraftRecovery();
@@ -172,23 +194,80 @@ export default function EditorialWorkspace() {
   }, []);
 
   const loadWorkspace = useCallback(async () => {
+    const requestId = ++articleRequestRef.current;
     setListState("loading");
     setListError(null);
     try {
-      const [nextArticles, nextAssets] = await Promise.all([
-        listEditorialArticles(),
+      const [page, nextAssets] = await Promise.all([
+        listEditorialArticles({
+          limit: ARTICLE_PAGE_SIZE,
+          state: articleView,
+        }),
         listEditorialAssets(),
       ]);
-      setArticles(nextArticles);
       setAssets(nextAssets);
+      if (requestId !== articleRequestRef.current) return;
+      setArticles(page.articles);
+      setArticleCounts(page.counts);
+      setNextArticleCursor(page.nextCursor);
       setListState("ready");
     } catch (error) {
+      if (requestId !== articleRequestRef.current) return;
       if (!handleSessionFailure(error)) {
         setListError(friendlyError(error));
         setListState("error");
       }
     }
-  }, [handleSessionFailure]);
+  }, [articleView, handleSessionFailure]);
+
+  const loadArticleView = useCallback(
+    async (view: ArticleState, after?: ArticleListCursor) => {
+      const requestId = ++articleRequestRef.current;
+      if (after) {
+        setLoadingMoreArticles(true);
+      } else {
+        setListState("loading");
+        setListError(null);
+        setArticles([]);
+        setNextArticleCursor(null);
+      }
+      try {
+        const page = await listEditorialArticles({
+          after,
+          limit: ARTICLE_PAGE_SIZE,
+          state: view,
+        });
+        if (requestId !== articleRequestRef.current) return;
+        setArticles((current) =>
+          after
+            ? [
+                ...current,
+                ...page.articles.filter(
+                  (article) =>
+                    !current.some(
+                      (currentArticle) => currentArticle.id === article.id,
+                    ),
+                ),
+              ]
+            : page.articles,
+        );
+        setArticleCounts(page.counts);
+        setNextArticleCursor(page.nextCursor);
+        setListState("ready");
+      } catch (error) {
+        if (requestId !== articleRequestRef.current) return;
+        if (!handleSessionFailure(error)) {
+          setListError(friendlyError(error));
+          setListState("error");
+        }
+      } finally {
+        if (requestId === articleRequestRef.current) {
+          setLoadingMoreArticles(false);
+        }
+      }
+    },
+    [handleSessionFailure],
+  );
 
   useEffect(() => {
     let active = true;
@@ -229,6 +308,10 @@ export default function EditorialWorkspace() {
       setEditor(null);
       setSessionState("idle");
       setArticles([]);
+      setArticleView("draft");
+      setArticleCounts(null);
+      setNextArticleCursor(null);
+      setLoadingMoreArticles(false);
       setAssets([]);
       setPersisted(null);
       setDraft(null);
@@ -342,10 +425,8 @@ export default function EditorialWorkspace() {
             setPersisted(saved);
             setDraft(structuredClone(saved));
             setDirty(false);
-            setArticles((current) => [
-              saved,
-              ...current.filter((item) => item.id !== saved.id),
-            ]);
+            setArticleView(saved.state);
+            void loadArticleView(saved.state);
           }}
           onAsset={(asset) => setAssets((current) => [asset, ...current])}
           onSessionFailure={handleSessionFailure}
@@ -353,11 +434,25 @@ export default function EditorialWorkspace() {
       ) : (
         <ArticleDashboard
           articles={articles}
+          activeView={articleView}
+          counts={articleCounts}
+          loadingMore={loadingMoreArticles}
+          nextCursor={nextArticleCursor}
           state={listState}
           error={listError}
           onCreate={beginNewArticle}
           onEdit={editArticle}
+          onLoadMore={() => {
+            if (nextArticleCursor) {
+              void loadArticleView(articleView, nextArticleCursor);
+            }
+          }}
           onRetry={loadWorkspace}
+          onSelectView={(view) => {
+            if (view === articleView) return;
+            setArticleView(view);
+            void loadArticleView(view);
+          }}
         />
       )}
     </div>
@@ -381,41 +476,61 @@ function LoadingPanel({ label }: { label: string }) {
 
 function ArticleDashboard({
   articles,
+  activeView,
+  counts,
+  loadingMore,
+  nextCursor,
   state,
   error,
   onCreate,
   onEdit,
+  onLoadMore,
   onRetry,
+  onSelectView,
 }: {
   articles: Article[];
+  activeView: ArticleState;
+  counts: ArticleStateCounts | null;
+  loadingMore: boolean;
+  nextCursor: ArticleListCursor | null;
   state: LoadState;
   error: string | null;
   onCreate: () => void;
   onEdit: (article: Article) => void;
+  onLoadMore: () => void;
   onRetry: () => void;
+  onSelectView: (view: ArticleState) => void;
 }) {
-  if (state === "loading" || state === "idle")
-    return <LoadingPanel label="Loading articles…" />;
-  if (state === "error") {
-    return (
-      <Card hover={false} role="alert" className="text-center">
-        <AlertTriangle aria-hidden="true" className="mx-auto text-amber-500" />
-        <h2 className="font-display mt-4 text-xl font-bold">
-          Articles could not be loaded
-        </h2>
-        <p className="text-text-secondary mt-2">{error}</p>
-        <Button type="button" onClick={onRetry} className="mt-6">
-          <RefreshCw aria-hidden="true" className="mr-2" size={16} /> Retry
-        </Button>
-      </Card>
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const activeConfig = ARTICLE_VIEWS.find((view) => view.state === activeView)!;
+
+  function handleTabKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+    const currentIndex = ARTICLE_VIEWS.findIndex(
+      (view) => view.state === activeView,
     );
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight") {
+      nextIndex = (currentIndex + 1) % ARTICLE_VIEWS.length;
+    } else if (event.key === "ArrowLeft") {
+      nextIndex =
+        (currentIndex - 1 + ARTICLE_VIEWS.length) % ARTICLE_VIEWS.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = ARTICLE_VIEWS.length - 1;
+    }
+    if (nextIndex === null) return;
+    event.preventDefault();
+    onSelectView(ARTICLE_VIEWS[nextIndex].state);
+    tabRefs.current[nextIndex]?.focus();
   }
+
   return (
     <section aria-labelledby="articles-heading">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 id="articles-heading" className="font-display text-2xl font-bold">
-            Articles
+            Articles by publication state
           </h2>
           <p className="text-body-sm text-text-secondary mt-1">
             Draft saving does not publish to the public site.
@@ -426,45 +541,147 @@ function ArticleDashboard({
           article
         </Button>
       </div>
-      {articles.length === 0 ? (
-        <Card hover={false} className="border-dashed text-center">
-          <h3 className="font-display text-xl font-bold">No articles yet</h3>
-        </Card>
-      ) : (
-        <ul className="grid gap-4" aria-label="Editorial articles">
-          {articles.map((article) => (
-            <li key={article.id}>
-              <button
-                type="button"
-                onClick={() => onEdit(article)}
-                className="border-border bg-bg-elevated hover:border-accent focus-visible:outline-focus w-full rounded-xl border p-5 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
-                aria-label={`Edit ${article.title}, ${stateLabel(article.state)}`}
+      <div
+        role="tablist"
+        aria-label="Article publication state"
+        className="border-border mb-5 flex gap-1 overflow-x-auto border-b"
+      >
+        {ARTICLE_VIEWS.map((view, index) => {
+          const selected = view.state === activeView;
+          return (
+            <button
+              key={view.state}
+              ref={(element) => {
+                tabRefs.current[index] = element;
+              }}
+              id={`article-state-tab-${view.state}`}
+              type="button"
+              role="tab"
+              aria-controls={`article-state-panel-${view.state}`}
+              aria-selected={selected}
+              tabIndex={selected ? 0 : -1}
+              onClick={() => onSelectView(view.state)}
+              onKeyDown={handleTabKeyDown}
+              className={cn(
+                "focus-visible:outline-focus flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none",
+                selected
+                  ? "border-accent text-text-primary"
+                  : "text-text-secondary hover:text-text-primary border-transparent",
+                view.state === "archived" && !selected && "opacity-75",
+              )}
+            >
+              {view.label}
+              <Badge
+                className={cn(
+                  "min-w-7 justify-center px-2 py-0.5",
+                  !selected && "bg-bg-secondary text-text-secondary",
+                )}
               >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h3 className="font-display text-lg font-bold">
-                      {article.title}
-                    </h3>
-                    <p className="text-body-xs text-text-secondary mt-1 font-mono">
-                      /{article.slug}
-                    </p>
+                {counts?.[view.state] ?? "—"}
+              </Badge>
+            </button>
+          );
+        })}
+      </div>
+
+      <div
+        id={`article-state-panel-${activeView}`}
+        role="tabpanel"
+        aria-labelledby={`article-state-tab-${activeView}`}
+        aria-busy={state === "loading" || loadingMore}
+      >
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <p className="text-body-sm text-text-secondary">
+            <span className="text-text-primary font-medium">
+              {activeConfig.label}
+            </span>{" "}
+            · Newest updates first
+          </p>
+        </div>
+
+        {state === "loading" || state === "idle" ? (
+          <LoadingPanel
+            label={`Loading ${activeConfig.label.toLowerCase()}…`}
+          />
+        ) : state === "error" ? (
+          <Card hover={false} role="alert" className="text-center">
+            <AlertTriangle
+              aria-hidden="true"
+              className="mx-auto text-amber-500"
+            />
+            <h3 className="font-display mt-4 text-xl font-bold">
+              {activeConfig.label} could not be loaded
+            </h3>
+            <p className="text-text-secondary mt-2">{error}</p>
+            <Button type="button" onClick={onRetry} className="mt-6">
+              <RefreshCw aria-hidden="true" className="mr-2" size={16} /> Retry
+            </Button>
+          </Card>
+        ) : articles.length === 0 ? (
+          <Card hover={false} className="border-dashed text-center">
+            <h3 className="font-display text-xl font-bold">
+              No {activeConfig.label.toLowerCase()}
+            </h3>
+            <p className="text-body-sm text-text-secondary mt-2">
+              {activeView === "draft"
+                ? "Create an article to start a private draft."
+                : activeView === "published"
+                  ? "Published articles will appear here."
+                  : "Archived articles remain available for restoration."}
+            </p>
+          </Card>
+        ) : (
+          <ul
+            className="grid gap-4"
+            aria-label={`${activeConfig.label} articles`}
+          >
+            {articles.map((article) => (
+              <li key={article.id}>
+                <button
+                  type="button"
+                  onClick={() => onEdit(article)}
+                  className="border-border bg-bg-elevated hover:border-accent focus-visible:outline-focus w-full rounded-xl border p-5 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
+                  aria-label={`Edit ${article.title}, ${stateLabel(article.state)}`}
+                >
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <h3 className="font-display text-lg font-bold">
+                        {article.title}
+                      </h3>
+                      <p className="text-body-xs text-text-secondary mt-1 font-mono">
+                        /{article.slug}
+                      </p>
+                    </div>
+                    <Badge>{stateLabel(article.state)}</Badge>
                   </div>
-                  <span className="border-border text-body-xs w-fit rounded-full border px-3 py-1 font-medium">
-                    {stateLabel(article.state)}
-                  </span>
-                </div>
-                <p className="text-body-sm text-text-secondary mt-4 line-clamp-2">
-                  {article.excerpt}
-                </p>
-                <p className="text-body-xs text-text-muted mt-3">
-                  Revision {article.revision.number} · Updated{" "}
-                  {new Date(article.modifiedAt).toLocaleString()}
-                </p>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+                  <p className="text-body-sm text-text-secondary mt-4 line-clamp-2">
+                    {article.excerpt}
+                  </p>
+                  <p className="text-body-xs text-text-muted mt-3">
+                    Revision {article.revision.number} · Updated{" "}
+                    {new Date(article.modifiedAt).toLocaleString()}
+                  </p>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {state === "ready" && nextCursor && (
+          <div className="mt-6 flex justify-center">
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={loadingMore}
+              onClick={onLoadMore}
+            >
+              {loadingMore
+                ? "Loading more…"
+                : `Load more ${activeConfig.label.toLowerCase()}`}
+            </Button>
+          </div>
+        )}
+      </div>
     </section>
   );
 }
@@ -607,11 +824,13 @@ function ArticleEditor({
     const targetState =
       action === "publish"
         ? "published"
-        : action === "unpublish" || action === "restore"
-          ? "draft"
-          : basePersisted?.state === "published"
-            ? "published"
-            : "draft";
+        : action === "archive"
+          ? "archived"
+          : action === "unpublish" || action === "restore"
+            ? "draft"
+            : basePersisted?.state === "published"
+              ? "published"
+              : "draft";
     const reusable =
       pendingMutation?.action === action ? pendingMutation : null;
     const candidate =
@@ -668,11 +887,13 @@ function ArticleEditor({
             ? `Published revision ${saved.revision.number}. Public caches were refreshed.`
             : action === "unpublish"
               ? `Unpublished as revision ${saved.revision.number}. Public caches were refreshed.`
-              : action === "restore"
-                ? `Article restored as draft revision ${saved.revision.number}.`
-                : saved.state === "published"
-                  ? `Published update saved as revision ${saved.revision.number}.`
-                  : `Draft saved as revision ${saved.revision.number}.`,
+              : action === "archive"
+                ? `Archived as revision ${saved.revision.number}.`
+                : action === "restore"
+                  ? `Article restored as draft revision ${saved.revision.number}.`
+                  : saved.state === "published"
+                    ? `Published update saved as revision ${saved.revision.number}.`
+                    : `Draft saved as revision ${saved.revision.number}.`,
       );
       setPendingMutation(null);
       setRestoreFromRevision(null);
@@ -785,7 +1006,7 @@ function ArticleEditor({
     }
   }
 
-  async function runMutation(action: "restore" | "unpublish") {
+  async function runMutation(action: "archive" | "restore" | "unpublish") {
     if (actionLockRef.current) return;
     actionLockRef.current = true;
     setActiveAction(action);
@@ -794,8 +1015,16 @@ function ArticleEditor({
         action,
         draft,
         persisted,
-        action === "restore" ? "Restoring draft…" : "Unpublishing…",
-        action === "restore" ? "Restore" : "Unpublish",
+        action === "restore"
+          ? "Restoring draft…"
+          : action === "archive"
+            ? "Archiving…"
+            : "Unpublishing…",
+        action === "restore"
+          ? "Restore"
+          : action === "archive"
+            ? "Archive"
+            : "Unpublish",
       );
     } finally {
       actionLockRef.current = false;
@@ -1170,6 +1399,19 @@ function ArticleEditor({
                 onClick={() => void runMutation("unpublish")}
               >
                 Unpublish
+              </Button>
+            )}
+            {persisted?.state === "draft" && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={dirty || activeAction !== null}
+                className="shrink-0 whitespace-nowrap"
+                onClick={() => void runMutation("archive")}
+              >
+                <Archive aria-hidden="true" className="mr-2" size={16} />
+                {activeAction === "archive" ? "Archiving…" : "Archive"}
               </Button>
             )}
             {persisted?.state === "archived" && (

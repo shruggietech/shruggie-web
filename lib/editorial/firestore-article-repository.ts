@@ -29,6 +29,9 @@ import {
 import { withEditorialTimeout } from "./firebase-errors";
 import type {
   ArticleListOptions,
+  ArticleStateCounts,
+  ArticleStatePage,
+  ArticleStatePageOptions,
   ArticleRepository,
   ArticleVisibility,
   CreateArticleCommand,
@@ -320,6 +323,75 @@ export class FirestoreArticleRepository implements ArticleRepository {
       const snapshot = await query.get();
       return snapshot.docs.map((document) => parseArticle(document.data()));
     });
+  }
+
+  async countByState(): Promise<ArticleStateCounts> {
+    return withEditorialTimeout(
+      "count articles by state",
+      this.timeoutMs,
+      async () => {
+        const states = ["draft", "published", "archived"] as const;
+        const snapshots = await Promise.all(
+          states.map((state) =>
+            this.db
+              .collection(ARTICLES)
+              .where("state", "==", state)
+              .count()
+              .get(),
+          ),
+        );
+        return Object.fromEntries(
+          states.map((state, index) => [state, snapshots[index].data().count]),
+        ) as ArticleStateCounts;
+      },
+    );
+  }
+
+  async listByState(
+    options: ArticleStatePageOptions,
+  ): Promise<ArticleStatePage> {
+    const limit = validateArticleListLimit(options.limit);
+    if (limit === undefined) {
+      throw new EditorialValidationError("A state page requires a limit.");
+    }
+    const parsedCursor = options.after
+      ? editorialIdSchema.safeParse(options.after.id)
+      : null;
+    if (
+      options.after &&
+      (!parsedCursor?.success ||
+        Number.isNaN(Date.parse(options.after.modifiedAt)))
+    ) {
+      throw new EditorialValidationError("The article page cursor is invalid.");
+    }
+
+    return withEditorialTimeout(
+      `list ${options.state} articles`,
+      this.timeoutMs,
+      async () => {
+        let query = this.db
+          .collection(ARTICLES)
+          .where("state", "==", options.state)
+          .orderBy("modifiedAt", "desc")
+          .orderBy("__name__", "desc");
+        if (options.after) {
+          query = query.startAfter(options.after.modifiedAt, options.after.id);
+        }
+        const snapshot = await query.limit(limit + 1).get();
+        const pageDocuments = snapshot.docs.slice(0, limit);
+        const articles = pageDocuments.map((document) =>
+          parseArticle(document.data()),
+        );
+        const last = articles.at(-1);
+        return {
+          articles,
+          nextCursor:
+            snapshot.docs.length > limit && last
+              ? { id: last.id, modifiedAt: last.modifiedAt }
+              : null,
+        };
+      },
+    );
   }
 
   async listRevisions(id: string): Promise<Article[]> {
