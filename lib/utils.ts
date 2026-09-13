@@ -10,6 +10,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Render a YYYY-MM-DD value without allowing the host timezone to shift it. */
+export function formatDateOnly(date: string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
 /** Table-of-contents entry extracted from MDX headings. */
 export interface TocItem {
   id: string;

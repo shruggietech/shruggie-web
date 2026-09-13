@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Editorial migration and recovery tooling**: added a checksummed manifest
+  for the complete repository blog corpus, an idempotent dry-run-first Firebase
+  importer with read-back verification, and a provider-neutral export command
+  that includes verified private asset bytes
 - **Browser article publication**: authorized staff can publish saved drafts,
   update published articles, unpublish them, and restore immutable revisions;
   lifecycle mutations retain idempotency keys across ambiguous failures and
@@ -37,10 +41,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Blog publication source**: public blog routes now merge cached, published
-  Firestore records with repository articles during the migration window;
-  editorial slugs shadow repository copies, and newly published slugs resolve
-  dynamically without a deployment
+- **Blog publication source**: Firestore is the sole deployed production
+  authority after cutover; repository MDX remains an explicit local and
+  disaster-recovery source, and production builds no longer prerender blog
+  slugs or silently fall back to stale repository articles
 - **ESLint baseline**: replaced render-time ref mutation and synchronous effect state updates with behavior-preserving derived state and browser subscriptions across navigation, responsive hooks, cookie consent, blog table-of-contents tracking, and product/homepage animation components; documented the required native image exception for edge-rendered Open Graph cards
 - **Development pillar**: added blockchain integration to the pillar description and "Blockchain architecture and smart contract development" to the capabilities list
 - **Service anchor map**: added `Blockchain`, `Smart Contracts`, and `Blockchain Consulting` entries linking to the Development & Integration pillar

@@ -70,9 +70,10 @@ and at least five characters long.
 
 ## Adapter boundary
 
-Routes consume `lib/blog.ts`, a project-owned view adapter. During migration it
-uses `MdxArticleReader`, which validates repository frontmatter and Markdown
-through article schema v1. Firebase SDK objects never cross this boundary.
+Routes consume `lib/blog.ts`, a project-owned view adapter. Production reads
+only Firestore after cutover. `MdxArticleReader` remains a validated local
+migration and recovery adapter; repository files are not a production
+publication source. Firebase SDK objects never cross this boundary.
 
 `FirestoreArticleRepository` implements transactional creates and updates over
 the `articles`, `articleSlugs`, `articleRevisions`, `idempotencyKeys`, and
@@ -102,7 +103,8 @@ environment variable.
 ## Export and recovery
 
 `createEditorialExport` produces a versioned JSON snapshot containing every
-validated article and asset record. Serialization validates the snapshot again,
-sorts records by stable ID, and retains all asset references and checksums. The
-export is the provider-neutral input for backup verification, migration, and a
-future Firebase exit.
+validated article and asset record. `createEditorialExportBundle` also reads
+each private media object, verifies its SHA-256 checksum, and gives it a stable
+provider-neutral export path. The `cms:export` command writes both forms outside
+the repository and reads them back before reporting success. This bundle is the
+provider-neutral input for backup verification and a future Firebase exit.

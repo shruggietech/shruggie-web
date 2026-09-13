@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 const command = process.platform === "win32" ? "npm.cmd" : "npm";
 const environment = {
   ...process.env,
+  CMS_CONTENT_AUTHORITY: "firestore",
   FIREBASE_PROJECT_ID: "demo-shruggie-web",
   FIREBASE_STORAGE_BUCKET: "demo-shruggie-web.firebasestorage.app",
   NEXT_PUBLIC_SITE_URL: "https://shruggie.tech",

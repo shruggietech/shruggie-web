@@ -4,7 +4,7 @@
 | Attribute | Value |
 |-----------|-------|
 | Subject | ShruggieTech Website Rebuild |
-| Version | 1.2.3 |
+| Version | 1.3.0 |
 | Date | 2026-09-12 |
 | Status | APPROVED |
 | Audience | AI-first, Human-second |
@@ -58,7 +58,7 @@
   - [6.11. Privacy Policy](#611-privacy-policy)
 - [7. Blog Architecture](#7-blog-architecture)
   - [7.1. Content Strategy](#71-content-strategy)
-  - [7.2. MDX Pipeline](#72-mdx-pipeline)
+  - [7.2. Markdown Editorial Pipeline](#72-mdx-pipeline)
   - [7.3. Blog Post Template](#73-blog-post-template)
   - [7.4. Authoring Workflow](#74-authoring-workflow)
 - [8. SEO and AEO Infrastructure](#8-seo-and-aeo-infrastructure)
@@ -104,7 +104,7 @@ This specification does NOT serve as a content management guide, user manual, or
 
 <div style="text-align:justify">
 
-This specification covers the complete public-facing website for ShruggieTech at `https://shruggie.tech`. The scope includes all pages listed in the navigation (Homepage, Services, Work, Research, Products, About, Blog, Contact), four audience-specific landing pages under `/for/`, error and legal pages, the MDX-based blog content pipeline, the design system and component library, the SEO/AEO infrastructure, and the Vercel deployment configuration. The specification does not cover product-specific documentation sites (e.g., the metadexer documentation site defined in the metadexer specification §11), client project websites, or ShruggieTech's internal tooling.
+This specification covers the complete public-facing website for ShruggieTech at `https://shruggie.tech`. The scope includes all pages listed in the navigation (Homepage, Services, Work, Research, Products, About, Blog, Contact), four audience-specific landing pages under `/for/`, error and legal pages, the Firestore-backed Markdown blog pipeline, the design system and component library, the SEO/AEO infrastructure, and the Vercel deployment configuration. The specification does not cover product-specific documentation sites (e.g., the metadexer documentation site defined in the metadexer specification §11), client project websites, or ShruggieTech's internal tooling.
 
 </div>
 
@@ -151,7 +151,7 @@ This specification covers the complete public-facing website for ShruggieTech at
 | Styling | Tailwind CSS 4.x | Utility-first CSS with design token integration |
 | Smooth Scroll | Lenis (by darkroom.engineering) | Tasteful, performant smooth scrolling with reduced-motion respect |
 | Animation | Framer Motion 12.x | Declarative animation with scroll-triggered reveals and layout transitions |
-| Blog Content | MDX (via `next-mdx-remote`) | Markdown with embedded React components; low-friction authoring |
+| Blog Content | Firestore Markdown (via `next-mdx-remote`) | Browser authoring with validated Markdown, revisions, preview, and controlled publication |
 | Syntax Highlighting | Shiki | Blog code blocks with accurate token highlighting |
 | Icons | Lucide React | Consistent, lightweight SVG icon library |
 | Schema Markup | Custom JSON-LD generators | AEO-optimized structured data for every page type |
@@ -233,7 +233,7 @@ shruggie-web/
 │       ├── JsonLd.tsx              # Schema markup injection component
 │       └── SEOHead.tsx
 ├── content/
-│   └── blog/                       # MDX blog posts live here
+│   └── blog/                       # Frozen blog migration/recovery corpus
 │       ├── example-post.mdx
 │       └── ...
 ├── lib/
@@ -1987,15 +1987,19 @@ The blog serves all four audience segments identified in KB §11. Content should
 | Announcements | Product releases, company milestones (all segments) |
 
 <a name="72-mdx-pipeline" id="72-mdx-pipeline"></a>
-### 7.2. MDX Pipeline
+### 7.2. Markdown Editorial Pipeline
 
 <div style="text-align:justify">
 
-Blog posts are authored as `.mdx` files stored in `content/blog/`. MDX was chosen over a headless CMS for several reasons: zero external dependencies (no API keys, no third-party service), version control via Git (every post change is tracked in the repository), the ability to embed interactive React components directly in posts (code playgrounds, charts, interactive diagrams), and near-zero authoring friction (write Markdown, commit, deploy).
+Production blog posts are authored through the authenticated `/admin` workspace and stored as validated Markdown records in Firestore. The content contract permits CommonMark and approved GitHub Flavored Markdown features while rejecting raw HTML, JSX, MDX expressions, and unsafe links. Publication creates an immutable revision and audit event, then invalidates the affected article, index, sitemap, metadata, and media surfaces. New slugs resolve on demand without a repository deployment.
+
+The `.mdx` files under `content/blog/` are a frozen migration and disaster-recovery corpus. `MdxArticleReader` validates them against the same article contract for migration comparison, but deployed production uses `CMS_CONTENT_AUTHORITY=firestore` and never merges or silently falls back to repository copies. Repository mode is reserved for local development and an explicitly invoked emergency recovery deployment.
 
 </div>
 
-**Content loading (`lib/blog.ts`):**
+**Historical migration reader (non-production):**
+
+The following pre-cutover sketch documents the shape of the repository input. It is not the production publication path; the executable authority, cache, and migration contracts live in `lib/blog.ts`, `lib/editorial/`, and `docs/editorial/migration-and-cutover.md`.
 
 ```typescript
 import fs from "fs";
@@ -2080,7 +2084,7 @@ export function getPaginatedPosts(page: number, perPage: number = 10) {
 <a name="73-blog-post-template" id="73-blog-post-template"></a>
 ### 7.3. Blog Post Template
 
-**Frontmatter schema:**
+**Repository migration frontmatter (frozen recovery input):**
 
 ```yaml
 ---
@@ -2094,7 +2098,7 @@ ogImage: "/images/og/your-post-og.png"   # Optional
 ---
 ```
 
-**MDX rendering (`app/blog/[slug]/page.tsx`):**
+**Historical repository MDX rendering (non-production):**
 
 ```tsx
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -2132,17 +2136,17 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 }
 ```
 
-The shared route template renders `PostCTA` immediately after the MDX body,
-giving every published article a primary path to `/contact` and a secondary
-path to `/services`. Authors must not add the CTA manually to individual MDX
-files; placing it in the template guarantees the same next step for current
-and future posts.
+The current shared route template still renders `PostCTA` immediately after
+the validated Markdown body, giving every published article a primary path to
+`/contact` and a secondary path to `/services`. Authors do not add the CTA to
+article content; placing it in the template guarantees the same next step for
+current and future posts.
 
-**Custom MDX components (`components/blog/MDXComponents.tsx`):**
+**Historical custom MDX components (non-production):**
 
 <div style="text-align:justify">
 
-MDX components override default HTML elements to apply ShruggieTech styling and accessibility requirements. They also enable custom components like callout boxes and embedded code examples.
+Before the Firestore cutover, MDX components overrode default HTML elements and enabled custom JSX components such as callout boxes. Production article records do not accept raw JSX or MDX expressions; equivalent presentation must use the approved Markdown renderer and shared route components.
 
 </div>
 
@@ -2217,15 +2221,15 @@ export const mdxComponents: MDXComponents = {
 
 **To publish a new blog post:**
 
-1. Create a new `.mdx` file in `content/blog/` with the filename matching the desired URL slug (e.g., `my-first-post.mdx` → `/blog/my-first-post`).
-2. Add frontmatter following the schema in §7.3.
-3. Write the post body in standard Markdown. Use `<Callout>` for callout boxes and standard fenced code blocks for code samples.
-4. Set `published: true` when ready (or `false` to preview in development without deploying to production).
-5. Commit and push to the repository. Vercel rebuilds automatically.
+1. Sign in to `/admin` with an approved `shruggie.tech` Google account.
+2. Create a draft and select a registered public author.
+3. Complete the metadata and write policy-compliant Markdown. Upload or select featured and social images through the media picker.
+4. Preview the saved revision through the protected Draft Mode route and verify the real public template.
+5. Publish once review is complete. The server commits the publication and audit record transactionally and then converges public cache surfaces.
 
 <div style="text-align:justify">
 
-No CMS login, no API keys, no database. Adding a post is a Git commit. This workflow aligns with ShruggieTech's specification-driven methodology: the content is version-controlled, reviewable, and deployable through the same pipeline as the codebase.
+Firestore is the only writable production article authority. Repository changes to `content/blog/` do not publish, update, or restore an article after cutover. The migration manifest, provider-neutral export, backup, recovery, and source switch procedures are defined in `docs/editorial/migration-and-cutover.md`.
 
 </div>
 
@@ -2655,3 +2659,4 @@ All environment variables are configured in the Vercel project dashboard under S
 | <span style="white-space: nowrap;">2026-08-27</span> | 1.2.1 | Made the end-of-article `PostCTA` an automatic part of the shared blog post template so every current and future article receives the same contact and services paths without MDX author intervention. |
 | <span style="white-space: nowrap;">2026-08-28</span> | 1.2.2 | Removed the stale Next.js 15 pin from the technology stack table. The specification now names the App Router without duplicating the installed major version tracked in `package.json` and the project constitution. |
 | <span style="white-space: nowrap;">2026-09-12</span> | 1.2.3 | Replaced inaccessible muted foregrounds in both themes and introduced a theme-aware orange text role that preserves bright brand orange on dark surfaces while meeting WCAG AA on light surfaces. |
+| <span style="white-space: nowrap;">2026-09-12</span> | 1.3.0 | Replaced repository-authored production blog publication with the authenticated Firestore editorial authority; documented the frozen migration corpus, browser workflow, checksummed migration/export path, dynamic slug delivery, cache convergence, and recovery contract. |

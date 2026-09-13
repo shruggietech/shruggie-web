@@ -5,7 +5,8 @@
  * Shiki syntax highlighting, and BlogPosting JSON-LD schema.
  *
  * Uses generateStaticParams to pre-render repository posts at build time.
- * Editorial-only slugs render on demand so builds do not depend on Firestore.
+ * Firestore-authoritative production leaves this list empty so every CMS slug
+ * renders on demand and application builds do not depend on editorial reads.
  *
  * Spec references: §7.2 (MDX Pipeline), §7.3 (Blog Post Template), §8.2 (JSON-LD)
  */
@@ -22,7 +23,7 @@ import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import {
   getPostBySlug,
   getPreviewPostBySlug,
-  getRepositoryPostSlugs,
+  getPrerenderedPostSlugs,
 } from "@/lib/blog";
 import { requireEditor } from "@/lib/editorial/http";
 import { ArticleNotFoundError } from "@/lib/editorial/errors";
@@ -71,7 +72,7 @@ const getPostForRequest = cache(async (slug: string) => {
 });
 
 export async function generateStaticParams() {
-  const slugs = await getRepositoryPostSlugs();
+  const slugs = await getPrerenderedPostSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
