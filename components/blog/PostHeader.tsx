@@ -8,6 +8,7 @@
  */
 
 import type { PostMeta } from "@/lib/blog";
+import { formatDateOnly } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 
 interface PostHeaderProps {
@@ -24,13 +25,7 @@ export default function PostHeader({ meta }: PostHeaderProps) {
       <div className="mt-4 flex items-center justify-center gap-3 text-body-sm text-text-muted">
         <span>{meta.author}</span>
         <span>&middot;</span>
-        <time dateTime={meta.date}>
-          {new Date(meta.date).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </time>
+        <time dateTime={meta.date}>{formatDateOnly(meta.date)}</time>
         <span>&middot;</span>
         <span>{meta.readingTime}</span>
       </div>

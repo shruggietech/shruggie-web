@@ -10,6 +10,7 @@
 import Link from "next/link";
 
 import type { PostMeta } from "@/lib/blog";
+import { formatDateOnly } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 
@@ -26,11 +27,7 @@ export default function PostCard({ post }: PostCardProps) {
           <div className="flex flex-wrap items-center gap-3">
             <Badge>{post.category}</Badge>
             <span className="text-body-xs text-text-muted">
-              {new Date(post.date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {formatDateOnly(post.date)}
             </span>
             <span className="text-body-xs text-text-muted">
               &middot; {post.readingTime}
