@@ -1,7 +1,8 @@
 /**
  * Products Page — /products
  *
- * Four product cards with SoftwareSourceCode JSON-LD, followed by the
+ * Product cards from the canonical catalog with SoftwareSourceCode JSON-LD,
+ * followed by the
  * "How We Build Software" engineering philosophy section.
  *
  * Spec reference: §6.5 (Products), §8.2 (JSON-LD)
@@ -13,13 +14,17 @@ import type { LucideIcon } from "lucide-react";
 import {
   ExternalLink,
   ArrowRight,
+  AppWindow,
+  CalendarClock,
   Package,
   Database,
   FileText,
   Cpu,
+  Network,
 } from "lucide-react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
+import { PRODUCT_CATALOG, type ProductId } from "@/lib/products";
 import { generateSoftwareSchema } from "@/lib/schema";
 import JsonLd from "@/components/shared/JsonLd";
 import PageHero from "@/components/shared/PageHero";
@@ -64,84 +69,17 @@ export const metadata: Metadata = {
   },
 };
 
-/* ── Product Data (spec §6.5) ───────────────────────────────────────────── */
+/* ── Product presentation (spec §6.5) ───────────────────────────────────── */
 
-interface ProductLink {
-  label: string;
-  href: string;
-  /** Internal route — rendered as a same-tab Next link, not an external one. */
-  internal?: boolean;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  statusBadge: string;
-  links: ProductLink[];
-  /** Optional: products without a public repository omit code metadata. */
-  programmingLanguage?: string;
-  codeRepository?: string;
-  version?: string;
-  icon: LucideIcon;
-}
-
-const PRODUCTS: Product[] = [
-  {
-    id: "shruggie-indexer",
-    name: "shruggie-indexer",
-    description:
-      "Cross-platform file and directory indexing tool. Produces structured JSON output with hash-based content identities, filesystem metadata, and EXIF extraction.",
-    statusBadge: "v0.1.2 — Active",
-    links: [
-      { label: "GitHub", href: "https://github.com/shruggietech/shruggie-indexer" },
-      { label: "Docs", href: "https://github.com/shruggietech/shruggie-indexer#readme" },
-    ],
-    programmingLanguage: "TypeScript",
-    codeRepository: "https://github.com/shruggietech/shruggie-indexer",
-    version: "0.1.2",
-    icon: Package,
-  },
-  {
-    id: "metadexer",
-    name: "metadexer",
-    description:
-      "Content-addressed asset management system. Storage, cataloging, deduplication, and search across large, heterogeneous digital collections.",
-    statusBadge: "Pre-release — In Development",
-    links: [
-      { label: "GitHub", href: "https://github.com/shruggietech/metadexer" },
-    ],
-    programmingLanguage: "TypeScript",
-    codeRepository: "https://github.com/shruggietech/metadexer",
-    icon: Database,
-  },
-  {
-    id: "shruggie-feedtools",
-    name: "shruggie-feedtools",
-    description:
-      "ShruggieTech's reference project for Python tool conventions, packaging patterns, and GUI design language.",
-    statusBadge: "Active",
-    links: [
-      { label: "GitHub", href: "https://github.com/shruggietech/shruggie-feedtools" },
-    ],
-    programmingLanguage: "Python",
-    codeRepository: "https://github.com/shruggietech/shruggie-feedtools",
-    icon: FileText,
-  },
-  {
-    id: "rustif",
-    name: "rustif",
-    description:
-      "A proposed Rust-native metadata processing engine. The next-generation successor to thirty years of metadata infrastructure.",
-    statusBadge: "Declaration Phase",
-    links: [
-      { label: "Read Declaration", href: "/research/rustif", internal: true },
-    ],
-    programmingLanguage: "Rust",
-    codeRepository: `${SITE_URL}/research/rustif`,
-    icon: Cpu,
-  },
-];
+const PRODUCT_ICONS: Record<ProductId, LucideIcon> = {
+  glitchpad: AppWindow,
+  "go-schedule": CalendarClock,
+  fragcap: Network,
+  "shruggie-indexer": Package,
+  metadexer: Database,
+  "shruggie-feedtools": FileText,
+  rustif: Cpu,
+};
 
 /* ── Page ────────────────────────────────────────────────────────────────── */
 
@@ -149,13 +87,13 @@ export default function ProductsPage() {
   return (
     <>
       {/* JSON-LD is emitted only for products with a public code repository. */}
-      {PRODUCTS.filter((product) => product.codeRepository).map((product) => (
+      {PRODUCT_CATALOG.filter((product) => product.codeRepository).map((product) => (
         <JsonLd
           key={product.id}
           data={generateSoftwareSchema({
             name: product.name,
             description: product.description,
-            url: `${SITE_URL}/products`,
+            url: `${SITE_URL}/products#${product.id}`,
             codeRepository: product.codeRepository!,
             programmingLanguage: product.programmingLanguage,
             version: product.version,
@@ -177,8 +115,8 @@ export default function ProductsPage() {
             <SectionHeading title="What We're Building" />
           </ScrollReveal>
           <div className="mt-12 grid gap-8 md:grid-cols-2">
-            {PRODUCTS.map((product, i) => {
-              const Icon = product.icon;
+            {PRODUCT_CATALOG.map((product, i) => {
+              const Icon = PRODUCT_ICONS[product.id];
               return (
                 <ScrollReveal key={product.id} delay={i * 0.08}>
                   <Card id={product.id} hover className="flex h-full flex-col">
@@ -194,7 +132,7 @@ export default function ProductsPage() {
                     </p>
                     <div className="mt-6 flex flex-wrap gap-4">
                       {product.links.map((link) =>
-                        link.internal ? (
+                        link.kind === "internal" ? (
                           <Link
                             key={link.label}
                             href={link.href}

@@ -13,6 +13,7 @@ import Link from "next/link";
 import type { ComponentType } from "react";
 import { Github, Facebook, Instagram } from "lucide-react";
 import XIcon from "@/components/icons/XIcon";
+import { FOOTER_PRODUCT_LINKS } from "@/lib/products";
 
 type SocialIcon = ComponentType<{
   size?: number;
@@ -34,13 +35,6 @@ const PAGE_LINKS = [
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
-] as const;
-
-const PRODUCT_LINKS = [
-  { href: "/products#shruggie-indexer", label: "shruggie-indexer" },
-  { href: "/products#metadexer", label: "metadexer" },
-  { href: "/products#shruggie-feedtools", label: "shruggie-feedtools" },
-  { href: "/products#rustif", label: "rustif" },
 ] as const;
 
 export default function Footer() {
@@ -100,7 +94,7 @@ export default function Footer() {
               Products
             </h3>
             <ul className="flex flex-col gap-3">
-              {PRODUCT_LINKS.map((link) => (
+              {FOOTER_PRODUCT_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

@@ -1562,12 +1562,15 @@ Each card includes a "Read paper →" link. Initially, these link to hosted PDF 
 | Element | Content |
 |---------|---------|
 | Headline (h1) | "Products" |
-| Subheadline | "Open-source tools and software products built by ShruggieTech. We build things we need, then share them with the community." |
+| Subheadline | "We build things we need, then share them with the community." |
 
 **Section 2: Product Cards**
 
 | Product | Description | Status Badge | Links |
 |---------|-------------|-------------|-------|
+| Glitchpad | "A local-first, cross-platform viewer and editor for Markdown, Mermaid, plain text, and recognized source files, with compact multi-document tabs." | `v0.1.3 — Community Release` | Website, Docs, GitHub |
+| go-schedule | "A cross-platform task scheduler with readable schedules, supported cron, a background daemon, CLI, desktop GUI, trigger sets, and filesystem events." | `v1.1.1 — Active` | Docs, GitHub |
+| fragcap | "A Windows game-traffic capture tool that attributes flows to processes and writes Wireshark-compatible pcapng files, with explicit target-scoped Deep Capture." | `v0.9.0 — Active` | Docs, GitHub (`h8rt3rmin8r/fragcap`) |
 | shruggie-indexer | "Cross-platform file and directory indexing tool. Produces structured JSON output with hash-based content identities, filesystem metadata, and EXIF extraction." | `v0.1.2 — Active` | GitHub, Docs |
 | metadexer | "Content-addressed asset management system. Storage, cataloging, deduplication, and search across large, heterogeneous digital collections." | `Pre-release — In Development` | GitHub |
 | shruggie-feedtools | "ShruggieTech's reference project for Python tool conventions, packaging patterns, and GUI design language." | `Active` | GitHub |
@@ -1578,7 +1581,7 @@ Each card includes a "Read paper →" link. Initially, these link to hosted PDF 
 | Element | Content |
 |---------|---------|
 | Title | "How We Build Software" |
-| Body | "Every ShruggieTech product begins with a specification written for AI-first consumption. Our specifications are structured so that AI coding agents can produce correct implementations within single context windows without interactive clarification. This methodology multiplies engineering throughput without proportional headcount. It is how a two-person studio builds production-grade software tools." |
+| Body | "Every product begins with a specification written for AI-first consumption. Our specs are structured so AI coding agents can produce correct implementations within single context windows without interactive clarification. This methodology multiplies engineering throughput without proportional headcount. It is how a small team builds production-grade software tools." |
 
 <a name="66-about" id="66-about"></a>
 ### 6.6. About (`/about`)

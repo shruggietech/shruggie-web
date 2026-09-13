@@ -25,6 +25,7 @@ interface SocialProofItem {
   title: string;
   description: string;
   href: string;
+  external?: boolean;
 }
 
 interface LandingPageTemplateProps {
@@ -111,7 +112,12 @@ export default function LandingPageTemplate({
             <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {socialProof.map((item, i) => (
                 <ScrollReveal key={item.title} delay={i * 0.08}>
-                  <a href={item.href} className="block">
+                  <a
+                    href={item.href}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    className="block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  >
                     <Card>
                       <Badge className="mb-3">
                         {item.type === "case-study"

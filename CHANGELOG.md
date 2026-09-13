@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Canonical product catalog**: single-sourced product metadata for the
+  Products page and site-wide footer; added Glitchpad v0.1.3, go-schedule
+  v1.1.1, and fragcap v0.9.0 with verified official destinations,
+  `SoftwareSourceCode` metadata, and Glitchpad developer discovery
 - **Editorial migration and recovery tooling**: added a checksummed manifest
   for the complete repository blog corpus, an idempotent dry-run-first Firebase
   importer with read-back verification, and a provider-neutral export command
