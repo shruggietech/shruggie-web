@@ -23,7 +23,9 @@ export function hasEditorialBackendConfiguration(): boolean {
 const getCachedEditorialArticles = unstable_cache(
   async () =>
     createFirebaseEditorialBackend().articles.list({ visibility: "all" }),
-  ["editorial-public-articles-v1"],
+  // v2 prevents the pre-migration list cached by earlier deployments from
+  // surviving the repository-to-Firestore production cutover.
+  ["editorial-public-articles-v2"],
   { tags: [BLOG_INDEX_CACHE_TAG] },
 );
 
