@@ -38,6 +38,10 @@ function sessionAndWorkspaceFetch(
   revisions: Article[] = initialArticles,
   initialAssets: EditorialAsset[] = [],
 ) {
+  let storedArticles = initialArticles.map((article) =>
+    structuredClone(article),
+  );
+
   return vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
     const method = init?.method ?? "GET";
@@ -50,8 +54,48 @@ function sessionAndWorkspaceFetch(
         },
       });
     }
-    if (url === "/api/admin/articles?limit=100") {
-      return json({ articles: initialArticles });
+    if (url.startsWith("/api/admin/articles?") && method === "GET") {
+      const requestUrl = new URL(url, "https://shruggie.test");
+      const state = requestUrl.searchParams.get("state");
+      const limit = Number(requestUrl.searchParams.get("limit") ?? "20");
+      const afterId = requestUrl.searchParams.get("afterId");
+      const afterModifiedAt = requestUrl.searchParams.get("afterModifiedAt");
+      const matching = storedArticles
+        .filter((article) => article.state === state)
+        .sort(
+          (left, right) =>
+            right.modifiedAt.localeCompare(left.modifiedAt) ||
+            right.id.localeCompare(left.id),
+        );
+      const start =
+        afterId && afterModifiedAt
+          ? matching.findIndex(
+              (article) =>
+                article.modifiedAt < afterModifiedAt ||
+                (article.modifiedAt === afterModifiedAt &&
+                  article.id < afterId),
+            )
+          : 0;
+      const pageStart = start < 0 ? matching.length : start;
+      const articles = matching.slice(pageStart, pageStart + limit);
+      const last = articles.at(-1);
+      return json({
+        articles,
+        counts: {
+          archived: storedArticles.filter(
+            (article) => article.state === "archived",
+          ).length,
+          draft: storedArticles.filter((article) => article.state === "draft")
+            .length,
+          published: storedArticles.filter(
+            (article) => article.state === "published",
+          ).length,
+        },
+        nextCursor:
+          pageStart + articles.length < matching.length && last
+            ? { id: last.id, modifiedAt: last.modifiedAt }
+            : null,
+      });
     }
     if (url === "/api/admin/assets" && method === "GET")
       return json({ assets: initialAssets });
@@ -82,10 +126,22 @@ function sessionAndWorkspaceFetch(
     if (url.includes("/revisions")) return json({ revisions });
     if (url === "/api/admin/articles" && method === "POST") {
       const payload = JSON.parse(String(init?.body)) as { article: Article };
+      storedArticles = [
+        payload.article,
+        ...storedArticles.filter(
+          (article) => article.id !== payload.article.id,
+        ),
+      ];
       return json({ article: payload.article }, 201);
     }
     if (url.includes("/api/admin/articles/") && method === "PUT") {
       const payload = JSON.parse(String(init?.body)) as { article: Article };
+      storedArticles = [
+        payload.article,
+        ...storedArticles.filter(
+          (article) => article.id !== payload.article.id,
+        ),
+      ];
       return json({ article: payload.article, publicationConverged: true });
     }
     throw new Error(`Unexpected request: ${method} ${url}`);
@@ -196,6 +252,216 @@ describe("EditorialWorkspace", () => {
     ).toBeDisabled();
   });
 
+  it("navigates distinct counted state views with an accessible tab keyboard model", async () => {
+    const articles = [
+      articleFixture({
+        id: "article:draft-newer",
+        modifiedAt: "2026-09-07T12:00:00.000Z",
+        slug: "draft-newer",
+        title: "Draft newer",
+      }),
+      articleFixture({
+        id: "article:draft-older",
+        modifiedAt: "2026-09-06T12:00:00.000Z",
+        slug: "draft-older",
+        title: "Draft older",
+      }),
+      articleFixture({
+        id: "article:published-view",
+        publishedAt: "2026-09-05T12:00:00.000Z",
+        slug: "published-view",
+        state: "published",
+        title: "Published view article",
+      }),
+      articleFixture({
+        id: "article:archived-view",
+        slug: "archived-view",
+        state: "archived",
+        title: "Archived view article",
+      }),
+    ];
+    globalThis.fetch = sessionAndWorkspaceFetch(articles);
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+
+    const draftsTab = await screen.findByRole("tab", { name: /Drafts.*2/ });
+    expect(draftsTab).toHaveAttribute("aria-selected", "true");
+    expect(
+      screen
+        .getAllByRole("button", { name: /Edit Draft/ })
+        .map((button) => button.textContent),
+    ).toEqual([
+      expect.stringContaining("Draft newer"),
+      expect.stringContaining("Draft older"),
+    ]);
+    expect(
+      screen.queryByRole("button", { name: /Edit Published view article/ }),
+    ).not.toBeInTheDocument();
+
+    draftsTab.focus();
+    await user.keyboard("{ArrowRight}");
+    expect(
+      await screen.findByRole("tab", { name: /Published.*1/ }),
+    ).toHaveAttribute("aria-selected", "true");
+    expect(
+      await screen.findByRole("button", {
+        name: /Edit Published view article/,
+      }),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole("button", { name: /Edit Draft newer/ }),
+    ).not.toBeInTheDocument();
+
+    await user.keyboard("{ArrowRight}");
+    expect(
+      await screen.findByRole("tab", { name: /Archived.*1/ }),
+    ).toHaveAttribute("aria-selected", "true");
+    expect(
+      await screen.findByRole("button", { name: /Edit Archived view article/ }),
+    ).toBeVisible();
+  });
+
+  it("reaches more than 100 articles through bounded cursor pages", async () => {
+    const articles = Array.from({ length: 105 }, (_, index) => {
+      const suffix = String(index).padStart(3, "0");
+      return articleFixture({
+        id: `article:paged-${suffix}`,
+        modifiedAt: new Date(Date.UTC(2026, 8, 6, 0, index)).toISOString(),
+        slug: `paged-${suffix}`,
+        title: `Paged article ${suffix}`,
+      });
+    });
+    const fetchMock = sessionAndWorkspaceFetch(articles);
+    globalThis.fetch = fetchMock;
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+
+    expect(
+      await screen.findByRole("button", { name: /Edit Paged article 104/ }),
+    ).toBeVisible();
+    for (const expectedCount of [40, 60, 80, 100, 105]) {
+      await user.click(
+        screen.getByRole("button", { name: "Load more drafts" }),
+      );
+      await waitFor(() =>
+        expect(
+          screen.getAllByRole("button", { name: /Edit Paged article/ }),
+        ).toHaveLength(expectedCount),
+      );
+    }
+    expect(
+      screen.getByRole("button", { name: /Edit Paged article 000/ }),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole("button", { name: "Load more drafts" }),
+    ).not.toBeInTheDocument();
+
+    const listRequests = fetchMock.mock.calls
+      .filter(([input]) => String(input).startsWith("/api/admin/articles?"))
+      .map(([input]) => new URL(String(input), "https://shruggie.test"));
+    expect(listRequests).toHaveLength(6);
+    expect(
+      listRequests.every((url) => Number(url.searchParams.get("limit")) === 20),
+    ).toBe(true);
+    expect(
+      listRequests.slice(1).every((url) => url.searchParams.has("afterId")),
+    ).toBe(true);
+  });
+
+  it("keeps state-specific failures retryable without hiding navigation", async () => {
+    const published = articleFixture({
+      id: "article:retry-published",
+      publishedAt: "2026-09-05T12:00:00.000Z",
+      slug: "retry-published",
+      state: "published",
+      title: "Retry published article",
+    });
+    const baseFetch = sessionAndWorkspaceFetch([published]);
+    let publishedAttempts = 0;
+    globalThis.fetch = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (
+          url.startsWith("/api/admin/articles?") &&
+          new URL(url, "https://shruggie.test").searchParams.get("state") ===
+            "published"
+        ) {
+          publishedAttempts += 1;
+          if (publishedAttempts === 1) {
+            return json(
+              {
+                error: {
+                  code: "CONTENT_UNAVAILABLE",
+                  message: "Published articles are temporarily unavailable.",
+                  retryable: true,
+                },
+              },
+              503,
+            );
+          }
+        }
+        return baseFetch(input, init);
+      },
+    );
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+
+    await user.click(await screen.findByRole("tab", { name: /Published/ }));
+    expect(
+      await screen.findByRole("heading", {
+        name: "Published could not be loaded",
+      }),
+    ).toBeVisible();
+    expect(screen.getByRole("tab", { name: /Archived/ })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Retry" }));
+    expect(
+      await screen.findByRole("button", {
+        name: /Edit Retry published article/,
+      }),
+    ).toBeVisible();
+  });
+
+  it("places archived and restored articles in their destination views", async () => {
+    const draft = articleFixture({ title: "Lifecycle placement article" });
+    globalThis.fetch = sessionAndWorkspaceFetch([draft], [draft]);
+    const user = userEvent.setup();
+    render(<EditorialWorkspace />);
+
+    await user.click(
+      await screen.findByRole("button", {
+        name: /Edit Lifecycle placement article/,
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: "Archive" }));
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Archived as revision 2",
+    );
+    await user.click(screen.getByRole("button", { name: /Back to articles/ }));
+    expect(screen.getByRole("tab", { name: /Archived.*1/ })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    await user.click(
+      await screen.findByRole("button", {
+        name: /Edit Lifecycle placement article, Archived/,
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: "Restore to draft" }));
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "restored as draft revision 3",
+    );
+    await user.click(screen.getByRole("button", { name: /Back to articles/ }));
+    expect(screen.getByRole("tab", { name: /Drafts.*1/ })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(
+      await screen.findByRole("button", {
+        name: /Edit Lifecycle placement article, Draft/,
+      }),
+    ).toBeVisible();
+  });
+
   it("supports the complete keyboard draft-authoring journey", async () => {
     const user = userEvent.setup();
     const fetchMock = sessionAndWorkspaceFetch();
@@ -206,7 +472,7 @@ describe("EditorialWorkspace", () => {
       name: "New article",
     });
     expect(
-      screen.getByRole("heading", { name: "No articles yet" }),
+      await screen.findByRole("heading", { name: "No drafts" }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: "Create a draft" }),
@@ -378,6 +644,7 @@ describe("EditorialWorkspace", () => {
     vi.spyOn(window, "open").mockReturnValue(previewTab.tab);
     const user = userEvent.setup();
     render(<EditorialWorkspace />);
+    await user.click(await screen.findByRole("tab", { name: /Published/ }));
     await user.click(
       await screen.findByRole("button", { name: /Edit An example article/ }),
     );
@@ -864,6 +1131,7 @@ describe("EditorialWorkspace", () => {
     const user = userEvent.setup();
     render(<EditorialWorkspace />);
 
+    await user.click(await screen.findByRole("tab", { name: /Published/ }));
     await user.click(
       await screen.findByRole("button", { name: /Edit An example article/ }),
     );
@@ -983,8 +1251,16 @@ describe("EditorialWorkspace", () => {
               role: "editor",
             },
           });
-        if (url === "/api/admin/articles?limit=100")
-          return json({ articles: [current] });
+        if (url.startsWith("/api/admin/articles?") && method === "GET") {
+          const state = new URL(url, "https://shruggie.test").searchParams.get(
+            "state",
+          );
+          return json({
+            articles: state === current.state ? [current] : [],
+            counts: { archived: 0, draft: 1, published: 0 },
+            nextCursor: null,
+          });
+        }
         if (url === "/api/admin/assets") return json({ assets: [] });
         if (url.includes("/revisions"))
           return json({ revisions: [latest, current] });
@@ -1034,8 +1310,16 @@ describe("EditorialWorkspace", () => {
               role: "editor",
             },
           });
-        if (url === "/api/admin/articles?limit=100")
-          return json({ articles: [current] });
+        if (url.startsWith("/api/admin/articles?") && method === "GET") {
+          const state = new URL(url, "https://shruggie.test").searchParams.get(
+            "state",
+          );
+          return json({
+            articles: state === current.state ? [current] : [],
+            counts: { archived: 0, draft: 1, published: 0 },
+            nextCursor: null,
+          });
+        }
         if (url === "/api/admin/assets") return json({ assets: [] });
         if (url.includes("/revisions")) return json({ revisions: [current] });
         if (url.includes("/api/admin/articles/") && method === "PUT") {

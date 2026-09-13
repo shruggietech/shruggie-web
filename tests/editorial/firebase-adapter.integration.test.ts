@@ -196,6 +196,14 @@ describe("Firebase editorial adapters", () => {
     });
 
     await expect(repository.exportAll()).resolves.toEqual([restored]);
+    await expect(repository.countByState()).resolves.toEqual({
+      archived: 0,
+      draft: 1,
+      published: 0,
+    });
+    await expect(
+      repository.listByState({ limit: 20, state: "draft" }),
+    ).resolves.toEqual({ articles: [restored], nextCursor: null });
     await expect(repository.getRevision(draft.id, 1)).resolves.toEqual(draft);
     await expect(repository.listRevisions(draft.id)).resolves.toEqual([
       restored,
