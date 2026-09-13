@@ -92,7 +92,7 @@ function CaseStudyCard({ study }: { study: CaseStudyMeta }) {
             {study.summary}
           </p>
 
-          <span className="text-body-sm font-medium text-accent transition-colors group-hover:text-[#FF5300] mt-auto">
+          <span className="text-body-sm font-medium text-accent transition-colors group-hover:text-orange-foreground mt-auto">
             Read case study &rarr;
           </span>
         </div>

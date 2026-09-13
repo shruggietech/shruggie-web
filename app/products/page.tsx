@@ -198,7 +198,7 @@ export default function ProductsPage() {
                           <Link
                             key={link.label}
                             href={link.href}
-                            className="group/link inline-flex items-center gap-1.5 font-display text-body-sm font-medium text-accent transition-colors hover:text-[#FF5300]"
+                            className="group/link inline-flex items-center gap-1.5 font-display text-body-sm font-medium text-accent transition-colors hover:text-orange-foreground"
                           >
                             {link.label}
                             <ArrowRight
@@ -212,7 +212,7 @@ export default function ProductsPage() {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 font-display text-body-sm font-medium text-accent transition-colors hover:text-[#FF5300]"
+                            className="inline-flex items-center gap-1.5 font-display text-body-sm font-medium text-accent transition-colors hover:text-orange-foreground"
                           >
                             {link.label}
                             <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />

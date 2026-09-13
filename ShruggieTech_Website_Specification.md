@@ -4,8 +4,8 @@
 | Attribute | Value |
 |-----------|-------|
 | Subject | ShruggieTech Website Rebuild |
-| Version | 1.2.2 |
-| Date | 2026-08-28 |
+| Version | 1.2.3 |
+| Date | 2026-09-12 |
 | Status | APPROVED |
 | Audience | AI-first, Human-second |
 | Framework | Next.js (App Router) |
@@ -409,7 +409,7 @@ The palette is drawn directly from the brand identity established in KB §10.1. 
 | `--color-black` | `#000000` | Primary background (dark mode), text (light mode) |
 | `--color-green-bright` | `#2BCC73` | Bright identity accent on dark surfaces, decorative elements, highlights |
 | `--color-green-deep` | `#00AB21` | Logo mark, secondary accent, hover states |
-| `--color-orange` | `#FF5300` | CTA emphasis, alerts, energy accents |
+| `--color-orange` | `#FF5300` | Identity accents, non-text decoration, and text on verified dark surfaces |
 | `--color-gray-light` | `#D1D3D4` | Borders, secondary text, dividers |
 
 **Extended palette (derived):**
@@ -420,14 +420,21 @@ The palette is drawn directly from the brand identity established in KB §10.1. 
 | `--color-gray-950` | `#0A0A0A` | Elevated surface (dark mode cards) |
 | `--color-gray-900` | `#111111` | Secondary surface (dark mode) |
 | `--color-gray-800` | `#1A1A1A` | Tertiary surface, code blocks |
-| `--color-gray-600` | `#6B6B6B` | Muted text (dark mode) |
-| `--color-gray-400` | `#9A9A9A` | Muted text (light mode) |
+| `--color-gray-600` | `#6B6B6B` | Base dark gray |
+| `--color-gray-400` | `#9A9A9A` | Base middle gray; not a normal-text foreground on light surfaces |
 | `--color-gray-200` | `#E5E5E5` | Borders (light mode) |
 | `--color-gray-100` | `#F5F5F5` | Surface (light mode cards) |
 | `--color-green-foreground` | `#037B40` | Accessible green text, links, and focus indicators on light surfaces |
 | `--color-green-bright-10` | `rgba(43, 204, 115, 0.10)` | Subtle accent backgrounds |
 | `--color-green-bright-20` | `rgba(43, 204, 115, 0.20)` | Badge backgrounds, active states |
 | `--color-orange-10` | `rgba(255, 83, 0, 0.10)` | Subtle CTA highlight backgrounds |
+
+**Semantic foreground roles:**
+
+| Role | Light | Dark | Contract |
+|------|-------|------|----------|
+| `--text-muted` | `#6A6A6A` | `#7F7F7F` | Meaningful muted text reaches at least 4.5:1 on every supported semantic surface |
+| `--orange-foreground` | `#C24000` | `#FF5300` | Normal-size orange text uses accessible dark orange on light surfaces and bright brand orange on dark surfaces |
 
 **CSS custom properties definition (`styles/globals.css`):**
 
@@ -453,12 +460,13 @@ The palette is drawn directly from the brand identity established in KB §10.1. 
     --color-bg-elevated: 255 255 255;
     --color-text-primary: 10 10 10;
     --color-text-secondary: 107 107 107;
-    --color-text-muted: 154 154 154;
+    --color-text-muted: 106 106 106;
     --color-border: 229 229 229;
     --color-accent: var(--color-green-foreground);
     --color-accent-hover: 2 94 49;
     --color-focus: var(--color-green-foreground);
-    --color-cta: var(--color-orange);
+    --color-cta: 194 64 0;
+    --color-orange-foreground: 194 64 0;
   }
 
   .dark {
@@ -467,12 +475,13 @@ The palette is drawn directly from the brand identity established in KB §10.1. 
     --color-bg-elevated: 10 10 10;
     --color-text-primary: 255 255 255;
     --color-text-secondary: 209 211 212;
-    --color-text-muted: 107 107 107;
+    --color-text-muted: 127 127 127;
     --color-border: 38 38 38;
     --color-accent: var(--color-green-bright);
     --color-accent-hover: var(--color-green-deep);
     --color-focus: var(--color-green-bright);
-    --color-cta: var(--color-orange);
+    --color-cta: 194 64 0;
+    --color-orange-foreground: var(--color-orange);
   }
 }
 ```
@@ -508,6 +517,7 @@ const config: Config = {
           hover: "rgb(var(--color-accent-hover) / <alpha-value>)",
         },
         cta: "rgb(var(--color-cta) / <alpha-value>)",
+        orangeForeground: "rgb(var(--color-orange-foreground) / <alpha-value>)",
         brand: {
           green: {
             bright: "#2BCC73",
@@ -2644,3 +2654,4 @@ All environment variables are configured in the Vercel project dashboard under S
 | <span style="white-space: nowrap;">2026-03-10</span> | 1.2.0 | Added Document Information preamble with purpose, scope, terminology table, and reference documents. Added §1.5 (Favicon and Web App Manifest) with required asset sizes and manifest configuration. Added human-in-the-loop items 7 (contact email) and 8 (favicon source artwork) to §1.4. Added case study MDX frontmatter templates for Scruggs Tire and I Heart PR Tours; documented Belle Toh Piano Studio exclusion rationale in §6.3. Added §6.10 (Error Pages) with 404 and global error boundary specifications. Added §6.11 (Privacy Policy) with policy content structure and cookie consent banner specification. Updated footer structure (§5.2) to include Privacy Policy link. Updated sitemap (§8.3) to include `/privacy` route. Resolved contact email placeholder in §6.8 with reference to §1.4 item 7. Updated project structure (§1.2) to include new routes, favicon assets, and web manifest. Added Document History table. |
 | <span style="white-space: nowrap;">2026-08-27</span> | 1.2.1 | Made the end-of-article `PostCTA` an automatic part of the shared blog post template so every current and future article receives the same contact and services paths without MDX author intervention. |
 | <span style="white-space: nowrap;">2026-08-28</span> | 1.2.2 | Removed the stale Next.js 15 pin from the technology stack table. The specification now names the App Router without duplicating the installed major version tracked in `package.json` and the project constitution. |
+| <span style="white-space: nowrap;">2026-09-12</span> | 1.2.3 | Replaced inaccessible muted foregrounds in both themes and introduced a theme-aware orange text role that preserves bright brand orange on dark surfaces while meeting WCAG AA on light surfaces. |

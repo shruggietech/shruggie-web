@@ -131,6 +131,80 @@ test("dark-theme identity accent remains bright and accessible", () => {
   assert.ok(contrastRatio(focus, background) >= 4.5);
 });
 
+test("muted foreground meets WCAG AA on every semantic surface", () => {
+  const lightMuted = resolveVariable("--text-muted", rootBlock);
+  const darkMuted = resolveVariable("--text-muted", darkBlock, rootBlock);
+  const lightSurfaces = ["--bg-primary", "--bg-secondary", "--bg-elevated"];
+  const darkSurfaces = [
+    "--bg-primary",
+    "--bg-secondary",
+    "--bg-elevated",
+    "--surface-dark-warm",
+    "--surface-dark-rich",
+    "--surface-dark-slate",
+    "--surface-dark-deep",
+    "--surface-dark-products",
+  ];
+
+  assert.equal(lightMuted.toUpperCase(), "#6A6A6A");
+  assert.equal(darkMuted.toUpperCase(), "#7F7F7F");
+  for (const surface of lightSurfaces) {
+    assert.ok(
+      contrastRatio(lightMuted, resolveVariable(surface, rootBlock)) >= 4.5,
+      `Light muted text fails on ${surface}`,
+    );
+  }
+  for (const surface of darkSurfaces) {
+    assert.ok(
+      contrastRatio(
+        darkMuted,
+        resolveVariable(surface, darkBlock, rootBlock),
+      ) >= 4.5,
+      `Dark muted text fails on ${surface}`,
+    );
+  }
+});
+
+test("semantic orange foreground is accessible on light surfaces and bright on dark surfaces", () => {
+  const lightOrange = resolveVariable("--orange-foreground", rootBlock);
+  const darkOrange = resolveVariable(
+    "--orange-foreground",
+    darkBlock,
+    rootBlock,
+  );
+
+  assert.equal(lightOrange.toUpperCase(), "#C24000");
+  assert.equal(darkOrange.toUpperCase(), "#FF5300");
+  for (const surface of ["--bg-primary", "--bg-secondary", "--bg-elevated"]) {
+    assert.ok(
+      contrastRatio(lightOrange, resolveVariable(surface, rootBlock)) >= 4.5,
+      `Light orange foreground fails on ${surface}`,
+    );
+  }
+  for (const surface of [
+    "--bg-primary",
+    "--bg-secondary",
+    "--bg-elevated",
+    "--surface-dark-warm",
+    "--surface-dark-rich",
+    "--surface-dark-slate",
+    "--surface-dark-deep",
+    "--surface-dark-products",
+  ]) {
+    assert.ok(
+      contrastRatio(
+        darkOrange,
+        resolveVariable(surface, darkBlock, rootBlock),
+      ) >= 4.5,
+      `Dark orange foreground fails on ${surface}`,
+    );
+  }
+  assert.match(
+    globalStyles,
+    /--color-orange-foreground:\s*var\(--orange-foreground\);/,
+  );
+});
+
 test("accent-filled controls use a foreground that passes in each theme", () => {
   const lightAccent = resolveVariable("--accent-color", rootBlock);
   const darkAccent = resolveVariable("--accent-color", darkBlock, rootBlock);
@@ -155,6 +229,19 @@ test("foreground and focus utilities do not use the static bright token", () => 
       return /(?:text|focus(?:-visible)?:(?:outline|ring))-brand-green-bright/.test(
         source,
       )
+        ? [path]
+        : [];
+    });
+
+  assert.deepEqual(violations, []);
+});
+
+test("normal text states do not use static orange tokens", () => {
+  const violations = ["app", "components"]
+    .flatMap((directory) => sourceFiles(join(projectPath, directory)))
+    .flatMap((path) => {
+      const source = readFileSync(path, "utf8");
+      return /text-(?:brand-orange|cta|\[#FF5300\])/i.test(source)
         ? [path]
         : [];
     });

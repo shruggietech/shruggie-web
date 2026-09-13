@@ -100,7 +100,7 @@ export default function ContactForm() {
           htmlFor="contact-name"
           className="mb-2 block text-body-sm font-medium text-text-primary"
         >
-          Name <span className="text-cta">*</span>
+          Name <span className="text-orange-foreground">*</span>
         </label>
         <input
           id="contact-name"
@@ -116,7 +116,7 @@ export default function ContactForm() {
           <p
             id="contact-name-error"
             role="alert"
-            className="mt-1.5 text-body-sm text-cta"
+            className="mt-1.5 text-body-sm text-orange-foreground"
           >
             {errors.name.message}
           </p>
@@ -129,7 +129,7 @@ export default function ContactForm() {
           htmlFor="contact-email"
           className="mb-2 block text-body-sm font-medium text-text-primary"
         >
-          Email <span className="text-cta">*</span>
+          Email <span className="text-orange-foreground">*</span>
         </label>
         <input
           id="contact-email"
@@ -145,7 +145,7 @@ export default function ContactForm() {
           <p
             id="contact-email-error"
             role="alert"
-            className="mt-1.5 text-body-sm text-cta"
+            className="mt-1.5 text-body-sm text-orange-foreground"
           >
             {errors.email.message}
           </p>
@@ -176,7 +176,7 @@ export default function ContactForm() {
           htmlFor="contact-message"
           className="mb-2 block text-body-sm font-medium text-text-primary"
         >
-          How can we help? <span className="text-cta">*</span>
+          How can we help? <span className="text-orange-foreground">*</span>
         </label>
         <textarea
           id="contact-message"
@@ -193,7 +193,7 @@ export default function ContactForm() {
           <p
             id="contact-message-error"
             role="alert"
-            className="mt-1.5 text-body-sm text-cta"
+            className="mt-1.5 text-body-sm text-orange-foreground"
           >
             {errors.message.message}
           </p>
@@ -243,7 +243,7 @@ export default function ContactForm() {
       {formspreeState.errors && (
         <div
           aria-live="polite"
-          className="rounded-lg border border-cta/30 bg-[rgba(255,83,0,0.06)] p-4 text-body-sm text-cta"
+          className="rounded-lg border border-cta/30 bg-[rgba(255,83,0,0.06)] p-4 text-body-sm text-orange-foreground"
         >
           Something went wrong. Please try again or reach out to us directly.
         </div>

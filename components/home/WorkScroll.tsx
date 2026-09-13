@@ -264,7 +264,7 @@ export default function WorkScroll() {
 
                   <Link
                     href={`/work/${study.slug}`}
-                    className="mt-6 inline-flex items-center gap-1.5 text-body-md font-medium text-accent transition-colors hover:text-brand-orange"
+                    className="mt-6 inline-flex items-center gap-1.5 text-body-md font-medium text-accent transition-colors hover:text-orange-foreground"
                   >
                     Read case study
                     <span aria-hidden="true">→</span>
