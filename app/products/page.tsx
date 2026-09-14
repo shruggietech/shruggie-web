@@ -10,17 +10,15 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import {
   ExternalLink,
   ArrowRight,
-  AppWindow,
-  CalendarClock,
   Package,
   Database,
   FileText,
   Cpu,
-  Network,
 } from "lucide-react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
@@ -71,10 +69,13 @@ export const metadata: Metadata = {
 
 /* ── Product presentation (spec §6.5) ───────────────────────────────────── */
 
-const PRODUCT_ICONS: Record<ProductId, LucideIcon> = {
-  glitchpad: AppWindow,
-  "go-schedule": CalendarClock,
-  fragcap: Network,
+const PRODUCT_LOGOS: Partial<Record<ProductId, string>> = {
+  glitchpad: "/images/products/glitchpad-mark-color.svg",
+  "go-schedule": "/images/products/go-schedule-mark-color.svg",
+  fragcap: "/images/products/fragcap-mark-color.svg",
+};
+
+const PRODUCT_ICONS: Partial<Record<ProductId, LucideIcon>> = {
   "shruggie-indexer": Package,
   metadexer: Database,
   "shruggie-feedtools": FileText,
@@ -116,11 +117,23 @@ export default function ProductsPage() {
           </ScrollReveal>
           <div className="mt-12 grid gap-8 md:grid-cols-2">
             {PRODUCT_CATALOG.map((product, i) => {
+              const logoSrc = PRODUCT_LOGOS[product.id];
               const Icon = PRODUCT_ICONS[product.id];
               return (
                 <ScrollReveal key={product.id} delay={i * 0.08}>
                   <Card id={product.id} hover className="flex h-full flex-col">
-                    <Icon className="mb-3 h-7 w-7 text-accent" aria-hidden="true" />
+                    {logoSrc ? (
+                      <Image
+                        src={logoSrc}
+                        alt=""
+                        width={40}
+                        height={40}
+                        className="mb-3 h-10 w-10 object-contain"
+                        aria-hidden="true"
+                      />
+                    ) : Icon ? (
+                      <Icon className="mb-3 h-7 w-7 text-accent" aria-hidden="true" />
+                    ) : null}
                     <div className="flex items-start justify-between gap-4">
                       <h3 className="font-display text-display-xs font-bold text-text-primary">
                         {product.name}
