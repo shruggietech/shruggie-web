@@ -18,10 +18,13 @@ describe("canonical product catalog", () => {
     expect(new Set(ids)).toHaveLength(ids.length);
     expect(FOOTER_PRODUCT_LINKS).toEqual(
       PRODUCT_CATALOG.map((product) => ({
-        href: `/products#${product.id}`,
+        href: product.footerHref ?? `/products#${product.id}`,
         label: product.name,
       })),
     );
+    expect(
+      FOOTER_PRODUCT_LINKS.find((link) => link.label === "ShruggieTech Skills"),
+    ).toEqual({ href: "/skills", label: "ShruggieTech Skills" });
   });
 
   it("records the verified release truth and real destinations", () => {
@@ -46,6 +49,13 @@ describe("canonical product catalog", () => {
           product.codeRepository === "https://github.com/shruggietech/fragcap",
       ),
     ).toBe(false);
+    const skills = getProductById("shruggietech-skills");
+    expect(skills).toMatchObject({
+      codeRepository: "https://github.com/shruggietech/skills",
+      footerHref: "/skills",
+      statusBadge: "Collection v1.11.0 · Active",
+    });
+    expect(skills).not.toHaveProperty("version");
   });
 
   it("provides secure external links and a direct Glitchpad developer entry", () => {

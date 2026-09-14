@@ -56,6 +56,7 @@
   - [6.9. Audience Landing Pages](#69-audience-landing-pages)
   - [6.10. Error Pages](#610-error-pages)
   - [6.11. Privacy Policy](#611-privacy-policy)
+  - [6.12. AI Skills Catalog](#612-ai-skills-catalog)
 - [7. Blog Architecture](#7-blog-architecture)
   - [7.1. Content Strategy](#71-content-strategy)
   - [7.2. Markdown Editorial Pipeline](#72-mdx-pipeline)
@@ -1978,6 +1979,40 @@ Because the site uses Google Analytics 4 (which sets tracking cookies), a cookie
 **Implementation note:** The GA4 and GTM scripts in the root layout must be wrapped in a conditional check that reads the consent cookie before injecting the tracking scripts. If no consent cookie exists or consent is denied, the scripts are not loaded. This ensures compliance with cookie consent expectations and avoids tracking users who have not opted in. The implementation follows the same cookie-reading pattern used for the theme toggle ([§2.6](#26-dark-and-light-mode)): an inline `<script>` in `<head>` reads the cookie value before first paint to determine whether analytics scripts should load.
 
 </div>
+
+<a name="612-ai-skills-catalog" id="612-ai-skills-catalog"></a>
+### 6.12. AI Skills Catalog (`/skills`)
+
+**Purpose:** Publish the official ShruggieTech AI skills as a first-class, indexable part of the open-source product portfolio. Skills belong under Products rather than Work because they are reusable public tools, not client case studies. The primary navigation remains unchanged; discovery comes from `/products`, the footer, developer and technical-team landing pages, the sitemap, and direct search.
+
+**Content authority:** `lib/skills.ts` is a typed, checked-in snapshot of the public `shruggietech/skills` repository. Build-time GitHub requests are prohibited. Each catalog update must verify the repository, current release assets, skill source paths, and last-content-change dates before changing the snapshot.
+
+**Version truth:** The collection currently ships under one repository-wide release label. The site may display `Collection release v1.11.0`, but it must not present that label as per-skill semantic versioning. Individual `SoftwareSourceCode` records omit `version` until the upstream repository publishes meaningful per-skill versions. Exact tagged zip links may include the collection release because that is the artifact's real filename.
+
+**Section 1: Hub Hero and Collection Status**
+
+| Element | Content |
+|---------|---------|
+| Headline (h1) | "AI Skills" |
+| Subheadline | "Open-source instructions that turn working standards into repeatable AI workflows." |
+| Status | Collection release, skill count, active maintenance, Apache-2.0 license, and repository link |
+
+**Section 2: Skill Catalog**
+
+The hub lists exactly seven shipped skills in deliberate editorial order: `shruggie-bash`, `shruggie-docs`, `shruggie-graph-memory`, `shruggie-html`, `shruggie-markdown`, `shruggie-powershell`, and `shruggie-speckit`. Each card provides a human-readable name, concise purpose, trigger summary, and descriptive link to `/skills/[slug]`.
+
+**Skill detail pages (`/skills/[slug]`):** Each route is statically generated from `lib/skills.ts` and includes the skill purpose, trigger conditions, enforced rules, last-content-change date, collection release explanation, license, exact tagged zip download, source link, links to the other skills, canonical metadata, `SoftwareSourceCode` JSON-LD, and `BreadcrumbList` JSON-LD.
+
+**Discovery integration:**
+
+| Surface | Requirement |
+|---------|-------------|
+| `/products` | A `ShruggieTech Skills` product card links primarily to `/skills` and secondarily to the GitHub repository. |
+| Footer | The Products column links `ShruggieTech Skills` directly to `/skills`. |
+| Audience pages | `/for/developers` and `/for/technical-teams` include a product proof card linking to `/skills`. |
+| Sitemap | `/skills` and all seven `/skills/[slug]` routes are included. |
+
+**Accessibility and performance:** The catalog is server-rendered, keyboard accessible, responsive without horizontal overflow, and uses descriptive internal and external links. New-tab links announce that behavior to assistive technology. The pages reuse the shared reduced-motion-aware `ScrollReveal` treatment and introduce no additional client-side interaction runtime.
 
 <a name="7-blog-architecture" id="7-blog-architecture"></a>
 <hr class="print-page-break">

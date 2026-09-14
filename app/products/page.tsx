@@ -19,6 +19,7 @@ import {
   Database,
   FileText,
   Cpu,
+  Blocks,
 } from "lucide-react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
@@ -70,6 +71,7 @@ export const metadata: Metadata = {
 /* ── Product presentation (spec §6.5) ───────────────────────────────────── */
 
 const PRODUCT_ICONS: Partial<Record<ProductId, LucideIcon>> = {
+  "shruggietech-skills": Blocks,
   "shruggie-indexer": Package,
   metadexer: Database,
   "shruggie-feedtools": FileText,
@@ -127,7 +129,7 @@ export default function ProductsPage() {
                     ) : Icon ? (
                       <Icon className="mb-3 h-7 w-7 text-accent" aria-hidden="true" />
                     ) : null}
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
                       <h3 className="font-display text-display-xs font-bold text-text-primary">
                         {product.name}
                       </h3>
@@ -142,7 +144,7 @@ export default function ProductsPage() {
                           <Link
                             key={link.label}
                             href={link.href}
-                            className="group/link inline-flex items-center gap-1.5 font-display text-body-sm font-medium text-accent transition-colors hover:text-orange-foreground"
+                            className="group/link focus-visible:outline-focus inline-flex items-center gap-1.5 rounded-sm font-display text-body-sm font-medium text-accent transition-colors hover:text-orange-foreground focus-visible:outline-2 focus-visible:outline-offset-4"
                           >
                             {link.label}
                             <ArrowRight
@@ -156,10 +158,13 @@ export default function ProductsPage() {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 font-display text-body-sm font-medium text-accent transition-colors hover:text-orange-foreground"
+                            className="focus-visible:outline-focus inline-flex items-center gap-1.5 rounded-sm font-display text-body-sm font-medium text-accent transition-colors hover:text-orange-foreground focus-visible:outline-2 focus-visible:outline-offset-4"
                           >
                             {link.label}
                             <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span className="sr-only">
+                              {" "}(opens in a new tab)
+                            </span>
                           </a>
                         ),
                       )}

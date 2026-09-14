@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **AI skills catalog**: added a typed seven-skill catalog with an indexable
+  `/skills` hub and statically generated detail pages, truthful collection-level
+  release labeling, tagged downloads, source links, SoftwareSourceCode and
+  breadcrumb structured data, product/footer/audience discovery, and sitemap
+  coverage
 - **Homepage product portfolio**: added a dedicated Products section between
   client Work and Research, featuring Glitchpad and go-schedule from explicit
   canonical-catalog curation metadata with official marks, current status,

@@ -75,6 +75,13 @@ export default function DevelopersPage() {
       socialProof={[
         {
           type: "product",
+          title: "ShruggieTech Skills",
+          description:
+            "Seven open-source AI skills for repeatable scripts, documents, memory, and specification-driven delivery.",
+          href: "/skills",
+        },
+        {
+          type: "product",
           title: glitchpad.name,
           description: glitchpad.developerFeature!.description,
           href: glitchpad.developerFeature!.href,

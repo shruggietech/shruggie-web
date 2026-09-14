@@ -72,6 +72,13 @@ export default function TechnicalTeamsPage() {
       ]}
       socialProof={[
         {
+          type: "product",
+          title: "ShruggieTech Skills",
+          description:
+            "Reusable AI instructions that encode our standards for technical authoring and end-to-end delivery workflows.",
+          href: "/skills",
+        },
+        {
           type: "research",
           title: "Agent-Driven Framework (ADF)",
           description:
