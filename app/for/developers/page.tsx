@@ -10,7 +10,10 @@
 import type { Metadata } from "next";
 
 import { getOgImageUrl } from "@/lib/constants";
+import { getProductById } from "@/lib/products";
 import LandingPageTemplate from "@/components/shared/LandingPageTemplate";
+
+const glitchpad = getProductById("glitchpad");
 
 export const metadata: Metadata = {
   title: "Built by engineers. Open by default.",
@@ -70,6 +73,13 @@ export default function DevelopersPage() {
         "AI Research",
       ]}
       socialProof={[
+        {
+          type: "product",
+          title: glitchpad.name,
+          description: glitchpad.developerFeature!.description,
+          href: glitchpad.developerFeature!.href,
+          external: true,
+        },
         {
           type: "product",
           title: "shruggie-indexer",

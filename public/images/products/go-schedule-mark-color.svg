@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" width="512" height="512" fill="none" data-logo-source-mode="constructed" data-logo-variant="full">
+  <rect x="78" y="102" width="356" height="308" rx="54" fill="none" stroke="#28414B" stroke-width="20"/>
+  <path d="M124 174l42 38-42 38" fill="none" stroke="#58A6FF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M194 250h172" fill="none" stroke="#62D9B7" stroke-width="22" stroke-linecap="round"/>
+  <path d="M134.0 309.0L134.0 339.0 M121.0 316.5L147.0 331.5 M147.0 316.5L121.0 331.5" fill="none" stroke="#62D9B7" stroke-width="7" stroke-linecap="round"/>
+  <path d="M195.0 309.0L195.0 339.0 M182.0 316.5L208.0 331.5 M208.0 316.5L182.0 331.5" fill="none" stroke="#62D9B7" stroke-width="7" stroke-linecap="round"/>
+  <path d="M256.0 309.0L256.0 339.0 M243.0 316.5L269.0 331.5 M269.0 316.5L243.0 331.5" fill="none" stroke="#58A6FF" stroke-width="7" stroke-linecap="round"/>
+  <path d="M317.0 309.0L317.0 339.0 M304.0 316.5L330.0 331.5 M330.0 316.5L304.0 331.5" fill="none" stroke="#62D9B7" stroke-width="7" stroke-linecap="round"/>
+  <path d="M378.0 309.0L378.0 339.0 M365.0 316.5L391.0 331.5 M391.0 316.5L365.0 331.5" fill="none" stroke="#62D9B7" stroke-width="7" stroke-linecap="round"/>
+  <rect x="118" y="360" width="32" height="10" rx="5" fill="#28414B"/>
+  <rect x="179" y="360" width="32" height="10" rx="5" fill="#28414B"/>
+  <rect x="240" y="360" width="32" height="10" rx="5" fill="#28414B"/>
+  <rect x="301" y="360" width="32" height="10" rx="5" fill="#28414B"/>
+  <rect x="362" y="360" width="32" height="10" rx="5" fill="#28414B"/>
+</svg>
