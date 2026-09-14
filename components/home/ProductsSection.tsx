@@ -34,7 +34,7 @@ export default function ProductsSection() {
           <SectionHeading
             label="PRODUCTS"
             title="Built from problems worth solving."
-            description="We turn recurring technical friction into focused, open-source software—and keep shipping."
+            description="Open-source software built to solve practical technical problems."
           />
         </ScrollReveal>
 

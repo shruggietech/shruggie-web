@@ -1274,7 +1274,7 @@ The Products portfolio is placed after client Work and before Research so the ho
 |---------|---------|
 | Section label | "PRODUCTS" |
 | Section title | "Built from problems worth solving." |
-| Description | "We turn recurring technical friction into focused, open-source software—and keep shipping." |
+| Description | "Open-source software built to solve practical technical problems." |
 | Featured products | Glitchpad (`v0.1.3 — Community Release`) followed by `go-schedule` (`v1.1.1 — Active`) |
 | Product treatment | Two responsive feature cards with the official product mark, current status, concise verified description, and a descriptive link to the official product destination. External destinations open in a new tab with `noopener noreferrer` and an accessible new-tab announcement. |
 | Catalog CTA | "Explore all products" → `/products` |
