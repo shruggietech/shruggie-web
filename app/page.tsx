@@ -1,8 +1,8 @@
 /**
  * Homepage — ShruggieTech public website root page.
  *
- * Five sections: Hero, Services Preview, Work Preview, Research Preview,
- * and Bottom CTA. Includes WebSite JSON-LD schema for AEO.
+ * Six sections: Hero, Services, Work, Products, Research, and Bottom CTA.
+ * Includes WebSite JSON-LD schema for AEO.
  *
  * Spec reference: §6.1 (Homepage), §8.1 (Metadata), §8.2 (JSON-LD)
  */
@@ -15,6 +15,7 @@ import JsonLd from "@/components/shared/JsonLd";
 import HeroSection from "@/components/home/HeroSection";
 import ServicesSection from "@/components/home/ServicesSection";
 import WorkSection from "@/components/home/WorkSection";
+import ProductsSection from "@/components/home/ProductsSection";
 import ResearchSection from "@/components/home/ResearchSection";
 import CTASection from "@/components/home/CTASection";
 
@@ -53,6 +54,7 @@ export default function Home() {
       <HeroSection />
       <ServicesSection />
       <WorkSection />
+      <ProductsSection />
       <ResearchSection />
       <CTASection />
     </>

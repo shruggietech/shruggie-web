@@ -69,12 +69,6 @@ export const metadata: Metadata = {
 
 /* ── Product presentation (spec §6.5) ───────────────────────────────────── */
 
-const PRODUCT_LOGOS: Partial<Record<ProductId, string>> = {
-  glitchpad: "/images/products/glitchpad-mark-color.svg",
-  "go-schedule": "/images/products/go-schedule-mark-color.svg",
-  fragcap: "/images/products/fragcap-mark-color.svg",
-};
-
 const PRODUCT_ICONS: Partial<Record<ProductId, LucideIcon>> = {
   "shruggie-indexer": Package,
   metadexer: Database,
@@ -117,14 +111,13 @@ export default function ProductsPage() {
           </ScrollReveal>
           <div className="mt-12 grid gap-8 md:grid-cols-2">
             {PRODUCT_CATALOG.map((product, i) => {
-              const logoSrc = PRODUCT_LOGOS[product.id];
               const Icon = PRODUCT_ICONS[product.id];
               return (
                 <ScrollReveal key={product.id} delay={i * 0.08}>
                   <Card id={product.id} hover className="flex h-full flex-col">
-                    {logoSrc ? (
+                    {product.markSrc ? (
                       <Image
-                        src={logoSrc}
+                        src={product.markSrc}
                         alt=""
                         width={40}
                         height={40}
