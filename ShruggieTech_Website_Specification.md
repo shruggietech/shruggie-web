@@ -1266,7 +1266,21 @@ Each card links to the corresponding section on the `/services` page via an anch
 | Description | "We solve messy problems for businesses that need more than a template." |
 | Layout | Horizontal scroll strip of 3 featured case study cards (United Way, Scruggs Tire, I Heart PR Tours). Each card shows: client name, industry tag, one-line summary, a hero image (or placeholder), and a "Read case study →" link. |
 
-**Section 4: Research Preview**
+**Section 4: Products Portfolio**
+
+The Products portfolio is placed after client Work and before Research so the homepage narrative moves from services, to external proof, to ShruggieTech's owned software, to published technical authority, and finally to the conversion CTA. Featured products and their order are explicit fields in the canonical product catalog shared with `/products` and the footer; the homepage does not maintain an independent product list.
+
+| Element | Content |
+|---------|---------|
+| Section label | "PRODUCTS" |
+| Section title | "Built from problems worth solving." |
+| Description | "Open-source software built to solve practical technical problems." |
+| Featured products | Glitchpad (`v0.1.3 — Community Release`) followed by `go-schedule` (`v1.1.1 — Active`) |
+| Product treatment | Two responsive feature cards with the official product mark, current status, concise verified description, and a descriptive link to the official product destination. External destinations open in a new tab with `noopener noreferrer` and an accessible new-tab announcement. |
+| Catalog CTA | "Explore all products" → `/products` |
+| Motion and performance | Server-rendered content with static decorative gradients and the shared `ScrollReveal` entrance. Reduced-motion users receive fully visible static content; the section introduces no carousel, canvas, observer, or additional client-side interaction. |
+
+**Section 5: Research Preview**
 
 | Element | Content |
 |---------|---------|
@@ -1275,7 +1289,7 @@ Each card links to the corresponding section on the `/services` page via an anch
 | Description | "Original research in AI agent architecture, multi-agent development workflows, and metadata systems engineering." |
 | Layout | Three cards, one per publication (ADF, Multi-Agent Guide, rustif Declaration). Each shows title, one-line description, author, and a "Read paper →" link. |
 
-**Section 5: Bottom CTA**
+**Section 6: Bottom CTA**
 
 | Element | Content |
 |---------|---------|

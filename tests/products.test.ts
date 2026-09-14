@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { SITE_URL } from "../lib/constants";
 import {
   FOOTER_PRODUCT_LINKS,
+  HOMEPAGE_PRODUCTS,
   PRODUCT_CATALOG,
   PRODUCT_IDS,
   getProductById,
@@ -61,6 +62,23 @@ describe("canonical product catalog", () => {
         "A local-first desktop and Android viewer and editor for Markdown, Mermaid, plain text, and source files.",
       href: "https://glitchpad.com",
     });
+  });
+
+  it("curates homepage products explicitly from the canonical catalog", () => {
+    expect(HOMEPAGE_PRODUCTS.map((product) => product.id)).toEqual([
+      "glitchpad",
+      "go-schedule",
+    ]);
+    expect(
+      HOMEPAGE_PRODUCTS.map((product) => product.homepageFeature.order),
+    ).toEqual([1, 2]);
+    expect(
+      HOMEPAGE_PRODUCTS.every(
+        (product) =>
+          product.markSrc?.startsWith("/images/products/") &&
+          product.homepageFeature.cta.href.startsWith("https://"),
+      ),
+    ).toBe(true);
   });
 
   it("emits complete SoftwareSourceCode data for the new public products", () => {

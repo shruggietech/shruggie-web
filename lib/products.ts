@@ -6,6 +6,12 @@ export interface ProductLink {
   label: string;
 }
 
+export interface HomepageProductFeature {
+  cta: ProductLink;
+  description: string;
+  order: number;
+}
+
 export interface ProductCatalogEntry {
   codeRepository?: string;
   description: string;
@@ -14,8 +20,10 @@ export interface ProductCatalogEntry {
     href: string;
   };
   footer: boolean;
+  homepageFeature?: HomepageProductFeature;
   id: string;
   links: readonly ProductLink[];
+  markSrc?: string;
   name: string;
   programmingLanguage?: string;
   statusBadge: string;
@@ -46,6 +54,17 @@ const PRODUCT_CATALOG_SOURCE = [
     codeRepository: "https://github.com/shruggietech/glitchpad",
     version: "0.1.3",
     footer: true,
+    markSrc: "/images/products/glitchpad-mark-color.svg",
+    homepageFeature: {
+      order: 1,
+      description:
+        "A fast, local-first workspace for viewing and editing the files you actually use, across desktop and Android.",
+      cta: {
+        label: "Visit Glitchpad",
+        href: "https://glitchpad.com",
+        kind: "external",
+      },
+    },
     developerFeature: {
       description:
         "A local-first desktop and Android viewer and editor for Markdown, Mermaid, plain text, and source files.",
@@ -74,6 +93,17 @@ const PRODUCT_CATALOG_SOURCE = [
     codeRepository: "https://github.com/shruggietech/go-schedule",
     version: "1.1.1",
     footer: true,
+    markSrc: "/images/products/go-schedule-mark-color.svg",
+    homepageFeature: {
+      order: 2,
+      description:
+        "Readable schedules, supported cron, a background daemon, CLI, desktop GUI, and event-driven automation in one Go tool.",
+      cta: {
+        label: "Explore go-schedule",
+        href: "https://shruggietech.github.io/go-schedule/",
+        kind: "external",
+      },
+    },
   },
   {
     id: "fragcap",
@@ -93,6 +123,7 @@ const PRODUCT_CATALOG_SOURCE = [
     codeRepository: "https://github.com/h8rt3rmin8r/fragcap",
     version: "0.9.0",
     footer: true,
+    markSrc: "/images/products/fragcap-mark-color.svg",
   },
   {
     id: "shruggie-indexer",
@@ -184,6 +215,21 @@ export const FOOTER_PRODUCT_LINKS = PRODUCT_CATALOG.filter(
   href: `/products#${product.id}`,
   label: product.name,
 }));
+
+function hasHomepageFeature(
+  product: ProductCatalogEntry & { id: ProductId },
+): product is ProductCatalogEntry & {
+  homepageFeature: HomepageProductFeature;
+  id: ProductId;
+} {
+  return product.homepageFeature !== undefined;
+}
+
+export const HOMEPAGE_PRODUCTS = PRODUCT_CATALOG.filter(
+  hasHomepageFeature,
+).sort(
+  (left, right) => left.homepageFeature.order - right.homepageFeature.order,
+);
 
 export function getProductById(id: ProductId): ProductCatalogEntry {
   const product = PRODUCT_CATALOG.find((candidate) => candidate.id === id);

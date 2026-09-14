@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Homepage product portfolio**: added a dedicated Products section between
+  client Work and Research, featuring Glitchpad and go-schedule from explicit
+  canonical-catalog curation metadata with official marks, current status,
+  descriptive product links, and a clear route to the full catalog
 - **Canonical product catalog**: single-sourced product metadata for the
   Products page and site-wide footer; added Glitchpad v0.1.3, go-schedule
   v1.1.1, and fragcap v0.9.0 with verified official destinations,
