@@ -3,7 +3,8 @@
  *
  * Fixed position, full-width, z-50. Translucent background with
  * backdrop-blur that progressively gains opacity as the user scrolls.
- * Contains logo/wordmark, nav links, theme toggle, CTA, and mobile hamburger.
+ * Contains logo/wordmark, nav links, blog-only theme toggle, CTA, and mobile
+ * hamburger.
  *
  * Spec reference: §5.1 (Header), §2.6 (Dark/Light Mode)
  */
@@ -180,7 +181,7 @@ export default function Header() {
 
           {/* Right-side controls */}
           <div className="flex items-center gap-2">
-            {/* Theme toggle — only on reading pages (§2.6, Redesign Plan §2) */}
+            {/* Theme toggle — only on the blog reading surface (§2.6) */}
             {!forceDark && (
               <button
                 onClick={toggleTheme}

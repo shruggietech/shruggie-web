@@ -55,6 +55,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Theme scope**: made dark mode mandatory across every non-blog route and
+  limited the light/dark toggle plus its saved preference to `/blog` and article
+  pages, with dark as the default reading theme
 - **Blog publication source**: Firestore is the sole deployed production
   authority after cutover; repository MDX remains an explicit local and
   disaster-recovery source, and production builds no longer prerender blog

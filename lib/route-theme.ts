@@ -1,26 +1,29 @@
 /**
  * Route-aware dark mode utility.
  *
- * Determines which routes force dark mode (no theme toggle)
- * vs. which allow the user to toggle between dark and light.
+ * Light mode is intentionally limited to the blog reading surface. Every
+ * other route uses the dark brand presentation and exposes no theme toggle.
  *
  * Spec reference: ShruggieTech-Website-Redesign-Plan.md §2
  */
 
-const FORCED_DARK_EXACT = ["/", "/services", "/about", "/contact", "/research", "/products"];
-const FORCED_DARK_PREFIXES = ["/work", "/for/", "/services/", "/research/"];
+const LIGHT_MODE_ROOT = "/blog";
+
+export function isLightModeAvailable(pathname: string): boolean {
+  return (
+    pathname === LIGHT_MODE_ROOT || pathname.startsWith(`${LIGHT_MODE_ROOT}/`)
+  );
+}
 
 /**
  * Returns true if the given pathname should force dark mode
  * (no toggle visible, dark class always applied).
  */
 export function isDarkModeForced(pathname: string): boolean {
-  if (FORCED_DARK_EXACT.includes(pathname)) return true;
-  return FORCED_DARK_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  return !isLightModeAvailable(pathname);
 }
 
 /**
  * Exported for embedding in the inline theme script to prevent FOUC.
  */
-export const FORCED_DARK_EXACT_LIST = FORCED_DARK_EXACT;
-export const FORCED_DARK_PREFIXES_LIST = FORCED_DARK_PREFIXES;
+export const LIGHT_MODE_ROOT_PATH = LIGHT_MODE_ROOT;
