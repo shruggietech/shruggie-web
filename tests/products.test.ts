@@ -53,7 +53,7 @@ describe("canonical product catalog", () => {
     expect(skills).toMatchObject({
       codeRepository: "https://github.com/shruggietech/skills",
       footerHref: "/skills",
-      statusBadge: "Collection v1.11.0 · Active",
+      statusBadge: "Active · Releases on GitHub",
     });
     expect(skills).not.toHaveProperty("version");
   });

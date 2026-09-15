@@ -35,19 +35,18 @@ describe("AI skills catalog", () => {
       expect(entry.sourceUrl).toBe(
         `https://github.com/shruggietech/skills/tree/main/skills/${entry.slug}`,
       );
-      expect(entry.downloadUrl).toBe(
-        `https://github.com/shruggietech/skills/releases/download/v1.11.0/${entry.slug}-v1.11.0.zip`,
-      );
       expect(getSkillBySlug(entry.slug)).toEqual(entry);
     }
   });
 
-  it("labels the shared package honestly instead of claiming skill versions", () => {
+  it("links to GitHub's automatically updated latest release", () => {
     expect(SKILLS_COLLECTION).toMatchObject({
-      collectionRelease: "1.11.0",
       license: "Apache-2.0",
-      publishedAt: "2026-08-22",
+      latestReleaseUrl:
+        "https://github.com/shruggietech/skills/releases/latest",
     });
+    expect(SKILLS_COLLECTION).not.toHaveProperty("collectionRelease");
+    expect(SKILLS_COLLECTION).not.toHaveProperty("publishedAt");
 
     const entry = SKILLS[0];
     const schema = generateSoftwareSchema({

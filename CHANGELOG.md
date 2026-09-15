@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **AI skills catalog**: added a typed six-skill catalog with an indexable
-  `/skills` hub and statically generated detail pages, truthful collection-level
-  release labeling, tagged downloads, source links, SoftwareSourceCode and
+  `/skills` hub and statically generated detail pages, automatically updating
+  GitHub latest-release links, source links, SoftwareSourceCode and
   breadcrumb structured data, product/footer/audience discovery, and sitemap
   coverage; ShruggieGraph Memory is intentionally excluded
 - **Homepage product portfolio**: added a dedicated Products section between

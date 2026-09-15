@@ -83,7 +83,7 @@ export default function SkillsPage() {
             <div className="border-border bg-bg-elevated flex flex-col gap-5 rounded-xl border p-6 sm:flex-row sm:items-center sm:justify-between dark:border-white/[0.06] dark:bg-white/[0.025]">
               <div>
                 <p className="font-display text-body-lg text-text-primary font-bold">
-                  Collection release v{SKILLS_COLLECTION.collectionRelease}
+                  Open-source skill collection
                 </p>
                 <p className="text-body-sm text-text-secondary mt-1">
                   Six skills, actively maintained, licensed Apache-2.0.
@@ -167,12 +167,12 @@ export default function SkillsPage() {
             </p>
             <div className="mt-8">
               <a
-                href={SKILLS_COLLECTION.releaseUrl}
+                href={SKILLS_COLLECTION.latestReleaseUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-cta font-display focus-visible:outline-focus inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium text-white transition-all hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2"
               >
-                Browse release v{SKILLS_COLLECTION.collectionRelease}
+                View the latest release
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>

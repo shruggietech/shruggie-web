@@ -1991,7 +1991,7 @@ Because the site uses Google Analytics 4 (which sets tracking cookies), a cookie
 
 **Content authority:** `lib/skills.ts` is a typed, checked-in snapshot of the public `shruggietech/skills` repository. Build-time GitHub requests are prohibited. Each catalog update must verify the repository, current release assets, skill source paths, and last-content-change dates before changing the snapshot.
 
-**Version truth:** The collection currently ships under one repository-wide release label. The site may display `Collection release v1.11.0`, but it must not present that label as per-skill semantic versioning. Individual `SoftwareSourceCode` records omit `version` until the upstream repository publishes meaningful per-skill versions. Exact tagged zip links may include the collection release because that is the artifact's real filename.
+**Version truth:** The collection ships under repository-wide releases rather than meaningful per-skill semantic versions. The site must not display a checked-in collection version as a skill version. Individual `SoftwareSourceCode` records omit `version`, and release actions link to GitHub's stable `/releases/latest` destination so they follow the newest published collection release automatically.
 
 **Section 1: Hub Hero and Collection Status**
 
@@ -1999,13 +1999,13 @@ Because the site uses Google Analytics 4 (which sets tracking cookies), a cookie
 |---------|---------|
 | Headline (h1) | "AI Skills" |
 | Subheadline | "Open-source instructions that turn working standards into repeatable AI workflows." |
-| Status | Collection release, skill count, active maintenance, Apache-2.0 license, and repository link |
+| Status | Skill count, active maintenance, Apache-2.0 license, repository link, and automatically updating latest-release link |
 
 **Section 2: Skill Catalog**
 
 The hub lists exactly six selected skills in deliberate editorial order: `shruggie-bash`, `shruggie-docs`, `shruggie-html`, `shruggie-markdown`, `shruggie-powershell`, and `shruggie-speckit`. `shruggie-graph-memory` is intentionally excluded from the public website catalog. Each card provides a human-readable name, concise purpose, trigger summary, and descriptive link to `/skills/[slug]`.
 
-**Skill detail pages (`/skills/[slug]`):** Each route is statically generated from `lib/skills.ts` and includes the skill purpose, trigger conditions, enforced rules, last-content-change date, collection release explanation, license, exact tagged zip download, source link, links to the other skills, canonical metadata, `SoftwareSourceCode` JSON-LD, and `BreadcrumbList` JSON-LD.
+**Skill detail pages (`/skills/[slug]`):** Each route is statically generated from `lib/skills.ts` and includes the skill purpose, trigger conditions, enforced rules, last-content-change date, release-link explanation, license, latest GitHub release link, source link, links to the other skills, canonical metadata, `SoftwareSourceCode` JSON-LD, and `BreadcrumbList` JSON-LD.
 
 **Discovery integration:**
 

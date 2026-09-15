@@ -131,7 +131,7 @@ const PRODUCT_CATALOG_SOURCE = [
     name: "ShruggieTech Skills",
     description:
       "Six open-source AI skills that encode repeatable standards for scripts, documents, and specification-driven delivery.",
-    statusBadge: "Collection v1.11.0 · Active",
+    statusBadge: "Active · Releases on GitHub",
     links: [
       { label: "Explore Skills", href: "/skills", kind: "internal" },
       {

@@ -16,7 +16,6 @@ import {
   CalendarDays,
   Check,
   ChevronRight,
-  Download,
   ExternalLink,
   GitBranch,
   Scale,
@@ -166,10 +165,11 @@ export default async function SkillDetailPage({
 
           <ScrollReveal delay={0.08}>
             <Card className="lg:sticky lg:top-24">
-              <Badge>Collection v{SKILLS_COLLECTION.collectionRelease}</Badge>
+              <Badge>Actively maintained</Badge>
               <p className="text-body-sm text-text-secondary mt-5 leading-relaxed">
-                This is the shared collection release that packages the skill,
-                not a claim that this skill changed in every repository release.
+                GitHub&apos;s latest-release link always points to the newest
+                published collection release without implying a per-skill
+                version.
               </p>
 
               <dl className="border-border mt-6 space-y-4 border-t pt-6 dark:border-white/[0.08]">
@@ -207,11 +207,14 @@ export default async function SkillDetailPage({
 
               <div className="mt-7 flex flex-col gap-3">
                 <a
-                  href={entry.downloadUrl}
+                  href={SKILLS_COLLECTION.latestReleaseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-cta font-display focus-visible:outline-focus inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-medium text-white transition-all hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
-                  <Download aria-hidden="true" className="h-4 w-4" />
-                  Download zip
+                  <ExternalLink aria-hidden="true" className="h-4 w-4" />
+                  Get the latest release
+                  <span className="sr-only"> (opens in a new tab)</span>
                 </a>
                 <a
                   href={entry.sourceUrl}

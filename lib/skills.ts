@@ -1,9 +1,10 @@
 /**
  * ShruggieTech AI skills catalog.
  *
- * The site deliberately keeps a checked-in snapshot instead of fetching GitHub
- * during the build. `collectionRelease` names the repository-wide release that
- * packages every skill; it is not presented as per-skill semantic versioning.
+ * The site deliberately keeps a checked-in content snapshot instead of fetching
+ * GitHub during the build. Release discovery uses GitHub's stable latest-release
+ * redirect so the site never presents a stale repository-wide version as if it
+ * were per-skill semantic versioning.
  *
  * Verified against shruggietech/skills on 2026-09-14.
  * Spec reference: §6.12 (AI Skills Catalog)
@@ -12,15 +13,12 @@
 const SKILLS_REPOSITORY_URL = "https://github.com/shruggietech/skills";
 
 export const SKILLS_COLLECTION = {
-  collectionRelease: "1.11.0",
   license: "Apache-2.0",
-  publishedAt: "2026-08-22",
-  releaseUrl: `${SKILLS_REPOSITORY_URL}/releases/tag/v1.11.0`,
+  latestReleaseUrl: `${SKILLS_REPOSITORY_URL}/releases/latest`,
   repositoryUrl: SKILLS_REPOSITORY_URL,
 } as const;
 
 export interface SkillCatalogEntry {
-  downloadUrl: string;
   enforces: readonly string[];
   lastUpdated: string;
   name: string;
@@ -31,10 +29,9 @@ export interface SkillCatalogEntry {
 }
 
 const skill = (
-  entry: Omit<SkillCatalogEntry, "downloadUrl" | "sourceUrl">,
+  entry: Omit<SkillCatalogEntry, "sourceUrl">,
 ): SkillCatalogEntry => ({
   ...entry,
-  downloadUrl: `${SKILLS_REPOSITORY_URL}/releases/download/v${SKILLS_COLLECTION.collectionRelease}/${entry.slug}-v${SKILLS_COLLECTION.collectionRelease}.zip`,
   sourceUrl: `${SKILLS_REPOSITORY_URL}/tree/main/skills/${entry.slug}`,
 });
 
