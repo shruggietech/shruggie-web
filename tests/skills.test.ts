@@ -13,17 +13,17 @@ import {
 } from "../lib/schema";
 
 describe("AI skills catalog", () => {
-  it("publishes the seven verified skills in deliberate order", () => {
+  it("publishes the six selected skills in deliberate order", () => {
     expect(SKILL_SLUGS).toEqual([
       "shruggie-bash",
       "shruggie-docs",
-      "shruggie-graph-memory",
       "shruggie-html",
       "shruggie-markdown",
       "shruggie-powershell",
       "shruggie-speckit",
     ]);
-    expect(new Set(SKILL_SLUGS)).toHaveLength(7);
+    expect(new Set(SKILL_SLUGS)).toHaveLength(6);
+    expect(getSkillBySlug("shruggie-graph-memory")).toBeUndefined();
   });
 
   it("keeps every detail page complete and tied to real release assets", () => {

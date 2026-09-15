@@ -70,21 +70,6 @@ export const SKILLS = [
     lastUpdated: "2026-07-02",
   }),
   skill({
-    slug: "shruggie-graph-memory",
-    name: "ShruggieGraph Memory",
-    purpose:
-      "Captures durable knowledge in a permission-scoped, source-backed memory and recalls it when relevant.",
-    triggerSummary:
-      "Use when ShruggieGraph tools are connected and a conversation surfaces a durable fact, or when the user asks to remember or recall something.",
-    enforces: [
-      "Source-backed notes with an audit trail",
-      "Proactive recall when people, projects, and organizations recur",
-      "Storage of durable decisions, preferences, commitments, and facts",
-      "No storage of trivia, transient chat, or explicitly excluded content",
-    ],
-    lastUpdated: "2026-08-21",
-  }),
-  skill({
     slug: "shruggie-html",
     name: "Shruggie HTML",
     purpose:

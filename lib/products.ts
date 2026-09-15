@@ -130,7 +130,7 @@ const PRODUCT_CATALOG_SOURCE = [
     id: "shruggietech-skills",
     name: "ShruggieTech Skills",
     description:
-      "Seven open-source AI skills that encode repeatable standards for scripts, documents, memory, and specification-driven delivery.",
+      "Six open-source AI skills that encode repeatable standards for scripts, documents, and specification-driven delivery.",
     statusBadge: "Collection v1.11.0 · Active",
     links: [
       { label: "Explore Skills", href: "/skills", kind: "internal" },

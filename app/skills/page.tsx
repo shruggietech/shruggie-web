@@ -1,7 +1,7 @@
 /**
  * AI Skills hub — /skills
  *
- * Public catalog of the seven ShruggieTech AI skills. Catalog metadata is a
+ * Public catalog of the six ShruggieTech AI skills. Catalog metadata is a
  * checked-in, verified snapshot from lib/skills.ts; no build-time network call
  * is required.
  *
@@ -12,7 +12,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
-  BrainCircuit,
   Braces,
   FileCode2,
   FileText,
@@ -34,7 +33,6 @@ import CTABackground from "@/components/shared/CTABackground";
 const SKILL_ICONS: Record<SkillSlug, LucideIcon> = {
   "shruggie-bash": Terminal,
   "shruggie-docs": FileText,
-  "shruggie-graph-memory": BrainCircuit,
   "shruggie-html": Braces,
   "shruggie-markdown": FileCode2,
   "shruggie-powershell": SquareTerminal,
@@ -42,7 +40,7 @@ const SKILL_ICONS: Record<SkillSlug, LucideIcon> = {
 };
 
 const description =
-  "Seven open-source AI skills that encode ShruggieTech's working standards for scripts, documents, memory, and delivery workflows.";
+  "Six open-source AI skills that encode ShruggieTech's working standards for scripts, documents, and delivery workflows.";
 
 export const metadata: Metadata = {
   title: "AI Skills",
@@ -88,7 +86,7 @@ export default function SkillsPage() {
                   Collection release v{SKILLS_COLLECTION.collectionRelease}
                 </p>
                 <p className="text-body-sm text-text-secondary mt-1">
-                  Seven skills, actively maintained, licensed Apache-2.0.
+                  Six skills, actively maintained, licensed Apache-2.0.
                 </p>
               </div>
               <a
@@ -108,7 +106,7 @@ export default function SkillsPage() {
             <div className="mt-16">
               <SectionHeading
                 label="THE COLLECTION"
-                title="Seven focused skills."
+                title="Six focused skills."
                 description="Each skill has a narrow trigger, explicit guardrails, and a download you can inspect before using."
               />
             </div>

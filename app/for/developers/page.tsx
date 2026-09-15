@@ -77,7 +77,7 @@ export default function DevelopersPage() {
           type: "product",
           title: "ShruggieTech Skills",
           description:
-            "Seven open-source AI skills for repeatable scripts, documents, memory, and specification-driven delivery.",
+            "Six open-source AI skills for repeatable scripts, documents, and specification-driven delivery.",
           href: "/skills",
         },
         {

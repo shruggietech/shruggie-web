@@ -2003,7 +2003,7 @@ Because the site uses Google Analytics 4 (which sets tracking cookies), a cookie
 
 **Section 2: Skill Catalog**
 
-The hub lists exactly seven shipped skills in deliberate editorial order: `shruggie-bash`, `shruggie-docs`, `shruggie-graph-memory`, `shruggie-html`, `shruggie-markdown`, `shruggie-powershell`, and `shruggie-speckit`. Each card provides a human-readable name, concise purpose, trigger summary, and descriptive link to `/skills/[slug]`.
+The hub lists exactly six selected skills in deliberate editorial order: `shruggie-bash`, `shruggie-docs`, `shruggie-html`, `shruggie-markdown`, `shruggie-powershell`, and `shruggie-speckit`. `shruggie-graph-memory` is intentionally excluded from the public website catalog. Each card provides a human-readable name, concise purpose, trigger summary, and descriptive link to `/skills/[slug]`.
 
 **Skill detail pages (`/skills/[slug]`):** Each route is statically generated from `lib/skills.ts` and includes the skill purpose, trigger conditions, enforced rules, last-content-change date, collection release explanation, license, exact tagged zip download, source link, links to the other skills, canonical metadata, `SoftwareSourceCode` JSON-LD, and `BreadcrumbList` JSON-LD.
 
@@ -2014,7 +2014,7 @@ The hub lists exactly seven shipped skills in deliberate editorial order: `shrug
 | `/products` | A `ShruggieTech Skills` product card links primarily to `/skills` and secondarily to the GitHub repository. |
 | Footer | The Products column links `ShruggieTech Skills` directly to `/skills`. |
 | Audience pages | `/for/developers` and `/for/technical-teams` include a product proof card linking to `/skills`. |
-| Sitemap | `/skills` and all seven `/skills/[slug]` routes are included. |
+| Sitemap | `/skills` and all six `/skills/[slug]` routes are included. |
 
 **Accessibility and performance:** The catalog is server-rendered, keyboard accessible, responsive without horizontal overflow, and uses descriptive internal and external links. New-tab links announce that behavior to assistive technology. The pages reuse the shared reduced-motion-aware `ScrollReveal` treatment and introduce no additional client-side interaction runtime.
 
