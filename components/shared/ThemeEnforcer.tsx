@@ -4,7 +4,7 @@
  * On SPA navigation (Next.js App Router soft navigations), the inline theme
  * script in <head> does not re-run. This component listens for pathname changes
  * and ensures the "dark" class is applied when navigating to a forced-dark route,
- * and restores the cookie-based preference when navigating away.
+ * and restores the cookie-based preference only when navigating into `/blog`.
  *
  * Spec reference: ShruggieTech-Website-Redesign-Plan.md §2
  */
@@ -22,17 +22,10 @@ export default function ThemeEnforcer() {
     if (isDarkModeForced(pathname)) {
       document.documentElement.classList.add("dark");
     } else {
-      // Restore cookie-based preference
+      // Blog is the only surface that honors the saved theme preference.
       const cookie = document.cookie.match(/theme=(light|dark)/);
-      const theme = cookie ? cookie[1] : null;
-      if (theme) {
-        document.documentElement.classList.toggle("dark", theme === "dark");
-      } else {
-        const prefersDark = window.matchMedia(
-          "(prefers-color-scheme: dark)",
-        ).matches;
-        document.documentElement.classList.toggle("dark", prefersDark);
-      }
+      const theme = cookie ? cookie[1] : "dark";
+      document.documentElement.classList.toggle("dark", theme === "dark");
     }
   }, [pathname]);
 

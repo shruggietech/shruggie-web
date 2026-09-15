@@ -14,6 +14,7 @@ import { getAllCaseStudiesMeta } from "@/lib/work";
 import { getAllResearchMeta } from "@/lib/research";
 import { SITE_URL } from "@/lib/constants";
 import { SERVICE_SLUGS } from "@/lib/services";
+import { SKILL_SLUGS } from "@/lib/skills";
 
 // Metadata routes are otherwise cached as static route handlers. Render the
 // sitemap per request so publication-state changes cannot remain trapped in
@@ -30,6 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/research",
     ...getAllResearchMeta().map((paper) => `/research/${paper.slug}`),
     "/products",
+    "/skills",
+    ...SKILL_SLUGS.map((slug) => `/skills/${slug}`),
     "/about",
     "/blog",
     "/contact",

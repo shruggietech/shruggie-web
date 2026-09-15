@@ -20,6 +20,7 @@ export interface ProductCatalogEntry {
     href: string;
   };
   footer: boolean;
+  footerHref?: string;
   homepageFeature?: HomepageProductFeature;
   id: string;
   links: readonly ProductLink[];
@@ -126,6 +127,25 @@ const PRODUCT_CATALOG_SOURCE = [
     markSrc: "/images/products/fragcap-mark-color.svg",
   },
   {
+    id: "shruggietech-skills",
+    name: "ShruggieTech Skills",
+    description:
+      "Six open-source AI skills that encode repeatable standards for scripts, documents, and specification-driven delivery.",
+    statusBadge: "Active · Releases on GitHub",
+    links: [
+      { label: "Explore Skills", href: "/skills", kind: "internal" },
+      {
+        label: "GitHub",
+        href: "https://github.com/shruggietech/skills",
+        kind: "external",
+      },
+    ],
+    programmingLanguage: "Markdown",
+    codeRepository: "https://github.com/shruggietech/skills",
+    footer: true,
+    footerHref: "/skills",
+  },
+  {
     id: "shruggie-indexer",
     name: "shruggie-indexer",
     description:
@@ -212,7 +232,7 @@ export const PRODUCT_IDS = PRODUCT_CATALOG.map((product) => product.id);
 export const FOOTER_PRODUCT_LINKS = PRODUCT_CATALOG.filter(
   (product) => product.footer,
 ).map((product) => ({
-  href: `/products#${product.id}`,
+  href: product.footerHref ?? `/products#${product.id}`,
   label: product.name,
 }));
 

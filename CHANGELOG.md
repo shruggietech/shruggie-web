@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **AI skills catalog**: added a typed six-skill catalog with an indexable
+  `/skills` hub and statically generated detail pages, automatically updating
+  GitHub latest-release links, source links, SoftwareSourceCode and
+  breadcrumb structured data, product/footer/audience discovery, and sitemap
+  coverage; ShruggieGraph Memory is intentionally excluded
 - **Homepage product portfolio**: added a dedicated Products section between
   client Work and Research, featuring Glitchpad and go-schedule from explicit
   canonical-catalog curation metadata with official marks, current status,
@@ -50,6 +55,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Theme scope**: made dark mode mandatory across every non-blog route and
+  limited the light/dark toggle plus its saved preference to `/blog` and article
+  pages, with dark as the default reading theme
 - **Blog publication source**: Firestore is the sole deployed production
   authority after cutover; repository MDX remains an explicit local and
   disaster-recovery source, and production builds no longer prerender blog

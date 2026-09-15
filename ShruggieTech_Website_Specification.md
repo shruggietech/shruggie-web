@@ -56,6 +56,7 @@
   - [6.9. Audience Landing Pages](#69-audience-landing-pages)
   - [6.10. Error Pages](#610-error-pages)
   - [6.11. Privacy Policy](#611-privacy-policy)
+  - [6.12. AI Skills Catalog](#612-ai-skills-catalog)
 - [7. Blog Architecture](#7-blog-architecture)
   - [7.1. Content Strategy](#71-content-strategy)
   - [7.2. Markdown Editorial Pipeline](#72-mdx-pipeline)
@@ -926,7 +927,7 @@ The motion philosophy is "tasteful restraint." Animation is used to guide the ey
 
 <div style="text-align:justify">
 
-The site defaults to dark mode, consistent with the black-primary brand identity (KB §10.1). A theme toggle in the header allows users to switch to light mode. The toggle persists the user's preference via a cookie (not `localStorage`, which would flash on reload). The implementation uses the `class` strategy in Tailwind (`darkMode: "class"`) with a `<script>` in `<head>` that reads the cookie before first paint to prevent FOUC (flash of unstyled content).
+The site defaults to dark mode, consistent with the black-primary brand identity (KB §10.1). Dark mode is mandatory on every route except the blog reading surface. The theme toggle appears only on `/blog` and `/blog/[slug]`, where readers may switch between dark and light. The toggle persists the blog preference via a cookie (not `localStorage`, which would flash on reload). A light blog preference never changes Services, Work, Research, Products, Skills, audience, administrative, or other non-blog routes. The implementation uses the `class` strategy in Tailwind (`darkMode: "class"`) with a route-aware `<script>` in `<head>` that applies the correct class before first paint.
 
 </div>
 
@@ -934,15 +935,19 @@ The site defaults to dark mode, consistent with the black-primary brand identity
 
 ```typescript
 export function getThemeScript(): string {
-  // Inline script injected into <head> to prevent FOUC.
-  // Reads cookie first, falls back to system preference, defaults to dark.
+  // Inline script injected into <head> to prevent FOUC. Only blog routes
+  // honor the cookie; every other route forces dark mode.
   return `
     (function() {
-      var cookie = document.cookie.match(/theme=(light|dark)/);
-      var theme = cookie ? cookie[1] : null;
-      if (!theme) {
-        theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      var path = window.location.pathname;
+      var blogRoot = '/blog';
+      var lightModeAvailable = path === blogRoot || path.indexOf(blogRoot + '/') === 0;
+      if (!lightModeAvailable) {
+        document.documentElement.classList.add('dark');
+        return;
       }
+      var cookie = document.cookie.match(/theme=(light|dark)/);
+      var theme = cookie ? cookie[1] : 'dark';
       document.documentElement.classList.toggle('dark', theme === 'dark');
     })();
   `;
@@ -1951,7 +1956,7 @@ The policy text must address the following topics at minimum. The exact legal la
 | Information We Collect | The site collects: (a) information you voluntarily provide via the contact form (name, email, company, message, referral source), and (b) usage data collected automatically via Google Analytics 4 and Google Tag Manager (pages visited, time on site, device type, browser, approximate geographic location derived from IP address). No account registration, login, or payment information is collected through the website. |
 | How We Use Your Information | Contact form submissions are used solely to respond to inquiries. Analytics data is used to understand site traffic patterns and improve the user experience. ShruggieTech does not sell, rent, or share personal information with third parties for marketing purposes. |
 | Third-Party Services | The site uses Google Analytics 4 (privacy policy: policies.google.com/privacy), Google Tag Manager, and Formspree (privacy policy: formspree.io/legal/privacy-policy) to process form submissions. These services may set cookies or collect data as described in their respective privacy policies. |
-| Cookies | The site uses: (a) a theme preference cookie (`theme`) to persist the user's dark/light mode selection, and (b) cookies set by Google Analytics 4 for traffic measurement. Users can disable cookies via browser settings; doing so will not affect core site functionality but will reset the theme preference on each visit. |
+| Cookies | The site uses: (a) a theme preference cookie (`theme`) to persist the user's dark/light mode selection on `/blog` and `/blog/[slug]` only, and (b) cookies set by Google Analytics 4 for traffic measurement. All other routes remain dark regardless of this cookie. Users can disable cookies via browser settings; doing so will not affect core site functionality but will reset blog pages to their dark default. |
 | Data Retention | Contact form submissions are retained in Formspree until manually deleted. Analytics data retention follows the configured GA4 property settings. |
 | Your Rights | Users may request access to, correction of, or deletion of their personal data by emailing ShruggieTech at `admin@shruggie.tech` or using the form on the Contact page. This is a concrete data-subject-request destination — do not use a circular "address on the Contact page" reference, and do not point to a mailing address (none is published). |
 | Changes to This Policy | ShruggieTech may update this policy periodically. Changes will be reflected by updating the effective date at the top of the page. |
@@ -1978,6 +1983,40 @@ Because the site uses Google Analytics 4 (which sets tracking cookies), a cookie
 **Implementation note:** The GA4 and GTM scripts in the root layout must be wrapped in a conditional check that reads the consent cookie before injecting the tracking scripts. If no consent cookie exists or consent is denied, the scripts are not loaded. This ensures compliance with cookie consent expectations and avoids tracking users who have not opted in. The implementation follows the same cookie-reading pattern used for the theme toggle ([§2.6](#26-dark-and-light-mode)): an inline `<script>` in `<head>` reads the cookie value before first paint to determine whether analytics scripts should load.
 
 </div>
+
+<a name="612-ai-skills-catalog" id="612-ai-skills-catalog"></a>
+### 6.12. AI Skills Catalog (`/skills`)
+
+**Purpose:** Publish the official ShruggieTech AI skills as a first-class, indexable part of the open-source product portfolio. Skills belong under Products rather than Work because they are reusable public tools, not client case studies. The primary navigation remains unchanged; discovery comes from `/products`, the footer, developer and technical-team landing pages, the sitemap, and direct search.
+
+**Content authority:** `lib/skills.ts` is a typed, checked-in snapshot of the public `shruggietech/skills` repository. Build-time GitHub requests are prohibited. Each catalog update must verify the repository, current release assets, skill source paths, and last-content-change dates before changing the snapshot.
+
+**Version truth:** The collection ships under repository-wide releases rather than meaningful per-skill semantic versions. The site must not display a checked-in collection version as a skill version. Individual `SoftwareSourceCode` records omit `version`, and release actions link to GitHub's stable `/releases/latest` destination so they follow the newest published collection release automatically.
+
+**Section 1: Hub Hero and Collection Status**
+
+| Element | Content |
+|---------|---------|
+| Headline (h1) | "AI Skills" |
+| Subheadline | "Open-source instructions that turn working standards into repeatable AI workflows." |
+| Status | Skill count, active maintenance, Apache-2.0 license, repository link, and automatically updating latest-release link |
+
+**Section 2: Skill Catalog**
+
+The hub lists exactly six selected skills in deliberate editorial order: `shruggie-bash`, `shruggie-docs`, `shruggie-html`, `shruggie-markdown`, `shruggie-powershell`, and `shruggie-speckit`. `shruggie-graph-memory` is intentionally excluded from the public website catalog. Each card provides a human-readable name, concise purpose, trigger summary, and descriptive link to `/skills/[slug]`.
+
+**Skill detail pages (`/skills/[slug]`):** Each route is statically generated from `lib/skills.ts` and includes the skill purpose, trigger conditions, enforced rules, last-content-change date, release-link explanation, license, latest GitHub release link, source link, links to the other skills, canonical metadata, `SoftwareSourceCode` JSON-LD, and `BreadcrumbList` JSON-LD.
+
+**Discovery integration:**
+
+| Surface | Requirement |
+|---------|-------------|
+| `/products` | A `ShruggieTech Skills` product card links primarily to `/skills` and secondarily to the GitHub repository. |
+| Footer | The Products column links `ShruggieTech Skills` directly to `/skills`. |
+| Audience pages | `/for/developers` and `/for/technical-teams` include a product proof card linking to `/skills`. |
+| Sitemap | `/skills` and all six `/skills/[slug]` routes are included. |
+
+**Accessibility and performance:** The catalog is server-rendered, keyboard accessible, responsive without horizontal overflow, and uses descriptive internal and external links. New-tab links announce that behavior to assistive technology. The pages reuse the shared reduced-motion-aware `ScrollReveal` treatment and introduce no additional client-side interaction runtime.
 
 <a name="7-blog-architecture" id="7-blog-architecture"></a>
 <hr class="print-page-break">

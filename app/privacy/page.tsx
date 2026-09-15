@@ -135,7 +135,8 @@ export default function PrivacyPolicyPage() {
           <ul>
             <li>
               <strong>Theme preference cookie</strong> (
-              <code>theme</code>) — persists your dark/light mode selection
+              <code>theme</code>) — persists your dark/light mode selection on
+              blog pages
               across visits.
             </li>
             <li>
@@ -151,7 +152,8 @@ export default function PrivacyPolicyPage() {
           </ul>
           <p>
             You can disable cookies via your browser settings. Doing so will not
-            affect core site functionality but will reset your theme preference
+            affect core site functionality but will reset the blog to its dark
+            default
             on each visit.
           </p>
 
