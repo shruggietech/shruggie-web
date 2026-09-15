@@ -210,10 +210,10 @@ export default async function SkillDetailPage({
                   href={SKILLS_COLLECTION.latestReleaseUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-cta font-display focus-visible:outline-focus inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-medium text-white transition-all hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2"
+                  className="bg-cta font-display focus-visible:outline-focus inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-medium whitespace-nowrap text-white transition-all hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
                   <ExternalLink aria-hidden="true" className="h-4 w-4" />
-                  Get the latest release
+                  Latest release
                   <span className="sr-only"> (opens in a new tab)</span>
                 </a>
                 <a
