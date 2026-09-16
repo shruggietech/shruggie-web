@@ -34,6 +34,7 @@ export interface ServiceProof {
   /** Descriptive alternative text. Omit only when there is no image. */
   image?: {
     alt: string;
+    presentation?: "cover" | "logo";
     src: string;
   };
   /** True for destinations outside shruggie.tech. */
@@ -160,7 +161,8 @@ export const SERVICES: ServiceDetail[] = [
         external: true,
         image: {
           src: "/images/products/glitchpad-mark-color.svg",
-          alt: "Glitchpad product mark",
+          alt: "Glitchpad",
+          presentation: "logo",
         },
       },
     ],

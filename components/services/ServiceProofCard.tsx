@@ -13,7 +13,30 @@ function ProofCardContent({ proof }: ServiceProofCardProps) {
   return (
     <>
       <div className="border-border bg-bg-secondary relative aspect-[16/9] overflow-hidden border-b dark:border-white/[0.06]">
-        {proof.image ? (
+        {proof.image?.presentation === "logo" ? (
+          <div className="relative flex h-full items-center justify-center overflow-hidden bg-[#0b0c0d] px-8 sm:px-12">
+            <div
+              className="absolute inset-0 opacity-70"
+              style={{
+                background:
+                  "radial-gradient(circle at 28% 42%, rgba(255, 217, 0, 0.16), transparent 35%), radial-gradient(circle at 74% 56%, rgba(102, 119, 136, 0.16), transparent 38%)",
+              }}
+              aria-hidden="true"
+            />
+            <div className="relative flex w-full max-w-[25rem] items-center gap-5 sm:gap-7">
+              <Image
+                src={proof.image.src}
+                alt=""
+                width={120}
+                height={120}
+                className="h-20 w-20 shrink-0 sm:h-28 sm:w-28"
+              />
+              <span className="font-display text-3xl font-bold tracking-[-0.04em] text-[#f2f5fa] sm:text-5xl">
+                {proof.name}
+              </span>
+            </div>
+          </div>
+        ) : proof.image ? (
           <Image
             src={proof.image.src}
             alt={proof.image.alt}
