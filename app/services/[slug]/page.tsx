@@ -30,6 +30,7 @@ import CTABackground from "@/components/shared/CTABackground";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import ServiceFAQ from "@/components/services/ServiceFAQ";
+import ServiceProofCard from "@/components/services/ServiceProofCard";
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -125,7 +126,7 @@ export default async function ServiceDetailPage({
       >
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mt-8">
-          <ol className="flex items-center gap-2 text-body-sm text-text-secondary">
+          <ol className="text-body-sm text-text-secondary flex items-center gap-2">
             <li>
               <Link href="/services" className="hover:text-accent">
                 Services
@@ -152,17 +153,17 @@ export default async function ServiceDetailPage({
 
           <ScrollReveal>
             <div className="mt-12">
-              <h2 className="font-display text-display-sm font-bold text-text-primary">
+              <h2 className="font-display text-display-sm text-text-primary font-bold">
                 What we do
               </h2>
               <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {service.capabilities.map((capability) => (
                   <li
                     key={capability}
-                    className="flex items-start gap-3 text-body-md text-text-secondary"
+                    className="text-body-md text-text-secondary flex items-start gap-3"
                   >
                     <span
-                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                      className="bg-accent mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
                       aria-hidden="true"
                     />
                     {capability}
@@ -174,14 +175,35 @@ export default async function ServiceDetailPage({
         </div>
       </section>
 
-      {/* ── FAQ ──────────────────────────────────────────────────────── */}
+      {/* ── Proof ───────────────────────────────────────────────────── */}
       <section className="section-bg-services py-16 md:py-24">
         <div className="container-content">
           <ScrollReveal>
             <SectionHeading
-              label="FAQ"
-              title="Frequently asked questions"
+              label="PROOF IN PRACTICE"
+              title="See the work behind the service"
+              description="Each example links to the published case study, product, research, or portfolio that supports the capability."
             />
+          </ScrollReveal>
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {service.proofs.map((proof, index) => (
+              <ScrollReveal
+                key={`${proof.kind}-${proof.name}`}
+                delay={index * 0.08}
+                className="h-full"
+              >
+                <ServiceProofCard proof={proof} />
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ──────────────────────────────────────────────────────── */}
+      <section className="bg-bg-primary py-16 md:py-24">
+        <div className="container-content">
+          <ScrollReveal>
+            <SectionHeading label="FAQ" title="Frequently asked questions" />
           </ScrollReveal>
           <ScrollReveal>
             <div className="max-w-3xl">
@@ -192,10 +214,10 @@ export default async function ServiceDetailPage({
       </section>
 
       {/* ── Other services ───────────────────────────────────────────── */}
-      <section className="bg-bg-primary py-16 md:py-24">
+      <section className="section-bg-services py-16 md:py-24">
         <div className="container-content">
           <ScrollReveal>
-            <h2 className="font-display text-display-sm font-bold text-text-primary">
+            <h2 className="font-display text-display-sm text-text-primary font-bold">
               Explore other services
             </h2>
             <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -203,15 +225,15 @@ export default async function ServiceDetailPage({
                 <li key={other.slug}>
                   <Link
                     href={`/services/${other.slug}`}
-                    className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-bg-elevated p-5 transition-colors duration-300 hover:border-accent/40 dark:border-white/[0.06] dark:bg-white/[0.02]"
+                    className="group border-border bg-bg-elevated hover:border-accent/40 flex items-center justify-between gap-3 rounded-xl border p-5 transition-colors duration-300 dark:border-white/[0.06] dark:bg-white/[0.02]"
                   >
-                    <span className="font-display text-body-lg font-bold text-text-primary">
+                    <span className="font-display text-body-lg text-text-primary font-bold">
                       {other.shortName}
                     </span>
                     <ArrowRight
                       size={18}
                       aria-hidden="true"
-                      className="shrink-0 text-accent transition-transform duration-300 group-hover:translate-x-1"
+                      className="text-accent shrink-0 transition-transform duration-300 group-hover:translate-x-1"
                     />
                   </Link>
                 </li>
@@ -225,7 +247,7 @@ export default async function ServiceDetailPage({
       <CTABackground>
         <div className="container-content text-center">
           <ScrollReveal>
-            <h2 className="font-display text-display-md font-bold text-text-primary">
+            <h2 className="font-display text-display-md text-text-primary font-bold">
               Let&apos;s scope your project.
             </h2>
             <div className="mt-8">

@@ -1,5 +1,5 @@
 /**
- * ProcessAccordion — Accordion + arrow cycle for the "How We Work" section.
+ * ProcessAccordion — Shared accordion + arrow cycle for the "How We Work" section.
  *
  * Left side (desktop) / Top (mobile): Three accordion panels showing
  * phase details. Only one panel open at a time. Fixed min-height to
@@ -82,20 +82,26 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
   const arrows = [
     {
       d: "M 215,60 C 300,55 355,155 320,250",
-      startX: 215, startY: 60,
-      tipX: 320, tipY: 250,
+      startX: 215,
+      startY: 60,
+      tipX: 320,
+      tipY: 250,
       tipAngle: 110,
     },
     {
       d: "M 318,280 C 290,365 110,365 82,280",
-      startX: 318, startY: 280,
-      tipX: 82, tipY: 280,
+      startX: 318,
+      startY: 280,
+      tipX: 82,
+      tipY: 280,
       tipAngle: 252,
     },
     {
       d: "M 68,250 C 40,155 105,55 185,60",
-      startX: 68, startY: 250,
-      tipX: 185, tipY: 60,
+      startX: 68,
+      startY: 250,
+      tipX: 185,
+      tipY: 60,
       tipAngle: 4,
     },
   ];
@@ -103,7 +109,7 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
   return (
     <svg
       viewBox="0 0 400 400"
-      className="w-full max-w-[320px] mx-auto md:max-w-none"
+      className="mx-auto w-full max-w-[320px] md:max-w-none"
       aria-hidden="true"
     >
       <defs>
@@ -136,21 +142,47 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
 
       {/* Orbit circle (dashed) */}
       <circle
-        cx={200} cy={195} r={140}
-        fill="none" stroke="white" strokeWidth={0.5}
-        opacity={0.08} strokeDasharray="6 8"
+        cx={200}
+        cy={195}
+        r={140}
+        fill="none"
+        stroke="white"
+        strokeWidth={0.5}
+        opacity={0.08}
+        strokeDasharray="6 8"
       />
 
       {/* Center crosshair */}
-      <line x1={200} y1={175} x2={200} y2={215} stroke="white" strokeWidth={0.5} opacity={0.06} />
-      <line x1={180} y1={195} x2={220} y2={195} stroke="white" strokeWidth={0.5} opacity={0.06} />
+      <line
+        x1={200}
+        y1={175}
+        x2={200}
+        y2={215}
+        stroke="white"
+        strokeWidth={0.5}
+        opacity={0.06}
+      />
+      <line
+        x1={180}
+        y1={195}
+        x2={220}
+        y2={195}
+        stroke="white"
+        strokeWidth={0.5}
+        opacity={0.06}
+      />
 
       {/* Radial spoke lines to each node */}
       {nodes.map((node, i) => (
         <line
           key={`spoke-${i}`}
-          x1={200} y1={195} x2={node.cx} y2={node.cy}
-          stroke="white" strokeWidth={0.5} opacity={0.05}
+          x1={200}
+          y1={195}
+          x2={node.cx}
+          y2={node.cy}
+          stroke="white"
+          strokeWidth={0.5}
+          opacity={0.05}
           strokeDasharray="3 5"
         />
       ))}
@@ -162,24 +194,31 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
           <g key={`arrow-${i}`}>
             {/* Track layer (always visible rail) */}
             <path
-              d={arrow.d} fill="none"
-              stroke="white" strokeWidth={1.5} opacity={0.08}
+              d={arrow.d}
+              fill="none"
+              stroke="white"
+              strokeWidth={1.5}
+              opacity={0.08}
               strokeLinecap="round"
             />
             {/* Active layer */}
             <path
-              d={arrow.d} fill="none"
+              d={arrow.d}
+              fill="none"
               stroke="#2BCC73"
               strokeWidth={isActive ? 2 : 1.5}
               strokeLinecap="round"
               filter={isActive ? "url(#arrow-glow)" : undefined}
               style={{
                 opacity: isActive ? 0.7 : 0.15,
-                transition: "stroke-opacity 0.4s ease, opacity 0.4s ease, filter 0.4s ease, stroke-width 0.3s ease",
+                transition:
+                  "stroke-opacity 0.4s ease, opacity 0.4s ease, filter 0.4s ease, stroke-width 0.3s ease",
               }}
             />
             {/* Arrowhead */}
-            <g transform={`translate(${arrow.tipX},${arrow.tipY}) rotate(${arrow.tipAngle})`}>
+            <g
+              transform={`translate(${arrow.tipX},${arrow.tipY}) rotate(${arrow.tipAngle})`}
+            >
               <polygon
                 points="0,0 -8,-3.5 -8,3.5"
                 fill="#2BCC73"
@@ -200,32 +239,42 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
           <g key={`node-${i}`}>
             {/* Outer ring */}
             <circle
-              cx={node.cx} cy={node.cy} r={32}
+              cx={node.cx}
+              cy={node.cy}
+              r={32}
               fill={isActive ? "#2BCC73" : "none"}
               stroke={isActive ? "#2BCC73" : "white"}
               strokeWidth={isActive ? 2 : 1}
               style={{
                 fillOpacity: isActive ? 0.06 : 0,
                 strokeOpacity: isActive ? 0.6 : 0.12,
-                transition: "stroke 0.4s ease, stroke-opacity 0.4s ease, fill 0.4s ease, fill-opacity 0.4s ease, stroke-width 0.3s ease",
+                transition:
+                  "stroke 0.4s ease, stroke-opacity 0.4s ease, fill 0.4s ease, fill-opacity 0.4s ease, stroke-width 0.3s ease",
               }}
             />
             {/* Inner ring */}
             <circle
-              cx={node.cx} cy={node.cy} r={20}
+              cx={node.cx}
+              cy={node.cy}
+              r={20}
               fill="none"
               stroke={isActive ? "#14B8A6" : "white"}
               strokeWidth={isActive ? 1 : 0.5}
               style={{
                 strokeOpacity: isActive ? 0.35 : 0.06,
-                transition: "stroke 0.4s ease, stroke-opacity 0.4s ease, stroke-width 0.3s ease",
+                transition:
+                  "stroke 0.4s ease, stroke-opacity 0.4s ease, stroke-width 0.3s ease",
               }}
             />
             {/* Phase number */}
             <text
-              x={node.cx} y={node.cy}
-              fontFamily="monospace" fontSize={14} fontWeight="bold"
-              textAnchor="middle" dominantBaseline="central"
+              x={node.cx}
+              y={node.cy}
+              fontFamily="monospace"
+              fontSize={14}
+              fontWeight="bold"
+              textAnchor="middle"
+              dominantBaseline="central"
               fill={isActive ? "#2BCC73" : "white"}
               style={{
                 opacity: isActive ? 0.9 : 0.25,
@@ -236,9 +285,12 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
             </text>
             {/* Label below ring */}
             <text
-              x={node.cx} y={node.cy + 50}
-              fontSize={12} fontWeight={500}
-              textAnchor="middle" letterSpacing="0.05em"
+              x={node.cx}
+              y={node.cy + 50}
+              fontSize={12}
+              fontWeight={500}
+              textAnchor="middle"
+              letterSpacing="0.05em"
               fill={isActive ? "#2BCC73" : "white"}
               style={{
                 opacity: isActive ? 0.8 : 0.2,
@@ -257,7 +309,9 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
         return (
           <g key={`dots-${i}`}>
             <circle
-              cx={arrow.startX} cy={arrow.startY} r={2.5}
+              cx={arrow.startX}
+              cy={arrow.startY}
+              r={2.5}
               fill={isActive ? "#2BCC73" : "white"}
               style={{
                 opacity: isActive ? 0.5 : 0.1,
@@ -265,7 +319,9 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
               }}
             />
             <circle
-              cx={arrow.tipX} cy={arrow.tipY} r={2.5}
+              cx={arrow.tipX}
+              cy={arrow.tipY}
+              r={2.5}
               fill={isActive ? "#2BCC73" : "white"}
               style={{
                 opacity: isActive ? 0.5 : 0.1,
@@ -286,8 +342,12 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
           }}
         >
           <circle
-            cx={node.cx} cy={node.cy} r={38}
-            fill="none" stroke="#2BCC73" strokeWidth={1}
+            cx={node.cx}
+            cy={node.cy}
+            r={38}
+            fill="none"
+            stroke="#2BCC73"
+            strokeWidth={1}
             className="process-cycle-pulse"
           />
         </g>
@@ -307,7 +367,7 @@ export default function ProcessAccordion() {
   };
 
   return (
-    <div className="mt-16 md:mt-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+    <div className="mt-16 grid grid-cols-1 items-center gap-8 md:mt-20 md:grid-cols-2 md:gap-12">
       {/* ── Accordion ────────────────────────────────────────────────── */}
       <div className="min-h-[420px] md:min-h-[460px]">
         <div className="space-y-3">
@@ -321,20 +381,21 @@ export default function ProcessAccordion() {
                   "rounded-xl border transition-colors duration-300",
                   isOpen
                     ? "border-accent/40 bg-accent/[0.04]"
-                    : "border-border dark:border-white/[0.06] bg-bg-elevated dark:bg-white/[0.02]",
+                    : "border-border bg-bg-elevated dark:border-white/[0.06] dark:bg-white/[0.02]",
                 )}
               >
                 {/* Panel header / trigger */}
                 <button
+                  id={`phase-trigger-${index}`}
                   onClick={() => toggle(index)}
                   className="flex w-full items-center gap-4 p-5 text-left"
                   aria-expanded={isOpen}
                   aria-controls={`phase-panel-${index}`}
                 >
-                  <span className="font-display text-display-sm font-bold text-accent shrink-0">
+                  <span className="font-display text-display-sm text-accent shrink-0 font-bold">
                     {phase.number}
                   </span>
-                  <span className="font-display text-body-lg font-bold text-text-primary flex-1">
+                  <span className="font-display text-body-lg text-text-primary flex-1 font-bold">
                     {phase.title}
                   </span>
                   <ChevronDown
@@ -353,32 +414,46 @@ export default function ProcessAccordion() {
                       id={`phase-panel-${index}`}
                       role="region"
                       aria-labelledby={`phase-trigger-${index}`}
-                      initial={shouldReduceMotion ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+                      initial={
+                        shouldReduceMotion
+                          ? { height: "auto", opacity: 1 }
+                          : { height: 0, opacity: 0 }
+                      }
                       animate={{ height: "auto", opacity: 1 }}
-                      exit={shouldReduceMotion ? { height: 0, opacity: 0 } : { height: 0, opacity: 0 }}
+                      exit={
+                        shouldReduceMotion
+                          ? { height: 0, opacity: 0 }
+                          : { height: 0, opacity: 0 }
+                      }
                       transition={{
-                        height: { duration: shouldReduceMotion ? 0 : 0.3, ease: [0.25, 0.1, 0.25, 1] },
-                        opacity: { duration: shouldReduceMotion ? 0 : 0.2, delay: shouldReduceMotion ? 0 : 0.1 },
+                        height: {
+                          duration: shouldReduceMotion ? 0 : 0.3,
+                          ease: [0.25, 0.1, 0.25, 1],
+                        },
+                        opacity: {
+                          duration: shouldReduceMotion ? 0 : 0.2,
+                          delay: shouldReduceMotion ? 0 : 0.1,
+                        },
                       }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 pb-5 pt-0">
+                      <div className="px-5 pt-0 pb-5">
                         <p className="text-body-md text-text-secondary">
                           {phase.description}
                         </p>
 
-                        <div className="mt-4 border-t border-border/50 pt-4">
-                          <p className="text-body-sm font-medium uppercase tracking-wider text-accent">
+                        <div className="border-border/50 mt-4 border-t pt-4">
+                          <p className="text-body-sm text-accent font-medium tracking-wider uppercase">
                             Deliverables
                           </p>
                           <ul className="mt-3 space-y-2">
                             {phase.deliverables.map((item) => (
                               <li
                                 key={item}
-                                className="flex items-start gap-2 text-body-sm text-text-secondary"
+                                className="text-body-sm text-text-secondary flex items-start gap-2"
                               >
                                 <span
-                                  className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                                  className="bg-accent mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
                                   aria-hidden="true"
                                 />
                                 {item}
@@ -397,7 +472,7 @@ export default function ProcessAccordion() {
       </div>
 
       {/* ── Cycle Diagram ────────────────────────────────────────────── */}
-      <div className="flex items-center justify-center order-first md:order-last">
+      <div className="order-first flex items-center justify-center md:order-last">
         <CycleDiagram activePhase={activePhase} />
       </div>
     </div>

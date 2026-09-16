@@ -4,8 +4,8 @@
 | Attribute | Value |
 |-----------|-------|
 | Subject | ShruggieTech Website Rebuild |
-| Version | 1.3.0 |
-| Date | 2026-09-12 |
+| Version | 1.3.1 |
+| Date | 2026-09-15 |
 | Status | APPROVED |
 | Audience | AI-first, Human-second |
 | Framework | Next.js (App Router) |
@@ -1319,6 +1319,14 @@ The Products portfolio is placed after client Work and before Research so the ho
 
 Each pillar is a full-width section with an anchor ID for deep linking from the homepage cards.
 
+Each pillar also renders one or more typed **Proof in practice** cards from the
+same `lib/services.ts` record used by its detail page. Proof types are client
+work, internal product, research, or portfolio. Every pillar must include at
+least one client-work, internal-product, or research example; portfolio links
+may supplement but not replace that evidence. Each card explains the
+capability connection and uses a descriptive canonical link. Approved images
+are displayed with meaningful alternative text when available.
+
 **Pillar A: Digital Strategy & Brand** (`#strategy-brand`)
 
 | Element | Content |
@@ -1327,6 +1335,7 @@ Each pillar is a full-width section with an anchor ID for deep linking from the 
 | Lead | "Your brand is the first thing people see and the last thing they remember. We make both count." |
 | Body | "We build visual identity systems, brand standards kits, and content architecture from scratch or refresh what already exists. Every logo, color choice, and typographic decision is made with purpose. We plan sitemaps, define content hierarchy, and ensure your brand translates consistently across every platform and touchpoint." |
 | Capabilities list | Logo design and visual identity systems, color palette and typography systems, brand standards kits for cross-platform consistency, website strategy and content architecture, marketing collateral (business cards, print materials) |
+| Proof | United Way of Anderson County case study; external Brand Building portfolio at `https://brand.shruggie.tech/` |
 
 **Pillar B: Development & Integration** (`#development`)
 
@@ -1336,6 +1345,7 @@ Each pillar is a full-width section with an anchor ID for deep linking from the 
 | Lead | "We build, migrate, and integrate. From marketing sites to custom applications, we handle the full technical stack." |
 | Body | "Our development work spans custom website builds, WordPress deployments, Next.js applications, CMS evaluation and migration, DNS management, SSL/TLS configuration, booking system integrations, payment processing setup, and platform replatforming. We are particularly experienced at rescuing businesses from legacy vendor lock-in: extracting domains, migrating data, and rebuilding onto infrastructure the client actually owns." |
 | Capabilities list | Custom website design and development, WordPress deployment (Business/Premium plans, staging environments), Next.js and modern React applications, CMS evaluation and migration, Booking system integration (Bokun, GetYourGuide, Stripe Connect), DNS management and Cloudflare configuration, Vendor displacement and replatforming (Rescue & Replatform) |
+| Proof | Glitchpad as a shipped internal product |
 
 **Pillar C: Revenue Flows & Marketing Operations** (`#marketing`)
 
@@ -1345,6 +1355,7 @@ Each pillar is a full-width section with an anchor ID for deep linking from the 
 | Lead | "Visibility means nothing without conversion. We build the systems that turn attention into revenue." |
 | Body | "We implement SEO strategy, Answer Engine Optimization (AEO) for AI-mediated search, Google and Meta ad campaigns, social media content calendars, review generation workflows, analytics architecture (GA4, GTM, Search Console), and multi-platform content planning. For tourism and activity businesses, we optimize OTA listings across TripAdvisor, Viator, Expedia, and other major platforms." |
 | Capabilities list | SEO strategy and execution, Answer Engine Optimization (AEO) with advanced schema markup, Google Ads and Meta/Facebook advertising, Social media strategy and content planning, Analytics implementation (GA4, GTM, Search Console), Review generation and reputation management, OTA listing optimization (TripAdvisor, Viator, Expedia) |
+| Proof | I Heart PR Tours case study |
 
 **Pillar D: AI & Data Analysis** (`#ai-data`)
 
@@ -1354,6 +1365,12 @@ Each pillar is a full-width section with an anchor ID for deep linking from the 
 | Lead | "AI is not magic. It is infrastructure. We help you build AI systems that solve real problems." |
 | Body | "We design and deploy conversational AI assistants, retrieval-augmented generation (RAG) systems, semantic search implementations, and workflow automation pipelines. Our AI work is grounded in published research (including the Affective Dynamics Framework for emotional state simulation in AI agents) and production experience across the Azure AI ecosystem. We also provide strategic consulting on AI adoption for businesses exploring how to integrate AI into existing operations." |
 | Capabilities list | Conversational AI and chatbot development, RAG system design and implementation, Semantic search (Azure AI Search), Workflow automation (email/SMS pipelines, process optimization), AI adoption consulting, Multi-agent coding workflow design |
+| Proof | Affective Dynamics Framework research |
+
+**Hub/detail reuse policy:** The Services hub presents compact proof cards
+directly beneath each pillar. Each service detail page reuses the identical
+proof records in a dedicated section before its FAQ. Detail routes do not
+maintain separate proof copy or links.
 
 **Section 3: Engagement Model**
 
@@ -1361,6 +1378,11 @@ Each pillar is a full-width section with an anchor ID for deep linking from the 
 |---------|---------|
 | Title | "How We Work" |
 | Body | "Every engagement follows a three-phase methodology." |
+
+The complete engagement section is a shared component also rendered on the
+About page. The label, title, description, phase content, accordion semantics,
+cycle diagram, and reduced-motion behavior have one implementation and data
+source.
 
 <div style="text-align:justify">
 
@@ -1410,7 +1432,7 @@ Each pillar is a full-width section with an anchor ID for deep linking from the 
 
 <div style="text-align:justify">
 
-Case studies are rendered as cards in a responsive grid (2 columns desktop, 1 column mobile). Each card displays a hero image (or placeholder until screenshots are provided, see §1.4 item 6), client name, industry tag, one-line summary, and a "Read case study →" link. Case studies are stored as MDX files in `content/work/` and follow the same frontmatter pattern as blog posts (see §7.3). The grid is populated dynamically from the filesystem.
+Case studies are rendered as cards in a responsive grid (2 columns desktop, 1 column mobile). Each card displays a hero image (or placeholder until screenshots are provided, see §1.4 item 6), client name, industry tag, one-line summary, and a "Read case study →" link. Case studies are stored as MDX files in `content/work/` and follow the same frontmatter pattern as blog posts (see §7.3). The grid is populated dynamically from the filesystem. A fourth card links to the canonical external Brand Building portfolio at `https://brand.shruggie.tech/`; its label, description, destination, and link copy are single-sourced with the Strategy & Brand proof card.
 
 </div>
 
@@ -1644,6 +1666,17 @@ Three value blocks displayed horizontally (desktop) or stacked (mobile):
 | "Ownership, not rentership." | "We believe clients should own their digital assets. Every domain, every credential, every line of content. We earn revenue by building things that work, not by holding things hostage." |
 | "Specification-driven." | "We write thorough specifications before we write code. This discipline produces better software, clearer communication, and the ability to scale through AI-augmented workflows." |
 | "Ship and iterate." | "We do not hide behind process. We deliver working systems, measure their performance, and improve them continuously." |
+
+**Section 5: How We Work**
+
+Render the shared Discuss, Create, Deliver engagement model immediately after
+What We Believe. About and Services use the same section component, phase data,
+keyboard interaction, assistive-technology state, cycle illustration, and
+reduced-motion behavior.
+
+**Section 6: CTA**
+
+The existing About closing CTA follows How We Work.
 
 <a name="67-blog" id="67-blog"></a>
 ### 6.7. Blog (`/blog`)
@@ -2716,3 +2749,4 @@ All environment variables are configured in the Vercel project dashboard under S
 | <span style="white-space: nowrap;">2026-08-28</span> | 1.2.2 | Removed the stale Next.js 15 pin from the technology stack table. The specification now names the App Router without duplicating the installed major version tracked in `package.json` and the project constitution. |
 | <span style="white-space: nowrap;">2026-09-12</span> | 1.2.3 | Replaced inaccessible muted foregrounds in both themes and introduced a theme-aware orange text role that preserves bright brand orange on dark surfaces while meeting WCAG AA on light surfaces. |
 | <span style="white-space: nowrap;">2026-09-12</span> | 1.3.0 | Replaced repository-authored production blog publication with the authenticated Firestore editorial authority; documented the frozen migration corpus, browser workflow, checksummed migration/export path, dynamic slug delivery, cache convergence, and recovery contract. |
+| <span style="white-space: nowrap;">2026-09-15</span> | 1.3.1 | Added typed, source-backed proof to every Services pillar and detail page; linked the Brand Building portfolio from Strategy & Brand and Work; and made the Discuss, Create, Deliver engagement model one shared Services/About component. |
