@@ -14,7 +14,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import fs from "fs";
 import path from "path";
-import { ExternalLink, Palette } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
 import { BRAND_PORTFOLIO } from "@/lib/company-work";
@@ -26,6 +26,7 @@ import { DeviceMockup } from "@/components/ui/DeviceMockup";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import CTABackground from "@/components/shared/CTABackground";
+import BrandPortfolioVisual from "@/components/shared/BrandPortfolioVisual";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -120,13 +121,8 @@ function BrandPortfolioCard() {
       className="group focus-visible:outline-focus block h-full focus-visible:outline-2 focus-visible:outline-offset-2"
     >
       <Card className="group-hover:border-accent/40 flex h-full flex-col overflow-hidden transition-all duration-300">
-        <div className="-mx-6 -mt-6 mb-6 flex aspect-video items-center justify-center border-b border-white/[0.06] bg-[radial-gradient(circle_at_50%_45%,rgba(43,204,115,0.22),transparent_55%),linear-gradient(135deg,#111827,#030712)] p-8 md:-mx-8 md:-mt-8 md:mb-8">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <Palette size={52} className="text-accent" aria-hidden="true" />
-            <span className="font-display text-display-sm font-bold text-white">
-              Brand systems, applied.
-            </span>
-          </div>
+        <div className="-mx-6 -mt-6 mb-6 aspect-video border-b border-white/[0.06] md:-mx-8 md:-mt-8 md:mb-8">
+          <BrandPortfolioVisual />
         </div>
 
         <div className="flex flex-1 flex-col gap-3">

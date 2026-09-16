@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
 
 import type { ServiceProof } from "@/lib/services";
+import BrandPortfolioVisual from "@/components/shared/BrandPortfolioVisual";
 
 interface ServiceProofCardProps {
   proof: ServiceProof;
@@ -20,6 +21,8 @@ function ProofCardContent({ proof }: ServiceProofCardProps) {
             className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
             sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
           />
+        ) : proof.kind === "Portfolio" ? (
+          <BrandPortfolioVisual />
         ) : (
           <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_50%_40%,rgba(43,204,115,0.18),transparent_60%)] px-6 text-center">
             <span className="text-body-sm text-accent font-mono tracking-[0.18em] uppercase">
