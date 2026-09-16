@@ -14,8 +14,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import fs from "fs";
 import path from "path";
+import { ExternalLink, Palette } from "lucide-react";
 
 import { SITE_URL, getOgImageUrl } from "@/lib/constants";
+import { BRAND_PORTFOLIO } from "@/lib/company-work";
 import { getAllCaseStudiesMeta, type CaseStudyMeta } from "@/lib/work";
 import PageHero from "@/components/shared/PageHero";
 import Badge from "@/components/ui/Badge";
@@ -40,7 +42,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Our Work", { description: "No mock-ups. No hypotheticals. Every project on this page shipped." }),
+        url: getOgImageUrl("Our Work", {
+          description:
+            "No mock-ups. No hypotheticals. Every project on this page shipped.",
+        }),
         width: 1200,
         height: 630,
         alt: "Our Work | ShruggieTech",
@@ -52,7 +57,12 @@ export const metadata: Metadata = {
     title: "Our Work | ShruggieTech",
     description:
       "No mock-ups. No hypotheticals. Every project on this page shipped.",
-    images: [getOgImageUrl("Our Work", { description: "No mock-ups. No hypotheticals. Every project on this page shipped." })],
+    images: [
+      getOgImageUrl("Our Work", {
+        description:
+          "No mock-ups. No hypotheticals. Every project on this page shipped.",
+      }),
+    ],
   },
 };
 
@@ -67,9 +77,9 @@ function CaseStudyCard({ study }: { study: CaseStudyMeta }) {
 
   return (
     <Link href={`/work/${study.slug}`} className="group block h-full">
-      <Card className="overflow-hidden transition-all duration-300 group-hover:border-accent/40 h-full flex flex-col">
+      <Card className="group-hover:border-accent/40 flex h-full flex-col overflow-hidden transition-all duration-300">
         {/* DeviceMockup Screenshot */}
-        <div className="-mx-6 -mt-6 mb-6 md:-mx-8 md:-mt-8 md:mb-8 p-4 md:p-6 bg-black/20">
+        <div className="-mx-6 -mt-6 mb-6 bg-black/20 p-4 md:-mx-8 md:-mt-8 md:mb-8 md:p-6">
           <DeviceMockup
             variant="browser"
             src={hasHeroImage ? study.heroImage : undefined}
@@ -79,12 +89,12 @@ function CaseStudyCard({ study }: { study: CaseStudyMeta }) {
         </div>
 
         {/* Content */}
-        <div className="flex flex-col gap-3 flex-1">
+        <div className="flex flex-1 flex-col gap-3">
           <div className="flex flex-wrap items-center gap-3">
             <Badge>{study.industry}</Badge>
           </div>
 
-          <h3 className="font-display text-display-xs font-bold text-text-primary dark:text-[var(--text-hero)] transition-colors group-hover:text-accent">
+          <h3 className="font-display text-display-xs text-text-primary group-hover:text-accent font-bold transition-colors dark:text-[var(--text-hero)]">
             {study.client}
           </h3>
 
@@ -92,12 +102,54 @@ function CaseStudyCard({ study }: { study: CaseStudyMeta }) {
             {study.summary}
           </p>
 
-          <span className="text-body-sm font-medium text-accent transition-colors group-hover:text-orange-foreground mt-auto">
+          <span className="text-body-sm text-accent group-hover:text-orange-foreground mt-auto font-medium transition-colors">
             Read case study &rarr;
           </span>
         </div>
       </Card>
     </Link>
+  );
+}
+
+function BrandPortfolioCard() {
+  return (
+    <a
+      href={BRAND_PORTFOLIO.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group focus-visible:outline-focus block h-full focus-visible:outline-2 focus-visible:outline-offset-2"
+    >
+      <Card className="group-hover:border-accent/40 flex h-full flex-col overflow-hidden transition-all duration-300">
+        <div className="-mx-6 -mt-6 mb-6 flex aspect-video items-center justify-center border-b border-white/[0.06] bg-[radial-gradient(circle_at_50%_45%,rgba(43,204,115,0.22),transparent_55%),linear-gradient(135deg,#111827,#030712)] p-8 md:-mx-8 md:-mt-8 md:mb-8">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <Palette size={52} className="text-accent" aria-hidden="true" />
+            <span className="font-display text-display-sm font-bold text-white">
+              Brand systems, applied.
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-1 flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge>{BRAND_PORTFOLIO.typeLabel}</Badge>
+          </div>
+
+          <h3 className="font-display text-display-xs text-text-primary group-hover:text-accent font-bold transition-colors dark:text-[var(--text-hero)]">
+            {BRAND_PORTFOLIO.name}
+          </h3>
+
+          <p className="text-body-md text-text-secondary dark:text-[var(--text-body-light)]">
+            {BRAND_PORTFOLIO.description}
+          </p>
+
+          <span className="text-body-sm text-accent group-hover:text-orange-foreground mt-auto inline-flex items-center gap-2 font-medium transition-colors">
+            {BRAND_PORTFOLIO.linkLabel}
+            <ExternalLink size={16} aria-hidden="true" />
+            <span className="sr-only"> (opens in a new tab)</span>
+          </span>
+        </div>
+      </Card>
+    </a>
   );
 }
 
@@ -116,16 +168,24 @@ export default function WorkPage() {
       {/* Case Study Grid */}
       <section className="bg-bg-primary py-16 md:py-24">
         <div className="container-content">
+          <h2 className="sr-only">Featured work</h2>
           {studies.length > 0 ? (
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <ScrollReveal className="h-full">
+                <BrandPortfolioCard />
+              </ScrollReveal>
               {studies.map((study, i) => (
-                <ScrollReveal key={study.slug} delay={i * 0.1} className="h-full">
+                <ScrollReveal
+                  key={study.slug}
+                  delay={(i + 1) * 0.1}
+                  className="h-full"
+                >
                   <CaseStudyCard study={study} />
                 </ScrollReveal>
               ))}
             </div>
           ) : (
-            <p className="text-center text-body-lg text-text-muted">
+            <p className="text-body-lg text-text-muted text-center">
               No case studies yet. Check back soon!
             </p>
           )}
@@ -136,7 +196,7 @@ export default function WorkPage() {
       <CTABackground>
         <div className="container-content text-center">
           <ScrollReveal>
-            <h2 className="font-display text-display-md font-bold text-text-primary">
+            <h2 className="font-display text-display-md text-text-primary font-bold">
               Ready to see results like these?
             </h2>
             <div className="mt-8">

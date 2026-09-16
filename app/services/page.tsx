@@ -17,9 +17,8 @@ import JsonLd from "@/components/shared/JsonLd";
 import PageHero from "@/components/shared/PageHero";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import CTABackground from "@/components/shared/CTABackground";
-import SectionHeading from "@/components/ui/SectionHeading";
+import HowWeWorkSection from "@/components/shared/HowWeWorkSection";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
-import ProcessAccordion from "./ProcessAccordion";
 import ServicePillarSection from "./ServicePillarSection";
 import OwnershipSection from "./OwnershipSection";
 
@@ -40,7 +39,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("Services", { description: "Strategy, design, development, and marketing, shaped around how your business actually operates." }),
+        url: getOgImageUrl("Services", {
+          description:
+            "Strategy, design, development, and marketing, shaped around how your business actually operates.",
+        }),
         width: 1200,
         height: 630,
         alt: "Services | ShruggieTech",
@@ -52,7 +54,12 @@ export const metadata: Metadata = {
     title: "Services | ShruggieTech",
     description:
       "Strategy, design, development, and marketing, shaped around how your business actually operates.",
-    images: [getOgImageUrl("Services", { description: "Strategy, design, development, and marketing, shaped around how your business actually operates." })],
+    images: [
+      getOgImageUrl("Services", {
+        description:
+          "Strategy, design, development, and marketing, shaped around how your business actually operates.",
+      }),
+    ],
   },
 };
 
@@ -88,6 +95,7 @@ export default function ServicesPage() {
           lead={service.lead}
           body={service.body}
           capabilities={service.capabilities}
+          proofs={service.proofs}
           index={index}
           bgClass={index % 2 === 0 ? "bg-bg-primary" : "section-bg-services"}
           detailHref={`/services/${service.slug}`}
@@ -95,20 +103,7 @@ export default function ServicesPage() {
       ))}
 
       {/* ── Section 3: Engagement Model ──────────────────────────────── */}
-      <section className="section-bg-work py-16 md:py-24">
-        <div className="container-content">
-          <ScrollReveal>
-            <SectionHeading
-              label="OUR PROCESS"
-              title="How We Work"
-              description="Every engagement follows an iterative Discuss, Create, Deliver cycle."
-              align="center"
-            />
-          </ScrollReveal>
-
-          <ProcessAccordion />
-        </div>
-      </section>
+      <HowWeWorkSection />
 
       {/* ── Section 4: Ownership Thesis ──────────────────────────────── */}
       <OwnershipSection />
@@ -117,7 +112,7 @@ export default function ServicesPage() {
       <CTABackground>
         <div className="container-content text-center">
           <ScrollReveal>
-            <h2 className="font-display text-display-md font-bold text-text-primary">
+            <h2 className="font-display text-display-md text-text-primary font-bold">
               Let&apos;s scope your project.
             </h2>
 

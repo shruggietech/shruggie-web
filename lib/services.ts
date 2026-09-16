@@ -17,9 +17,32 @@
  * Spec reference: §6.2 (Services), §8.2 (JSON-LD)
  */
 
+import { BRAND_PORTFOLIO } from "./company-work";
+
 export interface ServiceFaq {
   question: string;
   answer: string;
+}
+
+export type ServiceProofKind =
+  | "Client work"
+  | "Internal product"
+  | "Research"
+  | "Portfolio";
+
+export interface ServiceProof {
+  /** Descriptive alternative text. Omit only when there is no image. */
+  image?: {
+    alt: string;
+    src: string;
+  };
+  /** True for destinations outside shruggie.tech. */
+  external?: boolean;
+  href: string;
+  kind: ServiceProofKind;
+  linkLabel: string;
+  name: string;
+  summary: string;
 }
 
 export interface ServiceDetail {
@@ -35,6 +58,8 @@ export interface ServiceDetail {
   body: string;
   /** Concrete capabilities */
   capabilities: string[];
+  /** Approved, source-backed examples that connect this capability to proof. */
+  proofs: ServiceProof[];
   /** 3-5 real client questions, see review note above */
   faqs: ServiceFaq[];
   /** Meta description (160 chars or fewer) for the detail page */
@@ -55,6 +80,28 @@ export const SERVICES: ServiceDetail[] = [
       "Website strategy and content architecture",
       "Marketing collateral and print materials",
     ],
+    proofs: [
+      {
+        kind: "Client work",
+        name: "United Way of Anderson County",
+        summary:
+          "A complete rebrand, content architecture, and website rebuild aligned with the organization’s global brand standards.",
+        href: "/work/united-way",
+        linkLabel: "Read the United Way case study",
+        image: {
+          src: "/images/work/united-way.png",
+          alt: "United Way of Anderson County website shown in a browser",
+        },
+      },
+      {
+        kind: "Portfolio",
+        name: BRAND_PORTFOLIO.name,
+        summary: BRAND_PORTFOLIO.description,
+        href: BRAND_PORTFOLIO.href,
+        linkLabel: BRAND_PORTFOLIO.linkLabel,
+        external: true,
+      },
+    ],
     metaDescription:
       "Brand identity, standards kits, and content architecture that stay consistent across every platform. Built in Knoxville, TN, and yours to keep.",
     faqs: [
@@ -64,7 +111,8 @@ export const SERVICES: ServiceDetail[] = [
           "Yes. Every asset we design is delivered to you and yours to keep: logo source files, color and type specifications, and the full brand standards kit. Ownership of what we build is a core policy, and every engagement is governed by a Master Services Agreement and Scope of Work.",
       },
       {
-        question: "Can you refresh our existing brand instead of starting over?",
+        question:
+          "Can you refresh our existing brand instead of starting over?",
         answer:
           "Yes. We build identity systems from scratch or refine what already exists. If your current brand mostly works, we audit it, keep what is strong, and fix the inconsistencies that show up across your website, print, and social profiles.",
       },
@@ -74,7 +122,8 @@ export const SERVICES: ServiceDetail[] = [
           "A documented system others can follow without guessing: logo usage and spacing, the color palette with exact values, typography and hierarchy, and rules for how the brand appears across platforms. It is what keeps your brand consistent whether we apply it or your own team does.",
       },
       {
-        question: "We are a small business. Is a full identity system overkill?",
+        question:
+          "We are a small business. Is a full identity system overkill?",
         answer:
           "Not necessarily. We scope brand work to what your situation needs. A local business might need a clean logo and a one-page standards sheet; a growing organization might need full content architecture. We recommend the smallest system that keeps you consistent, not the largest we can bill.",
       },
@@ -100,6 +149,21 @@ export const SERVICES: ServiceDetail[] = [
       "DNS management and hosting configuration",
       "Vendor displacement and replatforming",
     ],
+    proofs: [
+      {
+        kind: "Internal product",
+        name: "Glitchpad",
+        summary:
+          "A shipped, local-first desktop and Android workspace built with TypeScript and Rust for real multi-document workflows.",
+        href: "https://glitchpad.com",
+        linkLabel: "Visit the Glitchpad product site",
+        external: true,
+        image: {
+          src: "/images/products/glitchpad-mark-color.svg",
+          alt: "Glitchpad product mark",
+        },
+      },
+    ],
     metaDescription:
       "Custom websites, web apps, CMS migrations, and integrations, built on the stack that fits your project. You own the code, domain, and credentials.",
     faqs: [
@@ -109,7 +173,8 @@ export const SERVICES: ServiceDetail[] = [
           "We work across whatever stack fits the project, not whatever we prefer. That spans custom builds, modern web application frameworks, and mainstream CMS platforms like WordPress. If you are tied to a system you cannot replace, we can build a compatibility layer over it rather than forcing a rebuild.",
       },
       {
-        question: "Can you move our site off our current provider without downtime?",
+        question:
+          "Can you move our site off our current provider without downtime?",
         answer:
           "Yes. Replatforming and vendor displacement are core work. We migrate content, configure DNS and hosting, and stage the switch so it goes live cleanly. You end up holding your own domain, hosting credentials, and content when it is done.",
       },
@@ -145,6 +210,20 @@ export const SERVICES: ServiceDetail[] = [
       "Review generation and reputation management",
       "Marketplace and platform listing optimization",
     ],
+    proofs: [
+      {
+        kind: "Client work",
+        name: "I Heart PR Tours",
+        summary:
+          "An ongoing tourism partnership spanning brand, SEO and AEO, booking integrations, OTA listings, social planning, and advertising.",
+        href: "/work/i-heart-pr-tours",
+        linkLabel: "Read the I Heart PR Tours case study",
+        image: {
+          src: "/images/work/i-heart-pr-tours.png",
+          alt: "I Heart PR Tours website shown in a browser",
+        },
+      },
+    ],
     metaDescription:
       "SEO, Answer Engine Optimization, paid ads, and analytics, shaped around how your customers actually find and buy from you. Results you can measure.",
     faqs: [
@@ -169,7 +248,8 @@ export const SERVICES: ServiceDetail[] = [
           "We instrument before we spend, so results are measured, not assumed. Then we track the metrics that map to revenue for your business, such as leads, calls, bookings, or sales, rather than vanity numbers that look good in a report and change nothing.",
       },
       {
-        question: "Every business converts differently. How do you tailor the strategy?",
+        question:
+          "Every business converts differently. How do you tailor the strategy?",
         answer:
           "We start from how your customers actually find and buy from you. A tour operator needs marketplace visibility; a local shop needs to own local search; an e-commerce brand needs a funnel that does not leak. The strategy is shaped around your conversion path, not a fixed package.",
       },
@@ -190,6 +270,16 @@ export const SERVICES: ServiceDetail[] = [
       "AI governance and responsible-use policy",
       "AI literacy training for staff",
       "Multi-agent coding workflow design",
+    ],
+    proofs: [
+      {
+        kind: "Research",
+        name: "Affective Dynamics Framework",
+        summary:
+          "Published, mathematically grounded research for producing emergent emotional behavior and relational dynamics in AI agents.",
+        href: "/research/affective-dynamics",
+        linkLabel: "Read the Affective Dynamics research",
+      },
     ],
     metaDescription:
       "Chatbots, RAG systems, semantic search, and workflow automation wired into the tools you already use. We build the AI that solves a real problem and skip the rest.",

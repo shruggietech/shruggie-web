@@ -1,7 +1,7 @@
 /**
  * About Page — /about
  *
- * Five sections: Hero, Origin Story, Team, Values, CTA.
+ * Six sections: Hero, Origin Story, Team, Values, How We Work, CTA.
  *
  * Spec reference: §6.6 (About), §1.4 item 5 (team photos)
  */
@@ -18,6 +18,7 @@ import CTABackground from "@/components/shared/CTABackground";
 import TeamCard from "@/components/about/TeamCard";
 import { TEAM_MEMBERS } from "@/lib/team";
 import OriginIllustration from "@/components/about/OriginIllustration";
+import HowWeWorkSection from "@/components/shared/HowWeWorkSection";
 
 /* ── Metadata ───────────────────────────────────────────────────────────── */
 
@@ -36,7 +37,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: getOgImageUrl("About ShruggieTech", { description: "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences." }),
+        url: getOgImageUrl("About ShruggieTech", {
+          description:
+            "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences.",
+        }),
         width: 1200,
         height: 630,
         alt: "About ShruggieTech | ShruggieTech",
@@ -48,7 +52,12 @@ export const metadata: Metadata = {
     title: "About ShruggieTech | ShruggieTech",
     description:
       "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences that help businesses present sharper, operate smarter, and scale further.",
-    images: [getOgImageUrl("About ShruggieTech", { description: "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences." })],
+    images: [
+      getOgImageUrl("About ShruggieTech", {
+        description:
+          "A modern technical studio in Knoxville, Tennessee. We build digital systems, software, and AI-driven experiences.",
+      }),
+    ],
   },
 };
 
@@ -103,7 +112,7 @@ export default function AboutPage() {
       />
 
       {/* ── Section 2: Origin Story ──────────────────────────────────── */}
-      <section className="bg-bg-primary py-16 md:py-24 overflow-hidden">
+      <section className="bg-bg-primary overflow-hidden py-16 md:py-24">
         {/* Mobile: standard container layout */}
         <div className="container-content md:hidden">
           <ScrollReveal>
@@ -111,33 +120,34 @@ export default function AboutPage() {
               <OriginIllustration />
             </div>
             <SectionHeading title={ORIGIN_HEADING} />
-            <p className="mt-6 text-body-lg text-justify dark:text-[var(--text-body-light)] text-text-secondary">
+            <p className="text-body-lg text-text-secondary mt-6 text-justify dark:text-[var(--text-body-light)]">
               {ORIGIN_STORY}
             </p>
           </ScrollReveal>
         </div>
 
         {/* Desktop: full-bleed layout matching Services section pattern */}
-        <div className="hidden md:flex w-full items-center gap-8 lg:gap-12">
+        <div className="hidden w-full items-center gap-8 md:flex lg:gap-12">
           <ScrollReveal>
             <div className="flex w-full items-center gap-8 lg:gap-12">
               {/* Left column — aligned to container-content grid */}
               <div
                 className="flex shrink-0 flex-col"
                 style={{
-                  width: 'min(45%, calc(var(--max-width-content) * 0.45))',
-                  marginLeft: 'max(var(--padding-x), calc((100% - var(--max-width-content)) / 2 + var(--padding-x)))',
+                  width: "min(45%, calc(var(--max-width-content) * 0.45))",
+                  marginLeft:
+                    "max(var(--padding-x), calc((100% - var(--max-width-content)) / 2 + var(--padding-x)))",
                 }}
               >
                 <SectionHeading title={ORIGIN_HEADING} />
-                <p className="mt-6 text-body-lg dark:text-[var(--text-body-light)] text-text-secondary">
+                <p className="text-body-lg text-text-secondary mt-6 dark:text-[var(--text-body-light)]">
                   {ORIGIN_STORY}
                 </p>
               </div>
 
               {/* Right column — illustration fills to viewport edge */}
               <div
-                className="flex min-w-0 flex-1 items-center justify-center pr-[var(--padding-x)] py-12"
+                className="flex min-w-0 flex-1 items-center justify-center py-12 pr-[var(--padding-x)]"
                 aria-hidden="true"
               >
                 <OriginIllustration />
@@ -184,12 +194,12 @@ export default function AboutPage() {
               <ScrollReveal key={value.title} delay={index * 0.08}>
                 <Card
                   hover={false}
-                  className="h-full border-accent/20 shadow-[0_0_15px_rgba(43,204,115,0.15)] dark:border-brand-green-bright/20 dark:shadow-[0_0_20px_rgba(43,204,115,0.1)]"
+                  className="border-accent/20 dark:border-brand-green-bright/20 h-full shadow-[0_0_15px_rgba(43,204,115,0.15)] dark:shadow-[0_0_20px_rgba(43,204,115,0.1)]"
                 >
-                  <h3 className="font-display text-display-sm font-bold text-text-primary">
+                  <h3 className="font-display text-display-sm text-text-primary font-bold">
                     {value.title}
                   </h3>
-                  <p className="mt-4 text-body-md text-text-secondary">
+                  <p className="text-body-md text-text-secondary mt-4">
                     {value.description}
                   </p>
                 </Card>
@@ -199,11 +209,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Section 5: CTA ───────────────────────────────────────────── */}
+      {/* ── Section 5: Engagement Model ──────────────────────────────── */}
+      <HowWeWorkSection />
+
+      {/* ── Section 6: CTA ───────────────────────────────────────────── */}
       <CTABackground>
         <div className="container-content text-center">
           <ScrollReveal>
-            <h2 className="font-display text-display-md font-bold text-text-primary">
+            <h2 className="font-display text-display-md text-text-primary font-bold">
               Ready to work with a team that actually cares?
             </h2>
             <div className="mt-8">

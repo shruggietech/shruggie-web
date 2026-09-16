@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Service proof and company narrative**: added typed, source-backed proof
+  cards to every Services pillar and detail page, linked the canonical Brand
+  Building portfolio from Strategy & Brand and Work, and reused the established
+  Discuss, Create, Deliver engagement model on About through one shared
+  accessible component and phase data source
+
 - **AI skills catalog**: added a typed six-skill catalog with an indexable
   `/skills` hub and statically generated detail pages, automatically updating
   GitHub latest-release links, source links, SoftwareSourceCode and
