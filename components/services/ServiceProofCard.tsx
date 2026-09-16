@@ -4,6 +4,7 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 
 import type { ServiceProof } from "@/lib/services";
 import BrandPortfolioVisual from "@/components/shared/BrandPortfolioVisual";
+import { AffectiveDynamicsProofVisual } from "@/components/shared/ResearchVisuals";
 
 interface ServiceProofCardProps {
   proof: ServiceProof;
@@ -46,6 +47,8 @@ function ProofCardContent({ proof }: ServiceProofCardProps) {
           />
         ) : proof.kind === "Portfolio" ? (
           <BrandPortfolioVisual />
+        ) : proof.kind === "Research" ? (
+          <AffectiveDynamicsProofVisual />
         ) : (
           <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_50%_40%,rgba(43,204,115,0.18),transparent_60%)] px-6 text-center">
             <span className="text-body-sm text-accent font-mono tracking-[0.18em] uppercase">
