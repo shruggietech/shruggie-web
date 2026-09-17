@@ -9,6 +9,8 @@
  * Decision: GitHub #22. Implementation: GitHub #93.
  */
 
+"use client";
+
 import Link from "next/link";
 import {
   Brain,
@@ -17,7 +19,7 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-import type { ComponentType } from "react";
+import { useEffect, useRef, type ComponentType } from "react";
 
 import {
   AIDataIllustration,
@@ -25,6 +27,12 @@ import {
   MarketingIllustration,
   StrategyBrandIllustration,
 } from "@/components/home/ServiceIllustrations";
+import {
+  AIDataIllustrationLarge,
+  DevelopmentIllustrationLarge,
+  MarketingIllustrationLarge,
+  StrategyBrandIllustrationLarge,
+} from "@/components/home/ServiceIllustrationsLarge";
 import ScrollReveal from "@/components/shared/ScrollReveal";
 import Card from "@/components/ui/Card";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -34,6 +42,7 @@ interface ServiceItem {
   href: string;
   icon: LucideIcon;
   Illustration: ComponentType<{ className?: string }>;
+  StaticIllustration: ComponentType<{ className?: string }>;
   title: string;
 }
 
@@ -44,7 +53,8 @@ const services: ServiceItem[] = [
       "Brand identity, content architecture, visual systems, and marketing collateral. The strategic foundation everything else stands on.",
     href: "/services/strategy-brand",
     icon: Palette,
-    Illustration: StrategyBrandIllustration,
+    Illustration: StrategyBrandIllustrationLarge,
+    StaticIllustration: StrategyBrandIllustration,
   },
   {
     title: "Development & Integration",
@@ -52,7 +62,8 @@ const services: ServiceItem[] = [
       "Custom websites, modern web applications, booking systems, payment integrations, and platform migrations. Built to last, built to perform.",
     href: "/services/development",
     icon: Code2,
-    Illustration: DevelopmentIllustration,
+    Illustration: DevelopmentIllustrationLarge,
+    StaticIllustration: DevelopmentIllustration,
   },
   {
     title: "Revenue Flows & Marketing Ops",
@@ -60,7 +71,8 @@ const services: ServiceItem[] = [
       "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Turning visibility into revenue.",
     href: "/services/marketing",
     icon: TrendingUp,
-    Illustration: MarketingIllustration,
+    Illustration: MarketingIllustrationLarge,
+    StaticIllustration: MarketingIllustration,
   },
   {
     title: "AI & Data Analysis",
@@ -68,9 +80,50 @@ const services: ServiceItem[] = [
       "Chatbots, RAG systems, workflow automation, and AI consulting. AI that solves real problems, not just demos well.",
     href: "/services/ai-data",
     icon: Brain,
-    Illustration: AIDataIllustration,
+    Illustration: AIDataIllustrationLarge,
+    StaticIllustration: AIDataIllustration,
   },
 ];
+
+function ServiceIllustrationReveal({
+  Illustration,
+  StaticIllustration,
+}: Pick<ServiceItem, "Illustration" | "StaticIllustration">) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    if (!("IntersectionObserver" in window)) {
+      wrapper.classList.add("is-animating");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+
+        wrapper.classList.add("is-animating");
+        observer.disconnect();
+      },
+      { threshold: 0.3 },
+    );
+
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={wrapperRef}
+      className="relative flex h-full w-full items-center justify-center"
+    >
+      <Illustration className="hidden h-[18rem] w-full max-w-[13rem] opacity-90 motion-safe:block" />
+      <StaticIllustration className="hidden h-40 w-40 opacity-80 motion-reduce:block" />
+    </div>
+  );
+}
 
 export default function ServicesGrid() {
   return (
@@ -140,7 +193,12 @@ export default function ServicesGrid() {
                       aria-hidden="true"
                     >
                       <div className="bg-accent/10 absolute h-32 w-32 rounded-full blur-3xl transition-transform duration-500 group-hover/card:scale-125" />
-                      <service.Illustration className="relative h-40 w-40 opacity-80 transition-all duration-500 group-hover/card:scale-[1.03] group-hover/card:opacity-100" />
+                      <div className="relative h-full w-full transition-transform duration-500 group-hover/card:scale-[1.03]">
+                        <ServiceIllustrationReveal
+                          Illustration={service.Illustration}
+                          StaticIllustration={service.StaticIllustration}
+                        />
+                      </div>
                     </div>
                   </div>
                 </Card>

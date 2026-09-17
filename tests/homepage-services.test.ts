@@ -36,4 +36,11 @@ describe("homepage Services interaction", () => {
     expect(servicesGrid).toContain('href: "/services/marketing"');
     expect(servicesGrid).toContain('href: "/services/ai-data"');
   });
+
+  it("draws the large SVG illustrations as their cards enter view", () => {
+    expect(servicesGrid).toContain("ServiceIllustrationsLarge");
+    expect(servicesGrid).toContain("IntersectionObserver");
+    expect(servicesGrid).toContain('classList.add("is-animating")');
+    expect(servicesGrid).toContain("motion-reduce:block");
+  });
 });
