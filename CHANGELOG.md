@@ -61,6 +61,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Homepage Services interaction**: replaced the GSAP-pinned desktop service
+  sequence with a naturally scrolling responsive card grid, preserving the
+  approved capability copy, illustrations, and detail-page links while
+  removing Services-specific pin, scrub, snap, and ScrollTrigger lifecycle
+  behavior; the mobile carousel and Work presentation remain unchanged
 - **Theme scope**: made dark mode mandatory across every non-blog route and
   limited the light/dark toggle plus its saved preference to `/blog` and article
   pages, with dark as the default reading theme
