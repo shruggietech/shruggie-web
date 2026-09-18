@@ -4,7 +4,7 @@
 
 **Created**: 2026-09-17
 
-**Status**: Approved for implementation; production verification pending
+**Status**: Repair code implemented in draft PR #99; SC-001 remains unmet locally and production verification is pending
 
 **Input**: Continue the production-audit repairs in [#96](https://github.com/shruggietech/shruggie-web/issues/96) and [#97](https://github.com/shruggietech/shruggie-web/issues/97), coordinated by [#31](https://github.com/shruggietech/shruggie-web/issues/31).
 

@@ -33,9 +33,9 @@ Independent check: target bounds, selected card, destination names, and unchange
 ## Phase 5: Validation and review
 
 - [x] T009 Update progressive reveal and cookie/navigation contracts in `ShruggieTech_Website_Specification.md` and user-facing changes in `CHANGELOG.md`.
-- [ ] T010 Run required checks and compare repeated optimized-build measurements; summarize evidence in `specs/001-mobile-quality/validation.md`.
-- [ ] T011 Verify browser interactions, widths, focus, reduced motion and initial HTML; record limitations in `specs/001-mobile-quality/validation.md`.
-- [ ] T012 Publish the reviewable slice and link #96/#97 without premature closure; mark implementation status in `specs/001-mobile-quality/spec.md`.
+- [x] T010 Run required checks and compare repeated optimized-build measurements; summarize evidence, including unmet mobile budgets, in `specs/001-mobile-quality/validation.md`.
+- [x] T011 Verify browser interactions, widths, focus, unit-tested reduced motion and initial HTML; record limitations in `specs/001-mobile-quality/validation.md`.
+- [x] T012 Publish the reviewable draft slice in PR #99 and link #96/#97 without premature closure; mark code status and the unresolved performance gate in `specs/001-mobile-quality/spec.md`.
 
 ## Dependencies and strategy
 

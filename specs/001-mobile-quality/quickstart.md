@@ -7,3 +7,7 @@
 5. Disable scripting or inspect the initial server-rendered HTML. No reveal wrapper starts with a hidden opacity/transform. Unsupported animation/observation APIs must fail open.
 6. Check all mobile pagination bounds are at least 44px square. Select each card by keyboard, touch/click, and swipe; inspect service/privacy link names and consent dismissal.
 7. Keep #96/#97 and #31 open until final production checks pass. Navigation TBT is diagnostic and does not establish real-user INP.
+
+The completed checks, every retained run and remaining gates are recorded in [validation.md](validation.md) and [measurements.json](measurements.json). Supplemental applied throttling must be reported separately from the approved default-simulation gate.
+
+To regenerate the font assets offline, use Python with fonttools 4.65.0 and Brotli support, then run `python scripts/prepare-fonts.py`. The generator verifies original glyph geometry, hinting, metrics, coverage and deterministic output. These tools are development prerequisites only; application installation and builds require no additional package.
