@@ -12,8 +12,14 @@
 
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import type { CSSProperties } from "react";
 
-import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/constants";
 import { getThemeScript } from "@/lib/theme";
 import { generateOrganizationSchema } from "@/lib/schema";
 import LenisProvider from "@/components/layout/LenisProvider";
@@ -72,17 +78,24 @@ const spaceGrotesk = localFont({
 const geist = localFont({
   src: [
     {
-      path: "../public/fonts/Geist-Regular.woff2",
+      path: "../public/fonts/Geist-Regular-Latin.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../public/fonts/Geist-Medium.woff2",
+      path: "../public/fonts/Geist-Medium-Latin.woff2",
       weight: "500",
       style: "normal",
     },
   ],
   variable: "--font-body-var",
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
+    },
+  ],
   display: "swap",
   preload: true,
 });
@@ -90,12 +103,19 @@ const geist = localFont({
 const geistMono = localFont({
   src: [
     {
-      path: "../public/fonts/GeistMono-Regular.woff2",
+      path: "../public/fonts/GeistMono-Regular-Latin.woff2",
       weight: "400",
       style: "normal",
     },
   ],
   variable: "--font-mono-var",
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
+    },
+  ],
   display: "swap",
   preload: false,
 });
@@ -139,6 +159,21 @@ export const metadata: Metadata = {
 
 // ── Root Layout ────────────────────────────────────────────────────────────
 
+// Place the original extended face ahead of Next's metric-adjusted system
+// fallback. Use the public font style export rather than a generated family name.
+function withExtendedFace(fontFamily: string, extendedFamily: string) {
+  const [primary, ...fallbacks] = fontFamily.split(",");
+  return [primary, `"${extendedFamily}"`, ...fallbacks].join(",");
+}
+
+const fontVariables = {
+  "--font-body-var": withExtendedFace(geist.style.fontFamily, "Shruggie Geist"),
+  "--font-mono-var": withExtendedFace(
+    geistMono.style.fontFamily,
+    "Shruggie Geist Mono",
+  ),
+} as CSSProperties;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -147,14 +182,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${geist.variable} ${geistMono.variable}`}
+      className={`dark ${spaceGrotesk.variable} ${geist.variable} ${geistMono.variable}`}
+      style={fontVariables}
       suppressHydrationWarning
     >
       <head>
         {/* FOUC-free theme initialization (spec §2.6) */}
-        <script
-          dangerouslySetInnerHTML={{ __html: getThemeScript() }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: getThemeScript() }} />
         {/* Consent-gated GA4/GTM loading (spec §6.11, §10.2) */}
         <script
           dangerouslySetInnerHTML={{
