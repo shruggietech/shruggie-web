@@ -1,6 +1,6 @@
 /**
  * ServiceIllustrationsLarge — Full-column-height animated SVG illustrations
- * for the pinned ServicesScroll section.
+ * for the mobile Services carousel's featured illustration area.
  *
  * Each illustration fills the right 45% column (~600×800 viewport) and uses
  * CSS @keyframes entrance animations controlled by an `.is-active` class on

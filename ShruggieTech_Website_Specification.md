@@ -1247,20 +1247,21 @@ Mobile navigation opens as a full-screen overlay sliding in from the right. The 
 | Element | Content |
 |---------|---------|
 | Section label | "WHAT WE DO" |
-| Section title | "Full-stack capability, studio-scale delivery." |
-| Layout | 2x2 card grid on desktop, single column on mobile |
+| Section title | "Full-stack capability, boutique delivery." |
+| Description | "One point of contact. Every layer." |
+| Layout | Naturally scrolling 2x2 card grid on desktop; the section must not pin, scrub, snap, or capture vertical scrolling. Mobile uses a swipeable carousel with all four categories available in document order. Reduced-motion users receive complete static content. |
 | Cards | Four cards corresponding to the public service pillars (KB §1.3): |
 
 Card content:
 
 | Card Title | Description | Icon |
 |------------|-------------|------|
-| Digital Strategy & Brand | "From brand identity to content architecture, we build the visual and strategic foundation your business stands on." | `Palette` (Lucide) |
+| Digital Strategy & Brand | "Brand identity, content architecture, visual systems, and marketing collateral. The strategic foundation everything else stands on." | `Palette` (Lucide) |
 | Development & Integration | "Custom websites, modern web applications, booking systems, payment integrations, and platform migrations. Built to last, built to perform." | `Code2` (Lucide) |
-| Revenue Flows & Marketing Ops | "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Everything that turns visibility into revenue." | `TrendingUp` (Lucide) |
-| AI & Data Analysis | "Chatbots, RAG systems, workflow automation, and AI consulting. We help you adopt AI that actually works for your business." | `Brain` (Lucide) |
+| Revenue Flows & Marketing Ops | "SEO, AEO, paid campaigns, social strategy, review generation, and analytics. Turning visibility into revenue." | `TrendingUp` (Lucide) |
+| AI & Data Analysis | "Chatbots, RAG systems, workflow automation, and AI consulting. AI that solves real problems, not just demos well." | `Brain` (Lucide) |
 
-Each card links to the corresponding section on the `/services` page via an anchor.
+Each card links to its corresponding `/services/[slug]` detail page. The homepage section remains capability-led and does not duplicate client, product, portfolio, or research proof from the dedicated Work, Products, Research, or Services-detail surfaces.
 
 **Section 3: Work Preview**
 
@@ -1269,7 +1270,9 @@ Each card links to the corresponding section on the `/services` page via an anch
 | Section label | "OUR WORK" |
 | Section title | "Real results for real businesses." |
 | Description | "We solve messy problems for businesses that need more than a template." |
-| Layout | Horizontal scroll strip of 3 featured case study cards (United Way, Scruggs Tire, I Heart PR Tours). Each card shows: client name, industry tag, one-line summary, a hero image (or placeholder), and a "Read case study →" link. |
+| Layout | One desktop/tablet case study visible at a time with a vertical client-logo selector on the left and a large showcase on the right. Each selector includes the official logo and readable client name; the selected client has a green accent. Text and browser mockups sit side by side on wide screens and stack on tablet. Each project retains its client name, industry badge, approved summary, screenshot, outcome metric, and descriptive case-study link. A View all work link below the selector leads to `/work`. Keep the homepage selection curated (roughly 3–6 featured clients); it is not an exhaustive industry filter. The existing swipeable carousel remains below 768px. No desktop pinning, scrubbing, snapping, or frame-progress controls. |
+| Tab interaction | Explicit click or Arrow Up/Down (Left/Right also supported), Home/End selection with roving keyboard focus, vertical tablist semantics, and associated panels. Inactive panels are invisible, inert, and excluded from the accessibility tree; overlapping grid cells reserve the tallest panel's height so switching does not shift downstream content. No autoplay or scroll-position-driven selection. |
+| Motion | Shared viewport entrance reveals only; reduced-motion users receive complete static content in the same natural-flow layout. Client logos and the homepage section order remain unchanged. |
 
 **Section 4: Products Portfolio**
 
