@@ -11,3 +11,5 @@
 The completed checks, every retained run and remaining gates are recorded in [validation.md](validation.md) and [measurements.json](measurements.json). Supplemental applied throttling must be reported separately from the approved default-simulation gate.
 
 To regenerate the font assets offline, use Python with fonttools 4.65.0 and Brotli support, then run `python scripts/prepare-fonts.py`. The generator verifies original glyph geometry, hinting, metrics, coverage and deterministic output. These tools are development prerequisites only; application installation and builds require no additional package.
+
+Run `npm run test:skyline` to check both exact vector crops, or `npx tsx scripts/prepare-skyline.tsx` to regenerate them after editing the authoritative artwork. Illustration lifecycle and process keyboard/ARIA regressions are in `tests/illustration-in-view.test.tsx` and `tests/process-accordion.test.tsx`.

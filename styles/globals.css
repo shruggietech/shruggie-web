@@ -13,8 +13,14 @@
  * instead of a separate tailwind.config.ts file.
  */
 
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @import "./font-extended.css";
+/* Runtime templates only: planning documents must not enlarge shipped CSS. */
+@source "../app";
+@source "../components";
+@source "../lib";
+@source "../content";
+@source "../hooks";
 
 @plugin "@tailwindcss/typography";
 

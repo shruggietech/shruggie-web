@@ -13,6 +13,7 @@ Bundle #96 and #97 into one repair slice. Render both hero primitives directly, 
 - Vitest/Testing Library lifecycle tests, required repository checks, local headless Lighthouse 13.4.1, and browser visual/interaction QA.
 - Existing specification budgets are unchanged. Three repeated controlled measurements per route/profile; production and field-INP gates remain on GitHub.
 - Scope: shared compact font delivery, dark server HTML, and server-rendered Research, two hero primitives, shared reveal, two mobile carousels, service-grid link name, cookie notice, regression tests, specification and changelog.
+- Completion refinement: exact skyline assets replace window-grid hydration; native illustration observation and accordion transitions reduce shared runtime; explicit runtime Tailwind sources exclude documentation-only utilities. Compact common-character faces cover all five weights, with complete original-character fallbacks and licensing metadata retained.
 
 ## Constitution Check
 
@@ -42,6 +43,8 @@ All pre-design gates pass. Post-design research confirms fail-open animation, ze
 ## Complexity Tracking
 
 No new renderer, runtime package, credential, analytics collection, or workflow is introduced. Existing Motion remains available for interactions that still need it; the simple reveal no longer imports it.
+
+Use a disposable loopback-only HTTPS/HTTP2 proxy for the additional controlled comparison: recorded production requests are `h2`, whereas `next start` alone is HTTP/1.1. Retain prior HTTP/1.1 failures. Keep the same Lighthouse version, simulated network/CPU settings and numeric budgets; disclose the local certificate exception used only by owned headless profiles. This is local repair evidence, never final production acceptance.
 
 ## Rendering refinement
 

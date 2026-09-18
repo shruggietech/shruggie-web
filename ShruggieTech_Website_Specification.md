@@ -591,7 +591,7 @@ const geistMono = localFont({
 });
 ```
 
-The loading example above illustrates the font sources; `app/layout.tsx` supplies the Unicode descriptors and extended-face stack, with complementary faces in `styles/font-extended.css`. Common Latin Geist body and monospace faces may be compacted without changing their glyph outlines, hinting, advances, or vertical metrics. The original full files remain available through complementary Unicode ranges, before system fallbacks; every originally supported character remains supported. Body/display preloads and `font-display: swap` are retained. The offline `scripts/prepare-fonts.py` generator verifies the retained glyph mappings and metrics.
+The loading example above illustrates the font sources; `app/layout.tsx` supplies the Unicode descriptors and extended-face stack, with complementary faces in `styles/font-extended.css`. Common English characters and punctuation in Geist, Geist Mono, and Space Grotesk may be compacted without changing retained glyph outlines, hinting, advances, or vertical metrics. Standard shaping and kerning remain; unused optional stylistic sets need not ship in the compact faces. The original full files remain available through complementary Unicode ranges, before system fallbacks; every originally supported character remains supported. Include the macron in the site's shruggie mark in the compact range. Used site-wide faces are preloaded with `font-display: swap`. The offline `scripts/prepare-fonts.py` generator verifies retained glyph mappings, metrics and complete coverage.
 
 **Type scale (Tailwind extension):**
 
@@ -2639,13 +2639,13 @@ export async function GET(request: NextRequest) {
 <a name="92-asset-optimization" id="92-asset-optimization"></a>
 ### 9.2. Asset Optimization
 
-**Images:** All images served via Next.js `<Image>` component with automatic WebP/AVIF conversion, responsive `srcset`, and lazy loading. Hero images use `priority` prop for eager loading.
+**Images:** Raster images use Next.js `<Image>` with automatic WebP/AVIF conversion, responsive `srcset`, and lazy loading. Hero images load eagerly. The shared decorative Knoxville skyline uses lazy SVG images with explicit dimensions and CSS-selected desktop/mobile crops. `KnoxvilleSkylineArt.tsx` remains authoritative; `scripts/prepare-skyline.tsx` generates both assets, and `npm run test:skyline` verifies byte-identical output. Geometry, colors, and placement are retained without hydrating the window grid.
 
-**Fonts:** Self-hosted WOFF2 with `next/font/local`. Preloaded for display and body fonts. Monospace font loads on demand (blog posts with code blocks only).
+**Fonts:** Self-hosted WOFF2 with `next/font/local`. Compact display, body, and monospace faces used throughout the site are preloaded. Monospace is also used by shared footer/product and service-proof labels, rather than only blog code. Complementary original faces load on demand for excluded characters; preserve the original extended faces ahead of system fallbacks.
 
-**JavaScript:** Lenis and Framer Motion are client-side only; they are code-split and tree-shaken. The blog MDX renderer uses `next-mdx-remote/rsc` (React Server Components) to avoid sending the MDX parser to the client.
+**JavaScript:** Lenis and any retained Framer Motion interactions are client-side, code-split and tree-shaken. Service/ownership/origin illustration entrances use native one-time observation with initial/live reduced-motion and failure fallbacks. The shared process accordion keeps one selected phase, matching trigger/panel semantics and diagram state; CSS grid/opacity transitions replace its general animation runtime, and inactive panels are inert and excluded from the accessibility tree. Reduced motion disables the transitions. The blog MDX renderer uses `next-mdx-remote/rsc` (React Server Components) to avoid sending the MDX parser to the client.
 
-**CSS:** Tailwind CSS purges unused classes at build time. The `@tailwindcss/typography` plugin is applied only to `.prose` containers (blog posts).
+**CSS:** Tailwind CSS scans explicit runtime source directories (`app`, `components`, `lib`, `content`, `hooks`), excluding planning documents from shipped utility generation. The `@tailwindcss/typography` plugin is applied only to `.prose` containers (blog posts). Retain external stylesheet caching unless a disclosed measurement demonstrates a better supported strategy.
 
 <a name="10-deployment-and-cicd" id="10-deployment-and-cicd"></a>
 <hr class="print-page-break">

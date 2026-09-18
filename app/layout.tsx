@@ -60,17 +60,24 @@ function getConsentGatedAnalyticsScript(): string {
 const spaceGrotesk = localFont({
   src: [
     {
-      path: "../public/fonts/SpaceGrotesk-Medium.woff2",
+      path: "../public/fonts/SpaceGrotesk-Medium-Latin.woff2",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../public/fonts/SpaceGrotesk-Bold.woff2",
+      path: "../public/fonts/SpaceGrotesk-Bold-Latin.woff2",
       weight: "700",
       style: "normal",
     },
   ],
   variable: "--font-display-var",
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0020-007E,U+00A0,U+00A9,U+00AE-00B0,U+00B7,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
+    },
+  ],
   display: "swap",
   preload: true,
 });
@@ -93,7 +100,7 @@ const geist = localFont({
     {
       prop: "unicode-range",
       value:
-        "U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
+        "U+0020-007E,U+00A0,U+00A9,U+00AE-00B0,U+00B7,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
     },
   ],
   display: "swap",
@@ -113,11 +120,13 @@ const geistMono = localFont({
     {
       prop: "unicode-range",
       value:
-        "U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
+        "U+0020-007E,U+00A0,U+00A9,U+00AE-00B0,U+00B7,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
     },
   ],
   display: "swap",
-  preload: false,
+  // Shared footer and service proof labels use this face on every route.
+  // Discover it with the other used fonts rather than after stylesheet layout.
+  preload: true,
 });
 
 // ── Metadata (spec §8.1, §1.5) ────────────────────────────────────────────
@@ -167,6 +176,10 @@ function withExtendedFace(fontFamily: string, extendedFamily: string) {
 }
 
 const fontVariables = {
+  "--font-display-var": withExtendedFace(
+    spaceGrotesk.style.fontFamily,
+    "Shruggie Space Grotesk",
+  ),
   "--font-body-var": withExtendedFace(geist.style.fontFamily, "Shruggie Geist"),
   "--font-mono-var": withExtendedFace(
     geistMono.style.fontFamily,

@@ -4,7 +4,7 @@
 
 **Created**: 2026-09-17
 
-**Status**: Repair code implemented in draft PR #99; SC-001 remains unmet locally and production verification is pending
+**Status**: Repair implementation complete in PR #99; repeated production-transport local validation is in progress, and SC-001 requires final production verification
 
 **Input**: Continue the production-audit repairs in [#96](https://github.com/shruggietech/shruggie-web/issues/96) and [#97](https://github.com/shruggietech/shruggie-web/issues/97), coordinated by [#31](https://github.com/shruggietech/shruggie-web/issues/31).
 
@@ -73,3 +73,5 @@ Visitors can comfortably select the mobile service/work pagination and understan
 ## Rendering refinement
 
 #96 also includes compact common Latin font faces with complete original-glyph fallbacks, server-rendered Research with the shared reveal, and default dark server HTML. The offline generator must verify character coverage, glyph outlines, hinting, advances, vertical metrics, and deterministic outputs. The existing pre-paint cookie script must preserve blog preferences. The unsuccessful global CSS-inlining variant is retained as experiment evidence and excluded from the proposed code.
+
+The completion pass preserves exact skyline artwork as lazy desktop/mobile vector images, verifies generated assets, replaces shared illustration/accordion animation runtime with native behavior, and limits Tailwind scanning to runtime templates. Common-character subsets cover all five used font weights with complete original-character fallbacks; include the shruggie macron and retain standard shaping/kerning and licensing metadata. Recorded production transport is HTTP/2. Keep the HTTP/1.1 localhost failures and disclose an additional controlled HTTP/2 comparison with unchanged numeric budgets and throttling. Local results cannot close SC-001's production gate.

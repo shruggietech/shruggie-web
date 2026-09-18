@@ -6,32 +6,26 @@
  * ShruggieTech today (green). Matches the geometric, minimal, line-art
  * style of ServiceIllustrationsLarge.
  *
- * Uses IntersectionObserver (via Framer Motion useInView) to trigger the
+ * Uses IntersectionObserver (native) to trigger the
  * .is-animating class for CSS keyframe entrance animations.
  */
 
 "use client";
 
-import { useRef } from "react";
-import { useInView, useReducedMotion } from "framer-motion";
+import { useIllustrationInView } from "@/hooks/useIllustrationInView";
 
 import { cn } from "@/lib/utils";
 import styles from "./OriginIllustration.module.css";
 
 export default function OriginIllustration() {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(wrapperRef, {
-    once: true,
-    margin: "-15% 0px -15% 0px",
-  });
-  const shouldReduceMotion = useReducedMotion();
+  const { ref: wrapperRef, active: isInView } = useIllustrationInView("-15% 0px -15% 0px");
 
   return (
     <div
       ref={wrapperRef}
       className={cn(
         "w-full max-w-[300px] md:max-w-xl mx-auto h-auto",
-        (isInView || shouldReduceMotion) && "is-animating"
+        isInView && "is-animating"
       )}
     >
       <svg

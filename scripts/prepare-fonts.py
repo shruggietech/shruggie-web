@@ -10,10 +10,10 @@ from fontTools.pens.recordingPen import RecordingPen
 
 ROOT = Path(__file__).resolve().parents[1]
 # Common Latin text and punctuation; the original faces cover every other glyph.
-RANGES = [(0x0, 0xFF), (0x2000, 0x206F), (0x2190, 0x2199)]
-EXTRA = {0x131, 0x152, 0x153, 0x20AC, 0x2122, 0x2212, 0xFEFF, 0xFFFD}
+RANGES = [(0x20, 0x7E), (0x2000, 0x206F), (0x2190, 0x2199)]
+EXTRA = {0xA0, 0xA9, 0xAE, 0xAF, 0xB0, 0xB7, 0x20AC, 0x2122, 0x2212, 0xFEFF, 0xFFFD}
 LATIN = {code for start, end in RANGES for code in range(start, end + 1)} | EXTRA
-LATIN_CSS = "U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD"
+LATIN_CSS = "U+0020-007E,U+00A0,U+00A9,U+00AE-00B0,U+00B7,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD"
 
 
 def compact_ranges(points):
@@ -31,14 +31,15 @@ for name, family, weight in [
     ("Geist-Regular", "Shruggie Geist", 400),
     ("Geist-Medium", "Shruggie Geist", 500),
     ("GeistMono-Regular", "Shruggie Geist Mono", 400),
+    ("SpaceGrotesk-Medium", "Shruggie Space Grotesk", 500),
+    ("SpaceGrotesk-Bold", "Shruggie Space Grotesk", 700),
 ]:
     source = ROOT / "public/fonts" / f"{name}.woff2"
     original = TTFont(source)
     font = TTFont(source, recalcTimestamp=False)
     options = subset.Options()
-    options.name_IDs = ["*"]
-    options.name_languages = ["*"]
-    options.layout_features = ["*"]
+    # Keep standard shaping/kerning and licensing metadata. Unused optional
+    # stylistic sets must not enlarge every initial font download.
     options.glyph_names = True
     options.notdef_outline = True
     options.passthrough_tables = True
