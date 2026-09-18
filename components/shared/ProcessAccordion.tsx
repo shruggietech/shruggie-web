@@ -365,7 +365,7 @@ export default function ProcessAccordion() {
   };
 
   return (
-    <div className="mt-16 grid grid-cols-1 items-center gap-8 md:mt-20 md:grid-cols-2 md:gap-12">
+    <div className="process-accordion mt-16 grid grid-cols-1 items-center gap-8 md:mt-20 md:grid-cols-2 md:gap-12">
       {/* ── Accordion ────────────────────────────────────────────────── */}
       <div className="min-h-[420px] md:min-h-[460px]">
         <div className="space-y-3">

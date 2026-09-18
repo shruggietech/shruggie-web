@@ -281,6 +281,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .process-accordion * {
+    transition: none !important;
+  }
   .hero-gradient-mesh {
     animation: none;
   }
