@@ -67,7 +67,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   removing Services-specific pin, scrub, snap, and ScrollTrigger lifecycle
   behavior; the large-format service SVGs still draw once as each card enters
   view, while reduced-motion users receive static illustrations; the mobile
-  carousel and Work presentation remain unchanged
+  carousel remains unchanged
+- **Homepage Our Work interaction**: replaced the GSAP-pinned desktop frames
+  with naturally scrolling case-study showcases, preserving client logos,
+  large browser mockups, approved summaries, outcome metrics, and links;
+  removed Work-specific ScrollTrigger/progress controls while retaining
+  reduced-motion-aware entrance reveals and the existing mobile carousel
 - **Theme scope**: made dark mode mandatory across every non-blog route and
   limited the light/dark toggle plus its saved preference to `/blog` and article
   pages, with dark as the default reading theme

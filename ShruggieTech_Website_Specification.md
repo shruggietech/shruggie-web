@@ -1270,7 +1270,8 @@ Each card links to its corresponding `/services/[slug]` detail page. The homepag
 | Section label | "OUR WORK" |
 | Section title | "Real results for real businesses." |
 | Description | "We solve messy problems for businesses that need more than a template." |
-| Layout | Horizontal scroll strip of 3 featured case study cards (United Way, Scruggs Tire, I Heart PR Tours). Each card shows: client name, industry tag, one-line summary, a hero image (or placeholder), and a "Read case study →" link. |
+| Layout | Three naturally scrolling desktop/tablet showcases in document order (United Way, Scruggs Tire, I Heart PR Tours), with text and large browser mockups side by side on wide screens and stacked on tablet. Each retains its client name, industry, approved summary, screenshot, outcome metric, and descriptive case-study link. The existing swipeable carousel remains below 768px. No desktop pinning, scrubbing, snapping, or frame-progress controls. |
+| Motion | Shared viewport entrance reveals only; reduced-motion users receive complete static content in the same natural-flow layout. Client logos and the homepage section order remain unchanged. |
 
 **Section 4: Products Portfolio**
 

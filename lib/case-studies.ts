@@ -1,7 +1,7 @@
 /**
  * Shared case study data for homepage Work section components.
  *
- * Single source of truth imported by WorkScroll, WorkCarousel,
+ * Single source of truth imported by WorkGrid, WorkCarousel,
  * and WorkPreview. Image paths follow the slug convention:
  * /images/work/${slug}.png
  */
