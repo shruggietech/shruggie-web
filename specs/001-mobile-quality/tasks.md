@@ -35,7 +35,7 @@ Independent check: target bounds, selected card, destination names, and unchange
 - [x] T014 Preserve exact skyline geometry/crops as lazy vector images and verify generated assets against authoritative artwork, removing unnecessary shared hydration.
 - [x] T015 Test supported graph CSS grouping and retain only a measured improvement; reject ineffective grouping/inlining/footer-deferral experiments.
 - [x] T016 Reduce common font transfers with complete original-character fallbacks, scan only runtime Tailwind sources, and replace shared illustration/accordion animation runtime with native behavior and regression coverage.
-- [ ] T017 Disclose HTTP/1.1 versus production HTTP/2 transport, compare unchanged-main and repaired builds over HTTP/2, and complete three cold runs per final route/profile without changing budgets or throttling.
+- [x] T017 Disclose HTTP/1.1 versus production HTTP/2 transport, compare unchanged-main and repaired builds over HTTP/2, and complete three cold runs per final route/profile without changing budgets or throttling. All 24 final runs pass; retain all 198 formal reports and production gates.
 
 - [x] T009 Update progressive reveal and cookie/navigation contracts in `ShruggieTech_Website_Specification.md` and user-facing changes in `CHANGELOG.md`.
 - [x] T010 Run required checks and compare repeated optimized-build measurements; summarize evidence, including unmet mobile budgets, in `specs/001-mobile-quality/validation.md`.
