@@ -1,4 +1,4 @@
-/** Category-tabbed case studies without scroll-driven transitions. */
+/** Client-logo tabs for curated work, without scroll-driven transitions. */
 "use client";
 
 import { useId, useRef, useState, type KeyboardEvent } from "react";
@@ -23,9 +23,11 @@ export default function WorkTabs() {
     let next: number;
     switch (event.key) {
       case "ArrowRight":
+      case "ArrowDown":
         next = (index + 1) % caseStudies.length;
         break;
       case "ArrowLeft":
+      case "ArrowUp":
         next = (index - 1 + caseStudies.length) % caseStudies.length;
         break;
       case "Home":
@@ -53,46 +55,56 @@ export default function WorkTabs() {
             label="OUR WORK"
             title="Real results for real businesses"
           />
-          <div className="mt-8 flex flex-wrap items-center gap-6 md:gap-12">
-            {caseStudies.map((study) => (
-              <div key={study.slug} className="relative h-10 w-40 lg:h-12">
-                <Image
-                  src={study.logo}
-                  alt={`${study.client} logo`}
-                  fill
-                  sizes="160px"
-                  className="object-contain object-left opacity-50 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
-                />
-              </div>
-            ))}
-          </div>
         </ScrollReveal>
 
-        <ScrollReveal className="mt-[var(--component-gap)]">
-          <div
-            role="tablist"
-            aria-label="Work categories"
-            className="mb-6 flex gap-2 border-b border-white/10 pb-4"
-          >
-            {caseStudies.map((study, index) => (
-              <button
-                key={study.slug}
-                ref={(element) => {
-                  tabsRef.current[index] = element;
-                }}
-                id={`${id}-tab-${study.slug}`}
-                role="tab"
-                type="button"
-                aria-selected={selected === index}
-                aria-controls={`${id}-panel-${study.slug}`}
-                tabIndex={selected === index ? 0 : -1}
-                onClick={() => setSelected(index)}
-                onKeyDown={(event) => handleKeyDown(event, index)}
-                className={`text-body-md focus-visible:outline-accent rounded-lg border px-5 py-3 font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 ${selected === index ? "border-accent/40 bg-green-bright-20 text-accent" : "text-text-body-light hover:text-text-hero border-transparent hover:bg-white/[0.06]"}`}
-              >
-                {study.category}
-              </button>
-            ))}
+        <ScrollReveal className="mt-[var(--component-gap)] grid items-start gap-6 md:grid-cols-[10rem_minmax(0,1fr)] lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-8">
+          <div>
+            <div
+              role="tablist"
+              aria-label="Featured clients"
+              aria-orientation="vertical"
+              className="flex flex-col gap-3"
+            >
+              {caseStudies.map((study, index) => (
+                <button
+                  key={study.slug}
+                  ref={(element) => {
+                    tabsRef.current[index] = element;
+                  }}
+                  id={`${id}-tab-${study.slug}`}
+                  role="tab"
+                  type="button"
+                  aria-selected={selected === index}
+                  aria-controls={`${id}-panel-${study.slug}`}
+                  tabIndex={selected === index ? 0 : -1}
+                  onClick={() => setSelected(index)}
+                  onKeyDown={(event) => handleKeyDown(event, index)}
+                  className={`group focus-visible:outline-accent flex w-full flex-col items-start gap-4 rounded-xl border p-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 ${selected === index ? "border-accent/40 bg-green-bright-20 text-text-hero" : "text-text-body-light border-white/[0.06] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.06]"}`}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="relative block h-12 w-full"
+                  >
+                    <Image
+                      src={study.logo}
+                      alt=""
+                      fill
+                      sizes="160px"
+                      className={`object-contain object-left transition-opacity ${selected === index ? "opacity-100" : "opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0"}`}
+                    />
+                  </span>
+                  <span className="text-body-xs font-medium">
+                    {study.client}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <Link
+              href="/work"
+              className="text-body-sm text-accent hover:text-orange-foreground mt-6 inline-flex items-center gap-2 font-medium transition-colors"
+            >
+              View all work <span aria-hidden="true">→</span>
+            </Link>
           </div>
           {/* Overlapping grid cells reserve the tallest panel's space without fixed heights. */}
           <div className="grid">

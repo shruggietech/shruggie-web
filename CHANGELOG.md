@@ -69,13 +69,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   view, while reduced-motion users receive static illustrations; the mobile
   carousel remains unchanged
 - **Homepage Our Work interaction**: replaced the GSAP-pinned desktop frames
-  with an explicit category-tabbed showcase displaying one case study at a
-  time (Nonprofit, Automotive, Tourism), preserving client logos,
+  with a left-side client-logo selector displaying one case study at a
+  time, preserving client logos,
   large browser mockups, approved summaries, outcome metrics, and links;
   removed Work-specific ScrollTrigger/progress controls while retaining
   reduced-motion-aware entrance reveals and the existing mobile carousel;
   keyboard-accessible tabs switch projects without autoplay or scroll capture,
-  and overlapping grid panels keep the section height stable
+  and overlapping grid panels keep the section height stable; each client tab
+  includes a readable name and a selected-state accent, industry stays within
+  the case study, and a View all work link leads to the complete portfolio
 - **Theme scope**: made dark mode mandatory across every non-blog route and
   limited the light/dark toggle plus its saved preference to `/blog` and article
   pages, with dark as the default reading theme

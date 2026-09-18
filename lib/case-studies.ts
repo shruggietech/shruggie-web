@@ -10,7 +10,6 @@ export interface CaseStudy {
   slug: string;
   client: string;
   industry: string;
-  category: string;
   summary: string;
   image: string;
   metric: string;
@@ -22,7 +21,6 @@ export const caseStudies: CaseStudy[] = [
     slug: "united-way",
     client: "United Way of Anderson County",
     industry: "Nonprofit",
-    category: "Nonprofit",
     summary:
       "Complete rebrand and website redesign for a community nonprofit, delivered right the first time, from design to content to brand implementation.",
     image: "/images/work/united-way.png",
@@ -33,7 +31,6 @@ export const caseStudies: CaseStudy[] = [
     slug: "scruggs-tire",
     client: "Scruggs Tire & Alignment",
     industry: "Automotive Services",
-    category: "Automotive",
     summary:
       "Forensic vendor audit, contract disentanglement, and full replatform onto client-owned infrastructure for a local auto shop.",
     image: "/images/work/scruggs-tire.png",
@@ -44,7 +41,6 @@ export const caseStudies: CaseStudy[] = [
     slug: "i-heart-pr-tours",
     client: "I Heart PR Tours",
     industry: "Tourism & Hospitality",
-    category: "Tourism",
     summary:
       "Ground-up brand identity, website, social media management, and multi-platform booking integration for a Puerto Rico tour operator, backed by a partnership structured around growth.",
     image: "/images/work/i-heart-pr-tours.png",

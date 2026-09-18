@@ -33,17 +33,24 @@ vi.mock("@/components/ui/DeviceMockup", () => ({
 
 afterEach(cleanup);
 
-describe("Work category tabs", () => {
-  it("exposes one selected category and associated panel initially", () => {
+describe("Work client-logo tabs", () => {
+  it("exposes named client selectors and one associated panel initially", () => {
     render(<WorkTabs />);
     const tabs = screen.getAllByRole("tab");
     expect(tabs.map((tab) => tab.textContent)).toEqual([
-      "Nonprofit",
-      "Automotive",
-      "Tourism",
+      "United Way of Anderson County",
+      "Scruggs Tire & Alignment",
+      "I Heart PR Tours",
     ]);
     expect(tabs[0]).toHaveAttribute("aria-selected", "true");
     expect(tabs[0]).toHaveAttribute("tabindex", "0");
+    expect(
+      screen.getByRole("tablist", { name: "Featured clients" }),
+    ).toHaveAttribute("aria-orientation", "vertical");
+    expect(screen.getByRole("link", { name: "View all work" })).toHaveAttribute(
+      "href",
+      "/work",
+    );
     const panel = screen.getByRole("tabpanel");
     expect(tabs[0]).toHaveAttribute("aria-controls", panel.id);
     expect(panel).toHaveAttribute("aria-labelledby", tabs[0].id);
@@ -53,19 +60,20 @@ describe("Work category tabs", () => {
     );
   });
 
-  it("switches categories on click and excludes inactive panels and links", async () => {
+  it("switches clients on click and excludes inactive panels and links", async () => {
     const user = userEvent.setup();
     render(<WorkTabs />);
-    await user.click(screen.getByRole("tab", { name: "Automotive" }));
+    await user.click(
+      screen.getByRole("tab", { name: "Scruggs Tire & Alignment" }),
+    );
     expect(screen.getAllByRole("tabpanel")).toHaveLength(1);
     expect(
       within(screen.getByRole("tabpanel")).getByRole("heading"),
     ).toHaveTextContent("Scruggs Tire & Alignment");
-    expect(screen.getAllByRole("link")).toHaveLength(1);
-    expect(screen.getByRole("link")).toHaveAttribute(
-      "href",
-      "/work/scruggs-tire",
-    );
+    expect(screen.getAllByRole("link")).toHaveLength(2);
+    expect(
+      within(screen.getByRole("tabpanel")).getByRole("link"),
+    ).toHaveAttribute("href", "/work/scruggs-tire");
     const inactive = screen
       .getAllByRole("tabpanel", { hidden: true })
       .filter((panel) => panel.getAttribute("aria-hidden") === "true");
@@ -82,14 +90,13 @@ describe("Work category tabs", () => {
     render(<WorkTabs />);
     const tabs = screen.getAllByRole("tab");
     tabs[0].focus();
-    await user.keyboard("{ArrowLeft}");
+    await user.keyboard("{ArrowUp}");
     expect(tabs[2]).toHaveFocus();
     expect(tabs[2]).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("link")).toHaveAttribute(
-      "href",
-      "/work/i-heart-pr-tours",
-    );
-    await user.keyboard("{ArrowRight}");
+    expect(
+      within(screen.getByRole("tabpanel")).getByRole("link"),
+    ).toHaveAttribute("href", "/work/i-heart-pr-tours");
+    await user.keyboard("{ArrowDown}");
     expect(tabs[0]).toHaveFocus();
     await user.keyboard("{End}");
     expect(tabs[2]).toHaveFocus();

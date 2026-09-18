@@ -14,7 +14,7 @@ const workGrid = readFileSync(
 );
 
 describe("homepage Work interaction", () => {
-  it("uses category-tabbed desktop showcases and retains the mobile carousel", () => {
+  it("uses client-tabbed desktop showcases and retains the mobile carousel", () => {
     expect(workSection).toContain("<WorkTabs />");
     expect(workSection).toContain("<WorkCarousel />");
     expect(workSection).not.toContain("WorkScroll");
