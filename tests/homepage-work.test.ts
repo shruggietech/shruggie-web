@@ -9,13 +9,13 @@ const workSection = readFileSync(
   "utf8",
 );
 const workGrid = readFileSync(
-  join(projectPath, "components/home/WorkGrid.tsx"),
+  join(projectPath, "components/home/WorkTabs.tsx"),
   "utf8",
 );
 
 describe("homepage Work interaction", () => {
-  it("uses natural-flow desktop showcases and retains the mobile carousel", () => {
-    expect(workSection).toContain("<WorkGrid />");
+  it("uses category-tabbed desktop showcases and retains the mobile carousel", () => {
+    expect(workSection).toContain("<WorkTabs />");
     expect(workSection).toContain("<WorkCarousel />");
     expect(workSection).not.toContain("WorkScroll");
     expect(workGrid).toContain('id="work-section"');
@@ -31,7 +31,7 @@ describe("homepage Work interaction", () => {
   });
 
   it("preserves canonical case-study content, imagery, metrics, and links in order", () => {
-    expect(workGrid).toContain("caseStudies.map((study)");
+    expect(workGrid).toContain("caseStudies.map((study");
     for (const field of [
       "client",
       "industry",

@@ -1270,7 +1270,8 @@ Each card links to its corresponding `/services/[slug]` detail page. The homepag
 | Section label | "OUR WORK" |
 | Section title | "Real results for real businesses." |
 | Description | "We solve messy problems for businesses that need more than a template." |
-| Layout | Three naturally scrolling desktop/tablet showcases in document order (United Way, Scruggs Tire, I Heart PR Tours), with text and large browser mockups side by side on wide screens and stacked on tablet. Each retains its client name, industry, approved summary, screenshot, outcome metric, and descriptive case-study link. The existing swipeable carousel remains below 768px. No desktop pinning, scrubbing, snapping, or frame-progress controls. |
+| Layout | One desktop/tablet case study visible at a time through high-level category tabs: Nonprofit (United Way), Automotive (Scruggs Tire), Tourism (I Heart PR Tours). Text and large browser mockups sit side by side on wide screens and stack on tablet. Each retains its client name, industry, approved summary, screenshot, outcome metric, and descriptive case-study link. The existing swipeable carousel remains below 768px. No desktop pinning, scrubbing, snapping, or frame-progress controls. |
+| Tab interaction | Explicit click or Arrow Left/Right, Home/End selection with roving keyboard focus and associated tab/panel semantics. Inactive panels are invisible, inert, and excluded from the accessibility tree; overlapping grid cells reserve the tallest panel's height so switching does not shift downstream content. No autoplay or scroll-position-driven selection. |
 | Motion | Shared viewport entrance reveals only; reduced-motion users receive complete static content in the same natural-flow layout. Client logos and the homepage section order remain unchanged. |
 
 **Section 4: Products Portfolio**
