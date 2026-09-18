@@ -149,6 +149,7 @@ export default function ServicesGrid() {
             >
               <Link
                 href={service.href}
+                aria-label={`Explore ${service.title}`}
                 className="group/card focus-visible:outline-focus block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 <Card

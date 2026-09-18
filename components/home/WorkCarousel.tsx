@@ -157,7 +157,7 @@ export default function WorkCarousel() {
         </ScrollReveal>
         <ScrollReveal delay={0.1}>
           <div className="mt-8 flex flex-col items-center">
-            <p className="mb-4 text-body-xs uppercase tracking-widest text-text-muted">
+            <p className="text-body-xs text-text-muted mb-4 tracking-widest uppercase">
               Trusted by
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6">
@@ -200,7 +200,7 @@ export default function WorkCarousel() {
               </div>
 
               {/* Client name */}
-              <h3 className="font-display text-display-sm font-bold text-text-primary">
+              <h3 className="font-display text-display-sm text-text-primary font-bold">
                 {study.client}
               </h3>
 
@@ -208,14 +208,14 @@ export default function WorkCarousel() {
               <Badge className="mt-2 self-start">{study.industry}</Badge>
 
               {/* Summary */}
-              <p className="mt-3 flex-1 text-body-md text-text-secondary">
+              <p className="text-body-md text-text-secondary mt-3 flex-1">
                 {study.summary}
               </p>
 
               {/* Link */}
               <Link
                 href={`/work/${study.slug}`}
-                className="mt-4 inline-flex items-center gap-1 text-body-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                className="text-body-sm text-accent hover:text-accent-hover mt-4 inline-flex items-center gap-1 font-medium transition-colors"
               >
                 Read case study
                 <span aria-hidden="true">→</span>
@@ -234,18 +234,24 @@ export default function WorkCarousel() {
         {caseStudies.map((study, index) => (
           <button
             key={study.slug}
+            type="button"
             role="tab"
             aria-selected={index === activeIndex}
             aria-label={`Go to ${study.client}`}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              index === activeIndex
-                ? "w-6 bg-brand-green-bright"
-                : "w-2 bg-white/20"
-            }`}
+            className="focus-visible:outline-focus flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2"
             onClick={() => {
               scrollToCard(index);
             }}
-          />
+          >
+            <span
+              aria-hidden="true"
+              className={`h-2 rounded-full transition-all duration-300 ${
+                index === activeIndex
+                  ? "bg-brand-green-bright w-6"
+                  : "w-2 bg-white/20"
+              }`}
+            />
+          </button>
         ))}
       </div>
     </section>

@@ -1,52 +1,112 @@
-/**
- * ScrollReveal — Framer Motion whileInView wrapper.
- *
- * Fade-up animation (opacity 0→1, translateY 24→0) over 600ms with
- * an easing curve. Fires once per element. Renders a plain <div>
- * (no animation) when prefers-reduced-motion is active.
- *
- * Spec reference: §2.4 (Component Primitives), §2.5 (Motion and Scroll Behavior)
- */
-
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 
 interface ScrollRevealProps {
   children: ReactNode;
   delay?: number;
-  /** Initial translateY in pixels — controls how far the element floats up (default 24) */
+  /** Initial translateY in pixels (default 24). */
   initialY?: number;
   className?: string;
 }
 
+/** Server-visible content with optional, once-only below-viewport motion. */
 export default function ScrollReveal({
   children,
   delay = 0,
   initialY = 24,
   className,
 }: ScrollRevealProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const revealed = useRef(false);
 
-  if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>;
-  }
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || revealed.current) return;
+    if (
+      typeof window.matchMedia !== "function" ||
+      typeof IntersectionObserver !== "function" ||
+      typeof element.animate !== "function" ||
+      element.getBoundingClientRect().top < window.innerHeight
+    ) {
+      revealed.current = true;
+      return;
+    }
+
+    const opacity = element.style.opacity;
+    const transform = element.style.transform;
+    let observer: IntersectionObserver | undefined;
+    let animation: Animation | undefined;
+    let motion: MediaQueryList | undefined;
+    const restore = () => {
+      observer?.disconnect();
+      element.style.opacity = opacity;
+      element.style.transform = transform;
+      if (animation) {
+        animation.onfinish = null;
+        animation.oncancel = null;
+        animation.cancel();
+        animation = undefined;
+      }
+    };
+    const revealImmediately = () => {
+      revealed.current = true;
+      restore();
+    };
+    const motionChanged = (event: MediaQueryListEvent) => {
+      if (event.matches) revealImmediately();
+    };
+
+    try {
+      motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      if (motion.matches) {
+        revealed.current = true;
+        return;
+      }
+      observer = new IntersectionObserver((entries) => {
+        if (revealed.current || !entries.some((entry) => entry.isIntersecting))
+          return;
+        revealed.current = true;
+        observer?.disconnect();
+        try {
+          animation = element.animate(
+            [
+              { opacity: 0, transform: `translateY(${initialY}px)` },
+              { opacity: 1, transform: "translateY(0)" },
+            ],
+            {
+              duration: 600,
+              delay: Math.max(0, delay) * 1000,
+              easing: "cubic-bezier(0.21, 0.47, 0.32, 0.98)",
+              fill: "both",
+            },
+          );
+          animation.onfinish = restore;
+          animation.oncancel = revealImmediately;
+        } catch {
+          revealImmediately();
+        }
+      });
+      motion.addEventListener("change", motionChanged);
+      element.addEventListener("focusin", revealImmediately);
+      observer.observe(element);
+      // Only hide below-viewport content after the enhancement is ready.
+      element.style.opacity = "0";
+      element.style.transform = `translateY(${initialY}px)`;
+    } catch {
+      revealImmediately();
+    }
+    return () => {
+      restore();
+      motion?.removeEventListener?.("change", motionChanged);
+      element.removeEventListener("focusin", revealImmediately);
+    };
+  }, [delay, initialY]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: initialY }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 0.6,
-        delay,
-        ease: [0.21, 0.47, 0.32, 0.98],
-      }}
-      className={className}
-    >
+    <div ref={ref} className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }
 

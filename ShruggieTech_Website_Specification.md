@@ -4,8 +4,8 @@
 | Attribute | Value |
 |-----------|-------|
 | Subject | ShruggieTech Website Rebuild |
-| Version | 1.3.1 |
-| Date | 2026-09-15 |
+| Version | 1.3.2 |
+| Date | 2026-09-17 |
 | Status | APPROVED |
 | Audience | AI-first, Human-second |
 | Framework | Next.js (App Router) |
@@ -230,7 +230,7 @@ shruggie-web/
 │   │   ├── TableOfContents.tsx
 │   │   └── Pagination.tsx
 │   └── shared/
-│       ├── ScrollReveal.tsx        # Framer Motion scroll-triggered reveal wrapper
+│       ├── ScrollReveal.tsx        # Progressive, server-visible entrance reveal wrapper
 │       ├── JsonLd.tsx              # Schema markup injection component
 │       └── SEOHead.tsx
 ├── content/
@@ -573,8 +573,8 @@ const spaceGrotesk = localFont({
 
 const geist = localFont({
   src: [
-    { path: "../public/fonts/Geist-Regular.woff2", weight: "400", style: "normal" },
-    { path: "../public/fonts/Geist-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/Geist-Regular-Latin.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/Geist-Medium-Latin.woff2", weight: "500", style: "normal" },
   ],
   variable: "--font-body",
   display: "swap",
@@ -583,13 +583,15 @@ const geist = localFont({
 
 const geistMono = localFont({
   src: [
-    { path: "../public/fonts/GeistMono-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/GeistMono-Regular-Latin.woff2", weight: "400", style: "normal" },
   ],
   variable: "--font-mono",
   display: "swap",
   preload: false,
 });
 ```
+
+The loading example above illustrates the font sources; `app/layout.tsx` supplies the Unicode descriptors and extended-face stack, with complementary faces in `styles/font-extended.css`. Common English characters and punctuation in Geist, Geist Mono, and Space Grotesk may be compacted without changing retained glyph outlines, hinting, advances, or vertical metrics. Standard shaping and kerning remain; unused optional stylistic sets need not ship in the compact faces. The original full files remain available through complementary Unicode ranges, before system fallbacks; every originally supported character remains supported. Include the macron in the site's shruggie mark in the compact range. Used site-wide faces are preloaded with `font-display: swap`. The offline `scripts/prepare-fonts.py` generator verifies retained glyph mappings, metrics and complete coverage.
 
 **Type scale (Tailwind extension):**
 
@@ -798,45 +800,15 @@ export default function SectionHeading({
 
 <div style="text-align:justify">
 
-A reusable wrapper that animates children into view as they enter the viewport. Uses Framer Motion's `whileInView` to trigger once. The animation is a gentle fade-up (opacity 0 to 1, translateY 24px to 0) over 600ms with an easing curve. This component respects `prefers-reduced-motion` by disabling animation entirely.
+A progressive wrapper whose server-rendered HTML is fully visible without JavaScript. First-viewport content and content above a restored scroll position must remain visible; homepage and inner-page heroes are static server-rendered content. After hydration, only below-viewport wrappers may receive a once-only 600ms fade-up (opacity 0 to 1, translateY 24px to 0), using native IntersectionObserver and the Web Animations API. Observation uses the actual viewport with no inset margin so short final sections can reveal. Setup must succeed before content is hidden. Missing or failing APIs, keyboard focus, cancellation, cleanup, and an initial or newly enabled reduced-motion preference restore complete visible content. Completed reveals must not restart on prop updates.
 
 </div>
 
 ```tsx
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
-import { ReactNode } from "react";
-
-interface ScrollRevealProps {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}
-
-export default function ScrollReveal({ children, delay = 0, className }: ScrollRevealProps) {
-  const shouldReduceMotion = useReducedMotion();
-
-  if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>;
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 0.6,
-        delay,
-        ease: [0.21, 0.47, 0.32, 0.98],
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+// Public usage; the wrapper never emits hidden initial HTML.
+<ScrollReveal delay={0.08} initialY={24} className="h-full">
+  <Card>{content}</Card>
+</ScrollReveal>
 ```
 
 **ShruggieCTA (`components/ui/ShruggieCTA.tsx`):**
@@ -907,7 +879,7 @@ The motion philosophy is "tasteful restraint." Animation is used to guide the ey
 
 | Type | Trigger | Properties | Duration |
 |------|---------|-----------|----------|
-| Scroll reveal | Element enters viewport | `opacity`, `translateY` | 500-700ms |
+| Scroll reveal | Previously below-viewport element enters viewport after successful setup | `opacity`, `translateY` | 500-700ms |
 | Staggered reveal | Group of elements enter viewport | `opacity`, `translateY` with sequential delay | 500ms per item, 80ms stagger |
 | Hover feedback | Cursor enters interactive element | `border-color`, `shadow`, `scale` (max 1.02) | 200-300ms |
 | Page transition | Route change | `opacity` cross-fade | 300ms |
@@ -927,7 +899,7 @@ The motion philosophy is "tasteful restraint." Animation is used to guide the ey
 
 <div style="text-align:justify">
 
-The site defaults to dark mode, consistent with the black-primary brand identity (KB §10.1). Dark mode is mandatory on every route except the blog reading surface. The theme toggle appears only on `/blog` and `/blog/[slug]`, where readers may switch between dark and light. The toggle persists the blog preference via a cookie (not `localStorage`, which would flash on reload). A light blog preference never changes Services, Work, Research, Products, Skills, audience, administrative, or other non-blog routes. The implementation uses the `class` strategy in Tailwind (`darkMode: "class"`) with a route-aware `<script>` in `<head>` that applies the correct class before first paint.
+The site defaults to dark mode, consistent with the black-primary brand identity (KB §10.1). Dark mode is mandatory on every route except the blog reading surface. The theme toggle appears only on `/blog` and `/blog/[slug]`, where readers may switch between dark and light. The toggle persists the blog preference via a cookie (not `localStorage`, which would flash on reload). A light blog preference never changes Services, Work, Research, Products, Skills, audience, administrative, or other non-blog routes. Initial HTML defaults to the dark class so non-blog content remains readable with scripting disabled. The implementation uses the `class` strategy in Tailwind (`darkMode: "class"`) with a route-aware `<script>` in `<head>` that applies the correct class before first paint.
 
 </div>
 
@@ -1014,7 +986,7 @@ export default function SkipLink() {
 
 **Form accessibility:** The contact form must include visible `<label>` elements associated via `htmlFor`, descriptive `aria-describedby` for validation errors, `aria-invalid` on fields with errors, and `aria-live="polite"` on the error summary region.
 
-**Reduced motion:** All animations are wrapped in `prefers-reduced-motion` checks. The Lenis provider disables smooth scrolling when reduced motion is preferred (see §4.2). Framer Motion's `useReducedMotion` hook gates every animated component.
+**Reduced motion:** All animations are wrapped in `prefers-reduced-motion` checks. The Lenis provider disables smooth scrolling when reduced motion is preferred (see §4.2). Entrance reveals use a native media-query listener; Framer Motion components use `useReducedMotion`. First-viewport text and controls never wait for an entrance animation.
 
 <a name="33-testing-protocol" id="33-testing-protocol"></a>
 ### 3.3. Testing Protocol
@@ -1249,7 +1221,7 @@ Mobile navigation opens as a full-screen overlay sliding in from the right. The 
 | Section label | "WHAT WE DO" |
 | Section title | "Full-stack capability, boutique delivery." |
 | Description | "One point of contact. Every layer." |
-| Layout | Naturally scrolling 2x2 card grid on desktop; the section must not pin, scrub, snap, or capture vertical scrolling. Mobile uses a swipeable carousel with all four categories available in document order. Reduced-motion users receive complete static content. |
+| Layout | Naturally scrolling 2x2 card grid on desktop; the section must not pin, scrub, snap, or capture vertical scrolling. Mobile uses a swipeable carousel with all four categories available in document order. Pagination buttons have stable 44px by 44px hit areas and visible keyboard focus, enclosing decorative 8px-high dots; selected dots are 24px wide. Each service destination is named "Explore [service title]" for assistive technology, and mobile links display that descriptive text. Reduced-motion users receive complete static content. |
 | Cards | Four cards corresponding to the public service pillars (KB §1.3): |
 
 Card content:
@@ -1272,7 +1244,7 @@ Each card links to its corresponding `/services/[slug]` detail page. The homepag
 | Description | "We solve messy problems for businesses that need more than a template." |
 | Layout | One desktop/tablet case study visible at a time with a vertical client-logo selector on the left and a large showcase on the right. Each selector includes the official logo and readable client name; the selected client has a green accent. Text and browser mockups sit side by side on wide screens and stack on tablet. Each project retains its client name, industry badge, approved summary, screenshot, outcome metric, and descriptive case-study link. A View all work link below the selector leads to `/work`. Keep the homepage selection curated (roughly 3–6 featured clients); it is not an exhaustive industry filter. The existing swipeable carousel remains below 768px. No desktop pinning, scrubbing, snapping, or frame-progress controls. |
 | Tab interaction | Explicit click or Arrow Up/Down (Left/Right also supported), Home/End selection with roving keyboard focus, vertical tablist semantics, and associated panels. Inactive panels are invisible, inert, and excluded from the accessibility tree; overlapping grid cells reserve the tallest panel's height so switching does not shift downstream content. No autoplay or scroll-position-driven selection. |
-| Motion | Shared viewport entrance reveals only; reduced-motion users receive complete static content in the same natural-flow layout. Client logos and the homepage section order remain unchanged. |
+| Motion | Mobile Work pagination uses the same stable 44px hit areas, decorative dots, and keyboard focus as Services. Shared viewport entrance reveals only; reduced-motion users receive complete static content in the same natural-flow layout. Client logos and the homepage section order remain unchanged. |
 
 **Section 4: Products Portfolio**
 
@@ -2012,7 +1984,7 @@ Because the site uses Google Analytics 4 (which sets tracking cookies), a cookie
 | Accept button | "Accept" — small primary button. On click: sets a `consent=granted` cookie (1-year expiry), initializes GA4 tracking, and dismisses the banner. |
 | Decline button | "Decline" — small secondary button. On click: sets a `consent=denied` cookie (1-year expiry), does NOT initialize GA4 tracking, and dismisses the banner. |
 | Behavior | If a `consent` cookie already exists (either value), the banner does not render. GA4 tracking scripts are loaded conditionally based on the consent cookie value. The banner uses `aria-live="polite"` and `role="dialog"` with `aria-label="Cookie consent"`. |
-| Privacy link | "Learn more" text link adjacent to the notice text, linking to `/privacy`. |
+| Privacy link | "Privacy policy" text link adjacent to the notice text, linking to `/privacy`. |
 
 <div style="text-align:justify">
 
@@ -2667,13 +2639,13 @@ export async function GET(request: NextRequest) {
 <a name="92-asset-optimization" id="92-asset-optimization"></a>
 ### 9.2. Asset Optimization
 
-**Images:** All images served via Next.js `<Image>` component with automatic WebP/AVIF conversion, responsive `srcset`, and lazy loading. Hero images use `priority` prop for eager loading.
+**Images:** Raster images use Next.js `<Image>` with automatic WebP/AVIF conversion, responsive `srcset`, and lazy loading. Hero images load eagerly. The shared decorative Knoxville skyline uses lazy SVG images with explicit dimensions and CSS-selected desktop/mobile crops. `KnoxvilleSkylineArt.tsx` remains authoritative; `scripts/prepare-skyline.tsx` generates both assets, and `npm run test:skyline` verifies byte-identical output. Geometry, colors, and placement are retained without hydrating the window grid.
 
-**Fonts:** Self-hosted WOFF2 with `next/font/local`. Preloaded for display and body fonts. Monospace font loads on demand (blog posts with code blocks only).
+**Fonts:** Self-hosted WOFF2 with `next/font/local`. Compact display, body, and monospace faces used throughout the site are preloaded. Monospace is also used by shared footer/product and service-proof labels, rather than only blog code. Complementary original faces load on demand for excluded characters; preserve the original extended faces ahead of system fallbacks.
 
-**JavaScript:** Lenis and Framer Motion are client-side only; they are code-split and tree-shaken. The blog MDX renderer uses `next-mdx-remote/rsc` (React Server Components) to avoid sending the MDX parser to the client.
+**JavaScript:** Lenis and any retained Framer Motion interactions are client-side, code-split and tree-shaken. Service/ownership/origin illustration entrances use native one-time observation with initial/live reduced-motion and failure fallbacks. The shared process accordion keeps one selected phase, matching trigger/panel semantics and diagram state; CSS grid/opacity transitions replace its general animation runtime, and inactive panels are inert and excluded from the accessibility tree. Reduced motion disables the transitions. The blog MDX renderer uses `next-mdx-remote/rsc` (React Server Components) to avoid sending the MDX parser to the client.
 
-**CSS:** Tailwind CSS purges unused classes at build time. The `@tailwindcss/typography` plugin is applied only to `.prose` containers (blog posts).
+**CSS:** Tailwind CSS scans explicit runtime source directories (`app`, `components`, `lib`, `content`, `hooks`), excluding planning documents from shipped utility generation. The `@tailwindcss/typography` plugin is applied only to `.prose` containers (blog posts). Retain external stylesheet caching unless a disclosed measurement demonstrates a better supported strategy.
 
 <a name="10-deployment-and-cicd" id="10-deployment-and-cicd"></a>
 <hr class="print-page-break">
@@ -2753,3 +2725,4 @@ All environment variables are configured in the Vercel project dashboard under S
 | <span style="white-space: nowrap;">2026-09-12</span> | 1.2.3 | Replaced inaccessible muted foregrounds in both themes and introduced a theme-aware orange text role that preserves bright brand orange on dark surfaces while meeting WCAG AA on light surfaces. |
 | <span style="white-space: nowrap;">2026-09-12</span> | 1.3.0 | Replaced repository-authored production blog publication with the authenticated Firestore editorial authority; documented the frozen migration corpus, browser workflow, checksummed migration/export path, dynamic slug delivery, cache convergence, and recovery contract. |
 | <span style="white-space: nowrap;">2026-09-15</span> | 1.3.1 | Added typed, source-backed proof to every Services pillar and detail page; linked the Brand Building portfolio from Strategy & Brand and Work; and made the Discuss, Create, Deliver engagement model one shared Services/About component. |
+| <span style="white-space: nowrap;">2026-09-17</span> | 1.3.2 | Made initial hero and reveal HTML immediately visible; specified progressive below-viewport motion, stable 44px mobile carousel targets, contextual service links, and descriptive privacy-policy copy. Production performance verification remains pending (#96/#97). |
