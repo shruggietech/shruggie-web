@@ -1,0 +1,17 @@
+.copy {
+  padding-top: 26rem;
+  padding-bottom: 8rem;
+}
+
+@media (min-width: 768px) and (max-width: 1199px) and (orientation: portrait) {
+  .copy {
+    padding-top: 22rem;
+  }
+}
+
+@media (min-width: 768px) and (orientation: landscape), (min-width: 1200px) {
+  .copy {
+    padding-top: 10rem;
+    padding-bottom: 10rem;
+  }
+}

@@ -4,8 +4,8 @@
 | Attribute | Value |
 |-----------|-------|
 | Subject | ShruggieTech Website Rebuild |
-| Version | 1.3.2 |
-| Date | 2026-09-17 |
+| Version | 1.3.4 |
+| Date | 2026-09-29 |
 | Status | APPROVED |
 | Audience | AI-first, Human-second |
 | Framework | Next.js (App Router) |
@@ -890,9 +890,9 @@ The motion philosophy is "tasteful restraint." Animation is used to guide the ey
 
 - Parallax scrolling on content elements (accessibility concern; Lenis handles scroll feel at the container level only)
 - Auto-playing video backgrounds
-- Infinite looping animations (except a single subtle pulse on the hero CTA, which must respect `prefers-reduced-motion`)
+- Infinite looping animations, except the owner-selected homepage radar sweep and a single subtle pulse on the hero CTA. Both must respect `prefers-reduced-motion`; the radar also pauses offscreen and in hidden tabs.
 - Scroll-jacking (Lenis smooths native scroll; it does not override scroll distance or direction)
-- Animation durations exceeding 800ms for any single element
+- Animation durations exceeding 800ms for any single element, except the homepage radar's 1500ms fade and independent six-second clockwise sweep described in §6.1. The radar's three innermost rings provide the motion control without a visible pause button. Reduced motion skips both animations.
 
 <a name="26-dark-and-light-mode" id="26-dark-and-light-mode"></a>
 ### 2.6. Dark and Light Mode
@@ -1207,11 +1207,11 @@ Mobile navigation opens as a full-screen overlay sliding in from the right. The 
 
 | Element | Content |
 |---------|---------|
-| Headline (h1) | "Your vision deserves better than a template." |
-| Subheadline | "You have a business to run. We handle the technology that makes it grow. Modern websites, marketing engines, AI integrations, and custom software, built for you without the enterprise price tag or the vendor lock-in." |
+| Headline (h1) | "We advance your vision." |
+| Subheadline | "You have a business to run. We handle the technology that makes it grow: modern websites, marketing engines, AI integrations, and custom software, shaped around how you actually work." |
 | Primary CTA | "Start a Conversation" → `/contact` (rendered using `ShruggieCTA` component; see §2.4) |
 | Secondary CTA | "See Our Work" → `/work` (standard `Button` component, secondary variant) |
-| Visual treatment | Full-width dark section. Headline in Space Grotesk Bold at `display-xl`. A subtle animated gradient mesh in the background using the brand green at very low opacity (5-8%), creating depth without distraction. The gradient animates slowly (30s cycle) and is disabled for `prefers-reduced-motion`. |
+| Visual treatment | Full-width dark section with a decorative, face-free radar scope behind the semantic hero content. Offset range rings, an asymmetric clockwise sweep, and three resolved returns use restrained brand green against near-black. The complete vector geometry is present in the server HTML. The scope fades in from darkness over 1500ms while an independent sweep rotates clockwise once every six seconds and keeps rotating on desktop and mobile. Pointer travel does not steer the bearing. The area within the three innermost rings is an invisible but keyboard-reachable motion control: click, Enter, or Space toggles the saved running state; hovering for 200ms temporarily applies its inverse, and leaving restores the saved state. Keyboard focus exposes a visible ring and the control has an accessible action name. There is no visible pause button. The sweep pauses offscreen and in hidden tabs; reduced motion displays the composed static scope immediately. Without JavaScript or observation support, the scope remains static without a reveal animation and the control is absent. Phones and portrait tablets up to 1199px wide place the complete scope above the unchanged headline, with enough clearance to avoid overlap, and support tap without hover. Forced colors removes the decorative SVG and control. A stable black veil keeps the headline, support text, and CTAs readable throughout. The fade and continuous sweep are the owner-directed exceptions to §2.5's general motion limits. |
 | Tagline | The shruggie tagline is delivered via the `ShruggieCTA` component beneath the primary CTA button (reveals on hover/scroll; see §2.4 for behavior). |
 
 **Section 2: Services Preview**
@@ -2726,3 +2726,5 @@ All environment variables are configured in the Vercel project dashboard under S
 | <span style="white-space: nowrap;">2026-09-12</span> | 1.3.0 | Replaced repository-authored production blog publication with the authenticated Firestore editorial authority; documented the frozen migration corpus, browser workflow, checksummed migration/export path, dynamic slug delivery, cache convergence, and recovery contract. |
 | <span style="white-space: nowrap;">2026-09-15</span> | 1.3.1 | Added typed, source-backed proof to every Services pillar and detail page; linked the Brand Building portfolio from Strategy & Brand and Work; and made the Discuss, Create, Deliver engagement model one shared Services/About component. |
 | <span style="white-space: nowrap;">2026-09-17</span> | 1.3.2 | Made initial hero and reveal HTML immediately visible; specified progressive below-viewport motion, stable 44px mobile carousel targets, contextual service links, and descriptive privacy-policy copy. Production performance verification remains pending (#96/#97). |
+| <span style="white-space: nowrap;">2026-09-28</span> | 1.3.3 | Drafted a finite Signal foundry direction for #62 and aligned the documented hero copy with the unchanged rendering. The draft visual was superseded before delivery. |
+| <span style="white-space: nowrap;">2026-09-29</span> | 1.3.4 | Selected the face-free Radar sweep after three live concept comparisons and placed the mobile scope above the copy. Specified an independent 1500ms fade and continuous six-second clockwise sweep, with a hidden control inside the three inner rings that toggles on click or keyboard activation and temporarily inverts on delayed hover. The general duration and looping rules retain narrow radar exceptions. |

@@ -1,0 +1,167 @@
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: var(--brand-green-bright);
+  pointer-events: none;
+}
+
+.desktopScene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mobileScene {
+  display: none;
+}
+
+/* The black veil is stable in every animation frame so hero copy keeps contrast. */
+.safeZone {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--brand-black) 0%,
+    var(--brand-black) 26%,
+    color-mix(in srgb, var(--brand-black) 96%, transparent) 46%,
+    color-mix(in srgb, var(--brand-black) 62%, transparent) 70%,
+    transparent 95%
+  );
+}
+
+.root [data-hero-sweep] {
+  transform-box: view-box;
+  transform-origin: 1000px 345px;
+}
+
+/* A static scene is the no-JavaScript and failed-observation fallback. */
+.root[data-enhanced="true"] .radarScene {
+  animation: radar-reveal 1500ms ease-out both;
+}
+
+.root [data-hero-sweep] {
+  animation: radar-sweep 6s linear infinite;
+  animation-play-state: paused;
+}
+
+.root[data-visible="true"][data-user-paused="false"] [data-hero-sweep] {
+  animation-play-state: running;
+}
+
+.controlScene {
+  display: none;
+  position: absolute;
+  z-index: 11;
+  pointer-events: none;
+}
+
+.root[data-enhanced="true"] ~ .desktopControl {
+  display: block;
+}
+
+.desktopControl {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.controlTarget {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 2;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.controlTarget:focus-visible {
+  stroke: var(--brand-green-bright);
+  stroke-width: 3;
+  outline: none;
+}
+
+@keyframes radar-reveal {
+  from { opacity: 0; clip-path: circle(0% at 78% 50%); }
+  to { opacity: 1; clip-path: circle(150% at 78% 50%); }
+}
+
+@keyframes radar-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 767px), (max-width: 1199px) and (orientation: portrait) {
+  .root[data-enhanced="true"] ~ .desktopControl {
+    display: none;
+  }
+
+  .root[data-enhanced="true"] ~ .mobileControl {
+    display: block;
+  }
+
+  .mobileControl {
+    inset: 9% 0 auto;
+    width: 100%;
+    height: 29%;
+  }
+
+  .desktopScene {
+    display: none;
+  }
+
+  .mobileScene {
+    display: block;
+    position: absolute;
+    inset: 9% 0 auto;
+    width: 100%;
+    height: 29%;
+  }
+
+  .root[data-enhanced="true"] .radarScene {
+    animation-name: radar-reveal-mobile;
+  }
+
+  @keyframes radar-reveal-mobile {
+    from { opacity: 0; clip-path: circle(0% at 58% 50%); }
+    to { opacity: 1; clip-path: circle(150% at 58% 50%); }
+  }
+
+  .safeZone {
+    background: linear-gradient(
+      180deg,
+      var(--brand-black) 0%,
+      color-mix(in srgb, var(--brand-black) 70%, transparent) 14%,
+      transparent 21%,
+      transparent 29%,
+      var(--brand-black) 42%,
+      var(--brand-black) 100%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radarScene,
+  .root [data-hero-sweep] {
+    animation: none;
+  }
+
+  .controlScene {
+    display: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .desktopScene,
+  .mobileScene {
+    display: none;
+  }
+
+  .safeZone {
+    background: Canvas;
+  }
+
+  .controlScene {
+    display: none !important;
+  }
+}
