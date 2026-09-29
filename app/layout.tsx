@@ -12,8 +12,14 @@
 
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import type { CSSProperties } from "react";
 
-import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/constants";
 import { getThemeScript } from "@/lib/theme";
 import { generateOrganizationSchema } from "@/lib/schema";
 import LenisProvider from "@/components/layout/LenisProvider";
@@ -54,17 +60,24 @@ function getConsentGatedAnalyticsScript(): string {
 const spaceGrotesk = localFont({
   src: [
     {
-      path: "../public/fonts/SpaceGrotesk-Medium.woff2",
+      path: "../public/fonts/SpaceGrotesk-Medium-Latin.woff2",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../public/fonts/SpaceGrotesk-Bold.woff2",
+      path: "../public/fonts/SpaceGrotesk-Bold-Latin.woff2",
       weight: "700",
       style: "normal",
     },
   ],
   variable: "--font-display-var",
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0020-007E,U+00A0,U+00A9,U+00AE-00B0,U+00B7,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
+    },
+  ],
   display: "swap",
   preload: true,
 });
@@ -72,17 +85,24 @@ const spaceGrotesk = localFont({
 const geist = localFont({
   src: [
     {
-      path: "../public/fonts/Geist-Regular.woff2",
+      path: "../public/fonts/Geist-Regular-Latin.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../public/fonts/Geist-Medium.woff2",
+      path: "../public/fonts/Geist-Medium-Latin.woff2",
       weight: "500",
       style: "normal",
     },
   ],
   variable: "--font-body-var",
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0020-007E,U+00A0,U+00A9,U+00AE-00B0,U+00B7,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
+    },
+  ],
   display: "swap",
   preload: true,
 });
@@ -90,14 +110,23 @@ const geist = localFont({
 const geistMono = localFont({
   src: [
     {
-      path: "../public/fonts/GeistMono-Regular.woff2",
+      path: "../public/fonts/GeistMono-Regular-Latin.woff2",
       weight: "400",
       style: "normal",
     },
   ],
   variable: "--font-mono-var",
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0020-007E,U+00A0,U+00A9,U+00AE-00B0,U+00B7,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD",
+    },
+  ],
   display: "swap",
-  preload: false,
+  // Shared footer and service proof labels use this face on every route.
+  // Discover it with the other used fonts rather than after stylesheet layout.
+  preload: true,
 });
 
 // ── Metadata (spec §8.1, §1.5) ────────────────────────────────────────────
@@ -139,6 +168,25 @@ export const metadata: Metadata = {
 
 // ── Root Layout ────────────────────────────────────────────────────────────
 
+// Place the original extended face ahead of Next's metric-adjusted system
+// fallback. Use the public font style export rather than a generated family name.
+function withExtendedFace(fontFamily: string, extendedFamily: string) {
+  const [primary, ...fallbacks] = fontFamily.split(",");
+  return [primary, `"${extendedFamily}"`, ...fallbacks].join(",");
+}
+
+const fontVariables = {
+  "--font-display-var": withExtendedFace(
+    spaceGrotesk.style.fontFamily,
+    "Shruggie Space Grotesk",
+  ),
+  "--font-body-var": withExtendedFace(geist.style.fontFamily, "Shruggie Geist"),
+  "--font-mono-var": withExtendedFace(
+    geistMono.style.fontFamily,
+    "Shruggie Geist Mono",
+  ),
+} as CSSProperties;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -147,14 +195,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${geist.variable} ${geistMono.variable}`}
+      className={`dark ${spaceGrotesk.variable} ${geist.variable} ${geistMono.variable}`}
+      style={fontVariables}
       suppressHydrationWarning
     >
       <head>
         {/* FOUC-free theme initialization (spec §2.6) */}
-        <script
-          dangerouslySetInnerHTML={{ __html: getThemeScript() }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: getThemeScript() }} />
         {/* Consent-gated GA4/GTM loading (spec §6.11, §10.2) */}
         <script
           dangerouslySetInnerHTML={{

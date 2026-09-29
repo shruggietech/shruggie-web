@@ -15,7 +15,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -360,14 +359,13 @@ function CycleDiagram({ activePhase }: { activePhase: number }) {
 
 export default function ProcessAccordion() {
   const [activePhase, setActivePhase] = useState(0);
-  const shouldReduceMotion = useReducedMotion();
 
   const toggle = (index: number) => {
     setActivePhase((prev) => (prev === index ? prev : index));
   };
 
   return (
-    <div className="mt-16 grid grid-cols-1 items-center gap-8 md:mt-20 md:grid-cols-2 md:gap-12">
+    <div className="process-accordion mt-16 grid grid-cols-1 items-center gap-8 md:mt-20 md:grid-cols-2 md:gap-12">
       {/* ── Accordion ────────────────────────────────────────────────── */}
       <div className="min-h-[420px] md:min-h-[460px]">
         <div className="space-y-3">
@@ -408,63 +406,47 @@ export default function ProcessAccordion() {
                 </button>
 
                 {/* Expandable panel */}
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      id={`phase-panel-${index}`}
-                      role="region"
-                      aria-labelledby={`phase-trigger-${index}`}
-                      initial={
-                        shouldReduceMotion
-                          ? { height: "auto", opacity: 1 }
-                          : { height: 0, opacity: 0 }
-                      }
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={
-                        shouldReduceMotion
-                          ? { height: 0, opacity: 0 }
-                          : { height: 0, opacity: 0 }
-                      }
-                      transition={{
-                        height: {
-                          duration: shouldReduceMotion ? 0 : 0.3,
-                          ease: [0.25, 0.1, 0.25, 1],
-                        },
-                        opacity: {
-                          duration: shouldReduceMotion ? 0 : 0.2,
-                          delay: shouldReduceMotion ? 0 : 0.1,
-                        },
-                      }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-5 pt-0 pb-5">
-                        <p className="text-body-md text-text-secondary">
-                          {phase.description}
-                        </p>
-
-                        <div className="border-border/50 mt-4 border-t pt-4">
-                          <p className="text-body-sm text-accent font-medium tracking-wider uppercase">
-                            Deliverables
-                          </p>
-                          <ul className="mt-3 space-y-2">
-                            {phase.deliverables.map((item) => (
-                              <li
-                                key={item}
-                                className="text-body-sm text-text-secondary flex items-start gap-2"
-                              >
-                                <span
-                                  className="bg-accent mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
-                                  aria-hidden="true"
-                                />
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </motion.div>
+                <div
+                  id={`phase-panel-${index}`}
+                  role="region"
+                  aria-labelledby={`phase-trigger-${index}`}
+                  aria-hidden={!isOpen}
+                  inert={!isOpen}
+                  className={cn(
+                    "grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] motion-reduce:transition-none",
+                    isOpen
+                      ? "grid-rows-[1fr] opacity-100"
+                      : "grid-rows-[0fr] opacity-0",
                   )}
-                </AnimatePresence>
+                >
+                  <div className="min-h-0 overflow-hidden">
+                    <div className="px-5 pt-0 pb-5">
+                      <p className="text-body-md text-text-secondary">
+                        {phase.description}
+                      </p>
+
+                      <div className="border-border/50 mt-4 border-t pt-4">
+                        <p className="text-body-sm text-accent font-medium tracking-wider uppercase">
+                          Deliverables
+                        </p>
+                        <ul className="mt-3 space-y-2">
+                          {phase.deliverables.map((item) => (
+                            <li
+                              key={item}
+                              className="text-body-sm text-text-secondary flex items-start gap-2"
+                            >
+                              <span
+                                className="bg-accent mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                                aria-hidden="true"
+                              />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             );
           })}

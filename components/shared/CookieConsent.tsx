@@ -71,7 +71,7 @@ export default function CookieConsent() {
             href="/privacy"
             className="text-accent underline hover:text-accent-hover"
           >
-            Learn more
+            Privacy policy
           </Link>
         </p>
         <div className="flex shrink-0 gap-3">

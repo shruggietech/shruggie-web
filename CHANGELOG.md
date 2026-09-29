@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Hero headings, supporting text, and actions render immediately. Below-viewport
+  entrances enhance readable initial HTML and restore content on keyboard focus,
+  reduced motion, or unavailable animation APIs.
+- Compact common font faces reduce transfers while original fonts retain extended-character support. Initial HTML defaults to dark mode, and the existing pre-paint script honors saved blog themes.
+- Shared skyline artwork retains both exact crops as lazy vector images, avoiding window-grid hydration. Native illustration observation and process accordion transitions reduce initial animation JavaScript while preserving phase selection and reduced motion. Tailwind generates utilities from runtime templates only.
+- Mobile Services and Work pagination now has stable 44px touch targets and
+  visible keyboard focus while retaining the small decorative dots and swipes.
+  Service links name their destinations, and the cookie banner links to the
+  Privacy policy without changing consent behavior.
+
 ### Added
 
 - **Service proof and company narrative**: added typed, source-backed proof

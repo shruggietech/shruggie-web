@@ -3,7 +3,7 @@
  *
  * Renders pillar content and animated SVG illustration in a two-column
  * side-by-side layout that alternates illustration position per index.
- * Uses IntersectionObserver (via Framer Motion useInView) to trigger
+ * Uses IntersectionObserver (native) to trigger
  * the .is-animating class for CSS keyframe entrance animations on SVGs.
  *
  * Spec reference: ShruggieTech-Site-Updates-Plan-v2 §2.1, §2.2
@@ -11,9 +11,8 @@
 
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
-import { useInView, useReducedMotion } from "framer-motion";
+import { useIllustrationInView } from "@/hooks/useIllustrationInView";
 import { Palette, Code2, TrendingUp, Brain, ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -75,24 +74,15 @@ export default function ServicePillarSection({
   bgClass,
   detailHref,
 }: ServicePillarSectionProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const illustrationRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(illustrationRef, {
-    once: true,
-    margin: "-20% 0px -20% 0px",
-  });
-  const shouldReduceMotion = useReducedMotion();
+  const { ref: illustrationRef, active: isInView } =
+    useIllustrationInView("-20% 0px -20% 0px");
 
   const Icon = ICON_MAP[id];
   const Illustration = ILLUSTRATION_MAP[id];
   const isEven = index % 2 === 0;
 
   return (
-    <section
-      ref={sectionRef}
-      id={id}
-      className={cn("scroll-mt-24 py-16 md:py-24", bgClass)}
-    >
+    <section id={id} className={cn("scroll-mt-24 py-16 md:py-24", bgClass)}>
       <div className="container-content">
         <ScrollReveal delay={index * 0.05}>
           <div
@@ -107,7 +97,7 @@ export default function ServicePillarSection({
                 ref={illustrationRef}
                 className={cn(
                   "mx-auto h-[280px] w-full max-w-[360px] shrink-0 md:h-auto md:w-2/5 md:max-w-none",
-                  (isInView || shouldReduceMotion) && "is-animating",
+                  isInView && "is-animating",
                 )}
               >
                 <Illustration className="h-full w-full" />

@@ -253,7 +253,11 @@ export default function ServicesCarousel() {
       </div>
 
       {/* Large illustration display area */}
-      <div ref={illContainerRef} className="relative mx-auto mt-[var(--component-gap)] h-[280px] max-w-[360px]" aria-hidden="true">
+      <div
+        ref={illContainerRef}
+        className="relative mx-auto mt-[var(--component-gap)] h-[280px] max-w-[360px]"
+        aria-hidden="true"
+      >
         {services.map((service, index) => (
           <div
             key={service.title}
@@ -262,7 +266,7 @@ export default function ServicesCarousel() {
             className={`absolute inset-0 transition-opacity duration-300 ${
               index === activeIndex
                 ? "opacity-100"
-                : "opacity-0 pointer-events-none"
+                : "pointer-events-none opacity-0"
             }`}
           >
             <service.IllustrationLarge className="h-full w-full" />
@@ -287,7 +291,7 @@ export default function ServicesCarousel() {
             <Card className="flex h-full flex-col p-6">
               {/* Service number watermark */}
               <span
-                className="mb-3 block bg-gradient-to-r from-brand-green-bright to-[var(--gradient-teal)] bg-clip-text font-display text-display-lg font-bold text-transparent opacity-20"
+                className="from-brand-green-bright font-display text-display-lg mb-3 block bg-gradient-to-r to-[var(--gradient-teal)] bg-clip-text font-bold text-transparent opacity-20"
                 aria-hidden="true"
               >
                 {String(index + 1).padStart(2, "0")}
@@ -295,27 +299,27 @@ export default function ServicesCarousel() {
 
               {/* Icon */}
               <service.icon
-                className="mb-3 h-7 w-7 text-accent"
+                className="text-accent mb-3 h-7 w-7"
                 strokeWidth={1.5}
                 aria-hidden="true"
               />
 
               {/* Title */}
-              <h3 className="font-display text-display-sm font-bold text-text-primary">
+              <h3 className="font-display text-display-sm text-text-primary font-bold">
                 {service.title}
               </h3>
 
               {/* Description */}
-              <p className="mt-2 flex-1 text-body-md text-text-secondary">
+              <p className="text-body-md text-text-secondary mt-2 flex-1">
                 {service.description}
               </p>
 
               {/* Link */}
               <Link
                 href={service.href}
-                className="mt-4 inline-flex items-center gap-1 text-body-sm font-medium text-accent transition-colors hover:text-accent-hover"
+                className="text-body-sm text-accent hover:text-accent-hover mt-4 inline-flex items-center gap-1 font-medium transition-colors"
               >
-                Learn more
+                Explore {service.title}
                 <span aria-hidden="true">→</span>
               </Link>
             </Card>
@@ -324,22 +328,32 @@ export default function ServicesCarousel() {
       </div>
 
       {/* Indicator dots */}
-      <div className="mt-4 flex justify-center gap-2" role="tablist" aria-label="Service cards">
+      <div
+        className="mt-4 flex justify-center gap-2"
+        role="tablist"
+        aria-label="Service cards"
+      >
         {services.map((service, index) => (
           <button
             key={service.title}
+            type="button"
             role="tab"
             aria-selected={index === activeIndex}
             aria-label={`Go to ${service.title}`}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              index === activeIndex
-                ? "w-6 bg-brand-green-bright"
-                : "w-2 bg-white/20"
-            }`}
+            className="focus-visible:outline-focus flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2"
             onClick={() => {
               scrollToCard(index);
             }}
-          />
+          >
+            <span
+              aria-hidden="true"
+              className={`h-2 rounded-full transition-all duration-300 ${
+                index === activeIndex
+                  ? "bg-brand-green-bright w-6"
+                  : "w-2 bg-white/20"
+              }`}
+            />
+          </button>
         ))}
       </div>
     </section>
