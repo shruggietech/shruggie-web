@@ -3,7 +3,7 @@
 **Updated**: 2026-09-29
 **Branch**: `codex/62-hero-background-spec`
 **Issue**: [#62](https://github.com/shruggietech/shruggie-web/issues/62)
-**Disposition**: The owner-selected radar and center motion control are available on the local homepage. Performance and remaining manual mode checks are open; issue #62 stays open.
+**Disposition**: The owner-selected radar and center motion control are available on the local homepage. The owner authorized publication on 2026-09-29 with performance and browser-mode evidence exceptions documented. Issue #62 stays open.
 
 ## Decision and scope
 
@@ -18,7 +18,7 @@ The owner rejected face-adjacent symbolism, compared three face-free live concep
 | Standard test suite | Pass | `npm test`: seven contrast tests, 165 Vitest tests in 32 files, and two skyline asset checks passed after the center-control change. |
 | Lint and typecheck | Pass | `npm run lint` and `npx tsc --noEmit` exited zero after the center-control change. |
 | Production build | Pass | `npm run build` compiled and generated 38 pages after the center-control change. The temporary preview routes are absent from the route list. |
-| GitHub CI and preview | Pass | [CI run 36532946785](https://github.com/shruggietech/shruggie-web/actions/runs/36532946785) passed lint, typecheck, unit and existing Firebase emulator tests, and production build on commit `24132de`. Vercel's preview status passed; the preview itself requires sign-in. |
+| GitHub CI and preview | Pass for previous code commit | [CI run 36533454226](https://github.com/shruggietech/shruggie-web/actions/runs/36533454226) passed lint, typecheck, unit and existing Firebase emulator tests, and production build on commit `9dc9ee3`. Vercel's preview status passed; the preview itself requires sign-in. The publication-decision documentation commit still needs its own CI result. |
 | Production dependency audit | Pass at high-severity threshold | `npm audit --omit=dev --audit-level=high` exited zero after the center-control change; six existing moderate transitive findings remain. |
 | Desktop first and settled frames | Pass for inspected states | A production-browser reload showed the headline and both CTAs readable while the radar was nearly dark, then the complete scope behind a stable text veil. |
 | Fade, sweep, and center control | Pass for inspected states | The rebuilt production preview at `http://127.0.0.1:3010/` retains the 1.5-second fade and six-second sweep. The desktop center appears in the accessibility tree as a named button without visible button chrome. Clicking the center and pressing Enter toggled motion; keyboard focus produced a green outline. Browser hover temporarily inverted the click state, and leaving restored it. Focused tests cover the exact 200ms delay. |
@@ -31,4 +31,5 @@ The owner rejected face-adjacent symbolism, compared three face-free live concep
 - **Performance (T001/T019, SC-005)**: Matched production bundle-size estimates are in [measurements/bundle-comparison.md](measurements/bundle-comparison.md), but the earlier Lighthouse invocation was rejected by automatic command policy. No matched before/after cold-run timings, constrained-profile result, or Lighthouse budget result is available. Field INP remains unverified.
 - **Manual mode coverage (T009/T012/T015, SC-002/003/006)**: Browser checks still need a scripting-disabled session, forced-colors mode, a reduced-motion browser session, constrained-device behavior, and a measured layout-shift/contrast audit of active frames.
 - **Continuous-motion accessibility (SC-006)**: The owner-selected center target offers stop/resume without a visible pause button. It appears in the browser accessibility tree with an action name and keyboard focus indicator. A final assistive-technology check is still needed before claiming [WCAG 2.2 SC 2.2.2](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide) conformance.
-- **Issue disposition (T020)**: [PR #100](https://github.com/shruggietech/shruggie-web/pull/100) is open and the review corrections are pushed. CI and Vercel status passed on commit `24132de`. Issue #62 remains open; no merge or production deployment claim has been made.
+- **Publication decision**: On 2026-09-29, the owner explicitly authorized publication with the above missing evidence documented. This is a release tradeoff, not a passing measurement or completed accessibility claim. The checks remain tracked in issue #62.
+- **Issue disposition (T020)**: [PR #100](https://github.com/shruggietech/shruggie-web/pull/100) is open and the review corrections are pushed. CI and Vercel status passed on commit `9dc9ee3`. Issue #62 remains open; no merge or production deployment claim has been made.

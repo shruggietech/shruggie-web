@@ -2,7 +2,7 @@
 
 **Branch**: `codex/62-hero-background-spec` | **Date**: 2026-09-28 | **Spec**: [spec.md](spec.md)
 **Input**: Issue #62 and the owner's 2026-09-28 concept-comparison and documentation directions.
-**State**: Owner selected Radar sweep, above-copy mobile placement, and a continuous slower sweep independent of the fade. Performance and some accessibility gates remain open.
+**State**: Owner selected Radar sweep, above-copy mobile placement, and a continuous slower sweep independent of the fade. On 2026-09-29, the owner authorized publication with the remaining performance and browser-mode evidence exceptions documented. Issue #62 remains open for those checks.
 
 ## Summary
 
@@ -71,7 +71,11 @@ The SVG paths and coordinates are authored scene geometry, not layout spacing to
 
 ## Open evidence gates
 
-- The earlier production page was inspected at desktop, 390, and 320 CSS pixels after the no-button revision. The new center target needs fresh browser checks for hit geometry, hover/click inversion, keyboard activation, mobile tapping, CTA interception, forced colors, and reduced motion before acceptance. A scripting-disabled browser and weak-device behavior remain open.
+- The production preview was inspected at desktop, 390, and 320 CSS pixels and at 768, 820, and 1024 CSS-pixel portrait widths. Center hit geometry, hover/click inversion, keyboard activation, mobile tapping, and horizontal overflow passed for inspected states. Forced colors, reduced motion in an actual browser, scripting disabled, and weak-device behavior remain open.
 - Matched production bundle-size estimates are recorded in [measurements/bundle-comparison.md](measurements/bundle-comparison.md). Before/after timing, actual network transfer, constrained-device, and Lighthouse budget results remain unavailable because the Lighthouse command was rejected by automatic command policy.
 - Focused hero tests, full lint, `npm test`, typecheck, the production build, and the dependency audit passed after the new center-control change. Manual accessibility and performance gates remain open.
 - Details are in [validation.md](validation.md). Issue #62 must stay open until its individual acceptance criteria and release gates are satisfied.
+
+## Publication tradeoff decision (2026-09-29)
+
+The owner explicitly directed publication with the above exceptions documented after reviewing [PR #100](https://github.com/shruggietech/shruggie-web/pull/100), the passing CI and Vercel statuses, and the remaining evidence gaps. This authorizes merging once the final commit passes required checks. It does not convert missing Lighthouse, constrained-device, scripting-disabled, reduced-motion, forced-colors, contrast/layout-shift, or assistive-technology results into passes. Keep issue #62 open and record those results there when they can be obtained; do not claim its acceptance criteria complete from the deployment alone.
