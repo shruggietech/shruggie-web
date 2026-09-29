@@ -1,71 +1,44 @@
-# Research and concept evaluation brief: Hero background
+# Research and concept evaluation: Homepage hero background
 
-**Date**: 2026-09-28
-**Updated**: 2026-09-29
-**Status**: Three low-cost sketches rendered and compared on 2026-09-28. Signal foundry selected as the implementation direction; live-site validation remains open.
-**Source**: [Issue #62](https://github.com/shruggietech/shruggie-web/issues/62), current `HeroBackground.tsx`, and the website specification.
+**Created**: 2026-09-28 | **Updated**: 2026-09-29
+**Issue**: [#62](https://github.com/shruggietech/shruggie-web/issues/62)
+**State**: The owner selected Radar sweep after reviewing three face-free live concepts, then selected the above-copy mobile placement.
 
-## Current evidence
+## Owner correction
 
-- `components/home/HeroBackground.tsx` is a 708-line Canvas 2D component. Its draw function requests another frame whenever reduced motion is off. The lifecycle has resize and motion listeners but no viewport/visibility pause, and resolution uses uncapped device pixel ratio.
-- `components/home/HeroSection.tsx` keeps text and CTAs in semantic server-rendered markup above an `aria-hidden` canvas. That layering should remain.
-- `ShruggieTech_Website_Specification.md` section 6.1 still calls for a slowly looping gradient, while section 2.5 prohibits infinite loops and animations over 800 ms per element. The live hero copy also differs from section 6.1. Owner direction is to align documentation to the unchanged rendered copy during implementation.
-- The repository already installs `framer-motion` and `gsap`. A new renderer or animation package carries bundle and lifecycle costs that need prototype evidence.
-- A matched production bundle-size comparison is in [measurements/bundle-comparison.md](measurements/bundle-comparison.md). The local Lighthouse invocation was rejected by automatic command policy before it ran, so the before/after timing and budget gate remains open in [validation.md](validation.md).
+The original Signal foundry prototype and its two alternatives incorporated face-like geometry. On 2026-09-29 the owner rejected that visual language as tacky and asked for all face-adjacent symbolism to leave the hero. The old concept PNGs, gallery, and selected scene have been removed from the working tree. The existing site logo in the navigation is outside the hero background and remains unchanged.
 
-## Three distinct sketches and their states
+## Revised concepts
 
-The self-contained [concept preview](concepts.html) and [render script](render-concepts.mjs) produce first, arrival, settled, and mobile states with the unchanged hero text. The rendered PNGs in `concepts/` are low-cost visual sketches, not production screenshots. They use a system font and approximate foreground spacing, so the selected scene still requires in-browser verification with the actual site styles. The settled state doubles as the reduced-motion sketch because no additional motion is needed to understand it.
+The `concepts/` directory preserves first, active, and settled desktop/mobile PNGs using the unchanged hero foreground. The owner also reviewed all three directions on live local routes with the actual site styles, copy, and navigation. After choosing Radar sweep, the owner compared three 390 × 844 live mobile placements and selected the complete scope above the copy. The temporary preview routes and generator were removed from the deliverable.
 
-| Candidate | Low-cost sketch brief | Distinguishing question | First renderer hypothesis |
+| Direction | Visual idea | Motion | Sketch evidence |
 | --- | --- | --- | --- |
-| Signal foundry | Sparse points, vectors, and translucent planes enter from separate origins and connect into an asymmetric ShruggieTech signature to the right of the copy. Nearby construction layers respond to pointer input after settling. | Can an original brand signature feel like a functioning system rather than a particle-logo reveal? | Refactored Canvas 2D; use installed GSAP only if a staged sequence cannot stay clear as plain scene state. |
-| Liminal systems atrium | Nested perspective frames and data planes resolve toward a distant focal surface, while a deliberately quiet foreground corridor protects the text. A small brand-specific structural detail appears at the focal plane. | Can apparent depth and a memorable room be made legible and fast without a 3D runtime? | CSS/SVG or Canvas 2D with 2.5D projection. |
-| Compile field | Separate fragments transition through source-like marks, graph connections, and a resolved architectural form. The final state communicates assembly without fake terminal output or falling code. | Can the sequence convey technical craft within the motion duration rules and without explanatory text? | Canvas 2D or a modest SVG scene using installed motion facilities. |
+| Radar sweep | Offset range rings, asymmetric bearings, and three resolved returns form a specific scanning instrument. No icon or face is hidden in the scope. | One clockwise 360-degree arrival sweep and reveal in 1.4 seconds. Desktop mouse travel queues clockwise rotation with a 150-degree/second cap; mobile input does not move the scope. | [Radar desktop](concepts/radar-desktop-settled.png), [radar mobile](concepts/radar-mobile-settled.png) |
+| Signal loom | Thirteen routed strands pass through registration guides and a moving shuttle. The result suggests systems woven together, not a generic dot network. | The live preview modulated strands slowly while visible, with a Pause waves control. | [Loom desktop](concepts/loom-desktop-settled.png), [loom mobile](concepts/loom-mobile-settled.png) |
+| Lightwell | Offset translucent vertical fins frame a central light slit. It creates a spatial construction without a corridor or status card. | Fins and frame arrived once; direct mouse position shifted the fins and central slit subtly. | [Lightwell desktop](concepts/lightwell-desktop-settled.png), [lightwell mobile](concepts/lightwell-mobile-settled.png) |
 
-The phase-blueprint idea from issue #62 remains available as a refinement or replacement if one of these sketches proves weak. Combining candidates is allowed only if the resulting composition has one clear visual idea.
+The settled PNGs show the reduced-motion concept states, but the radar mobile sketch predates the owner's final above-copy placement. The delivered placement is defined by the homepage CSS and was checked in the production browser. SVG is present in server HTML without JavaScript; the text-safe veil is stable. None of these directions requires a new rendering dependency.
 
-## Comparison protocol and decision record
+## Eight-criterion comparison
 
-The three sketches use identical bounds and unchanged copy with approximate foreground spacing. The following comparison records concrete observations rather than invented numeric scores. Production-page visual checks are separately recorded in [validation.md](validation.md).
-
-| Criterion | Evidence to record |
-| --- | --- |
-| Memorability | What remains recognizable in the composed state without motion? |
-| Brand fit | Which geometry, colors, or signature makes it specifically ShruggieTech? |
-| Technical credibility | Does the construction read as an intentional system rather than generic particles? |
-| Text legibility | Do first, active, and settled frames preserve contrast and scan order? |
-| Mobile behavior | Does the narrow crop retain the idea without crowding copy? |
-| Accessibility | Are reduced-motion, high-contrast, no-JS, touch, and keyboard states coherent? |
-| Performance risk | What work runs, what pauses, and what ships to the client? |
-| Trope similarity | Does it resemble a common agency grid, globe, star field, or demo? |
-
-### Observed comparison
-
-| Criterion | Signal foundry | Systems atrium | Compile field |
+| Criterion | Radar sweep | Signal loom | Lightwell |
 | --- | --- | --- | --- |
-| Memorability | The connected asymmetrical structure and resolved shruggie face remain legible at rest. | The nested impossible room has stronger depth but its central face is a small insert. | The three-stage diagram is readable but resembles a product workflow illustration. |
-| Brand fit | The signature is assembled from network joints, not pasted over the background. | The signature is placed on a distant panel. | The signature is placed in a final status panel. |
-| Technical credibility | Distinct signals converge into a constrained structural node system. | Perspective geometry suggests a built environment, but does not explain its construction. | Source-to-graph-to-result progression is explicit, though more explanatory than immersive. |
-| Text legibility | Right-weighted geometry leaves the left safe zone dark in first, active, and settled sketches. | The room stays on the right but its outer frames approach the headline edge. | The bright final panel stays behind the right side but its rectangular edge attracts attention near the copy. |
-| Mobile behavior | The composition can be cropped to a recognizable lower-page emblem beneath the CTAs. | The mobile crop preserves the room, though detail becomes thin. | The mobile crop retains the diagram but looks like a small card. |
-| Accessibility | A complete static state works without motion; no visual meaning needs pointer input. | Same static advantage, but thin frames may disappear in high contrast. | Same static advantage, with the clearest state progression if animation is removed. |
-| Performance risk | A modest fixed vector scene supports a small client enhancement with no frame loop. | A modest fixed vector scene, but perspective movement could encourage heavier transforms. | Lowest geometry cost, with little reason for a dedicated renderer. |
-| Trope similarity | Network lines are a common motif, so the implementation must preserve the unusual brand-specific assembly and avoid a generic dot grid. | Closest to a conventional neon wireframe corridor. | Closest to a familiar software architecture diagram. |
+| Memorability | Clear circular instrument and directed scan. Radar is a known motif, so the asymmetric returns carry its identity. | Distinctive layered routed-strand pattern and registration line. | Strong architectural silhouette and central light slit. |
+| ShruggieTech fit | Suggests finding useful signals in complex work; green-on-black visual language fits the site. | Suggests combining disparate systems into one delivery; uses restrained brand green. | Suggests clarity emerging from technical layers; uses the same restrained palette. |
+| Technical credibility | Range geometry and annotated returns are internally consistent. | Paths have a coherent routing structure and measured guide spacing. | Repeated fins and beam follow a consistent perspective. |
+| Text legibility | Right-weighted ring reaches near the headline edge, but the fixed veil keeps the copy clear. | Outer strands start behind the headline edge; the veil protects text, while the pattern stays visible on the right. | Angled planes stay right of the main copy except faint top/bottom framing. |
+| Mobile behavior | The owner chose the complete scope above the copy after comparing it with the below-copy and right-edge-cropped placements. It is visible in the first screen and leaves the actions clear. | Retains repeated strands but loses some sense of horizontal routing. | Retains the light slit and fins but their detail is thin on narrow screens. |
+| Accessibility | Static scope communicates the design in reduced motion or without JS; pointer response is optional. | Static woven pattern stands without animation; the preview loop has a visible pause control and stops for reduced motion or invisibility. | Static construction stands without animation; pointer response is optional. |
+| Performance risk | Fixed SVG paths and one native arrival transform; pointer events run only during direct input. | Thirteen fixed paths with CSS transforms in the live preview, paused offscreen, hidden, or on request. The continuous preview motion requires explicit contract resolution if selected for delivery. | Seven fixed fins plus native arrival and direct-input transforms; no render loop. |
+| Common-effect resemblance | Radar is recognizable and may feel familiar if motion/annotation are not distinctive. | Avoids the usual particle globe, dot mesh, and tunnel effects. | Layered glass can resemble a generic technology backdrop unless the proportions stay deliberate. |
 
-**Selection**: Signal foundry. Keep the settled geometric signature visible on first paint, then enhance only a few construction layers with a bounded arrival. The initial sketch's generic network lines are a risk; refine them into distinct signal routes and translucent planes so the scene reads as a constructed system rather than another particle background. The mobile scene belongs below the preserved copy and CTAs, not as a shrunken desktop canvas.
+**Decision**: The owner selected Radar sweep on 2026-09-29, then selected the complete scope above the mobile copy after reviewing three live placements. Loom, Lightwell, and the preview routes were removed from the release build. The radar's one-time 1.4-second intro is an owner-directed exception to the site's general 800 ms per-element rule. Final visual and performance acceptance remain open.
 
-**Renderer decision**: Use semantic-independent inline SVG with CSS for the static first paint and the Web Animations API for optional, short progressive assembly and direct-input response. The geometry count is small and fixed, so extending the current 708-line Canvas 2D renderer would retain drawing/lifecycle complexity without a needed capability. Existing `framer-motion` and GSAP would add animation runtime to this hero for effects supported by native browser APIs. React Three Fiber, Lottie, and Rive add a runtime or asset pipeline without evidence of a spatial or authored-asset need. No new dependency is selected. If implementation evidence invalidates this choice, re-open the decision before broadening the stack.
+## Rendering decision
 
-## Existing architecture and contract choices
+Inline SVG remains appropriate for the selected radar. The fixed geometry has no dependency on a Canvas frame loop, 3D runtime, image asset, or new runtime package. CSS performs a single 1.4-second clockwise revolution and reveals the full scene from darkness. After that, desktop mouse travel adds clockwise-only rotation through a bounded requestAnimationFrame queue, capped at 150 degrees per second and stopped when idle, offscreen, hidden, or reduced motion. Mobile has no pointer response. Loom's continuous modulation and Lightwell's parallax were explored only in temporary previews; neither ships.
 
-- Preserve `HeroSection`'s semantic text and links; the background remains decorative and pointer-transparent.
-- Use a durable static scene or CSS layer for the first paint and no-JavaScript path. A client renderer may enrich it without causing layout shift.
-- Separate scene description/state, drawing, input, and lifecycle if Canvas continues. The 708-line monolith should not be extended in place without boundaries.
-- Default to a bounded arrival, then only input-triggered redraws. Stop when idle, offscreen, hidden, or reduced motion. A single animation element must finish within the specification's 800 ms limit; the full scene may stage several such elements but settles within five seconds.
-- Cap pixel ratio and geometry density by observed cost, with a lower-complexity path for small/constrained devices. Do not assume device class from touch support alone.
-- Keep WebGL context-loss handling and a static non-WebGL fallback conditional on selecting a WebGL renderer; do not add that infrastructure for a 2D scene.
+## Remaining evidence
 
-## Verification evidence to collect during implementation
-
-Capture a baseline and final production build with the same Lighthouse/device/network settings and three cold runs per mobile and desktop profile. Include one constrained profile, JS and transferred bundle comparison, relevant performance traces, and screenshots of the required visual states. Report median and individual runs. Record field INP only if field data is available; otherwise mark it unverified. Check the exact issue #62 acceptance list before any issue closure.
+The original baseline and revised final build still need matched production performance runs against the website budget. Direct reduced-motion, no-JavaScript, forced-colors, first/active-frame, and constrained-device checks remain open. Field INP is unverified unless real field data becomes available. Do not close issue #62 on concept selection alone.

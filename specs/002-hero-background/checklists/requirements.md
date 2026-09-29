@@ -26,4 +26,4 @@
 
 ## Notes
 
-- This checklist validates planning quality. Three concepts were compared and Signal foundry was implemented locally. Visual accessibility, full integration, and matched performance acceptance remain open in [validation.md](../validation.md).
+- This checklist validates planning quality. Three face-free concepts were compared and the owner-selected Radar sweep was implemented locally. Visual accessibility and matched performance acceptance remain open in [validation.md](../validation.md).

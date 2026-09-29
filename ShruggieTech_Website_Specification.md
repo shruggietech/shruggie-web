@@ -4,7 +4,7 @@
 | Attribute | Value |
 |-----------|-------|
 | Subject | ShruggieTech Website Rebuild |
-| Version | 1.3.3 |
+| Version | 1.3.4 |
 | Date | 2026-09-28 |
 | Status | APPROVED |
 | Audience | AI-first, Human-second |
@@ -892,7 +892,7 @@ The motion philosophy is "tasteful restraint." Animation is used to guide the ey
 - Auto-playing video backgrounds
 - Infinite looping animations (except a single subtle pulse on the hero CTA, which must respect `prefers-reduced-motion`)
 - Scroll-jacking (Lenis smooths native scroll; it does not override scroll distance or direction)
-- Animation durations exceeding 800ms for any single element
+- Animation durations exceeding 800ms for any single element, except the homepage radar's one-time 1400ms clockwise revolution and reveal described in §6.1. That scene becomes static after the intro until direct desktop pointer input, and reduced motion skips the intro.
 
 <a name="26-dark-and-light-mode" id="26-dark-and-light-mode"></a>
 ### 2.6. Dark and Light Mode
@@ -1211,7 +1211,7 @@ Mobile navigation opens as a full-screen overlay sliding in from the right. The 
 | Subheadline | "You have a business to run. We handle the technology that makes it grow: modern websites, marketing engines, AI integrations, and custom software, shaped around how you actually work." |
 | Primary CTA | "Start a Conversation" → `/contact` (rendered using `ShruggieCTA` component; see §2.4) |
 | Secondary CTA | "See Our Work" → `/work` (standard `Button` component, secondary variant) |
-| Visual treatment | Full-width dark section with a decorative Signal foundry composition behind the semantic hero content. Sparse green signal routes, translucent planes, and structural nodes assemble around a recognizable ShruggieTech signature. The complete, composed vector scene is visible on first paint and without JavaScript; a stable black veil protects headline, subheadline, and CTAs during every frame. A few optional construction layers arrive once in staggered animations, each no longer than 800ms, then stop. Pointer movement may shift secondary detail briefly but never moves the text. Mobile shows the composed signature below the copy and actions. Reduced motion and forced colors keep an intentional static reading state. The scene stops optional motion when hidden or offscreen and has no infinite loop. |
+| Visual treatment | Full-width dark section with a decorative, face-free radar scope behind the semantic hero content. Offset range rings, an asymmetric clockwise sweep, and three resolved returns use restrained brand green against near-black. The complete vector geometry is present in the server HTML. On load, the scope reveals from darkness while the sweep makes exactly one clockwise revolution in 1400ms, then rests. This intro is the specific exception to §2.5's general 800ms per-element limit; there is no automatic loop. Desktop mouse travel can only advance the sweep clockwise, at no more than 150 degrees per second with at most 75 degrees queued, even when the pointer moves in the opposite direction. Motion stops when idle, offscreen, hidden, or reduced motion is requested. Mobile places the complete scope above the unchanged headline and uses the one-time intro without pointer response. Reduced motion displays the composed static scope immediately, and forced colors removes the decorative SVG. A stable black veil keeps the headline, support text, and CTAs readable throughout. |
 | Tagline | The shruggie tagline is delivered via the `ShruggieCTA` component beneath the primary CTA button (reveals on hover/scroll; see §2.4 for behavior). |
 
 **Section 2: Services Preview**
@@ -2726,4 +2726,5 @@ All environment variables are configured in the Vercel project dashboard under S
 | <span style="white-space: nowrap;">2026-09-12</span> | 1.3.0 | Replaced repository-authored production blog publication with the authenticated Firestore editorial authority; documented the frozen migration corpus, browser workflow, checksummed migration/export path, dynamic slug delivery, cache convergence, and recovery contract. |
 | <span style="white-space: nowrap;">2026-09-15</span> | 1.3.1 | Added typed, source-backed proof to every Services pillar and detail page; linked the Brand Building portfolio from Strategy & Brand and Work; and made the Discuss, Create, Deliver engagement model one shared Services/About component. |
 | <span style="white-space: nowrap;">2026-09-17</span> | 1.3.2 | Made initial hero and reveal HTML immediately visible; specified progressive below-viewport motion, stable 44px mobile carousel targets, contextual service links, and descriptive privacy-policy copy. Production performance verification remains pending (#96/#97). |
-| <span style="white-space: nowrap;">2026-09-28</span> | 1.3.3 | Replaced the stale looping hero-gradient contract with the finite Signal foundry scene for #62, and aligned documented hero copy with the unchanged rendered copy. The general motion limits remain in force. |
+| <span style="white-space: nowrap;">2026-09-28</span> | 1.3.3 | Drafted a finite Signal foundry direction for #62 and aligned the documented hero copy with the unchanged rendering. The draft visual was superseded before delivery. |
+| <span style="white-space: nowrap;">2026-09-29</span> | 1.3.4 | Selected the face-free Radar sweep after three live concept comparisons and placed the mobile scope above the copy. Specified a single 1400ms clockwise reveal, capped clockwise desktop pointer motion, and a precise exception to the general 800ms duration rule. |

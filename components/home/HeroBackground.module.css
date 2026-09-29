@@ -31,8 +31,32 @@
   );
 }
 
-.root [data-hero-responsive] {
-  transition: transform 180ms ease-out;
+.root [data-hero-sweep] {
+  transform-box: view-box;
+  transform-origin: 1000px 345px;
+}
+
+.radarScene {
+  animation: radar-reveal 1400ms ease-out both;
+}
+
+.root [data-hero-sweep] {
+  animation: radar-intro 1400ms linear;
+}
+
+.root[data-active="false"] .radarScene,
+.root[data-active="false"] [data-hero-sweep] {
+  animation-play-state: paused;
+}
+
+@keyframes radar-reveal {
+  from { opacity: 0; clip-path: circle(0% at 78% 50%); }
+  to { opacity: 1; clip-path: circle(150% at 78% 50%); }
+}
+
+@keyframes radar-intro {
+  from { transform: rotate(-360deg); }
+  to { transform: rotate(0deg); }
 }
 
 @media (max-width: 767px) {
@@ -43,25 +67,37 @@
   .mobileScene {
     display: block;
     position: absolute;
-    inset: auto 0 0;
+    inset: 9% 0 auto;
     width: 100%;
-    height: 38%;
+    height: 29%;
+  }
+
+  .radarScene {
+    animation-name: radar-reveal-mobile;
+  }
+
+  @keyframes radar-reveal-mobile {
+    from { opacity: 0; clip-path: circle(0% at 58% 50%); }
+    to { opacity: 1; clip-path: circle(150% at 58% 50%); }
   }
 
   .safeZone {
     background: linear-gradient(
       180deg,
       var(--brand-black) 0%,
-      var(--brand-black) 54%,
-      color-mix(in srgb, var(--brand-black) 60%, transparent) 70%,
-      color-mix(in srgb, var(--brand-black) 8%, transparent) 100%
+      color-mix(in srgb, var(--brand-black) 70%, transparent) 14%,
+      transparent 21%,
+      transparent 29%,
+      var(--brand-black) 42%,
+      var(--brand-black) 100%
     );
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .root [data-hero-responsive] {
-    transition: none;
+  .radarScene,
+  .root [data-hero-sweep] {
+    animation: none;
   }
 }
 

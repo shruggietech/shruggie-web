@@ -6,34 +6,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HeroBackground } from "@/components/home/HeroBackground";
 import HeroSection from "@/components/home/HeroSection";
+import { advanceClockwiseSweep, MAX_SWEEP_DEGREES_PER_SECOND, queueClockwiseSweep } from "@/components/home/hero-background/radar-motion";
 
 let intersection: IntersectionObserverCallback;
 let motionChange: (event: MediaQueryListEvent) => void;
 let reducedMotion = false;
 const observe = vi.fn();
 const disconnect = vi.fn();
-const animations: {
-  playState: string;
-  pause: ReturnType<typeof vi.fn>;
-  play: ReturnType<typeof vi.fn>;
-  cancel: ReturnType<typeof vi.fn>;
-}[] = [];
-const animate = vi.fn((_keyframes: Keyframe[] | PropertyIndexedKeyframes | null, _options?: number | KeyframeAnimationOptions) => {
-  void _keyframes;
-  void _options;
-  const animation = {
-    playState: "running",
-    pause: vi.fn(() => { animation.playState = "paused"; }),
-    play: vi.fn(() => { animation.playState = "running"; }),
-    cancel: vi.fn(() => { animation.playState = "idle"; }),
-  };
-  animations.push(animation);
-  return animation as unknown as Animation;
-});
 
 beforeEach(() => {
   reducedMotion = false;
-  animations.length = 0;
   vi.clearAllMocks();
   Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
   vi.stubGlobal("matchMedia", () => ({
@@ -46,19 +28,12 @@ beforeEach(() => {
     observe = observe;
     disconnect = disconnect;
   });
-  Object.defineProperty(Element.prototype, "animate", { configurable: true, value: animate });
-  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({
-    x: 0, y: 0, top: 0, left: 0, right: 1280, bottom: 690, width: 1280, height: 690,
-    toJSON: () => ({}),
-  });
 });
 
 afterEach(() => {
   cleanup();
-  vi.restoreAllMocks();
   vi.unstubAllGlobals();
   Reflect.deleteProperty(document, "visibilityState");
-  Reflect.deleteProperty(Element.prototype, "animate");
 });
 
 function mount() {
@@ -69,8 +44,8 @@ function enterViewport() {
   act(() => intersection([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver));
 }
 
-describe("homepage hero background", () => {
-  it("preserves the server-rendered headline, body, and both action destinations", () => {
+describe("homepage radar", () => {
+  it("preserves the server-rendered headline, copy, and both action destinations", () => {
     const html = renderToStaticMarkup(<HeroSection />);
     expect(html).toContain("We advance your vision.");
     expect(html).toContain("You have a business to run.");
@@ -80,89 +55,109 @@ describe("homepage hero background", () => {
     expect(html).toContain("See Our Work");
   });
 
-  it("server-renders a complete decorative scene with no canvas or image dependency", () => {
+  it("serves the complete decorative scope without a canvas, image, or JavaScript renderer", () => {
     const html = renderToStaticMarkup(<HeroBackground />);
     expect(html).toContain('aria-hidden="true"');
-    expect(html).toContain("<svg");
-    expect(html).toContain('data-hero-signature="true"');
+    expect(html.match(/<svg/g)).toHaveLength(2);
+    expect(html).toContain('data-hero-sweep="true"');
+    expect(html).not.toContain("data-hero-signature");
     expect(html).not.toContain("<canvas");
-    expect(html).not.toContain("opacity:0");
     expect(html).not.toContain("<img");
   });
 
-  it("runs one bounded assembly only when visible, then does not restart", () => {
-    mount();
-    expect(observe).toHaveBeenCalledTimes(1);
-    expect(animate).not.toHaveBeenCalled();
-    enterViewport();
-    expect(animate.mock.calls.length).toBeGreaterThanOrEqual(3);
-    for (const [, options] of animate.mock.calls) {
-      expect(Number((options as KeyframeAnimationOptions).duration)).toBeLessThanOrEqual(800);
-      expect((options as KeyframeAnimationOptions).iterations ?? 1).toBe(1);
-    }
-    const count = animate.mock.calls.length;
-    enterViewport();
-    expect(animate).toHaveBeenCalledTimes(count);
-  });
-
-  it("pauses active assembly offscreen and in a hidden tab", () => {
-    mount();
-    enterViewport();
-    act(() => intersection([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver));
-    expect(animations.some((animation) => animation.pause.mock.calls.length > 0)).toBe(true);
-    enterViewport();
-    expect(animations.some((animation) => animation.play.mock.calls.length > 0)).toBe(true);
-    Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
-    act(() => document.dispatchEvent(new Event("visibilitychange")));
-    expect(animations.every((animation) => animation.playState === "paused")).toBe(true);
-  });
-
-  it("keeps the static signature when reduced motion is requested or enabled live", () => {
-    reducedMotion = true;
-    const first = mount();
-    enterViewport();
-    expect(animate).not.toHaveBeenCalled();
-    expect(first.container.querySelector('[data-hero-signature="true"]')).toBeInTheDocument();
-    first.unmount();
-    reducedMotion = false;
-    mount();
-    enterViewport();
-    reducedMotion = true;
-    act(() => motionChange({ matches: true } as MediaQueryListEvent));
-    expect(animations.some((animation) => animation.cancel.mock.calls.length > 0)).toBe(true);
-  });
-
-  it("keeps a static scene when animation or observation APIs are unavailable", () => {
+  it("keeps a static scene when browser observation APIs are unavailable", () => {
     vi.stubGlobal("IntersectionObserver", undefined);
-    Reflect.deleteProperty(Element.prototype, "animate");
     const { container } = mount();
-    expect(container.querySelector('[data-hero-signature="true"]')).toBeInTheDocument();
-    expect(animate).not.toHaveBeenCalled();
+    expect(container.querySelector('[data-hero-sweep="true"]')).toBeInTheDocument();
   });
 
-  it("reacts to a mouse near the hero, then settles without responding to touch movement", () => {
+  it("advances clockwise under mouse travel and holds its bearing when the pointer reverses or leaves", () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.stubGlobal("requestAnimationFrame", vi.fn((callback: FrameRequestCallback) => {
+      frames.push(callback);
+      return frames.length;
+    }));
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
     const { container } = mount();
     enterViewport();
     const section = container.querySelector("section")!;
-    const responsive = container.querySelector<SVGGElement>("[data-hero-responsive]")!;
-    fireEvent.pointerMove(section, { pointerType: "mouse", clientX: 1000, clientY: 400 });
-    expect(responsive.style.transform).not.toBe("");
-    const lastTransform = responsive.style.transform;
-    fireEvent.pointerMove(section, { pointerType: "touch", clientX: 200, clientY: 200 });
-    expect(responsive.style.transform).toBe(lastTransform);
+    const sweep = container.querySelector<SVGGElement>('[data-hero-size="desktop"] [data-hero-sweep]')!;
+    fireEvent.animationEnd(sweep);
+    fireEvent.pointerMove(section, { pointerType: "mouse", clientX: 1100, clientY: 450 });
+    fireEvent.pointerMove(section, { pointerType: "mouse", clientX: 750, clientY: 180 });
+    act(() => frames.shift()?.(16));
+    const bearing = Number(sweep.style.transform.match(/rotate\(([\d.]+)deg\)/)?.[1]);
+    expect(bearing).toBeGreaterThan(0);
+    fireEvent.pointerMove(section, { pointerType: "mouse", clientX: 1100, clientY: 450 });
+    act(() => frames.shift()?.(32));
+    const nextBearing = Number(sweep.style.transform.match(/rotate\(([\d.]+)deg\)/)?.[1]);
+    expect(nextBearing).toBeGreaterThanOrEqual(bearing);
     fireEvent.pointerLeave(section);
-    expect(responsive.style.transform).toBe("");
+    expect(sweep.style.transform).toContain("rotate(");
   });
 
-  it("settles active motion on resize and disconnects on unmount", () => {
+  it("caps interactive angular speed and queued distance", () => {
+    const first = queueClockwiseSweep(40, 40, 1000);
+    const second = queueClockwiseSweep(40, first, 1000);
+    expect(first).toBeGreaterThan(40);
+    expect(second).toBeGreaterThanOrEqual(first);
+    expect(second - 40).toBeLessThanOrEqual(75);
+    const advanced = advanceClockwiseSweep(40, second, 100);
+    expect(advanced).toBeGreaterThanOrEqual(40);
+    expect(advanced - 40).toBeLessThanOrEqual(MAX_SWEEP_DEGREES_PER_SECOND * .05);
+    expect(advanceClockwiseSweep(advanced, second, 0)).toBe(advanced);
+  });
+
+  it("does not move the mobile scope in response to a mouse or touch pointer", () => {
+    vi.stubGlobal("innerWidth", 390);
+    const requestFrame = vi.fn();
+    vi.stubGlobal("requestAnimationFrame", requestFrame);
+    const { container } = mount();
+    enterViewport();
+    const section = container.querySelector("section")!;
+    const sweep = container.querySelector<SVGGElement>('[data-hero-size="mobile"] [data-hero-sweep]')!;
+    fireEvent.pointerMove(section, { pointerType: "mouse", clientX: 300, clientY: 500 });
+    fireEvent.pointerMove(section, { pointerType: "mouse", clientX: 100, clientY: 200 });
+    fireEvent.pointerMove(section, { pointerType: "touch", clientX: 200, clientY: 350 });
+    expect(sweep.style.transform).toBe("");
+    expect(requestFrame).not.toHaveBeenCalled();
+  });
+
+  it("stops interactive work offscreen, in hidden tabs, and for reduced motion", () => {
+    const frames: FrameRequestCallback[] = [];
+    const cancelFrame = vi.fn();
+    vi.stubGlobal("requestAnimationFrame", vi.fn((callback: FrameRequestCallback) => {
+      frames.push(callback);
+      return frames.length;
+    }));
+    vi.stubGlobal("cancelAnimationFrame", cancelFrame);
+    const { container } = mount();
+    const root = container.querySelector<HTMLElement>('[aria-hidden="true"]')!;
+    enterViewport();
+    const section = container.querySelector("section")!;
+    const sweep = container.querySelector<SVGGElement>('[data-hero-size="desktop"] [data-hero-sweep]')!;
+    fireEvent.animationEnd(sweep);
+    fireEvent.pointerMove(section, { pointerType: "mouse", clientX: 100, clientY: 100 });
+    fireEvent.pointerMove(section, { pointerType: "mouse", clientX: 500, clientY: 300 });
+    expect(frames.length).toBe(1);
+    act(() => intersection([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver));
+    expect(root.dataset.active).toBe("false");
+    expect(cancelFrame).toHaveBeenCalled();
+    enterViewport();
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
+    act(() => document.dispatchEvent(new Event("visibilitychange")));
+    expect(root.dataset.active).toBe("false");
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
+    reducedMotion = true;
+    act(() => motionChange({ matches: true } as MediaQueryListEvent));
+    expect(root.dataset.active).toBe("false");
+  });
+
+  it("disconnects observation and cancels animation work on unmount", () => {
     const view = mount();
     enterViewport();
-    const count = animate.mock.calls.length;
-    act(() => window.dispatchEvent(new Event("resize")));
-    expect(animations.every((animation) => animation.cancel.mock.calls.length > 0)).toBe(true);
-    enterViewport();
-    expect(animate).toHaveBeenCalledTimes(count);
     view.unmount();
+    expect(observe).toHaveBeenCalledTimes(1);
     expect(disconnect).toHaveBeenCalledTimes(1);
   });
 });

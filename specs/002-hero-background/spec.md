@@ -2,7 +2,7 @@
 
 **Feature Branch**: `codex/62-hero-background-spec`
 **Created**: 2026-09-28
-**Status**: Implemented locally; visual and performance acceptance gates remain open
+**Status**: Radar and above-copy mobile placement selected; performance and remaining acceptance gates remain open
 **Input**: [Issue #62](https://github.com/shruggietech/shruggie-web/issues/62), "reimagine the hero background experience."
 
 ## Scope and authority
@@ -72,15 +72,16 @@ The background reacts meaningfully to direct interaction, settles afterward, and
 
 - **FR-001**: Compare at least three materially different low-cost concept sketches or prototypes from issue #62 before selecting the final scene. Record the comparison across memorability, ShruggieTech specificity, technical credibility, text legibility, mobile behavior, accessibility, performance risk, and resemblance to common agency effects.
 - **FR-002**: Record the selected concept and rendering approach, rejected alternatives, and dependency impact before full implementation. Any new 3D or animation dependency requires prototype evidence that the installed approaches cannot deliver the selected concept.
-- **FR-003**: The background must establish a recognizable virtual or digital construction/assembly idea and reach an intentionally composed state without pointer discovery.
+- **FR-003**: The background must establish a recognizable, face-free radar instrument and reach an intentionally composed state without pointer discovery.
 - **FR-004**: Existing hero copy and actions must remain immediately readable, semantic, and operable above a decorative, non-interactive visual at every supported width and throughout the arrival.
 - **FR-005**: The scene must use a near-black base, restrained brand green, and at most rare orange accents. A stable foreground safe zone must maintain applicable WCAG 2.2 AA contrast in every visual state.
-- **FR-006**: Touch and keyboard-only visitors must receive an intentional composed experience. Optional pointer response may reveal detail but must not hide essential brand meaning.
+- **FR-006**: Touch and keyboard-only visitors must receive an intentional composed experience. Desktop mouse travel may advance the radar sweep only clockwise, with a bounded queue and angular speed; moving the mouse in the opposite direction cannot reverse it. Mobile has no pointer-controlled radar movement. Optional pointer response must not hide essential brand meaning.
 - **FR-007**: Reduced-motion visitors must receive a composed static or near-static state. Disabled JavaScript and visual failures must retain a deliberate static presentation and fully usable foreground content.
-- **FR-008**: Automatic arrival motion must settle within five seconds; each animated element must obey the specification's current 800 ms duration limit. There must be no infinite automatic loop. Any motion continuing beyond five seconds must have the required pause/stop/hide control or be removed; the default design is to settle and stop.
+- **FR-008**: The selected radar performs exactly one automatic clockwise revolution while the complete scene reveals from darkness within 1.5 seconds of load. This 1.4-second radar intro is the owner's specific exception to the general 800 ms per-element duration limit; all other motion retains that limit. The radar rests after the intro, with no infinite automatic loop. Reduced motion skips the intro.
 - **FR-009**: The background must stop visual work when idle, outside the viewport, or in a hidden document, and must limit complexity on small or constrained devices without shifting layout.
-- **FR-010**: The delivery must update the authoritative homepage visual description in `ShruggieTech_Website_Specification.md` at the same time as the code, and align that document's stale hero copy with the unchanged rendered copy. Any motion-rule deviation requires separate explicit approval and a same-slice specification update.
+- **FR-010**: The delivery must update the authoritative homepage visual description in `ShruggieTech_Website_Specification.md` at the same time as the code, align that document's stale hero copy with the unchanged rendered copy, and record the owner's specific 1.4-second radar-intro exception to the general motion rule.
 - **FR-011**: The implementation must preserve the existing homepage route structure and must not cause horizontal overflow, blocked interaction, focus regression, console errors, or hydration errors.
+- **FR-012**: The hero background and its concept artifacts must contain no face-like, smile-like, eye-like, or mascot-adjacent motif. The owner's 2026-09-29 correction supersedes the original concept selection.
 
 ## Success Criteria
 
@@ -88,7 +89,7 @@ The background reacts meaningfully to direct interaction, settles afterward, and
 
 - **SC-001**: Three distinct concept sketches or prototypes are reviewed with the eight criteria in FR-001, and one direction plus renderer is selected with a written rationale.
 - **SC-002**: In desktop, mobile, touch, keyboard-only, reduced-motion, no-JavaScript, high-contrast, and failure-state checks, the existing headline and both CTAs are visible and usable before and after the background settles.
-- **SC-003**: The chosen scene communicates a recognizable ShruggieTech-specific construction/assembly idea on first arrival, without hover, and reaches its resting state within five seconds.
+- **SC-003**: The radar communicates its digital idea on first arrival without hover or face-adjacent symbolism, completes one clockwise revolution and the reveal within 1.5 seconds, then rests until desktop pointer input advances it. Pointer input never reverses the bearing or exceeds the speed cap.
 - **SC-004**: No continuous visual work remains after settling or while the hero is offscreen or the document is hidden; resize and rotation produce no layout shift or horizontal overflow.
 - **SC-005**: Before/after production-build evidence is recorded for mobile and desktop, including a constrained profile, bundle cost, Lighthouse Performance > 90, LCP < 2.5 s, INP < 200 ms where field data exists, CLS < 0.1, and FCP < 1.8 s. Unavailable field INP is explicitly reported as unverified, not substituted with a synthetic value.
 - **SC-006**: Applicable WCAG 2.2 AA contrast and motion behavior pass representative first, active, settled, reduced-motion, and high-contrast states.
@@ -96,7 +97,7 @@ The background reacts meaningfully to direct interaction, settles afterward, and
 
 ## Assumptions
 
-- The final concept remains open until three sketches are compared, per the owner's 2026-09-28 direction.
+- The owner selected Radar sweep on 2026-09-29 after comparing three revised face-free live concepts, then chose the complete scope above the mobile copy from three live placements.
 - The first prototype can use the current lightweight rendering stack; a different renderer must win on observed concept and cost evidence.
 - The hero's visible copy, labels, destinations, and navigation are fixed by issue #62's scope. The owner approved correcting the drifted documentation to match the current rendering on 2026-09-28.
 - Production performance evidence must distinguish controlled lab results from unavailable field data.

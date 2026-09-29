@@ -7,16 +7,16 @@
 ## Phase 1: Evidence and concept decision (blocks scene implementation)
 
 - [ ] T001 [US1] Capture current hero screenshots and matched production-build mobile/desktop baseline measurements, including a constrained profile, bundle size, and available field INP status. Record raw settings and results in this feature directory. Matched bundle sizes are recorded; timing and constrained-profile baselines remain open.
-- [x] T002 [US1] Produce first, active, settled, mobile, and reduced-motion sketch states for Signal foundry using unchanged hero copy and approximate foreground spacing.
-- [x] T003 [US1] Produce the same sketch states for Liminal systems atrium using unchanged hero copy and approximate foreground spacing.
-- [x] T004 [US1] Produce the same sketch states for Compile field using unchanged hero copy and approximate foreground spacing.
-- [x] T005 [US1] Compare T002-T004 against all eight criteria in `research.md`; record the chosen concept, renderer, rejected options, dependency impact, and any owner decision before full implementation. If the scene needs a new runtime or motion-rule exception, resolve that explicit approval gate first.
+- [x] T002 [US1] Produce first, active, settled, mobile, and reduced-motion sketch states for the revised Radar sweep direction using unchanged hero copy.
+- [x] T003 [US1] Produce the same revised sketch states for Signal loom.
+- [x] T004 [US1] Produce the same revised sketch states for Lightwell.
+- [x] T005 [US1] Compare T002-T004 against all eight criteria in `research.md`; record the owner's Radar sweep selection, inline SVG renderer, rejected options, and dependency impact. Mobile placement remains under live comparison.
 
 ## Phase 2: User Story 1 - Arrival and readable foreground (P1)
 
 - [x] T006 [US1] Add focused tests for first-paint/static presentation, preserved foreground content, arrival settling, and non-interception in `tests/hero-background.test.tsx` or the closest existing test suite.
 - [x] T007 [US1] Implement the chosen static first-paint state and stable foreground safe zone in `components/home/HeroSection.tsx`, `components/home/HeroBackground.tsx`, and `styles/globals.css` only as needed.
-- [x] T008 [US1] Implement the selected bounded construction/assembly scene. If retaining Canvas, separate scene state, drawing, input, and lifecycle into focused files under `components/home/hero-background/` rather than expanding the current 708-line component.
+- [x] T008 [US1] Finalize the selected Radar sweep, choose the above-copy mobile placement with the owner, and remove unused scene and preview code after the live comparison.
 - [ ] T009 [US1] Verify the first, active, and settled states at representative desktop and 390/320 px mobile widths. Confirm no copy, CTA, link, navigation, or lower-homepage change.
 
 ## Phase 3: User Story 2 - Intentional modes and fallbacks (P1)
@@ -33,9 +33,9 @@
 
 ## Phase 5: Contract, analysis, and release evidence
 
-- [x] T016 Update `ShruggieTech_Website_Specification.md` §6.1 to the selected delivered visual and the unchanged rendered hero copy; retain §2.5 motion limits unless an explicit owner-approved exception is recorded. Update `CHANGELOG.md`.
+- [x] T016 Update `ShruggieTech_Website_Specification.md` §6.1 to the delivered Radar sweep and the unchanged rendered hero copy; record the owner's specific 1.4-second intro exception in §2.5 while retaining the general motion limits. Update `CHANGELOG.md`.
 - [x] T017 Run `/speckit-analyze` on `spec.md`, `plan.md`, and `tasks.md`; resolve actionable coverage or constitution findings before implementation completion.
-- [x] T018 Run focused hero tests, `npm test`, `npm run lint`, `npx tsc --noEmit`, `npm run build`, and the production dependency audit. Record repository-wide CI status separately; the unrelated Firebase emulator suite does not test this hero.
+- [x] T018 Run focused hero tests, `npm test`, `npm run lint`, `npx tsc --noEmit`, `npm run build`, and the production dependency audit on the final selected implementation. Results are in `validation.md`.
 - [ ] T019 Repeat matched production-build mobile/desktop measurements from T001 (three cold runs per profile), include a constrained profile and bundle/renderer cost, and compare each budget with raw evidence. State field INP as unverified if unavailable. Bundle costs are recorded; cold-run timing and numeric budget comparison remain open.
 - [ ] T020 Audit every issue #62 acceptance criterion and all FR/SC items, attach the concept decision and visual/performance evidence to the implementing PR, and keep #62 open until its own acceptance and release gates are complete. Coordinate any relevant performance result with #31.
 

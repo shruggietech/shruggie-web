@@ -1,10 +1,10 @@
 /**
- * HeroSection — Full-width dark hero with a composed signal-foundry backdrop.
+ * HeroSection — Full-width dark hero with a composed radar backdrop.
  *
  * Headline "We advance your vision." in display-xl
  * Space Grotesk Bold. Dual CTAs: primary via ShruggieCTA, secondary via Button.
- * Background: an immediately visible decorative construction scene with
- * a finite optional arrival and a composed reduced-motion state.
+ * Background: a decorative radar with one finite reveal and a composed
+ * reduced-motion state.
  *
  * Spec reference: §6.1 (Homepage — Section 1: Hero)
  */
@@ -23,7 +23,7 @@ export default function HeroSection() {
     >
       <HeroBackground />
 
-      <div className="container-content relative z-10 flex min-h-[85vh] flex-col items-start justify-center pt-44 pb-32 md:py-40">
+      <div className="container-content relative z-10 flex min-h-[85vh] flex-col items-start justify-center pb-32 pt-80 md:py-40">
         <div>
           <h1 className="font-display text-display-md md:text-display-xl text-brand-white max-w-4xl font-bold">
             We advance your vision.

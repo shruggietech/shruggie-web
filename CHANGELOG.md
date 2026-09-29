@@ -74,9 +74,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Homepage hero background**: replaced the cursor-dependent dot-grid canvas
-  with a composed Signal foundry vector scene, a short one-time assembly, and
-  an intentional mobile/static state; preserved the existing copy and CTA
-  destinations while aligning the website specification with the live hero.
+  with a face-free radar scope. It makes one clockwise revolution while
+  revealing from darkness in 1.4 seconds, then rests. Desktop mouse travel
+  advances the bearing only clockwise at a capped speed; mobile places the
+  stable scope above the copy without pointer response. Existing copy and CTA
+  destinations remain unchanged. The website specification records the
+  specific intro-duration exception and the final visual treatment.
 
 - **Homepage Services interaction**: replaced the GSAP-pinned desktop service
   sequence with a naturally scrolling responsive card grid, preserving the
@@ -140,10 +143,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Decisions
 
-- **2026-09-28, hero renderer**: compared three concept sketches for #62 and
-  selected inline SVG with native finite animation. The fixed small scene does
-  not need the old continuous Canvas loop, the installed motion packages, or a
-  new 3D runtime; the authored first-paint state also works without JavaScript.
+- **2026-09-29, hero renderer and motion**: after the owner rejected face-like
+  geometry, compared Radar sweep, Signal loom, and Lightwell for #62 and
+  selected inline SVG Radar. The fixed scene needs no continuous Canvas loop,
+  installed motion package, or new 3D runtime. The owner's requested 1.4-second
+  revolution is a narrow exception to the general 800 ms motion limit. The
+  sweep animation releases its transform when complete so desktop pointer
+  movement visibly advances it. The owner selected the above-copy mobile
+  placement after a live three-option comparison.
 
 ## [0.5.1] — 2026-03-31
 

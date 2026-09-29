@@ -1,36 +1,32 @@
 # S002 local validation and remaining gates
 
-**Created**: 2026-09-28 | **Updated**: 2026-09-29
+**Updated**: 2026-09-29
 **Branch**: `codex/62-hero-background-spec`
 **Issue**: [#62](https://github.com/shruggietech/shruggie-web/issues/62)
-**Disposition**: Local implementation is reviewable. Hero performance and remaining visual acceptance checks are open.
+**Disposition**: The owner-selected radar is available on the local homepage. Performance and several manual acceptance gates remain open; issue #62 stays open.
 
-## Spec-Kit analysis
+## Decision and scope
 
-`/speckit-analyze` prerequisite discovery found the feature directory and complete `spec.md`, `plan.md`, and `tasks.md`. Cross-artifact review mapped FR-001 through FR-011 and SC-001 through SC-007 to the task list. No missing core requirement, uncovered user story, or constitution conflict was found. Two medium documentation findings were corrected: draft status text still described implementation as unstarted, and the plan's baseline-first sequence did not reflect the blocked Lighthouse invocation. The performance task remains unchecked.
+The owner rejected face-adjacent symbolism, compared three face-free live concepts, selected Radar sweep, then selected the complete scope above the copy from three live mobile placements. The temporary scenes and preview routes were removed. The homepage background is now two server-rendered SVG variants selected by CSS. The existing headline, body, CTA labels and destinations, navigation, and lower sections were not edited. The owner requested one full clockwise revolution and reveal within about 1.5 seconds; the website specification records this 1400ms exception to its general 800ms rule.
 
 ## Completed checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Concept comparison | Pass | Eighteen PNG sketch states across three concepts, two sizes, and three phases; eight-criterion comparison and renderer decision in `research.md`. The settled phase is also the reduced-motion sketch. |
-| Focused hero tests | Pass | Eight tests cover server-rendered copy/actions and visual signature, one finite arrival, offscreen/hidden pause, live reduced-motion change, absent browser APIs, mouse/touch response, resize settlement, and cleanup. |
-| Editorial, contrast, and skyline suites | Pass | Final `npm test` run: 166 Vitest tests, seven Node contrast tests, and skyline asset checks passed. |
-| Lint | Pass | Final `npm run lint` returned zero errors or warnings. |
-| Typecheck | Pass | Final `tsc --noEmit` returned zero errors. |
-| Production build | Pass | Final `npm run build` compiled and generated 38 static pages. |
-| Production dependency audit | Pass at CI threshold | `npm audit --omit=dev --audit-level=high` exited zero. It reported six moderate findings in transitive dependencies, with no high or critical findings. |
-| Matched production bundle sizes | Measured | [Bundle comparison](measurements/bundle-comparison.md) from isolated `origin/main` and S002 builds: 19 observed scripts and five stylesheets in each state; combined independently gzipped HTML, JS, and CSS increases by 1,132 bytes (about 0.32%). This is a size proxy, not transfer timing or a Core Web Vitals result. |
-| Actual page at 1280, 390, and 320 CSS px | Partial pass | In the production Next server, heading and both CTAs remained visible and linked. Browser DOM measurements showed document scroll width equal to client width at desktop and no horizontal overflow at 390/320. Browser error/warning log was empty. The 320 px screenshot showed the composed scene below and behind the actions. |
-| Raw HTML and hero actions | Pass | The production HTML response contains the headline, both action links, and the complete `data-hero-signature` SVG without JavaScript. Both CTAs navigated to their existing destinations in the browser. Keyboard focus reached the actions with a visible outline. |
+| Concept comparison | Pass | Eighteen first/active/settled desktop/mobile PNGs remain under `concepts/`; the eight-criterion comparison, owner selection, rejected options, and dependency impact are in `research.md`. |
+| Focused hero tests | Pass | Eight tests cover server-rendered copy/actions and SVG, browser API fallback, clockwise pointer advance, angular speed/queue caps, mobile pointer stability, offscreen/hidden/reduced-motion pause, and cleanup. |
+| Standard test suite | Pass | `npm test`: seven contrast tests, 166 Vitest tests in 32 files, and two skyline asset checks passed. |
+| Lint and typecheck | Pass | `npm run lint` and `npx tsc --noEmit` exited zero after final scene selection. |
+| Production build | Pass | `npm run build` compiled and generated 38 pages. The temporary preview routes are absent from the route list. |
+| Production dependency audit | Pass at high-severity threshold | `npm audit --omit=dev --audit-level=high` exited zero; six existing moderate transitive findings remain. |
+| Desktop first and settled frames | Pass for inspected states | A production-browser reload showed the headline and both CTAs readable while the radar was nearly dark, then the complete scope behind a stable text veil. |
+| Intro timing and desktop cursor response | Pass | Browser-computed reveal and sweep durations are both 1.4s; the sweep animation fill mode is `none`. The rendered SVG transform advanced from about 130 to 304 degrees after the cursor moved in the opposite direction. The previous retained transform had hidden the pointer response. |
+| Mobile placement, input, and overflow | Pass for inspected widths | At a requested 390px viewport, the scope ran from about 78 to 329px, the heading started at 320px, and both CTAs were within an 844px screen. Mouse travel left the mobile sweep's computed transform unchanged. At a requested 320px viewport, document scroll width equaled client width (305px after scrollbar). The CTAs remain in normal page flow and require scrolling at 700px viewport height. |
+| Text/static fallback | Partial pass | The hero unit test confirms the complete decorative SVG and semantic copy/actions render as HTML without Canvas, image, or client drawing. An actual scripting-disabled browser session remains untested. |
+| Diff integrity | Pass | `git diff --check` reported no whitespace errors. |
 
-## Open or blocked checks
+## Open checks
 
-- **Matched performance gate (T001/T019, SC-005)**: The Lighthouse package invocation was rejected by automatic command policy before execution. Production bundle-size comparison is recorded, but there are no matched before/after mobile or desktop cold-run timing measurements, constrained profile, actual network transfer results, or Lighthouse budget result. The browser's restricted read-only page scope did not expose Performance API timing entries. Field INP is unverified.
-- **Repository-wide CI status, separate from hero validation**: CI runs `npm run test:all`, which includes Firebase integration and production-publication suites for other site capabilities. That command passed its unit/editorial portion but could not start Firestore Emulator v1.22.0 locally with either installed JDK 21 or 24 (`Unable to establish loopback connection`). Those suites did not reach assertions and do not test the hero. No Firebase code, configuration, or data was changed in S002. CI must still report its own result when the branch is pushed.
-- **Visual/accessibility acceptance (T009/T012/T015, SC-002/003/006)**: The real desktop and 390/320 px settled views were inspected. Both CTAs were clicked successfully; focus reaches them and has a visible outline. The raw HTML proves content and SVG are served without JavaScript, while a browser with scripting disabled remains untested. The actual first/active arrival frames, forced-colors mode, and low-power profile still need direct checks. Static markup, reduced-motion, browser API fallback, pointer mode, and lifecycle behavior have focused automated coverage. The offscreen mobile navigation is keyboard-focusable on desktop in both baseline and S002, so it is a pre-existing navigation issue rather than a hero regression.
-- **Issue disposition (T020)**: #62 remains open. No PR has been created, and no issue closure or release claim is warranted until its individual acceptance and required verification are complete.
-
-## Scope and implementation cost
-
-The hero's 708-line Canvas renderer was replaced with a static inline SVG scene and a small client lifecycle controller. The scene is fixed vector geometry with no images, GPU context, device-pixel-ratio scaling, animation package, or continuous frame loop. The desktop and mobile compositions are served in the first HTML response; CSS chooses one by breakpoint. The client adds only a bounded arrival and direct mouse response. No route, foreground copy, CTA label, CTA destination, or lower homepage section was changed. The specification and changelog were updated in the same local change.
+- **Performance (T001/T019, SC-005)**: Matched production bundle-size estimates are in [measurements/bundle-comparison.md](measurements/bundle-comparison.md), but the earlier Lighthouse invocation was rejected by automatic command policy. No matched before/after cold-run timings, constrained-profile result, or Lighthouse budget result is available. Field INP remains unverified.
+- **Manual mode coverage (T009/T012/T015, SC-002/003/006)**: Browser checks still need a scripting-disabled session, forced-colors mode, a reduced-motion browser session, constrained-device behavior, and a measured layout-shift/contrast audit of active frames. The visible first and settled desktop frames and selected mobile layout were inspected; these checks do not substitute for the remaining modes.
+- **Issue disposition (T020)**: The GitHub issue remains open. No PR, merge, deployment, or release claim has been made.
