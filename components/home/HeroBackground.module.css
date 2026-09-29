@@ -45,8 +45,39 @@
   animation-play-state: paused;
 }
 
-.root[data-visible="true"] [data-hero-sweep] {
+.root[data-visible="true"][data-user-paused="false"] [data-hero-sweep] {
   animation-play-state: running;
+}
+
+.controlScene {
+  display: none;
+  position: absolute;
+  z-index: 11;
+  pointer-events: none;
+}
+
+.root[data-enhanced="true"] ~ .desktopControl {
+  display: block;
+}
+
+.desktopControl {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.controlTarget {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 2;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.controlTarget:focus-visible {
+  stroke: var(--brand-green-bright);
+  stroke-width: 3;
+  outline: none;
 }
 
 @keyframes radar-reveal {
@@ -60,6 +91,20 @@
 }
 
 @media (max-width: 767px) {
+  .root[data-enhanced="true"] ~ .desktopControl {
+    display: none;
+  }
+
+  .root[data-enhanced="true"] ~ .mobileControl {
+    display: block;
+  }
+
+  .mobileControl {
+    inset: 9% 0 auto;
+    width: 100%;
+    height: 29%;
+  }
+
   .desktopScene {
     display: none;
   }
@@ -99,6 +144,10 @@
   .root [data-hero-sweep] {
     animation: none;
   }
+
+  .controlScene {
+    display: none !important;
+  }
 }
 
 @media (forced-colors: active) {
@@ -109,5 +158,9 @@
 
   .safeZone {
     background: Canvas;
+  }
+
+  .controlScene {
+    display: none !important;
   }
 }

@@ -76,10 +76,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Homepage hero background**: replaced the cursor-dependent dot-grid canvas
   with a face-free radar scope. The scope fades in over 1.5 seconds while an
   independent sweep rotates clockwise every six seconds on desktop and mobile.
-  The sweep ignores pointer movement, pauses offscreen or in hidden tabs, and
-  becomes static under reduced-motion settings. Mobile places the scope above
-  the copy. There is no on-page pause button. Existing copy and CTA destinations
-  remain unchanged. The website specification records the motion exceptions.
+  Pointer travel does not steer the sweep. Clicking the three innermost rings
+  toggles the saved running state; hovering there briefly applies its inverse.
+  Keyboard activation works through the same invisible target, with a visible
+  focus ring. The sweep pauses offscreen or in hidden tabs and becomes static
+  under reduced-motion settings. Mobile places the scope above the copy and
+  supports tapping the center. There is no visible pause button. Existing copy
+  and CTA destinations remain unchanged.
 
 - **Homepage Services interaction**: replaced the GSAP-pinned desktop service
   sequence with a naturally scrolling responsive card grid, preserving the
@@ -148,8 +151,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   selected inline SVG Radar. The fixed scene needs no continuous Canvas loop,
   installed motion package, or new 3D runtime. The owner selected the above-copy
   mobile placement after a live three-option comparison, then requested a
-  continuous automatic six-second sweep independent of the 1.5-second fade,
-  with no pointer response or on-page pause button. These animations are
+  continuous automatic six-second sweep independent of the 1.5-second fade.
+  The owner subsequently chose a hidden click target inside the three inner
+  rings, with delayed hover temporarily inverting the click state, instead of
+  a visible pause button. This provides a motion stop mechanism while retaining
   specific exceptions to the general 800 ms and no-loop motion rules.
 
 ## [0.5.1] — 2026-03-31

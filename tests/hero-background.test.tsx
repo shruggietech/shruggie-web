@@ -23,6 +23,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
   vi.unstubAllGlobals();
   Reflect.deleteProperty(document, "visibilityState");
 });
@@ -48,10 +49,13 @@ describe("homepage radar", () => {
 
   it("serves complete radar geometry and a static fallback without a client renderer", () => {
     const html = renderToStaticMarkup(<HeroBackground />);
-    expect(html.match(/<svg/g)).toHaveLength(2);
+    expect(html.match(/<svg/g)).toHaveLength(4);
     expect(html).toContain('data-hero-sweep="true"');
     expect(html).toContain('data-visible="false"');
-    expect(html).not.toContain("Pause radar");
+    expect(html).toContain('data-enhanced="false"');
+    expect(html).toContain('data-hero-control="desktop"');
+    expect(html).toContain('data-hero-control="mobile"');
+    expect(html).not.toContain(">Pause radar");
     expect(html).not.toContain("<canvas");
     expect(html).not.toContain("<img");
   });
@@ -68,6 +72,41 @@ describe("homepage radar", () => {
     Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
     act(() => document.dispatchEvent(new Event("visibilitychange")));
     expect(root.dataset.visible).toBe("false");
+  });
+
+  it("toggles from the three inner rings and temporarily inverts that state on hover", () => {
+    vi.useFakeTimers();
+    const { container } = mount();
+    const root = container.querySelector<HTMLElement>('[aria-hidden="true"]')!;
+    const target = container.querySelector<SVGCircleElement>('[data-hero-control="desktop"]')!;
+    setInViewport(true);
+    expect(root.dataset.userPaused).toBe("false");
+    expect(target.getAttribute("r")).toBe("158");
+
+    fireEvent.pointerEnter(target, { pointerType: "mouse" });
+    act(() => vi.advanceTimersByTime(199));
+    expect(root.dataset.userPaused).toBe("false");
+    act(() => vi.advanceTimersByTime(1));
+    expect(root.dataset.userPaused).toBe("true");
+    expect(target).toHaveAttribute("aria-pressed", "true");
+
+    fireEvent.click(target);
+    expect(root.dataset.userPaused).toBe("false");
+    expect(target).toHaveAttribute("aria-pressed", "false");
+    fireEvent.pointerLeave(target);
+    expect(root.dataset.userPaused).toBe("true");
+
+    fireEvent.pointerEnter(target, { pointerType: "mouse" });
+    act(() => vi.advanceTimersByTime(200));
+    expect(root.dataset.userPaused).toBe("false");
+    fireEvent.pointerLeave(target);
+    expect(root.dataset.userPaused).toBe("true");
+
+    fireEvent.keyDown(target, { key: " " });
+    expect(root.dataset.userPaused).toBe("false");
+    fireEvent.pointerEnter(target, { pointerType: "touch" });
+    act(() => vi.advanceTimersByTime(200));
+    expect(root.dataset.userPaused).toBe("false");
   });
 
   it("does not couple sweep movement to mouse or touch input", () => {
