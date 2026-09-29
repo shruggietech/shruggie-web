@@ -71,7 +71,7 @@ The SVG paths and coordinates are authored scene geometry, not layout spacing to
 
 ## Open evidence gates
 
-- The production page was inspected at desktop and 390 CSS pixels after the motion revision. Browser-computed styles showed a 1.5-second fade and an independent six-second infinite sweep, and mobile showed no horizontal overflow. The owner subsequently removed the pause button. Forced colors, a scripting-disabled browser, 320 CSS pixels after the latest change, weak-device behavior, and WCAG 2.2.2 remain open.
+- The rebuilt production page was inspected at desktop, 390, and 320 CSS pixels after the no-button revision. Browser-computed styles showed a 1.5-second fade and an independent six-second infinite sweep; the pause button is absent, and neither mobile width showed horizontal overflow. Forced colors, a scripting-disabled browser, weak-device behavior, and WCAG 2.2.2 remain open.
 - Matched production bundle-size estimates are recorded in [measurements/bundle-comparison.md](measurements/bundle-comparison.md). Before/after timing, actual network transfer, constrained-device, and Lighthouse budget results remain unavailable because the Lighthouse command was rejected by automatic command policy.
 - Focused hero tests, full lint, `npm test`, typecheck, the production build, and the dependency audit passed after the owner's no-button change. The manual accessibility and performance gates remain open.
 - Details are in [validation.md](validation.md). Issue #62 must stay open until its individual acceptance criteria and release gates are satisfied.
