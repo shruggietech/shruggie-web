@@ -4,8 +4,8 @@
 | Attribute | Value |
 |-----------|-------|
 | Subject | ShruggieTech Website Rebuild |
-| Version | 1.3.2 |
-| Date | 2026-09-17 |
+| Version | 1.3.3 |
+| Date | 2026-09-28 |
 | Status | APPROVED |
 | Audience | AI-first, Human-second |
 | Framework | Next.js (App Router) |
@@ -1207,11 +1207,11 @@ Mobile navigation opens as a full-screen overlay sliding in from the right. The 
 
 | Element | Content |
 |---------|---------|
-| Headline (h1) | "Your vision deserves better than a template." |
-| Subheadline | "You have a business to run. We handle the technology that makes it grow. Modern websites, marketing engines, AI integrations, and custom software, built for you without the enterprise price tag or the vendor lock-in." |
+| Headline (h1) | "We advance your vision." |
+| Subheadline | "You have a business to run. We handle the technology that makes it grow: modern websites, marketing engines, AI integrations, and custom software, shaped around how you actually work." |
 | Primary CTA | "Start a Conversation" → `/contact` (rendered using `ShruggieCTA` component; see §2.4) |
 | Secondary CTA | "See Our Work" → `/work` (standard `Button` component, secondary variant) |
-| Visual treatment | Full-width dark section. Headline in Space Grotesk Bold at `display-xl`. A subtle animated gradient mesh in the background using the brand green at very low opacity (5-8%), creating depth without distraction. The gradient animates slowly (30s cycle) and is disabled for `prefers-reduced-motion`. |
+| Visual treatment | Full-width dark section with a decorative Signal foundry composition behind the semantic hero content. Sparse green signal routes, translucent planes, and structural nodes assemble around a recognizable ShruggieTech signature. The complete, composed vector scene is visible on first paint and without JavaScript; a stable black veil protects headline, subheadline, and CTAs during every frame. A few optional construction layers arrive once in staggered animations, each no longer than 800ms, then stop. Pointer movement may shift secondary detail briefly but never moves the text. Mobile shows the composed signature below the copy and actions. Reduced motion and forced colors keep an intentional static reading state. The scene stops optional motion when hidden or offscreen and has no infinite loop. |
 | Tagline | The shruggie tagline is delivered via the `ShruggieCTA` component beneath the primary CTA button (reveals on hover/scroll; see §2.4 for behavior). |
 
 **Section 2: Services Preview**
@@ -2726,3 +2726,4 @@ All environment variables are configured in the Vercel project dashboard under S
 | <span style="white-space: nowrap;">2026-09-12</span> | 1.3.0 | Replaced repository-authored production blog publication with the authenticated Firestore editorial authority; documented the frozen migration corpus, browser workflow, checksummed migration/export path, dynamic slug delivery, cache convergence, and recovery contract. |
 | <span style="white-space: nowrap;">2026-09-15</span> | 1.3.1 | Added typed, source-backed proof to every Services pillar and detail page; linked the Brand Building portfolio from Strategy & Brand and Work; and made the Discuss, Create, Deliver engagement model one shared Services/About component. |
 | <span style="white-space: nowrap;">2026-09-17</span> | 1.3.2 | Made initial hero and reveal HTML immediately visible; specified progressive below-viewport motion, stable 44px mobile carousel targets, contextual service links, and descriptive privacy-policy copy. Production performance verification remains pending (#96/#97). |
+| <span style="white-space: nowrap;">2026-09-28</span> | 1.3.3 | Replaced the stale looping hero-gradient contract with the finite Signal foundry scene for #62, and aligned documented hero copy with the unchanged rendered copy. The general motion limits remain in force. |

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>S002 hero concept sketches</title>
+  <style>
+    :root { color-scheme: dark; font-family: Arial, sans-serif; background: #111; color: #fff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 20px; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .controls button { border: 1px solid #666; border-radius: 6px; background: #202020; color: white; padding: 9px 12px; cursor: pointer; }
+    .controls button[aria-pressed="true"] { border-color: #2bcc73; color: #2bcc73; }
+    .preview { position: relative; width: min(100%, 1280px); height: 690px; overflow: hidden; margin: auto; background: #000; border: 1px solid #444; }
+    .preview.mobile { width: 390px; height: 844px; }
+    .preview::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #000 0%, #000 22%, rgba(0,0,0,.96) 42%, rgba(0,0,0,.65) 62%, transparent 88%); pointer-events: none; }
+    .preview.mobile::after { background: linear-gradient(180deg, #000 0%, rgba(0,0,0,.9) 60%, rgba(0,0,0,.16) 100%); }
+    .scene { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .scene[hidden] { display: none; }
+    .layer { transition: opacity 600ms ease, transform 600ms ease; transform-box: fill-box; transform-origin: center; }
+    .preview[data-phase="first"] .arrival { opacity: .07; transform: translate(30px, 25px) scale(.92); }
+    .preview[data-phase="active"] .arrival { opacity: .55; transform: translate(10px, 8px) scale(.97); }
+    .preview[data-phase="settled"] .arrival { opacity: 1; transform: none; }
+    .hero-header { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; height: 80px; padding: 0 8.5%; font-size: 15px; font-weight: bold; }
+    .brand { display: flex; align-items: center; gap: 9px; font-size: 18px; }
+    .brand .glyph { color: #2bcc73; font-size: 23px; letter-spacing: -6px; padding-right: 6px; }
+    .nav { display: flex; gap: 26px; color: #ccc; font-size: 12px; }
+    .contact { padding: 11px 14px; background: #c24000; border-radius: 7px; }
+    .copy { position: relative; z-index: 2; max-width: 780px; margin: 95px 0 0 8.5%; }
+    h1 { margin: 0; font-size: clamp(40px, 5vw, 68px); line-height: 1.06; letter-spacing: -.035em; }
+    p { max-width: 650px; margin: 28px 0 0; font-size: 18px; line-height: 1.6; color: #f4f4f4; }
+    .actions { display: flex; gap: 16px; margin-top: 38px; }
+    .actions span { display: inline-block; padding: 16px 20px; border-radius: 6px; font-size: 15px; font-weight: bold; }
+    .primary { background: #c24000; }
+    .secondary { border: 1px solid #eee; background: #050505; }
+    .preview.mobile .hero-header { height: 72px; padding: 0 24px; }
+    .preview.mobile .nav, .preview.mobile .contact { display: none; }
+    .preview.mobile .copy { margin: 105px 24px 0; }
+    .preview.mobile h1 { font-size: 40px; }
+    .preview.mobile p { font-size: 17px; line-height: 1.5; }
+    .preview.mobile .actions { flex-wrap: wrap; gap: 10px; }
+    .preview.mobile .actions span { padding: 14px 16px; }
+    .preview.mobile .scene { top: 540px; height: 304px; }
+    @media (prefers-reduced-motion: reduce) { .layer { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="controls" aria-label="Sketch controls">
+    <button type="button" data-concept="foundry" aria-pressed="true">Signal foundry</button>
+    <button type="button" data-concept="atrium" aria-pressed="false">Systems atrium</button>
+    <button type="button" data-concept="compile" aria-pressed="false">Compile field</button>
+    <button type="button" data-phase="first" aria-pressed="false">First frame</button>
+    <button type="button" data-phase="active" aria-pressed="false">Arrival frame</button>
+    <button type="button" data-phase="settled" aria-pressed="true">Settled / reduced motion</button>
+    <button type="button" id="size">Mobile crop</button>
+  </div>
+  <div class="preview" data-phase="settled" id="preview">
+    <svg class="scene" data-scene="foundry" viewBox="0 0 1280 690" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <radialGradient id="foundry-glow"><stop stop-color="#2bcc73" stop-opacity=".23"/><stop offset="1" stop-color="#2bcc73" stop-opacity="0"/></radialGradient>
+        <linearGradient id="foundry-line"><stop stop-color="#2bcc73" stop-opacity="0"/><stop offset=".55" stop-color="#2bcc73" stop-opacity=".7"/><stop offset="1" stop-color="#2bcc73" stop-opacity=".15"/></linearGradient>
+      </defs>
+      <circle cx="927" cy="361" r="300" fill="url(#foundry-glow)"/>
+      <g class="layer arrival" fill="none" stroke="url(#foundry-line)" stroke-width="1.5">
+        <path d="M655 470 778 313 927 350 1086 216 1240 270"/>
+        <path d="M716 567 797 448 927 350 1064 473 1238 418"/>
+        <path d="M739 178 857 252 927 350 1117 341 1239 189"/>
+        <path d="M828 105 857 252 797 448 944 563 1100 590" opacity=".5"/>
+        <path d="M1086 216 1117 341 1064 473 1100 590" opacity=".6"/>
+      </g>
+      <g class="layer arrival" fill="#2bcc73">
+        <circle cx="778" cy="313" r="4"/><circle cx="857" cy="252" r="3"/><circle cx="797" cy="448" r="3"/>
+        <circle cx="927" cy="350" r="6"/><circle cx="1086" cy="216" r="4"/><circle cx="1117" cy="341" r="3"/>
+        <circle cx="1064" cy="473" r="4"/><circle cx="944" cy="563" r="2"/><circle cx="1238" cy="418" r="3"/>
+      </g>
+      <g class="layer arrival" fill="none" stroke="#2bcc73" stroke-width="3" opacity=".8">
+        <path d="M835 340 868 296 898 323"/><path d="M956 323 986 296 1019 340"/>
+        <path d="M882 390 Q927 426 972 390"/><path d="M899 343 903 350 M951 343 955 350" stroke-width="6" stroke-linecap="round"/>
+      </g>
+      <g fill="none" stroke="#2bcc73" opacity=".22"><circle cx="927" cy="350" r="137"/><circle cx="927" cy="350" r="204" stroke-dasharray="2 15"/><path d="M734 350h386M927 158v386"/></g>
+      <g fill="#2bcc73" opacity=".42"><circle cx="1225" cy="114" r="2"/><circle cx="1130" cy="132" r="2"/><circle cx="693" cy="280" r="2"/><circle cx="1020" cy="604" r="2"/><circle cx="1207" cy="610" r="2"/></g>
+    </svg>
+    <svg class="scene" data-scene="atrium" viewBox="0 0 1280 690" preserveAspectRatio="xMidYMid slice" aria-hidden="true" hidden>
+      <defs><radialGradient id="atrium-glow"><stop stop-color="#2bcc73" stop-opacity=".15"/><stop offset="1" stop-color="#2bcc73" stop-opacity="0"/></radialGradient></defs>
+      <ellipse cx="1010" cy="345" rx="370" ry="310" fill="url(#atrium-glow)"/>
+      <g class="layer arrival" fill="none" stroke="#2bcc73">
+        <path d="M730 58 1220 35 1245 663 726 620Z" stroke-width="1" opacity=".23"/>
+        <path d="M797 115 1166 96 1179 591 796 570Z" stroke-width="1.4" opacity=".35"/>
+        <path d="M851 165 1123 157 1132 543 851 530Z" stroke-width="1.7" opacity=".5"/>
+        <path d="M899 205 1092 200 1096 505 900 499Z" stroke-width="2" opacity=".7"/>
+        <path d="M938 245 1060 243 1062 464 938 462Z" stroke-width="2.2" opacity=".9"/>
+        <path d="M730 58 938 245M1220 35 1060 243M726 620 938 462M1245 663 1062 464" opacity=".18"/>
+      </g>
+      <g class="layer arrival" fill="none" stroke="#91e8b5" stroke-width="1" opacity=".4"><path d="M780 134 1110 131M820 558 1158 565M860 171 860 534M1126 161 1129 536"/><path d="M726 620 930 520M1245 663 1075 520" stroke-dasharray="3 10"/></g>
+      <g class="layer arrival" fill="none" stroke="#2bcc73" stroke-width="3"><path d="m958 328 17-21 16 16m34 0 16-16 17 21"/><path d="M984 374q16 14 32 0"/><path d="M994 340v2m21-2v2" stroke-width="6" stroke-linecap="round"/></g>
+      <path d="M930 350h138" stroke="#2bcc73" opacity=".25"/>
+      <circle cx="1000" cy="350" r="178" fill="none" stroke="#2bcc73" stroke-dasharray="1 15" opacity=".18"/>
+    </svg>
+    <svg class="scene" data-scene="compile" viewBox="0 0 1280 690" preserveAspectRatio="xMidYMid slice" aria-hidden="true" hidden>
+      <defs><radialGradient id="compile-glow"><stop stop-color="#2bcc73" stop-opacity=".19"/><stop offset="1" stop-color="#2bcc73" stop-opacity="0"/></radialGradient></defs>
+      <circle cx="994" cy="355" r="330" fill="url(#compile-glow)"/>
+      <g class="layer arrival" fill="none" stroke="#2bcc73" opacity=".55">
+        <path d="M694 180h170v105H694zM735 210h70M735 236h45M735 260h82" opacity=".36"/>
+        <path d="M843 316h155v105H843zM876 341h31v29h-31zM933 341h32v29h-32zM890 370v25h58v-25" opacity=".65"/>
+        <path d="M1036 209h191v219h-191z" stroke-width="2"/>
+        <path d="M864 229 1036 229M998 366l38-38M843 366l-84-56M1118 428l-100 85" stroke-dasharray="4 8" opacity=".5"/>
+        <path d="M759 309h84M998 366h38" stroke-width="2"/>
+      </g>
+      <g class="layer arrival" fill="#2bcc73"><circle cx="759" cy="309" r="4"/><circle cx="864" cy="229" r="4"/><circle cx="998" cy="366" r="4"/><circle cx="1118" cy="428" r="4"/><circle cx="1018" cy="513" r="3"/></g>
+      <g class="layer arrival" fill="none" stroke="#2bcc73" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="m1069 324 28-36 22 24m27 0 22-24 28 36"/><path d="M1104 362q28 25 56 0"/></g>
+      <g fill="none" stroke="#2bcc73" opacity=".18"><path d="M676 116h512M676 545h512"/><path d="M691 105v500M1206 105v500"/></g>
+    </svg>
+    <div class="hero-header"><div class="brand"><span class="glyph">¯\_(ツ)_/¯</span> ShruggieTech</div><div class="nav"><span>SERVICES</span><span>WORK</span><span>RESEARCH</span><span>PRODUCTS</span><span>ABOUT</span><span>BLOG</span></div><div class="contact">Get in Touch</div></div>
+    <div class="copy"><h1>We advance your vision.</h1><p>You have a business to run. We handle the technology that makes it grow: modern websites, marketing engines, AI integrations, and custom software, shaped around how you actually work.</p><div class="actions"><span class="primary">Start a Conversation</span><span class="secondary">See Our Work</span></div></div>
+  </div>
+  <script>
+    const preview = document.querySelector('#preview');
+    for (const button of document.querySelectorAll('[data-concept]')) button.addEventListener('click', () => {
+      for (const option of document.querySelectorAll('[data-concept]')) option.setAttribute('aria-pressed', String(option === button));
+      for (const scene of document.querySelectorAll('[data-scene]')) scene.hidden = scene.dataset.scene !== button.dataset.concept;
+    });
+    for (const button of document.querySelectorAll('button[data-phase]')) button.addEventListener('click', () => {
+      for (const option of document.querySelectorAll('button[data-phase]')) option.setAttribute('aria-pressed', String(option === button));
+      preview.dataset.phase = button.dataset.phase;
+    });
+    document.querySelector('#size').addEventListener('click', (event) => {
+      preview.classList.toggle('mobile');
+      for (const scene of document.querySelectorAll('[data-scene]')) scene.setAttribute('viewBox', preview.classList.contains('mobile') ? '680 100 550 490' : '0 0 1280 690');
+      event.currentTarget.textContent = preview.classList.contains('mobile') ? 'Desktop crop' : 'Mobile crop';
+    });
+  </script>
+</body>
+</html>

@@ -73,6 +73,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Homepage hero background**: replaced the cursor-dependent dot-grid canvas
+  with a composed Signal foundry vector scene, a short one-time assembly, and
+  an intentional mobile/static state; preserved the existing copy and CTA
+  destinations while aligning the website specification with the live hero.
+
 - **Homepage Services interaction**: replaced the GSAP-pinned desktop service
   sequence with a naturally scrolling responsive card grid, preserving the
   approved capability copy, illustrations, and detail-page links while
@@ -132,6 +137,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Blog index spacing**: added symmetric bottom padding to the post grid (the removed "Page 1 of 1" element had been the only bottom spacer)
 - **Blog pagination**: hidden entirely on single-page lists instead of rendering a "Page 1 of 1" label
 - **Product schema**: `SoftwareSourceCode` JSON-LD is emitted only for products with a public repository, so unreleased products (ShruggieGraph) don't get a fabricated repo
+
+### Decisions
+
+- **2026-09-28, hero renderer**: compared three concept sketches for #62 and
+  selected inline SVG with native finite animation. The fixed small scene does
+  not need the old continuous Canvas loop, the installed motion packages, or a
+  new 3D runtime; the authored first-paint state also works without JavaScript.
 
 ## [0.5.1] — 2026-03-31
 

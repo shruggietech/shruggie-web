@@ -1,0 +1,77 @@
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: var(--brand-green-bright);
+  pointer-events: none;
+}
+
+.desktopScene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mobileScene {
+  display: none;
+}
+
+/* The black veil is stable in every animation frame so hero copy keeps contrast. */
+.safeZone {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--brand-black) 0%,
+    var(--brand-black) 26%,
+    color-mix(in srgb, var(--brand-black) 96%, transparent) 46%,
+    color-mix(in srgb, var(--brand-black) 62%, transparent) 70%,
+    transparent 95%
+  );
+}
+
+.root [data-hero-responsive] {
+  transition: transform 180ms ease-out;
+}
+
+@media (max-width: 767px) {
+  .desktopScene {
+    display: none;
+  }
+
+  .mobileScene {
+    display: block;
+    position: absolute;
+    inset: auto 0 0;
+    width: 100%;
+    height: 38%;
+  }
+
+  .safeZone {
+    background: linear-gradient(
+      180deg,
+      var(--brand-black) 0%,
+      var(--brand-black) 54%,
+      color-mix(in srgb, var(--brand-black) 60%, transparent) 70%,
+      color-mix(in srgb, var(--brand-black) 8%, transparent) 100%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root [data-hero-responsive] {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .desktopScene,
+  .mobileScene {
+    display: none;
+  }
+
+  .safeZone {
+    background: Canvas;
+  }
+}

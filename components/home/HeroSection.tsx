@@ -1,11 +1,10 @@
 /**
- * HeroSection — Full-width dark hero with animated dot-grid canvas.
+ * HeroSection — Full-width dark hero with a composed signal-foundry backdrop.
  *
  * Headline "We advance your vision." in display-xl
  * Space Grotesk Bold. Dual CTAs: primary via ShruggieCTA, secondary via Button.
- * Background: interactive canvas dot grid using brand green (#2BCC73),
- * dots brighten and connect near cursor. Falls back to static grid
- * for prefers-reduced-motion.
+ * Background: an immediately visible decorative construction scene with
+ * a finite optional arrival and a composed reduced-motion state.
  *
  * Spec reference: §6.1 (Homepage — Section 1: Hero)
  */
@@ -14,7 +13,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
-import HeroBackground from "@/components/home/HeroBackground";
+import { HeroBackground } from "@/components/home/HeroBackground";
 
 export default function HeroSection() {
   return (
@@ -32,7 +31,7 @@ export default function HeroSection() {
         </div>
 
         <div>
-          <p className="text-body-lg mt-6 max-w-2xl text-[#595959] dark:text-white">
+          <p className="text-body-lg mt-6 max-w-2xl text-white">
             You have a business to run. We handle the technology that makes it
             grow: modern websites, marketing engines, AI integrations, and
             custom software, shaped around how you actually work.
