@@ -88,11 +88,11 @@ describe("homepage radar", () => {
     expect(root.dataset.userPaused).toBe("false");
     act(() => vi.advanceTimersByTime(1));
     expect(root.dataset.userPaused).toBe("true");
-    expect(target).toHaveAttribute("aria-pressed", "true");
+    expect(target).toHaveAttribute("aria-label", "Resume radar sweep");
 
     fireEvent.click(target);
     expect(root.dataset.userPaused).toBe("false");
-    expect(target).toHaveAttribute("aria-pressed", "false");
+    expect(target).toHaveAttribute("aria-label", "Pause radar sweep");
     fireEvent.pointerLeave(target);
     expect(root.dataset.userPaused).toBe("true");
 

@@ -85,7 +85,6 @@ export function HeroBackground() {
         >
           <circle
             aria-label={paused ? "Resume radar sweep" : "Pause radar sweep"}
-            aria-pressed={paused}
             className={styles.controlTarget}
             cx="1000"
             cy="345"

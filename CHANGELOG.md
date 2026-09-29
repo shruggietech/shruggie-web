@@ -80,9 +80,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   toggles the saved running state; hovering there briefly applies its inverse.
   Keyboard activation works through the same invisible target, with a visible
   focus ring. The sweep pauses offscreen or in hidden tabs and becomes static
-  under reduced-motion settings. Mobile places the scope above the copy and
-  supports tapping the center. There is no visible pause button. Existing copy
-  and CTA destinations remain unchanged.
+  under reduced-motion settings. Phones and portrait tablets place the scope
+  above the copy and support tapping the center. With scripting or observation
+  unavailable, the scope remains static without the entry fade. There is no
+  visible pause button. Existing copy and CTA destinations remain unchanged.
 
 - **Homepage Services interaction**: replaced the GSAP-pinned desktop service
   sequence with a naturally scrolling responsive card grid, preserving the

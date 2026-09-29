@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/Button";
 import ShruggieCTA from "@/components/ui/ShruggieCTA";
 import { HeroBackground } from "@/components/home/HeroBackground";
 
+import styles from "./HeroSection.module.css";
+
 export default function HeroSection() {
   return (
     <section
@@ -23,7 +25,7 @@ export default function HeroSection() {
     >
       <HeroBackground />
 
-      <div className="container-content relative z-10 flex min-h-[85vh] flex-col items-start justify-center pb-32 pt-80 md:py-40">
+      <div className={`container-content relative z-10 flex min-h-[85vh] flex-col items-start justify-center ${styles.copy}`}>
         <div>
           <h1 className="font-display text-display-md md:text-display-xl text-brand-white max-w-4xl font-bold">
             We advance your vision.

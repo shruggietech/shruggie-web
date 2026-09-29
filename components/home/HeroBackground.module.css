@@ -36,7 +36,8 @@
   transform-origin: 1000px 345px;
 }
 
-.radarScene {
+/* A static scene is the no-JavaScript and failed-observation fallback. */
+.root[data-enhanced="true"] .radarScene {
   animation: radar-reveal 1500ms ease-out both;
 }
 
@@ -90,7 +91,7 @@
   to { transform: rotate(360deg); }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767px), (max-width: 1199px) and (orientation: portrait) {
   .root[data-enhanced="true"] ~ .desktopControl {
     display: none;
   }
@@ -117,7 +118,7 @@
     height: 29%;
   }
 
-  .radarScene {
+  .root[data-enhanced="true"] .radarScene {
     animation-name: radar-reveal-mobile;
   }
 
