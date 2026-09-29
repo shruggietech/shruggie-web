@@ -74,12 +74,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Homepage hero background**: replaced the cursor-dependent dot-grid canvas
-  with a face-free radar scope. It makes one clockwise revolution while
-  revealing from darkness in 1.4 seconds, then rests. Desktop mouse travel
-  advances the bearing only clockwise at a capped speed; mobile places the
-  stable scope above the copy without pointer response. Existing copy and CTA
-  destinations remain unchanged. The website specification records the
-  specific intro-duration exception and the final visual treatment.
+  with a face-free radar scope. The scope fades in over 1.5 seconds while an
+  independent sweep rotates clockwise every six seconds on desktop and mobile.
+  The sweep ignores pointer movement, pauses offscreen or in hidden tabs, and
+  becomes static under reduced-motion settings. Mobile places the scope above
+  the copy. There is no on-page pause button. Existing copy and CTA destinations
+  remain unchanged. The website specification records the motion exceptions.
 
 - **Homepage Services interaction**: replaced the GSAP-pinned desktop service
   sequence with a naturally scrolling responsive card grid, preserving the
@@ -146,11 +146,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **2026-09-29, hero renderer and motion**: after the owner rejected face-like
   geometry, compared Radar sweep, Signal loom, and Lightwell for #62 and
   selected inline SVG Radar. The fixed scene needs no continuous Canvas loop,
-  installed motion package, or new 3D runtime. The owner's requested 1.4-second
-  revolution is a narrow exception to the general 800 ms motion limit. The
-  sweep animation releases its transform when complete so desktop pointer
-  movement visibly advances it. The owner selected the above-copy mobile
-  placement after a live three-option comparison.
+  installed motion package, or new 3D runtime. The owner selected the above-copy
+  mobile placement after a live three-option comparison, then requested a
+  continuous automatic six-second sweep independent of the 1.5-second fade,
+  with no pointer response or on-page pause button. These animations are
+  specific exceptions to the general 800 ms and no-loop motion rules.
 
 ## [0.5.1] — 2026-03-31
 

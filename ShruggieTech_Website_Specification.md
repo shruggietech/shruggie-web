@@ -5,7 +5,7 @@
 |-----------|-------|
 | Subject | ShruggieTech Website Rebuild |
 | Version | 1.3.4 |
-| Date | 2026-09-28 |
+| Date | 2026-09-29 |
 | Status | APPROVED |
 | Audience | AI-first, Human-second |
 | Framework | Next.js (App Router) |
@@ -890,9 +890,9 @@ The motion philosophy is "tasteful restraint." Animation is used to guide the ey
 
 - Parallax scrolling on content elements (accessibility concern; Lenis handles scroll feel at the container level only)
 - Auto-playing video backgrounds
-- Infinite looping animations (except a single subtle pulse on the hero CTA, which must respect `prefers-reduced-motion`)
+- Infinite looping animations, except the owner-selected homepage radar sweep and a single subtle pulse on the hero CTA. Both must respect `prefers-reduced-motion`; the radar also pauses offscreen and in hidden tabs.
 - Scroll-jacking (Lenis smooths native scroll; it does not override scroll distance or direction)
-- Animation durations exceeding 800ms for any single element, except the homepage radar's one-time 1400ms clockwise revolution and reveal described in §6.1. That scene becomes static after the intro until direct desktop pointer input, and reduced motion skips the intro.
+- Animation durations exceeding 800ms for any single element, except the homepage radar's 1500ms fade and independent six-second clockwise sweep described in §6.1. The owner requested continuous radar motion without an on-page pause control. Reduced motion skips both animations.
 
 <a name="26-dark-and-light-mode" id="26-dark-and-light-mode"></a>
 ### 2.6. Dark and Light Mode
@@ -1211,7 +1211,7 @@ Mobile navigation opens as a full-screen overlay sliding in from the right. The 
 | Subheadline | "You have a business to run. We handle the technology that makes it grow: modern websites, marketing engines, AI integrations, and custom software, shaped around how you actually work." |
 | Primary CTA | "Start a Conversation" → `/contact` (rendered using `ShruggieCTA` component; see §2.4) |
 | Secondary CTA | "See Our Work" → `/work` (standard `Button` component, secondary variant) |
-| Visual treatment | Full-width dark section with a decorative, face-free radar scope behind the semantic hero content. Offset range rings, an asymmetric clockwise sweep, and three resolved returns use restrained brand green against near-black. The complete vector geometry is present in the server HTML. On load, the scope reveals from darkness while the sweep makes exactly one clockwise revolution in 1400ms, then rests. This intro is the specific exception to §2.5's general 800ms per-element limit; there is no automatic loop. Desktop mouse travel can only advance the sweep clockwise, at no more than 150 degrees per second with at most 75 degrees queued, even when the pointer moves in the opposite direction. Motion stops when idle, offscreen, hidden, or reduced motion is requested. Mobile places the complete scope above the unchanged headline and uses the one-time intro without pointer response. Reduced motion displays the composed static scope immediately, and forced colors removes the decorative SVG. A stable black veil keeps the headline, support text, and CTAs readable throughout. |
+| Visual treatment | Full-width dark section with a decorative, face-free radar scope behind the semantic hero content. Offset range rings, an asymmetric clockwise sweep, and three resolved returns use restrained brand green against near-black. The complete vector geometry is present in the server HTML. The scope fades in from darkness over 1500ms while an independent sweep rotates clockwise once every six seconds and keeps rotating on desktop and mobile. Pointer input does not affect the sweep. There is no on-page pause button. The sweep pauses offscreen and in hidden tabs; reduced motion displays the composed static scope immediately. Without JavaScript or observation support, the scope remains static. Mobile places the complete scope above the unchanged headline. Forced colors removes the decorative SVG. A stable black veil keeps the headline, support text, and CTAs readable throughout. The fade and continuous sweep are the owner-directed exceptions to §2.5's general motion limits. |
 | Tagline | The shruggie tagline is delivered via the `ShruggieCTA` component beneath the primary CTA button (reveals on hover/scroll; see §2.4 for behavior). |
 
 **Section 2: Services Preview**
@@ -2727,4 +2727,4 @@ All environment variables are configured in the Vercel project dashboard under S
 | <span style="white-space: nowrap;">2026-09-15</span> | 1.3.1 | Added typed, source-backed proof to every Services pillar and detail page; linked the Brand Building portfolio from Strategy & Brand and Work; and made the Discuss, Create, Deliver engagement model one shared Services/About component. |
 | <span style="white-space: nowrap;">2026-09-17</span> | 1.3.2 | Made initial hero and reveal HTML immediately visible; specified progressive below-viewport motion, stable 44px mobile carousel targets, contextual service links, and descriptive privacy-policy copy. Production performance verification remains pending (#96/#97). |
 | <span style="white-space: nowrap;">2026-09-28</span> | 1.3.3 | Drafted a finite Signal foundry direction for #62 and aligned the documented hero copy with the unchanged rendering. The draft visual was superseded before delivery. |
-| <span style="white-space: nowrap;">2026-09-29</span> | 1.3.4 | Selected the face-free Radar sweep after three live concept comparisons and placed the mobile scope above the copy. Specified a single 1400ms clockwise reveal, capped clockwise desktop pointer motion, and a precise exception to the general 800ms duration rule. |
+| <span style="white-space: nowrap;">2026-09-29</span> | 1.3.4 | Selected the face-free Radar sweep after three live concept comparisons and placed the mobile scope above the copy. Specified an independent 1500ms fade and continuous six-second clockwise sweep without pointer response or an on-page pause button, with precise exceptions to the general duration and looping rules. |

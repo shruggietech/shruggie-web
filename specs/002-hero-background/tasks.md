@@ -10,7 +10,7 @@
 - [x] T002 [US1] Produce first, active, settled, mobile, and reduced-motion sketch states for the revised Radar sweep direction using unchanged hero copy.
 - [x] T003 [US1] Produce the same revised sketch states for Signal loom.
 - [x] T004 [US1] Produce the same revised sketch states for Lightwell.
-- [x] T005 [US1] Compare T002-T004 against all eight criteria in `research.md`; record the owner's Radar sweep selection, inline SVG renderer, rejected options, and dependency impact. Mobile placement remains under live comparison.
+- [x] T005 [US1] Compare T002-T004 against all eight criteria in `research.md`; record the owner's Radar sweep selection, inline SVG renderer, rejected options, dependency impact, and final above-copy mobile placement.
 
 ## Phase 2: User Story 1 - Arrival and readable foreground (P1)
 
@@ -21,19 +21,19 @@
 
 ## Phase 3: User Story 2 - Intentional modes and fallbacks (P1)
 
-- [x] T010 [US2] Add deterministic tests for live reduced-motion changes, missing renderer/asset, and touch or keyboard-only behavior in `tests/hero-background.test.tsx` where practical.
+- [ ] T010 [US2] Add deterministic tests for live reduced-motion changes, missing renderer/asset, and touch or keyboard-only behavior in `tests/hero-background.test.tsx` where practical. Static SVG, unavailable observation, and pointer independence are covered; live reduced-motion behavior still needs browser validation.
 - [x] T011 [US2] Implement static/no-JavaScript, reduced-motion, high-contrast, touch, keyboard-only, and selected-renderer failure paths in the hero files. Add a non-WebGL fallback and context-loss handling only if T005 selects WebGL.
 - [ ] T012 [US2] Manually check keyboard order/focus, contrast in all visual states, forced colors, touch interaction, no-JavaScript content, and failed visual initialization. Record screenshots and findings in this feature directory or the PR.
 
 ## Phase 4: User Story 3 - Calm lifecycle and measured cost (P2)
 
-- [ ] T013 [US3] Add lifecycle tests for settled idle state, offscreen and hidden pause, resize/rotation, cleanup, and resolution/geometry caps where deterministic. Offscreen, hidden, resize, and cleanup are covered; constrained-profile evidence remains open.
-- [ ] T014 [US3] Implement demand-driven visual updates and stop work when idle, offscreen, hidden, or reduced motion. Cap effective resolution and geometry complexity based on constrained-profile measurements. Fixed SVG geometry and no redraw loop are implemented; constrained-profile measurements remain open.
+- [ ] T013 [US3] Add lifecycle tests for offscreen and hidden pause, resize/rotation, cleanup, and resolution/geometry caps where deterministic. Offscreen, hidden, and cleanup are covered; resize and constrained-profile evidence remain open.
+- [ ] T014 [US3] Stop the automatic sweep offscreen, hidden, or under reduced motion. Cap effective resolution and geometry complexity based on constrained-profile measurements. Fixed SVG geometry and no redraw loop are implemented; constrained-profile measurements remain open.
 - [ ] T015 [US3] Check no horizontal overflow, layout shift, blocked clicks, hydration errors, or console errors at desktop/mobile sizes and a constrained profile.
 
 ## Phase 5: Contract, analysis, and release evidence
 
-- [x] T016 Update `ShruggieTech_Website_Specification.md` §6.1 to the delivered Radar sweep and the unchanged rendered hero copy; record the owner's specific 1.4-second intro exception in §2.5 while retaining the general motion limits. Update `CHANGELOG.md`.
+- [x] T016 Update `ShruggieTech_Website_Specification.md` §6.1 to the delivered Radar sweep and the unchanged rendered hero copy; record the owner's specific 1.5-second fade and six-second continuous-sweep exceptions in §2.5 while retaining the general motion limits. Document the owner's no-button direction and update `CHANGELOG.md`.
 - [x] T017 Run `/speckit-analyze` on `spec.md`, `plan.md`, and `tasks.md`; resolve actionable coverage or constitution findings before implementation completion.
 - [x] T018 Run focused hero tests, `npm test`, `npm run lint`, `npx tsc --noEmit`, `npm run build`, and the production dependency audit on the final selected implementation. Results are in `validation.md`.
 - [ ] T019 Repeat matched production-build mobile/desktop measurements from T001 (three cold runs per profile), include a constrained profile and bundle/renderer cost, and compare each budget with raw evidence. State field INP as unverified if unavailable. Bundle costs are recorded; cold-run timing and numeric budget comparison remain open.

@@ -3,8 +3,8 @@
  *
  * Headline "We advance your vision." in display-xl
  * Space Grotesk Bold. Dual CTAs: primary via ShruggieCTA, secondary via Button.
- * Background: a decorative radar with one finite reveal and a composed
- * reduced-motion state.
+ * Background: a decorative radar with a finite reveal, continuous sweep,
+ * and a composed reduced-motion state.
  *
  * Spec reference: §6.1 (Homepage — Section 1: Hero)
  */
