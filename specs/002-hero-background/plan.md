@@ -72,6 +72,6 @@ The SVG paths and coordinates are authored scene geometry, not layout spacing to
 ## Open evidence gates
 
 - The selected sketch is implemented and the production page was inspected at 1280, 390, and 320 CSS pixels. First/active arrival frames, forced colors, no-JavaScript browser mode, and weak-device behavior still need manual validation.
-- Matched before/after production measurements and bundle transfer costs were not captured because the Lighthouse command was rejected by automatic command policy.
+- Matched production bundle-size estimates are recorded in [measurements/bundle-comparison.md](measurements/bundle-comparison.md). Before/after timing, actual network transfer, constrained-device, and Lighthouse budget results remain unavailable because the Lighthouse command was rejected by automatic command policy.
 - Focused hero tests, `npm test`, lint, typecheck, build, and the high-severity production audit pass. The separate repository-wide `test:all` command cannot start its unrelated Firebase integration portion locally because Firestore's emulator cannot create a loopback selector with either installed JDK 21 or JDK 24. No Firestore files or behavior were changed for S002.
 - Details are in [validation.md](validation.md). Issue #62 must stay open until its individual acceptance criteria and release gates are satisfied.

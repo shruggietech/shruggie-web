@@ -1,6 +1,7 @@
 # Research and concept evaluation brief: Hero background
 
 **Date**: 2026-09-28
+**Updated**: 2026-09-29
 **Status**: Three low-cost sketches rendered and compared on 2026-09-28. Signal foundry selected as the implementation direction; live-site validation remains open.
 **Source**: [Issue #62](https://github.com/shruggietech/shruggie-web/issues/62), current `HeroBackground.tsx`, and the website specification.
 
@@ -10,7 +11,7 @@
 - `components/home/HeroSection.tsx` keeps text and CTAs in semantic server-rendered markup above an `aria-hidden` canvas. That layering should remain.
 - `ShruggieTech_Website_Specification.md` section 6.1 still calls for a slowly looping gradient, while section 2.5 prohibits infinite loops and animations over 800 ms per element. The live hero copy also differs from section 6.1. Owner direction is to align documentation to the unchanged rendered copy during implementation.
 - The repository already installs `framer-motion` and `gsap`. A new renderer or animation package carries bundle and lifecycle costs that need prototype evidence.
-- No matched baseline measurements are available. The local Lighthouse invocation was rejected by automatic command policy before it ran, so the before/after performance gate remains open in [validation.md](validation.md).
+- A matched production bundle-size comparison is in [measurements/bundle-comparison.md](measurements/bundle-comparison.md). The local Lighthouse invocation was rejected by automatic command policy before it ran, so the before/after timing and budget gate remains open in [validation.md](validation.md).
 
 ## Three distinct sketches and their states
 

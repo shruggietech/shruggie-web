@@ -6,7 +6,7 @@
 
 ## Phase 1: Evidence and concept decision (blocks scene implementation)
 
-- [ ] T001 [US1] Capture current hero screenshots and matched production-build mobile/desktop baseline measurements, including a constrained profile, bundle size, and available field INP status. Record raw settings and results in this feature directory.
+- [ ] T001 [US1] Capture current hero screenshots and matched production-build mobile/desktop baseline measurements, including a constrained profile, bundle size, and available field INP status. Record raw settings and results in this feature directory. Matched bundle sizes are recorded; timing and constrained-profile baselines remain open.
 - [x] T002 [US1] Produce first, active, settled, mobile, and reduced-motion sketch states for Signal foundry using unchanged hero copy and approximate foreground spacing.
 - [x] T003 [US1] Produce the same sketch states for Liminal systems atrium using unchanged hero copy and approximate foreground spacing.
 - [x] T004 [US1] Produce the same sketch states for Compile field using unchanged hero copy and approximate foreground spacing.
@@ -36,7 +36,7 @@
 - [x] T016 Update `ShruggieTech_Website_Specification.md` §6.1 to the selected delivered visual and the unchanged rendered hero copy; retain §2.5 motion limits unless an explicit owner-approved exception is recorded. Update `CHANGELOG.md`.
 - [x] T017 Run `/speckit-analyze` on `spec.md`, `plan.md`, and `tasks.md`; resolve actionable coverage or constitution findings before implementation completion.
 - [x] T018 Run focused hero tests, `npm test`, `npm run lint`, `npx tsc --noEmit`, `npm run build`, and the production dependency audit. Record repository-wide CI status separately; the unrelated Firebase emulator suite does not test this hero.
-- [ ] T019 Repeat matched production-build mobile/desktop measurements from T001 (three cold runs per profile), include a constrained profile and bundle/renderer cost, and compare each budget with raw evidence. State field INP as unverified if unavailable.
+- [ ] T019 Repeat matched production-build mobile/desktop measurements from T001 (three cold runs per profile), include a constrained profile and bundle/renderer cost, and compare each budget with raw evidence. State field INP as unverified if unavailable. Bundle costs are recorded; cold-run timing and numeric budget comparison remain open.
 - [ ] T020 Audit every issue #62 acceptance criterion and all FR/SC items, attach the concept decision and visual/performance evidence to the implementing PR, and keep #62 open until its own acceptance and release gates are complete. Coordinate any relevant performance result with #31.
 
 ## Dependencies and completion rule
