@@ -171,19 +171,6 @@ export default function EditorialWorkspace() {
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const articleRequestRef = useRef(0);
 
-  const signedIn = useCallback((nextEditor: EditorialEditor) => {
-    const recovery = readDraftRecovery();
-    setEditor(nextEditor);
-    setSessionExpired(false);
-    setSessionState("ready");
-    setListState("idle");
-    if (recovery) {
-      setPersisted(recovery.persisted);
-      setDraft(recovery.draft);
-      setDirty(true);
-    }
-  }, []);
-
   const handleSessionFailure = useCallback((error: unknown) => {
     if (isSessionError(error)) {
       setSessionExpired(true);
@@ -193,7 +180,7 @@ export default function EditorialWorkspace() {
     return false;
   }, []);
 
-  const loadWorkspace = useCallback(async () => {
+  const loadWorkspace = useCallback(async (view: ArticleState) => {
     const requestId = ++articleRequestRef.current;
     setListState("loading");
     setListError(null);
@@ -201,7 +188,7 @@ export default function EditorialWorkspace() {
       const [page, nextAssets] = await Promise.all([
         listEditorialArticles({
           limit: ARTICLE_PAGE_SIZE,
-          state: articleView,
+          state: view,
         }),
         listEditorialAssets(),
       ]);
@@ -218,7 +205,28 @@ export default function EditorialWorkspace() {
         setListState("error");
       }
     }
-  }, [articleView, handleSessionFailure]);
+  }, [handleSessionFailure]);
+
+  const activateSession = useCallback(
+    (nextEditor: EditorialEditor, view: ArticleState) => {
+      const recovery = readDraftRecovery();
+      setEditor(nextEditor);
+      setSessionExpired(false);
+      setSessionState("ready");
+      if (recovery) {
+        setPersisted(recovery.persisted);
+        setDraft(recovery.draft);
+        setDirty(true);
+      }
+      void loadWorkspace(view);
+    },
+    [loadWorkspace],
+  );
+
+  const signedIn = useCallback(
+    (nextEditor: EditorialEditor) => activateSession(nextEditor, articleView),
+    [activateSession, articleView],
+  );
 
   const loadArticleView = useCallback(
     async (view: ArticleState, after?: ArticleListCursor) => {
@@ -274,7 +282,7 @@ export default function EditorialWorkspace() {
     getEditorialSession()
       .then((nextEditor) => {
         if (!active) return;
-        signedIn(nextEditor);
+        activateSession(nextEditor, "draft");
       })
       .catch((error) => {
         if (!active) return;
@@ -283,13 +291,7 @@ export default function EditorialWorkspace() {
     return () => {
       active = false;
     };
-  }, [signedIn]);
-
-  useEffect(() => {
-    if (editor && sessionState === "ready" && listState === "idle") {
-      void loadWorkspace();
-    }
-  }, [editor, listState, loadWorkspace, sessionState]);
+  }, [activateSession]);
 
   useEffect(() => {
     if (draft && dirty) {
@@ -447,7 +449,7 @@ export default function EditorialWorkspace() {
               void loadArticleView(articleView, nextArticleCursor);
             }
           }}
-          onRetry={loadWorkspace}
+          onRetry={() => loadWorkspace(articleView)}
           onSelectView={(view) => {
             if (view === articleView) return;
             setArticleView(view);

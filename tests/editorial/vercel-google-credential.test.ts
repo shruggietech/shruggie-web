@@ -54,9 +54,9 @@ describe("Vercel Google workload identity credential", () => {
       url: "https://storage.googleapis.com/upload/storage/v1/b/example/o",
     });
 
-    expect(request.headers).toMatchObject({
-      Authorization: "Bearer storage-token",
-    });
+    expect(new Headers(request.headers).get("authorization")).toBe(
+      "Bearer storage-token",
+    );
   });
 
   it("rejects incomplete or malformed production configuration", () => {
